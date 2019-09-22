@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/menu_exif_model"
+        android:title="@string/menu_exif_model"
+        android:icon="@drawable/ic_menu_model"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_aperture"
+        android:title="@string/menu_exif_aperture"
+        android:icon="@drawable/ic_menu_aperture"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_exposure"
+        android:title="@string/menu_exif_exposure"
+        android:icon="@drawable/ic_menu_exposure"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_iso"
+        android:title="@string/menu_exif_iso"
+        android:icon="@drawable/ic_menu_iso"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_flash"
+        android:title="@string/menu_exif_flash"
+        android:icon="@drawable/ic_menu_flash"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_whitebalance"
+        android:title="@string/menu_exif_whitebalance"
+        android:icon="@drawable/ic_menu_whitebalance"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_exif_focallength"
+        android:title="@string/menu_exif_focallength"
+        android:icon="@drawable/ic_menu_focal"
+        tools:ignore="AppCompatResource" />
+
+</menu>

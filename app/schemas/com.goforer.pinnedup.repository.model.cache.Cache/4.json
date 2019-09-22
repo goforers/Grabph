@@ -1,0 +1,949 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "2e38454bd10c8835c807f31d166bc64a",
+    "entities": [
+      {
+        "tableName": "FlickrFeed",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `modified` TEXT, PRIMARY KEY(`title`))",
+        "fields": [
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modifiedDate",
+            "columnName": "modified",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "title"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "FeedItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `link` TEXT NOT NULL, `date_taken` TEXT NOT NULL, `description` TEXT NOT NULL, `published` TEXT NOT NULL, `author` TEXT NOT NULL, `author_id` TEXT NOT NULL, `tags` TEXT NOT NULL, `pinned` INTEGER NOT NULL, `date_pinned` INTEGER NOT NULL, `media_m` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "takenDate",
+            "columnName": "date_taken",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "publishedDate",
+            "columnName": "published",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorId",
+            "columnName": "author_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tags",
+            "columnName": "tags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pinned",
+            "columnName": "pinned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pinnedDate",
+            "columnName": "date_pinned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "media.m",
+            "columnName": "media_m",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_FeedItem__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_FeedItem__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Person",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `iconserver` TEXT, `iconfarm` INTEGER NOT NULL, `username__content` TEXT, `realname__content` TEXT, `location__content` TEXT, `description__content` TEXT, `photosurl__content` TEXT, `profileurl__content` TEXT, `mobileurl__content` TEXT, `photos_firstdatetaken__content` TEXT, `photos_firstdate__content` TEXT, `photos_count__content` TEXT, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconserver",
+            "columnName": "iconserver",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "iconfarm",
+            "columnName": "iconfarm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username._content",
+            "columnName": "username__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "realname._content",
+            "columnName": "realname__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location._content",
+            "columnName": "location__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description._content",
+            "columnName": "description__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photosurl._content",
+            "columnName": "photosurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "profileurl._content",
+            "columnName": "profileurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mobileurl._content",
+            "columnName": "mobileurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.firstdatetaken._content",
+            "columnName": "photos_firstdatetaken__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.firstdate._content",
+            "columnName": "photos_firstdate__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.count._content",
+            "columnName": "photos_count__content",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Person__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_Person__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "EXIF",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tagspace` TEXT NOT NULL, `tagspaceid` TEXT NOT NULL, `label` TEXT NOT NULL, `raw__content` TEXT, PRIMARY KEY(`label`))",
+        "fields": [
+          {
+            "fieldPath": "tagspace",
+            "columnName": "tagspace",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagspaceid",
+            "columnName": "tagspaceid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "raw._content",
+            "columnName": "raw__content",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "label"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LocalEXIF",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filename` TEXT, `model` TEXT, `exposure` TEXT, `aperture` TEXT, `iso` TEXT, `flash` TEXT, `whitebalance` TEXT, `focallength` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filename",
+            "columnName": "filename",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "exposure",
+            "columnName": "exposure",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aperture",
+            "columnName": "aperture",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "iso",
+            "columnName": "iso",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "flash",
+            "columnName": "flash",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "whitebalance",
+            "columnName": "whitebalance",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "focallength",
+            "columnName": "focallength",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_LocalEXIF__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_LocalEXIF__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "RecentKeyword",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `keyword` TEXT, `date_searched` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "keyword",
+            "columnName": "keyword",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "searchedDate",
+            "columnName": "date_searched",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_RecentKeyword__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_RecentKeyword__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Location",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`latitude` TEXT, `longitude` TEXT, `accuracy` TEXT, `context` TEXT, `place_id` TEXT NOT NULL, `woeid` TEXT, `locality__content` TEXT, `locality_placeId` TEXT, `locality_woeid` TEXT, `county__content` TEXT, `county_placeId` TEXT, `county_woeid` TEXT, `region__content` TEXT, `region_placeId` TEXT, `region_woeid` TEXT, `country__content` TEXT, `country_placeId` TEXT, `country_woeid` TEXT, PRIMARY KEY(`place_id`))",
+        "fields": [
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "accuracy",
+            "columnName": "accuracy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "context",
+            "columnName": "context",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "placeId",
+            "columnName": "place_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "woeid",
+            "columnName": "woeid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "locality._content",
+            "columnName": "locality__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "locality.placeId",
+            "columnName": "locality_placeId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "locality.woeid",
+            "columnName": "locality_woeid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "county._content",
+            "columnName": "county__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "county.placeId",
+            "columnName": "county_placeId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "county.woeid",
+            "columnName": "county_woeid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "region._content",
+            "columnName": "region__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "region.placeId",
+            "columnName": "region_placeId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "region.woeid",
+            "columnName": "region_woeid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "country._content",
+            "columnName": "country__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "country.placeId",
+            "columnName": "country_placeId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "country.woeid",
+            "columnName": "country_woeid",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "place_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Photog",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stat` TEXT NOT NULL, PRIMARY KEY(`stat`))",
+        "fields": [
+          {
+            "fieldPath": "stat",
+            "columnName": "stat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "stat"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Photos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`page` INTEGER NOT NULL, `pages` INTEGER NOT NULL, `perpage` INTEGER NOT NULL, `total` TEXT NOT NULL, PRIMARY KEY(`total`))",
+        "fields": [
+          {
+            "fieldPath": "page",
+            "columnName": "page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pages",
+            "columnName": "pages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "perpage",
+            "columnName": "perpage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "total",
+            "columnName": "total",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "total"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Photo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "secret",
+            "columnName": "secret",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "server",
+            "columnName": "server",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "farm",
+            "columnName": "farm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "camera",
+            "columnName": "camera",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner",
+            "columnName": "owner",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ispublic",
+            "columnName": "ispublic",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isfriend",
+            "columnName": "isfriend",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isfamily",
+            "columnName": "isfamily",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Photo__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_Photo__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "PhotoComments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stat` TEXT NOT NULL, PRIMARY KEY(`stat`))",
+        "fields": [
+          {
+            "fieldPath": "stat",
+            "columnName": "stat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "stat"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Comments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`photo_id` TEXT NOT NULL, PRIMARY KEY(`photo_id`))",
+        "fields": [
+          {
+            "fieldPath": "photo_id",
+            "columnName": "photo_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "photo_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Comment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `author` TEXT NOT NULL, `author_is_deleted` INTEGER NOT NULL, `authorname` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `datecreate` TEXT NOT NULL, `permalink` TEXT NOT NULL, `path_alias` TEXT NOT NULL, `realname` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author_is_deleted",
+            "columnName": "author_is_deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorname",
+            "columnName": "authorname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconserver",
+            "columnName": "iconserver",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconfarm",
+            "columnName": "iconfarm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "datecreate",
+            "columnName": "datecreate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "permalink",
+            "columnName": "permalink",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path_alias",
+            "columnName": "path_alias",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "realname",
+            "columnName": "realname",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Comment__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE  INDEX `index_Comment__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "PhotoInfo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stat` TEXT NOT NULL, PRIMARY KEY(`stat`))",
+        "fields": [
+          {
+            "fieldPath": "stat",
+            "columnName": "stat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "stat"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Picture",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `dateuploaded` TEXT, `views` TEXT, `media` TEXT, `owner_nsid` TEXT, `owner_username` TEXT, `owner_realname` TEXT, `owner_location` TEXT, `owner_iconserver` TEXT, `owner_iconfarm` INTEGER, `title__content` TEXT, `description__content` TEXT, `dates_posted` TEXT, `dates_taken` TEXT, `dates_takengranularity` INTEGER, `dates_takenunknown` INTEGER, `dates_lastupdate` TEXT, `comments__content` TEXT, `tags_id` INTEGER, `urls_id` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "secret",
+            "columnName": "secret",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "server",
+            "columnName": "server",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "farm",
+            "columnName": "farm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateuploaded",
+            "columnName": "dateuploaded",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "views",
+            "columnName": "views",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "media",
+            "columnName": "media",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.nsid",
+            "columnName": "owner_nsid",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.username",
+            "columnName": "owner_username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.realname",
+            "columnName": "owner_realname",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.location",
+            "columnName": "owner_location",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.iconserver",
+            "columnName": "owner_iconserver",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner.iconfarm",
+            "columnName": "owner_iconfarm",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title._content",
+            "columnName": "title__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description._content",
+            "columnName": "description__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dates.posted",
+            "columnName": "dates_posted",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dates.taken",
+            "columnName": "dates_taken",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dates.takengranularity",
+            "columnName": "dates_takengranularity",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dates.takenunknown",
+            "columnName": "dates_takenunknown",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dates.lastupdate",
+            "columnName": "dates_lastupdate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comments._content",
+            "columnName": "comments__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tags.id",
+            "columnName": "tags_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "urls.id",
+            "columnName": "urls_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2e38454bd10c8835c807f31d166bc64a\")"
+    ]
+  }
+}

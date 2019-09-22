@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_quest_main_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:layout_marginTop="?android:attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_quest_bg_constraintLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+            android:id="@+id/iv_quest_bg_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:foreground="@color/colorPrimary"
+            android:scaleType="centerCrop" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.goforer.base.presentation.view.customs.layout.SwipeRefreshLayout
+        android:id="@+id/swipe_quest_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/home_quest_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/home_quest_item_constraintLayoutContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:descendantFocusability="blocksDescendants"
+                android:visibility="gone">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_top_quest_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:scrollbarSize="@dimen/size_6"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbarThumbVertical="@color/colorPrimary"
+                    android:scrollbars="vertical"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/sort_constraintLayoutContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_43"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_top_quest_view">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/sort_holder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginEnd="@dimen/margin_8"
+                        android:gravity="end"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_sort_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/margin_2"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:textColor="@color/colorHomeQuestSortKeyword"
+                            android:textSize="@dimen/text_size_12" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_down_arrow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:layout_marginStart="@dimen/margin_8"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:src="@drawable/ic_arrow_gray_down" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_space"
+                            android:layout_width="@dimen/width_12"
+                            android:layout_height="@dimen/height_18"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:layout_marginStart="@dimen/margin_2"
+                            android:gravity="center_horizontal|center_vertical" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_bottom_quest_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:scrollbarSize="@dimen/size_6"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbarThumbVertical="@color/colorPrimary"
+                    android:scrollbars="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/sort_constraintLayoutContainer"
+                    tools:layout_editor_absoluteX="0dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.goforer.base.presentation.view.customs.layout.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

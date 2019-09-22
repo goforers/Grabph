@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cell_photo_info_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/information_title_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_46"
+        android:elevation="@dimen/elevation_0"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_information_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_16"
+                android:layout_marginStart="@dimen/margin_16"
+                android:layout_marginBottom="@dimen/margin_10"
+                android:text="@string/information"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_up_arrow"
+                android:layout_width="@dimen/width_12"
+                android:layout_height="@dimen/height_12"
+                android:src="@drawable/ic_arrow_gray"
+                android:layout_marginTop="@dimen/margin_22"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:layout_marginBottom="@dimen/margin_12"
+                tools:ignore="ContentDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_2"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16"
+        android:background="@color/colorQuestInfoDivider"
+        android:gravity="center" />
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/colorPrimary"
+        android:id="@+id/exif_first_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_4"
+        android:layout_marginBottom="@dimen/margin_2"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            app:layout_collapseMode="pin"
+            android:id="@+id/exif_first_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:transitionGroup="true"
+            android:layout_gravity="bottom">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/exif_cam_model_display_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_cam_model"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_camera_model"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/cam_model_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_cam_model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Nikon Coolpix L14"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/colorPrimary"
+        android:id="@+id/photo_size_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_4"
+        android:layout_marginBottom="@dimen/margin_2"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            app:layout_collapseMode="pin"
+            android:id="@+id/photo_size_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:transitionGroup="true"
+            android:layout_gravity="bottom">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/photo_size_display_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_photo_size"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_photo_size"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/photo_size_text_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_photo_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Nikon Coolpix L14"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/colorPrimary"
+        android:id="@+id/photo_date_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_4"
+        android:layout_marginBottom="@dimen/margin_2"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            app:layout_collapseMode="pin"
+            android:id="@+id/photo_date_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:transitionGroup="true"
+            android:layout_gravity="bottom">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/photo_date_display_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_date"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_photo_date"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/date_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_photo_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Nikon Coolpix L14"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/exif_second_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_0"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/colorPrimary">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            app:layout_collapseMode="pin"
+            android:id="@+id/exif_second_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:transitionGroup="true"
+            android:layout_gravity="bottom"
+            android:baselineAligned="false">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/aperture_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_aperture"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_aperture"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_aperture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="ƒ/8.0"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/exif_focal_length_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_focal_length"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_focal_length"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_focal_length"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="6.2 mm"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/exif_third_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_0"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/colorPrimary">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/exif_third_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:transitionGroup="true"
+            android:layout_gravity="bottom"
+            app:layout_collapseMode="pin"
+            android:baselineAligned="false">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/exposure_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_gravity="start"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_exposure"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_exposure_time"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_exposure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="1/30"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/iso_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/margin_16"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_iso"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_iso"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_iso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="80"
+                    android:textSize="@dimen/text_size_12"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    tools:ignore="HardcodedText" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/exif_forth_container"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:elevation="@dimen/elevation_0"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="@color/colorPrimary">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/exif_forth_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginEnd="@dimen/margin_2"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:transitionGroup="true"
+            app:layout_collapseMode="pin">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/white_balance_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_white_balance"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_white_balance"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_white_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text=" Auto"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    android:textSize="@dimen/text_size_12"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/flash_holder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:transitionGroup="true"
+                tools:ignore="UseCompoundDrawables">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_flash"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_flash"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_flash"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Auto, did not fire"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorDarkGray1"
+                    android:textSize="@dimen/text_size_12"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

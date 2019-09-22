@@ -1,0 +1,228 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar">
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+
+    <style name="AppTheme.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- Here we setting appcompat’s actionBarStyle -->
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@color/colorHomeQuestFavoriteKeyword</item>
+        <item name="android:itemBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.LogIn">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Home">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Main">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Search">
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar.Info.PhotoInfo">
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_photo_info</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar.Info.FeedInfo">
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_feed_info</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar.Info.QuestInfo">
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_quest_info</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar.Info.HotTopicContent">
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_quest_info</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoBar.Info">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Photog">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PinnedFeedList">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.SearpleGallery">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.DarkActionBar.Viewer">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/shared_photo_view</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Comment">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.CategoryPhoto">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoType">
+        <item name="android:windowExitTransition">@transition/grid_exit</item>
+        <item name="android:windowReenterTransition">@transition/grid_reenter</item>
+        <item name="android:windowBackground">@color/blackBrightLight</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+
+    <style name="TransparentToolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize" tools:ignore="PrivateResource">@dimen/abc_text_size_title_material_toolbar</item>
+        <item name="android:maxLength">24</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/whiteLight</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
+    </style>
+
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/whiteLight</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="CollapsingToolbar.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/whiteLight</item>
+        <item name="android:textSize">@dimen/text_size_20</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:maxLength">24</item>
+    </style>
+
+    <style name="MenuLabelsStyle">
+        <item name="android:background">@drawable/fab_label_background</item>
+        <item name="android:textColor">#FF888888</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="MenuButtonsSmall">
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">#1565C0</item>
+        <item name="fab_colorPressed">#2272CD</item>
+        <item name="fab_colorRipple">#62B2FF</item>
+    </style>
+
+    <style name="MenuButtonsSmall.OfferList">
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">#4565C0</item>
+        <item name="fab_colorPressed">#5272CD</item>
+        <item name="fab_colorRipple">#92B2FF</item>
+    </style>
+
+    <style name="Button" parent="Theme.AppCompat.Light">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
+        <item name="colorAccent">@color/colorMenuContainerText</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ToolTipStyle" parent="ToolTipLayoutDefaultStyle">
+        <item name="ttlm_padding">16dp</item>
+        <item name="ttlm_backgroundColor">@color/colorSearp</item>
+        <item name="ttlm_cornerRadius">6dp</item>
+        <item name="ttlm_arrowRatio">1.2</item>
+        <item name="ttlm_overlayStyle">@style/ToolTipOverlayAltStyle</item>
+        <item name="ttlm_animationStyle">@style/ToolTipAltAnimation</item>
+        <item name="ttlm_textStyle">@style/ToolTipAltTextStyle</item>
+    </style>
+
+    <style name="ToolTipAltTextStyle" parent="ToolTipTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ToolTipOverlayAltStyle" parent="ToolTipOverlayDefaultStyle">
+        <item name="android:color">@color/colorSearp</item>
+        <item name="android:alpha">0.3</item>
+    </style>
+
+    <style name="ToolTipAltAnimation">
+        <item name="android:windowExitAnimation">@anim/tool_tip_anim_exit</item>
+        <item name="android:windowEnterAnimation">@anim/tool_tip_anim_enter</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="CustomTextAppearanceTab" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/material_drawer_vertical_padding"
+    android:paddingLeft="@dimen/material_drawer_vertical_padding"
+    android:paddingRight="@dimen/material_drawer_vertical_padding"
+    android:paddingStart="@dimen/material_drawer_vertical_padding">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/drawer_icon"
+        android:layout_width="@dimen/material_drawer_item_primary_icon"
+        android:layout_height="@dimen/material_drawer_item_primary"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="@dimen/material_drawer_item_primary_icon_padding"
+        android:paddingEnd="@dimen/material_drawer_item_primary_icon_padding_right"
+        android:paddingStart="0dp"
+        android:paddingTop="@dimen/material_drawer_item_primary_icon_padding" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|start"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/drawer_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:lines="1"
+            android:singleLine="true"
+            android:textDirection="anyRtl"
+            android:textSize="@dimen/material_drawer_item_primary_text"
+            tools:text="Some drawer text" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/drawer_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical|start"
+            android:maxLines="6"
+            android:textDirection="anyRtl"
+            android:textSize="@dimen/material_drawer_item_primary_description"
+            tools:text="Some drawer" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

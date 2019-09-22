@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_profile_sale_containerButtons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_59"
+        android:layout_marginStart="@dimen/margin_11"
+        android:layout_marginEnd="@dimen/margin_11"
+        android:layout_marginTop="@dimen/margin_11"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--전체 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_profile_sale_containerAll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_profile_sale_containerButtons"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/constraint_profile_sale_containerOnInspection"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_number_all"
+                android:layout_width="@dimen/width_40"
+                android:layout_height="@dimen/height_40"
+                android:text="55"
+                android:textSize="@dimen/text_size_14"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                android:background="@drawable/border_circle_of_button_grey"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_text_all"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                android:text="All"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_sale_number_all"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/margin_4"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--심사중-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_profile_sale_containerOnInspection"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_profile_sale_containerButtons"
+            app:layout_constraintLeft_toRightOf="@id/constraint_profile_sale_containerAll"
+            app:layout_constraintRight_toLeftOf="@id/constraint_profile_sale_containerApproved"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_number_OnInspection"
+                android:layout_width="@dimen/width_40"
+                android:layout_height="@dimen/height_40"
+                android:text="33"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                android:background="@drawable/border_circle_of_button_grey"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_text_OnInspection"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                android:text="Verifying"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_sale_number_OnInspection"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/margin_4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--승인-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_profile_sale_containerApproved"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_profile_sale_containerButtons"
+            app:layout_constraintLeft_toRightOf="@id/constraint_profile_sale_containerOnInspection"
+            app:layout_constraintRight_toLeftOf="@id/constraint_profile_sale_containerFail"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_number_approved"
+                android:layout_width="@dimen/width_40"
+                android:layout_height="@dimen/height_40"
+                android:text="21"
+                android:textSize="@dimen/text_size_14"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                android:background="@drawable/border_circle_of_button_grey"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_text_approved"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                android:text="Approved"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_sale_number_approved"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/margin_4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--비승인-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_profile_sale_containerFail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_profile_sale_containerButtons"
+            app:layout_constraintLeft_toRightOf="@id/constraint_profile_sale_containerApproved"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_number_containerFail"
+                android:layout_width="@dimen/width_40"
+                android:layout_height="@dimen/height_40"
+                android:text="2"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                android:background="@drawable/border_circle_of_button_grey"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_sale_text_containerFail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                android:text="Invalid"
+                android:textSize="@dimen/text_size_10"
+                android:gravity="center"
+                android:textColor="@color/colorDarkGray"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_sale_number_containerFail"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/margin_4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider_profile_sale"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_1"
+        android:background="@color/colorDivider"
+        android:layout_marginTop="@dimen/margin_14"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_profile_sale_containerButtons" />
+
+    <com.goforer.base.presentation.view.customs.viewpager.NonSwipeViewPager
+        android:id="@+id/viewPager_profile_sale"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_3"
+        android:layout_marginBottom="@dimen/margin_7"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16"
+        app:layout_constraintTop_toBottomOf="@id/divider_profile_sale"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

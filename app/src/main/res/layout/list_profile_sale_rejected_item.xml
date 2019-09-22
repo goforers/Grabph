@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_70"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:stateListAnimator="@animator/raise"
+    android:transitionGroup="true"
+    android:layout_marginTop="@dimen/margin_12"
+    android:layout_marginBottom="12dp"
+    android:background="@color/colorPrimary"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_profile_sale_rejected"
+        android:layout_width="@dimen/width_70"
+        android:layout_height="match_parent"
+        android:elevation="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/radius_4"
+        app:cardPreventCornerOverlap="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sale_rejected_item_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_sale_rejected_item_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_profile_sale_rejected_holder"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@+id/card_profile_sale_rejected"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/margin_16">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_sales_rejected_status"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_18"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/margin_6"
+            android:text="비승인"
+            android:textSize="@dimen/text_size_10"
+            android:paddingStart="@dimen/margin_4"
+            android:paddingEnd="@dimen/margin_4"
+            android:gravity="center"
+            android:textColor="@color/colorSalesStatusNone"
+            android:background="@drawable/border_rounded_sale_status_grey"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_sales_rejected_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sales_rejected_status"
+            android:text="비승인 사유를 설명"
+            android:textSize="@dimen/text_size_12"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/margin_6"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_sale_rejected_price"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_sales_rejected_reason"
+            android:text="34$"
+            android:textSize="@dimen/text_size_10"
+            android:textColor="@color/white"
+            android:gravity="end"
+            android:layout_marginTop="@dimen/margin_2"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "142729527985",
+    "firebase_url": "https://silent-wharf-217115.firebaseio.com",
+    "project_id": "silent-wharf-217115",
+    "storage_bucket": "silent-wharf-217115.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142729527985:android:069e32f5ea5981b1",
+        "android_client_info": {
+          "package_name": "com.goforer.grabph"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "142729527985-9h6n4jq44gvarf9p5qqjp08kjansdpds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goforer.grabph",
+            "certificate_hash": "f14eedbb2ac37f67771f0eba44ca6a0037d8e9ae"
+          }
+        },
+        {
+          "client_id": "142729527985-vo2tut3rtii1n6d3tgvd7h51h9oc1mvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goforer.grabph",
+            "certificate_hash": "3fa790fedfe29c78f8f7ea43b6fa67507a7f1530"
+          }
+        },
+        {
+          "client_id": "142729527985-59utdurtsskoo8cu94vh4g7mum3j3l55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6K6jlSA7IUZO4qpEKVeiGD0ZQU9mT56U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "142729527985-59utdurtsskoo8cu94vh4g7mum3j3l55.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

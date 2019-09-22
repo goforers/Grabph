@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/photo_item_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:gravity="center"
+    android:stateListAnimator="@animator/raise"
+    android:foreground="@drawable/grey_ripple"
+    android:visibility="visible"
+    android:transitionGroup="true">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/elevation_4"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:gravity="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pinnedConstraintLayoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/iv_photo_item_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="@dimen/margin_4"
+                android:gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_photo_item_content"
+                android:id="@+id/tv_photo_item_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:maxLength="120"
+                android:maxLines="3"
+                android:layout_marginBottom="@dimen/margin_20"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/whiteLightOpaque"
+                android:textSize="@dimen/text_size_15"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_photo_item_content"
+                android:id="@+id/searper_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|clip_vertical"
+                android:layout_marginTop="@dimen/margin_2"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:transitionGroup="true">
+
+                <com.mikepenz.materialdrawer.view.BezelImageView
+                    android:id="@+id/iv_searper_pic"
+                    android:layout_width="@dimen/width_36"
+                    android:layout_height="@dimen/height_36"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginTop="@dimen/margin_2"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/searper_info_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_searper_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:gravity="start"
+                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                        android:textColor="@color/whiteLight"
+                        android:textSize="@dimen/text_size_15"
+                        android:layout_marginTop="@dimen/padding_2"
+                        android:maxLength="32"
+                        android:ellipsize="end"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_searper_posted_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:gravity="start"
+                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                        android:textColor="@color/grayLight"
+                        android:layout_marginBottom="@dimen/margin_4"
+                        android:textSize="@dimen/text_size_12"
+                        android:maxLength="40"
+                        android:ellipsize="end"
+                        android:textStyle="italic" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/buttonbar_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:gravity="end"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:transitionGroup="true">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        tools:ignore="ContentDescription"
+                        android:id="@+id/ib_like"
+                        android:layout_width="@dimen/width_28"
+                        android:layout_height="@dimen/height_28"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_marginStart="@dimen/margin_6"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_6"
+                        android:layout_marginBottom="@dimen/margin_4"
+                        android:background="?android:selectableItemBackground"
+                        android:src="@drawable/ic_viewer" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        tools:ignore="ContentDescription"
+                        android:id="@+id/ib_viewer"
+                        android:layout_width="@dimen/width_28"
+                        android:layout_height="@dimen/height_28"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_marginStart="@dimen/margin_6"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_6"
+                        android:layout_marginBottom="@dimen/margin_4"
+                        android:background="?android:selectableItemBackground"
+                        android:src="@drawable/ic_viewer" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        tools:ignore="ContentDescription"
+                        android:id="@+id/ib_share"
+                        android:layout_width="@dimen/width_28"
+                        android:layout_height="@dimen/height_28"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_marginStart="@dimen/margin_6"
+                        android:layout_marginTop="@dimen/margin_4"
+                        android:layout_marginEnd="@dimen/margin_6"
+                        android:layout_marginBottom="@dimen/margin_4"
+                        android:background="?android:selectableItemBackground"
+                        android:src="@drawable/ic_share" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

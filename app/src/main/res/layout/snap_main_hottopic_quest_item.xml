@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/snap_best_pick_quest_item_holder"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_440"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:gravity="center"
+    android:stateListAnimator="@animator/raise"
+    android:foreground="@drawable/grey_ripple"
+    android:transitionGroup="true"
+    android:paddingBottom="@dimen/padding_4"
+    android:paddingStart="@dimen/padding_4"
+    android:paddingEnd="@dimen/padding_4">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_best_pick_quest_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="0dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:gravity="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/radius_0"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        card_view:cardPreventCornerOverlap="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/snap_best_pick_quest_constraintLayoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+                android:id="@+id/iv_snap_best_pick_quest_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:adjustViewBounds="true"
+                android:fitsSystemWindows="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                android:background="@color/colorHomeMainImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/snap_best_pick_quest_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|clip_vertical"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/margin_10"
+                android:orientation="vertical"
+                android:transitionGroup="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_snap_best_pick_quest_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="@dimen/padding_2"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLength="32"
+                    android:text="@string/phrase_quest"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/whiteBrightLight"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="60dp"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center"
+                    android:background="@color/whiteBrightLight" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_snap_best_pick_quest_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginTop="@dimen/margin_4"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLength="20"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/whiteLightDarkOpaque"
+                    android:textSize="@dimen/text_size_12"
+                    android:textStyle="italic|bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_snap_best_pick_quest_item_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/whiteOpaque95"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/snap_best_pick_quest_reword_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|clip_vertical"
+                android:layout_marginBottom="@dimen/margin_16"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:transitionGroup="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_snap_best_pick_quest_item_rewards"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/whiteLightOpaque"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold|italic" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

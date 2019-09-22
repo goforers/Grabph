@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/colorLightWhite" />
+    <corners android:radius="@dimen/radius_10" />
+
+    <gradient
+        android:centerX=".6"
+        android:centerY=".40"
+        android:endColor="@color/transparent"
+        android:gradientRadius="20"
+        android:startColor="@color/transparent"
+        android:type="radial"/>
+
+    <stroke
+        android:width="1dp"
+        android:color="@color/colorLightWhite"/>
+    <size
+        android:width="@dimen/width_34"
+        android:height="@dimen/height_34"/>
+</shape>

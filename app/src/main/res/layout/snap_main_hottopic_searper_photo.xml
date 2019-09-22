@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/snap_best_pick_searper_photo_holder"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_440"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:gravity="center"
+    android:stateListAnimator="@animator/raise"
+    android:foreground="@drawable/grey_ripple"
+    android:transitionGroup="true"
+    android:paddingBottom="@dimen/padding_4"
+    android:paddingStart="@dimen/padding_4"
+    android:paddingEnd="@dimen/padding_4">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_best_pick_searper_photo_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="0dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:gravity="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="@dimen/radius_0"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        card_view:cardPreventCornerOverlap="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/snap_best_pick_searper_photo_constraintLayoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+                android:id="@+id/iv_snap_best_pick_searper_photo_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                android:background="@color/colorHomeMainImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/snap_best_pick_searper_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@color/transparent"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:transitionGroup="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.mikepenz.materialdrawer.view.BezelImageView
+                    android:id="@+id/iv_searper_pic"
+                    android:layout_width="@dimen/width_36"
+                    android:layout_height="@dimen/height_36"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:layout_marginStart="@dimen/margin_4"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_searper_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/margin_6"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:textColor="@color/whiteOpaque95"
+                    android:textSize="@dimen/text_size_15"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

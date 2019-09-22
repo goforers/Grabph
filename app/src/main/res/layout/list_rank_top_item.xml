@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_21"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--left-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_holder_left"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/margin_14"
+        app:layout_constraintEnd_toStartOf="@id/constraint_holder_middle"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_rank_text_left"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_20"
+            android:textSize="@dimen/text_size_14"
+            android:text="2"
+            android:gravity="center"
+            android:textColor="@color/colorSearp"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holder_image_left"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_78"
+            app:layout_constraintTop_toBottomOf="@id/tv_rank_text_left"
+            tools:layout_editor_absoluteX="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/holder_profile_top_left"
+                android:layout_width="57dp"
+                android:layout_height="59dp"
+                android:background="@drawable/border_rounded_rank_purple"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.mikepenz.materialdrawer.view.BezelImageView
+                    android:id="@+id/iv_profile_top_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_3_4"
+                    android:scaleType="centerCrop"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="0dp"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_name_left"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/holder_image_left"
+            android:text="happy11"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_12"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name_left">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ic_favorite_orange_left"
+                android:layout_width="@dimen/width_12"
+                android:layout_height="@dimen/height_15"
+                android:visibility="gone"
+                android:src="@drawable/ic_favorite_orange"
+                android:layout_marginEnd="@dimen/margin_6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_point_left"
+                app:layout_constraintHorizontal_bias="0.49"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_point_left"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/height_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="23234"
+                android:gravity="center"
+                android:textColor="@color/colorItemTopRankingPoint"
+                android:textSize="@dimen/text_size_10"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--middle-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_holder_middle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/margin_14"
+        app:layout_constraintStart_toEndOf="@id/constraint_holder_left"
+        app:layout_constraintEnd_toStartOf="@id/constraint_holder_right"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/tv_rank_text_middle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_26"
+            android:src="@drawable/ic_crown_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/padding_4"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holder_image_middle"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_rank_text_middle">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/holder_profile_top_middle"
+                android:layout_width="@dimen/width_72"
+                android:layout_height="@dimen/height_72"
+                android:background="@drawable/border_rounded_rank_orange"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintDimensionRatio="1:1">
+
+                <com.mikepenz.materialdrawer.view.BezelImageView
+                    android:id="@+id/iv_profile_top_middle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_4"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_name_middle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_size_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/holder_image_middle"
+            android:textColor="@color/white"
+            android:maxWidth="90dp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_12"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name_middle">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ic_favorite_orange_middle"
+                android:layout_width="@dimen/width_12"
+                android:layout_height="@dimen/height_15"
+                android:visibility="gone"
+                android:src="@drawable/ic_favorite_orange"
+                android:layout_marginEnd="@dimen/margin_6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_point_middle"
+                app:layout_constraintHorizontal_bias="0.49"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_point_middle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="23234"
+                android:gravity="center"
+                android:textColor="@color/colorItemTopRankingPoint"
+                android:textSize="@dimen/text_size_10"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_holder_right"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/constraint_holder_middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/margin_14"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_rank_text_right"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_20"
+            android:textSize="@dimen/text_size_14"
+            android:text="3"
+            android:gravity="center"
+            android:textColor="@color/colorSearp"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holder_image_right"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_78"
+            app:layout_constraintTop_toBottomOf="@id/tv_rank_text_right"
+            tools:layout_editor_absoluteX="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/holder_profile_top_right"
+                android:layout_width="@dimen/width_59"
+                android:layout_height="@dimen/height_59"
+                android:background="@drawable/border_rounded_rank_red"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1">
+
+                <com.mikepenz.materialdrawer.view.BezelImageView
+                    android:id="@+id/iv_profile_top_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_3_4"
+                    android:scaleType="centerCrop"
+                    tools:layout_editor_absoluteX="3dp"
+                    tools:layout_editor_absoluteY="3dp"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_name_right"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/holder_image_right"
+            android:text="happy11"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_12"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name_right">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ic_favorite_orange_right"
+                android:layout_width="@dimen/width_12"
+                android:layout_height="@dimen/height_15"
+                android:visibility="gone"
+                android:src="@drawable/ic_favorite_orange"
+                android:layout_marginEnd="@dimen/margin_6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_point_right"
+                app:layout_constraintHorizontal_bias="0.49"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_point_right"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="23234"
+                android:gravity="center"
+                android:textColor="@color/colorItemTopRankingPoint"
+                android:textSize="@dimen/text_size_10"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/colorDivider"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

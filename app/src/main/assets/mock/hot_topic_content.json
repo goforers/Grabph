@@ -1,0 +1,50 @@
+{
+  "id": "56026987@SEARP@1",
+  "media": {
+    "type": "photo",
+    "urls": {
+      "full": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/photo_full_nature_1539893592604-9e7eeb71a082.jpg",
+      "regular": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/photo_regular_nature_1539893592604-9e7eeb71a082.jpg"
+    }
+  },
+  "title": "Want to shoot like a photographer?",
+  "subTitle": "Want to shoot like a photographer?",
+  "topicContent": {
+    "count": 3,
+    "contents": [
+      {
+        "id": "213123123123123@CONTENT@1",
+        "description": "출사를 자주 나가는 사진가라면 카메라를 사랑하게 될\n겁니다. 새로운 수동 제어와 이미지 포착 기능 으로 전문가\n다운 사진을 쉽게 포착 할 수 있죠.\n셀카 찍는 걸 좋아한다면 ‘스마일 기능이 마음에 들 거에요\n미소를 감지해 자동으로 사진을 찍어주니까요. 게다가 다\n양한 필터가 있어 여러 분위기를 연출할 수 있죠.",
+        "media": {
+          "type": "photo",
+          "urls": {
+            "full": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_full_nature_1550620166-e7b95af27b39.jpg",
+            "regular": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_regular_nature_1550620166-e7b95af27b39.jpg"
+          }
+        }
+      },
+      {
+        "id": "313987123123435@CONTENT@2",
+        "description": "빛은 한낮보다 아침이나 이른 저녁에 더욱 아름답다.\n\n많은 이들은 한낮의 쨍쨍한 태양 아래 촬영하는 것이 예쁜 사진을 찍기 위한 조건이라 생각한다.\n하지만 그보다, 해가 뜨고 얼마 되지 않은 아침이나 해 지기 전(혹은 일몰 직후)의 빛 아래 예쁜 사진이 탄생할 확률이 높다. \n\n특히나, 일몰 직후 30분을 '매직아워'라 하는데, \n괜찮은 야경 사진을 위해서는 일몰시간을 잘 체크해 보자.",
+        "media": {
+          "type": "photo",
+          "urls": {
+            "full": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_full_nature_1545994493-82d1f9521646.jpg",
+            "regular": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_regular_nature_1545994493-82d1f9521646.jpg"
+          }
+        }
+      },
+      {
+        "id": "513345123123123@CONTENT@3",
+        "description": "측광보다 중요한 것은 측거점(초점)이다.\n\n함께 사진을 찍다보면 가장 많이 받게 되는 질문이 측광에 대한 것입니다.\n여기서 스팟측광을 해야 하나요? 멀티패턴 측광을 해야 하나요?\n스팟측광으로 하면 측광은 어두운 부분에 해야 하나요? 등등.\n 네! 정말 사진에 있어 측광은 정말 중요하고 또 꼭 알아야 하는 필수이론입니다.\n그러나 측광 이전에 초점을 너무 간과하는 분들이 많습니다. 어떨 때 측거점을 전부 랜덤으로 써야 할지,\n또 어떨 때 측거점을 하나만 사용해야 할지, 그리고 측거점은 어떻게 이동해야 할지, 그런 초점에 대한 능숙도가 없이 측광부터 신경쓰는 것 역시 넌센스입니다.\n풍경사진은 팬포커스로 초점을 잡는 원경만 찍는 경우도 있지만 프레임의 앞부분에 꽃이나 나무를 걸치는 근경이 있는 경우도 있고\n중간에 사람 실루엣도 넣는 경우도 많기 때문에 원하는 지점에 초점을 잘 맞춰야 하지요.\n\n측광은 초점을 잡는 실력이 능숙해지기 이전에는 멀티패턴 혹은 중앙부 증점측광 정도로 사용해도 무방합니다.\n나중에 원하는 지점에 정확히 초점을 잡을 수 있다면 그때 AF스팟 모드로 초점이 맞는 부분과 측광이 동시에 되도록 면밀한 스팟측광을 하면 됩니다.\n이런 스팟측광도 일출,일몰시를 제외하고는 거의 쓸 일이 없는데 결론은 정작 중요한 것은 신경 안쓰면서 어렵고 덜 중요한 것에 신경쓸 필요가 없다는 것입니다.\n 풍경사진에서 가장 우선시해야 할 것은 빛의 방향과 초점, 그리고 구도입니다.",
+        "media": {
+          "type": "photo",
+          "urls": {
+            "full": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_full_nature_1544965850-6f8a66788f9b.jpeg",
+            "regular": "https://raw.githubusercontent.com/Lukoh/Grabph_Home_Image/master/hot_topic/content/photo_regular_nature_1544965850-6f8a66788f9b.jpeg"
+          }
+        }
+      }
+    ]
+  }
+}

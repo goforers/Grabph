@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_main_main_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:background="@color/colorPrimary"
+    android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_main_constraintLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+            android:id="@+id/iv_main_bg_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:foreground="@color/colorPrimary"
+            android:scaleType="centerCrop" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.goforer.base.presentation.view.customs.layout.SwipeRefreshLayout
+        android:id="@+id/swipe_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <com.goforer.base.presentation.view.customs.recyclerview.AdvancedRecyclerView
+            android:id="@+id/recycler_main_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:scrollbarSize="@dimen/size_6"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/colorPrimary"
+            android:scrollbars="vertical"
+            android:visibility="gone" />
+
+    </com.goforer.base.presentation.view.customs.layout.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="material_drawer_item_base_primary" type="id" />
+    <item name="material_drawer_item_link" type="id" />
+    <item name="material_drawer_item_menu" type="id" />
+    <item name="material_drawer_item_description" type="id" />
+</resources>

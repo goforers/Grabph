@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SquircleImageView">
+        <attr name="riv_corner_radius" format="dimension" />
+        <attr name="riv_border_width" format="dimension" />
+        <attr name="riv_border_color" format="color" />
+        <attr name="riv_mutate_background" format="boolean" />
+        <attr name="only_top_corner" format="boolean" />
+        <attr name="riv_oval" format="boolean" />
+        <attr name="android:scaleType" />
+        <attr name="riv_tile_mode">
+            <enum name="clamp" value="0" />
+            <enum name="repeat" value="1" />
+            <enum name="mirror" value="2" />
+        </attr>
+        <attr name="riv_tile_mode_x">
+            <enum name="clamp" value="0" />
+            <enum name="repeat" value="1" />
+            <enum name="mirror" value="2" />
+        </attr>
+        <attr name="riv_tile_mode_y">
+            <enum name="clamp" value="0" />
+            <enum name="repeat" value="1" />
+            <enum name="mirror" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="StaticRatioRoundedImageView">
+        <attr name="static_ratio" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="ForegroundView">
+        <attr name="android:foreground" />
+        <attr name="android:foregroundGravity" />
+    </declare-styleable>
+
+    <declare-styleable name="ItemIndicator">
+        <attr format="dimension" name="indicator_spacing"/>
+        <attr format="dimension" name="indicator_bound"/>
+        <attr format="dimension" name="indicator_size"/>
+        <attr format="dimension" name="indicator_max_count"/>
+        <attr format="integer" name="anim_duration"/>
+        <attr format="reference" name="anim_interpolator"/>
+        <attr format="color" name="unselected_color"/>
+        <attr format="color" name="selected_color"/>
+    </declare-styleable>
+
+    <declare-styleable name="AdvancedFoldingCell">
+        <attr format="color" name="backSideColor"/>
+        <attr format="integer" name="animationDuration"/>
+        <attr format="integer" name="additionalFlipsCount"/>
+        <attr format="integer" name="cameraHeight"/>
+    </declare-styleable>
+
+
+</resources>
