@@ -46,7 +46,7 @@ import com.goforer.base.presentation.utils.ConnectionUtils
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.cache.IntegerVersionSignature
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import it.sephiroth.android.library.xtooltip.ClosePolicy
 import it.sephiroth.android.library.xtooltip.Tooltip
 import it.sephiroth.android.library.xtooltip.Typefaces
@@ -55,7 +55,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
-abstract class BaseActivity: AppCompatActivity(), HasSupportFragmentInjector {
+abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
     private var isResumed = false
 
     private var width = 0
@@ -89,7 +89,7 @@ abstract class BaseActivity: AppCompatActivity(), HasSupportFragmentInjector {
     internal var photoHeight = 0
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     companion object {
         internal const val NOTO_SANS_KR_BOLD = "fonts/NotoSansKR-Bold-Hestia.otf"
@@ -149,9 +149,7 @@ abstract class BaseActivity: AppCompatActivity(), HasSupportFragmentInjector {
 
     }
 
-    override fun supportFragmentInjector(): DispatchingAndroidInjector<Fragment>? {
-        return dispatchingAndroidInjector
-    }
+    override fun androidInjector() = dispatchingAndroidInjector
 
     /**
      * Return true if this activity is resumed

@@ -39,12 +39,9 @@ import javax.inject.Singleton
             ])
 
 interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(app: Application): Builder
-
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance app: Application): AppComponent
     }
 
     fun inject(grabph: Grabph)

@@ -31,7 +31,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.multidex.BuildConfig
 import androidx.multidex.MultiDex
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -55,14 +54,14 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
 import com.mikepenz.materialdrawer.util.DrawerImageLoader
 import com.mikepenz.materialdrawer.util.DrawerUIUtils
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-class Grabph: Application(), LifecycleObserver, HasActivityInjector {
+class Grabph: Application(), LifecycleObserver, HasAndroidInjector {
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     companion object {
         private var appMemoryStatus = AppMemoryStatus.SUFFICIENT_MEMORY
@@ -208,9 +207,7 @@ class Grabph: Application(), LifecycleObserver, HasActivityInjector {
         MultiDex.install(this)
     }
 
-    override fun activityInjector(): DispatchingAndroidInjector<Activity>? {
-        return dispatchingAndroidInjector
-    }
+    override fun androidInjector() = dispatchingAndroidInjector
 
     private fun checkForScreenTurningOff(grabphApp: Grabph) {
         val screenStateFilter = IntentFilter(Intent.ACTION_SCREEN_OFF)

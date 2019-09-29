@@ -27,31 +27,6 @@ import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkH
 import com.goforer.grabph.repository.model.cache.data.entity.category.CPhotogQuery
 import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
 import com.goforer.grabph.repository.model.cache.Cache
-import com.goforer.grabph.repository.model.dao.local.LocalEXIFDao
-import com.goforer.grabph.repository.model.dao.local.LocalLocationDao
-import com.goforer.grabph.repository.model.dao.local.LocalSavedPhotoDao
-import com.goforer.grabph.repository.model.dao.remote.category.CategoryDao
-import com.goforer.grabph.repository.model.dao.remote.category.photo.CPhotoDao
-import com.goforer.grabph.repository.model.dao.remote.comment.CommentDao
-import com.goforer.grabph.repository.model.dao.remote.feed.exif.EXIFDao
-import com.goforer.grabph.repository.model.dao.remote.feed.FeedItemDao
-import com.goforer.grabph.repository.model.dao.remote.feed.FeedsContentDao
-import com.goforer.grabph.repository.model.dao.remote.feed.location.LocationDao
-import com.goforer.grabph.repository.model.dao.remote.feed.photo.MyPhotoDao
-import com.goforer.grabph.repository.model.dao.remote.feed.photo.PhotoDao
-import com.goforer.grabph.repository.model.dao.remote.feed.photo.PhotoInfoDao
-import com.goforer.grabph.repository.model.dao.remote.home.HomeDao
-import com.goforer.grabph.repository.model.dao.remote.hottopic.HotTopicContentDao
-import com.goforer.grabph.repository.model.dao.remote.people.PeopleDao
-import com.goforer.grabph.repository.model.dao.remote.people.owner.OwnerDao
-import com.goforer.grabph.repository.model.dao.remote.people.person.PersonDao
-import com.goforer.grabph.repository.model.dao.remote.profile.HomeProfileDao
-import com.goforer.grabph.repository.model.dao.remote.profile.OthersProfileDao
-import com.goforer.grabph.repository.model.dao.remote.quest.FavoriteQuestDao
-import com.goforer.grabph.repository.model.dao.remote.quest.QuestInfoDao
-import com.goforer.grabph.repository.model.dao.remote.quest.TopPortionQuestDao
-import com.goforer.grabph.repository.model.dao.remote.ranking.RankingDao
-import com.goforer.grabph.repository.model.dao.remote.search.RecentKeywordDao
 import com.goforer.grabph.repository.network.api.SearpService
 import com.goforer.grabph.repository.network.factory.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
@@ -129,199 +104,134 @@ class AppModule {
 
     @Singleton
     @Provides
-    internal fun provideCommonWorkHandler(): CommonWorkHandler {
-        return CommonWorkHandler()
-    }
+    internal fun provideCommonWorkHandler() = CommonWorkHandler()
 
     @Singleton
     @Provides
-    internal fun provideWatermarkHandler(): WatermarkHandler {
-        return WatermarkHandler()
-    }
+    internal fun provideWatermarkHandler() =  WatermarkHandler()
 
     @Singleton
     @Provides
-    internal fun provideEXIFHandler(): EXIFHandler {
-        return EXIFHandler()
-    }
+    internal fun provideEXIFHandler() = EXIFHandler()
 
     @Singleton
     @Provides
-    internal fun providePhotoSaver(): PhotoSaver {
-        return PhotoSaver()
-    }
+    internal fun providePhotoSaver() = PhotoSaver()
 
     @Singleton
     @Provides
-    internal fun providePhotoEraser(): PhotoEraser {
-        return PhotoEraser()
-    }
+    internal fun providePhotoEraser() = PhotoEraser()
 
     @Singleton
     @Provides
-    internal fun provideCache(app: Application): Cache {
-        return databaseBuilder(app, Cache::class.java, "grabph.db").build()
-    }
+    internal fun provideCache(app: Application) = databaseBuilder(app, Cache::class.java, "grabph.db").build()
 
     @Singleton
     @Provides
-    internal fun provideFeedDao(cache: Cache): FeedItemDao {
-        return cache.feedItemDao()
-    }
+    internal fun provideFeedDao(cache: Cache) = cache.feedItemDao()
 
     @Singleton
     @Provides
-    internal fun providePersonDao(cache: Cache): PersonDao {
-        return cache.personDao()
-    }
+    internal fun providePersonDao(cache: Cache) = cache.personDao()
 
     @Singleton
     @Provides
-    internal fun provideEXIFDao(cache: Cache): EXIFDao {
-        return cache.exifDao()
-    }
+    internal fun provideEXIFDao(cache: Cache) = cache.exifDao()
 
     @Singleton
     @Provides
-    internal fun provideLocalEXIFDao(cache: Cache): LocalEXIFDao {
-        return cache.localEXIFDao()
-    }
+    internal fun provideLocalEXIFDao(cache: Cache) = cache.localEXIFDao()
 
     @Singleton
     @Provides
-    internal fun provideOwnerDao(cache: Cache): OwnerDao {
-        return cache.ownerDao()
-    }
+    internal fun provideOwnerDao(cache: Cache) = cache.ownerDao()
 
     @Singleton
     @Provides
-    internal fun provideLocalSavedPhotoDao(cache: Cache): LocalSavedPhotoDao {
-        return cache.localSavedPhotoDao()
-    }
+    internal fun provideLocalSavedPhotoDao(cache: Cache) = cache.localSavedPhotoDao()
 
     @Singleton
     @Provides
-    internal fun provideSearchKeywordDao(cache: Cache): RecentKeywordDao {
-        return cache.searchKeywordDao()
-    }
+    internal fun provideSearchKeywordDao(cache: Cache) = cache.searchKeywordDao()
 
     @Singleton
     @Provides
-    internal fun provideLocationDao(cache: Cache): LocationDao {
-        return cache.locationDao()
-    }
+    internal fun provideLocationDao(cache: Cache) = cache.locationDao()
 
     @Singleton
     @Provides
-    internal fun providePhotoDao(cache: Cache): PhotoDao {
-        return cache.photoDao()
-    }
+    internal fun providePhotoDao(cache: Cache) = cache.photoDao()
 
     @Singleton
     @Provides
-    internal fun provideCommentDao(cache: Cache): CommentDao {
-        return cache.commentDao()
-    }
+    internal fun provideCommentDao(cache: Cache) = cache.commentDao()
 
     @Singleton
     @Provides
-    internal fun providePhotoInfoDao(cache: Cache): PhotoInfoDao {
-        return cache.photoInfoDao()
-    }
+    internal fun providePhotoInfoDao(cache: Cache) = cache.photoInfoDao()
 
     @Singleton
     @Provides
-    internal fun provideLocalLocationDao(cache: Cache): LocalLocationDao {
-        return cache.localLocationDao()
-    }
+    internal fun provideLocalLocationDao(cache: Cache) = cache.localLocationDao()
 
     @Singleton
     @Provides
-    internal fun provideFavoriteQuestDao(cache: Cache): FavoriteQuestDao {
-        return cache.favoriteQuestDao()
-    }
+    internal fun provideFavoriteQuestDao(cache: Cache) = cache.favoriteQuestDao()
 
     @Singleton
     @Provides
-    internal fun provideQuestInfoDao(cache: Cache): QuestInfoDao {
-        return cache.questInfoDao()
-    }
+    internal fun provideQuestInfoDao(cache: Cache) = cache.questInfoDao()
 
     @Singleton
     @Provides
-    internal fun provideHomeDao(cache: Cache): HomeDao {
-        return cache.homeDao()
-    }
+    internal fun provideHomeDao(cache: Cache) = cache.homeDao()
 
     @Singleton
     @Provides
-    internal fun provideCPhotoDao(cache: Cache): CPhotoDao {
-        return cache.cphotoDao()
-    }
+    internal fun provideCPhotoDao(cache: Cache) = cache.cphotoDao()
 
     @Singleton
     @Provides
-    internal fun provideHotTopicContentDao(cache: Cache): HotTopicContentDao {
-        return cache.hotTopicContentDao()
-    }
+    internal fun provideHotTopicContentDao(cache: Cache) = cache.hotTopicContentDao()
 
     @Singleton
     @Provides
-    internal fun provideTopPortionQuestDao(cache: Cache): TopPortionQuestDao {
-        return cache.topPortionQuestDao()
-    }
+    internal fun provideTopPortionQuestDao(cache: Cache) = cache.topPortionQuestDao()
 
     @Singleton
     @Provides
-    internal fun providePhotoTypeDao(cache: Cache): CategoryDao {
-        return cache.photoTypeDao()
-    }
+    internal fun providePhotoTypeDao(cache: Cache) = cache.photoTypeDao()
 
     @Singleton
     @Provides
-    internal fun provideHomeProfileDao(cache: Cache): HomeProfileDao {
-        return cache.homeProfileDao()
-    }
+    internal fun provideHomeProfileDao(cache: Cache) = cache.homeProfileDao()
 
     @Singleton
     @Provides
-    internal fun provideMyPhotoDao(cache: Cache): MyPhotoDao {
-        return cache.myPhotoDao()
-    }
+    internal fun provideMyPhotoDao(cache: Cache) = cache.myPhotoDao()
 
     @Singleton
     @Provides
-    internal fun providePeopleDao(cache: Cache): PeopleDao {
-        return cache.peopleDao()
-    }
+    internal fun providePeopleDao(cache: Cache) = cache.peopleDao()
 
     @Singleton
     @Provides
-    internal fun provideRankingDao(cache: Cache): RankingDao {
-        return cache.rankingDao()
-    }
+    internal fun provideRankingDao(cache: Cache) = cache.rankingDao()
 
     @Singleton
     @Provides
-    internal fun provideFeedsContentDao(cache: Cache): FeedsContentDao {
-        return cache.feedsContentDao()
-    }
+    internal fun provideFeedsContentDao(cache: Cache) = cache.feedsContentDao()
+
 
     @Singleton
     @Provides
-    internal fun provideOthersProfileDao(cache: Cache): OthersProfileDao {
-        return cache.othersProfileDao()
-    }
+    internal fun provideOthersProfileDao(cache: Cache) = cache.othersProfileDao()
 
     @Singleton
     @Provides
-    internal fun providePhotogQuery(): PhotogQuery {
-        return PhotogQuery()
-    }
+    internal fun providePhotogQuery() = PhotogQuery()
 
     @Singleton
     @Provides
-    internal fun provideCPhotogQuery(): CPhotogQuery {
-        return CPhotogQuery()
-    }
+    internal fun provideCPhotogQuery() = CPhotogQuery()
 }

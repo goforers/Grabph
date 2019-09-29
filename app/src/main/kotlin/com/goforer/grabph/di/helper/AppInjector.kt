@@ -30,15 +30,15 @@ import com.goforer.grabph.presentation.ui.login.LogInActivity
 import com.goforer.grabph.presentation.ui.setting.SettingListActivity
 import com.goforer.grabph.presentation.ui.splash.SplashActivity
 import dagger.android.AndroidInjection
+import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 
 /**
  * Helper class to automatically inject fragments if they implement [Injectable].
  */
 object AppInjector {
     fun init(grabph: Grabph) {
-        DaggerAppComponent.builder().application(grabph).build().inject(grabph)
+        DaggerAppComponent.factory().create(grabph).inject(grabph)
         grabph.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                         handleActivity(activity)
@@ -75,7 +75,7 @@ object AppInjector {
             return
         }
 
-        if (activity is HasSupportFragmentInjector) {
+        if (activity is HasAndroidInjector) {
             AndroidInjection.inject(activity)
         }
 
