@@ -155,7 +155,7 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                         tv_snap_item_title.text = Html.fromHtml(adapter.activity.getString(R.string.snap_featured_searper))
                     }
 
-                    tv_snap_item_title.setOnClickListener {
+                    tv_snap_item_title.setOnClickListener { // move to RankingActivity
                         Caller.callSearperRank(context)
                     }
 

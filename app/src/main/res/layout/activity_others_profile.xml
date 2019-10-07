@@ -13,6 +13,23 @@
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progress_bar_others_profile_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/action_button_size"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminateTint="@color/colorSearp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/disconnect_container_pinned_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -145,7 +162,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="@dimen/height_20"
-                        android:maxHeight="@dimen/height_60"
+                        android:maxHeight="@dimen/height_254"
                         android:textSize="@dimen/text_size_14"
                         android:textColor="@color/colorLightWhite"
                         android:text="Lorem ipsum dolor sit amnet, consectetuer adipis cing elit, Aenean commodo ligula eget dolor."
@@ -159,7 +176,7 @@
                         android:layout_height="@dimen/height_1"
                         android:background="@color/white"
                         android:foregroundGravity="center"
-                        android:layout_marginTop="@dimen/margin_20"
+                        android:layout_marginTop="@dimen/margin_12"
                         android:layout_marginBottom="@dimen/margin_12"
                         app:layout_constraintTop_toBottomOf="@id/tv_others_profile_coverLetter"/>
 

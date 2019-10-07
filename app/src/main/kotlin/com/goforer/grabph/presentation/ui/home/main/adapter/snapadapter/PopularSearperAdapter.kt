@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
 import com.goforer.grabph.presentation.caller.Caller.FIRST_PAGE
 import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_POPULAR_TYPE
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
@@ -101,11 +102,20 @@ class PopularSearperAdapter(private val activity: HomeActivity, val workHandler:
             activity.setFixedImageSize(RATIO_HEIGHT, RATIO_WIDTH)
             activity.setImageDraw(iv_snap_searper_picture, snap_searper_constraintLayoutContainer,
                     searperPhotoUrl, false)
-            iv_snap_searper_picture.setOnClickListener {
+            iv_snap_searper_picture.setOnClickListener { // move to OthersProfileActivity
                 activity.closeFab()
-                Caller.callPhotogPhoto(context.applicationContext, getUserName(holder.itemView, item.username!!),
-                        item.iconfarm, item.iconserver, item.id,
-                        FIRST_PAGE, PHOTOG_PHOTO_POPULAR_TYPE)
+
+                // Caller.callPhotogPhoto(context.applicationContext, getUserName(holder.itemView, item.username!!),
+                //         item.iconfarm, item.iconserver, item.id,
+                //         FIRST_PAGE, PHOTOG_PHOTO_POPULAR_TYPE)
+
+                Caller.callOtherUserProfile(
+                    activity,
+                    CALLED_FROM_HOME_MAIN,
+                    item.id,
+                    getUserName(holder.itemView, item.username!!),
+                    item.grade.toInt(),
+                    workHandler.getProfilePhotoURL(item.iconfarm, item.iconserver, item.id))
             }
         }
 

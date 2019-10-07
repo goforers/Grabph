@@ -40,8 +40,7 @@ data class Owner(@field:PrimaryKey
                  @field:ColumnInfo(name = "purchased_count") val purchased: String?,
                  @field:ColumnInfo(name = "follower_count") val followers: String?,
                  @field:ColumnInfo(name = "followings_count") val followings: String?,
-                 @field:ColumnInfo(name = "background_photo") val backgroundPhoto: String?,
-                 @field:Embedded(prefix = "photos") val photos: HomeProfile.MyPagePhotos): BaseModel() {
+                 @field:ColumnInfo(name = "background_photo") val backgroundPhoto: String?): BaseModel() {
     companion object {
         private const val COLUMN_ID = DataColumns.ID
     }

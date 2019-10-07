@@ -1212,7 +1212,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         }
 
         this@FeedInfoActivity.iv_searper_pic.setOnClickListener{
-            slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+            // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+            Caller.callOtherUserProfile(this, CALLED_FROM_FEED_INFO, searperId, name!!, 3, searperPhotoUrl!!)
         }
 
         // Temporarily get blocked.....

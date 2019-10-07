@@ -457,8 +457,10 @@ object Caller {
 
         val activityOptions = getPhotogPhotoActivityOptions(context, imageView, textView)
 
-        (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode,
-                activityOptions.toBundle())
+        // temporarily use this code..for blocking activity transition animation
+        (context as OthersProfileActivity).startActivity(intent)
+        // (context as OthersProfileActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+        // (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
 
     }
 
@@ -489,7 +491,7 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
 
-        // This code was be blocked temporarily
+        // This code is blocked temporarily
         /*
         intent.putExtra(FONT_SIZE, (titleView as AppCompatTextView).textSize)
         intent.putExtra(PADDING,
@@ -523,7 +525,7 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
 
-        // This code was be blocked temporarily
+        // This code is blocked temporarily
         /*
         intent.putExtra(FONT_SIZE, (titleView as AppCompatTextView).textSize)
         intent.putExtra(PADDING,
@@ -788,16 +790,17 @@ object Caller {
     private fun getPhotogPhotoActivityOptions(context: Context, imageView: View, textView: View): ActivityOptions {
         val titlePair = Pair.create(textView, textView.transitionName)
         val imagePair = Pair.create(imageView, imageView.transitionName)
-        val decorView: View = (context as PhotogPhotoActivity).window.decorView
+        // val decorView: View = (context as PhotogPhotoActivity).window.decorView
+        val decorView: View = (context as OthersProfileActivity).window.decorView
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 
         return if (navBackground == null) {
-                   ActivityOptions.makeSceneTransitionAnimation(context, titlePair, imagePair)
-               } else {
-                   val navPair = Pair.create(navBackground, navBackground.transitionName)
+            ActivityOptions.makeSceneTransitionAnimation(context, titlePair, imagePair)
+        } else {
+            val navPair = Pair.create(navBackground, navBackground.transitionName)
 
-                   ActivityOptions.makeSceneTransitionAnimation(context, titlePair, imagePair, navPair)
-               }
+            ActivityOptions.makeSceneTransitionAnimation(context, titlePair, imagePair, navPair)
+        }
     }
 
     private fun getHomeViewActivityOptions(context: Context, imageView: View): ActivityOptions {
@@ -870,17 +873,12 @@ object Caller {
     }
 
 
-    fun callPeopleList(fragment: BaseFragment, calledFrom: Int, peopleCode: Int) {
-
-        val context = fragment.activity as Context
-        val intent = createIntent(context, PeopleActivity::class.java, true)
+    fun callPeopleList(activity: Activity, calledFrom: Int, peopleCode: Int) {
+        val intent = createIntent(activity, PeopleActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
         intent.putExtra(EXTRA_PEOPLE_TYPE, peopleCode)
-
-        when (calledFrom) {
-            CALLED_FROM_HOME_PROFILE -> fragment.activity?.startActivity(intent)
-        }
+        activity.startActivity(intent)
     }
 
     fun callOtherUserProfile(activity: Activity, calledFrom: Int, userId: String, userName: String, ranking: Int, photoUrl: String) {
@@ -892,9 +890,7 @@ object Caller {
         intent.putExtra(EXTRA_PROFILE_USER_PHOTO_URL, photoUrl)
         intent.putExtra(EXTRA_PLACE_CALLED_USER_PROFILE, calledFrom)
 
-        when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> activity.startActivity(intent)
-        }
+        activity.startActivity(intent)
     }
 
     fun callSearperRank(context: Context) {

@@ -63,7 +63,7 @@ constructor(private val dao: PhotoDao): Repository() {
                         .build()
 
                 return withContext(Dispatchers.IO) {
-                    LivePagedListBuilder(dao.getPhotos(), /* PageList Config */ config)
+                    LivePagedListBuilder(dao.getPhotos(query1), /* PageList Config */ config)
                             .setBoundaryCallback(PageListFavoritePhotoBoundaryCallback<Photo>(
                                     viewModel as FavoritePhotoViewModel, query1, pages, boundType)).build()
                 }

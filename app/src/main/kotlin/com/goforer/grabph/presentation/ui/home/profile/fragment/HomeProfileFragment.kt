@@ -17,6 +17,7 @@
 package com.goforer.grabph.presentation.ui.home.profile.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,9 +27,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
@@ -38,28 +39,28 @@ import com.goforer.grabph.presentation.ui.home.profile.adapter.ProfilePagerAdapt
 import com.goforer.grabph.presentation.ui.home.profile.fragment.photos.HomeProfilePhotosFragment
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.ProfileDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.ProfileDataSource
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_home_profile.*
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_home_profile.*
 
 @RunWithMockData(true)
-class HomeProfileFragment: BaseFragment() {
+class HomeProfileFragment : BaseFragment() {
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
     private var pagerAdapter: ProfilePagerAdapter? = null
 
     private var appBarVerticalOffset = 0
 
-    private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
+        private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
 
     private var myPhotosFragment: HomeProfilePhotosFragment? = null
     private var mySalesFragment: HomeProfileSalesFragment? = null
@@ -173,14 +174,14 @@ class HomeProfileFragment: BaseFragment() {
     }
 
     private fun startActivity(tabType: Int) {
-        when(tabType) {
+        when (tabType) {
             TAB_LIKE_INDEX -> { /*..*/ }
-            else -> Caller.callPeopleList(this@HomeProfileFragment, Caller.CALLED_FROM_HOME_PROFILE, tabType)
+            else -> Caller.callPeopleList(this.activity as Activity, Caller.CALLED_FROM_HOME_PROFILE, tabType)
         }
     }
 
     private fun getProfile() {
-        when(mock) {
+        when (mock) {
             @MockData
             true -> transactMockData()
             false -> transactRealData()
@@ -205,11 +206,11 @@ class HomeProfileFragment: BaseFragment() {
         }
     }
 
-    private fun transactRealData(){
+    private fun transactRealData() {
         val liveData = homeProfileViewModel.profile
 
         setHomeProfileLoadParam(NetworkBoundResource.LOAD_HOME_PROFILE, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FROM_HOME_PROFILE, "")
-        liveData.observe(this, Observer { resource->
+        liveData.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
 
                 Status.SUCCESS -> {
@@ -241,7 +242,7 @@ class HomeProfileFragment: BaseFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setTopPortionView(profile: HomeProfile){
+    private fun setTopPortionView(profile: HomeProfile) {
         setFontType()
 
         this@HomeProfileFragment.tv_profile_profit.text = "Income: $${profile.revenue}"
@@ -258,7 +259,7 @@ class HomeProfileFragment: BaseFragment() {
         setAppbarLayoutScrollingBehavior()
     }
 
-    private fun setBottomPortionViews(profile: HomeProfile){
+    private fun setBottomPortionViews(profile: HomeProfile) {
         myPhotosFragment?.setMyPhotosView(profile.sellPhotos.photos)
         myPhotosFragment?.recyclerView?.let { photosRv = it }
 //        setViewPagerSwipeListener()
@@ -353,7 +354,7 @@ class HomeProfileFragment: BaseFragment() {
     }
 
     private fun enableAppBarDraggable(draggable: Boolean) {
-        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() { //block dragging behavior on appBarLayout
+        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
             override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
         })
     }

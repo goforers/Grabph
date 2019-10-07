@@ -284,8 +284,7 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
                                 liveData.removeObservers(this)
 
                             } else {
-                                getPhotos(userID, pages, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL,
-                                        CALLED_FROM_PHOTOG_PHOTO, type)
+                                getPhotos(userID, pages, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL, CALLED_FROM_PHOTOG_PHOTO, type)
                                 tryingCount++
                             }
                         }
@@ -371,7 +370,7 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
         }
     }
 
-    private fun removePhotoCache(repository: Repository, type: Int)  = launchWork {
+    private fun removePhotoCache(repository: Repository, type: Int) = launchWork {
         when(type) {
             PHOTOG_PHOTO_GENERAL_TYPE -> {
                 (repository as PhotoRepository).removePhotos()

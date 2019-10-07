@@ -64,7 +64,7 @@ import com.goforer.grabph.repository.model.dao.remote.people.PeopleDao
 import com.goforer.grabph.repository.model.dao.remote.people.owner.OwnerDao
 import com.goforer.grabph.repository.model.dao.remote.people.person.PersonDao
 import com.goforer.grabph.repository.model.dao.remote.profile.HomeProfileDao
-import com.goforer.grabph.repository.model.dao.remote.profile.OthersProfileDao
+import com.goforer.grabph.repository.model.dao.remote.profile.OthersPhotosDao
 import com.goforer.grabph.repository.model.dao.remote.quest.FavoriteQuestDao
 import com.goforer.grabph.repository.model.dao.remote.quest.QuestInfoDao
 import com.goforer.grabph.repository.model.dao.remote.quest.TopPortionQuestDao
@@ -107,5 +107,5 @@ abstract class Cache : RoomDatabase() {
     abstract fun peopleDao(): PeopleDao
     abstract fun rankingDao(): RankingDao
     abstract fun feedsContentDao(): FeedsContentDao
-    abstract fun othersProfileDao(): OthersProfileDao
+    abstract fun othersProfileDao(): OthersPhotosDao
 }

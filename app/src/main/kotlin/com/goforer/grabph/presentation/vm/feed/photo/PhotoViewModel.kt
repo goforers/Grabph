@@ -41,7 +41,7 @@ constructor(val interactor: PhotoRepository): BaseViewModel() {
     init {
         photogPhotos = Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            return@switchMap liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
                 emitSource(interactor.load(this@PhotoViewModel, query?.userID!!, query.pages, loadType, boundType, calledFrom))
             }
         }

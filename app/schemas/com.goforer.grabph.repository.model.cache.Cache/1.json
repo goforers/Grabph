@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "180cd82660b5e0fe7b20b385936abc89",
+    "identityHash": "1759c4d513b385abb921dc4f9107bd9a",
     "entities": [
       {
         "tableName": "FeedItem",
@@ -118,7 +118,7 @@
             "columnNames": [
               "_idx"
             ],
-            "createSql": "CREATE  INDEX `index_FeedItem__idx` ON `${TABLE_NAME}` (`_idx`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_FeedItem__idx` ON `${TABLE_NAME}` (`_idx`)"
           }
         ],
         "foreignKeys": []
@@ -237,7 +237,7 @@
             "columnNames": [
               "_id"
             ],
-            "createSql": "CREATE  INDEX `index_Person__id` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Person__id` ON `${TABLE_NAME}` (`_id`)"
           }
         ],
         "foreignKeys": []
@@ -352,7 +352,7 @@
             "columnNames": [
               "_idx"
             ],
-            "createSql": "CREATE  INDEX `index_LocalEXIF__idx` ON `${TABLE_NAME}` (`_idx`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LocalEXIF__idx` ON `${TABLE_NAME}` (`_idx`)"
           }
         ],
         "foreignKeys": []
@@ -393,7 +393,7 @@
             "columnNames": [
               "_id"
             ],
-            "createSql": "CREATE  INDEX `index_RecentKeyword__id` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_RecentKeyword__id` ON `${TABLE_NAME}` (`_id`)"
           }
         ],
         "foreignKeys": []
@@ -800,7 +800,7 @@
             "columnNames": [
               "_id"
             ],
-            "createSql": "CREATE  INDEX `index_Comment__id` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Comment__id` ON `${TABLE_NAME}` (`_id`)"
           }
         ],
         "foreignKeys": []
@@ -1043,14 +1043,14 @@
             "columnNames": [
               "_idx"
             ],
-            "createSql": "CREATE  INDEX `index_LocalLocation__idx` ON `${TABLE_NAME}` (`_idx`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LocalLocation__idx` ON `${TABLE_NAME}` (`_idx`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "Owner",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `username` TEXT, `realname` TEXT, `location` TEXT, `description` TEXT, `grade` TEXT, `pictures_count` TEXT, `pinned_count` TEXT, `gallery_count` TEXT, `purchased_count` TEXT, `follower_count` TEXT, `followings_count` TEXT, `background_photo` TEXT, `photourl_content` TEXT, `photosphotos` TEXT NOT NULL, `photoscount` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `username` TEXT, `realname` TEXT, `location` TEXT, `description` TEXT, `grade` TEXT, `pictures_count` TEXT, `pinned_count` TEXT, `gallery_count` TEXT, `purchased_count` TEXT, `follower_count` TEXT, `followings_count` TEXT, `background_photo` TEXT, `photourl_content` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -1147,18 +1147,6 @@
             "columnName": "photourl_content",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "photos.photos",
-            "columnName": "photosphotos",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "photos.count",
-            "columnName": "photoscount",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -1174,7 +1162,7 @@
             "columnNames": [
               "_id"
             ],
-            "createSql": "CREATE  INDEX `index_Owner__id` ON `${TABLE_NAME}` (`_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Owner__id` ON `${TABLE_NAME}` (`_id`)"
           }
         ],
         "foreignKeys": []
@@ -1239,7 +1227,7 @@
             "columnNames": [
               "_idx"
             ],
-            "createSql": "CREATE  INDEX `index_LocalSavedPhoto__idx` ON `${TABLE_NAME}` (`_idx`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LocalSavedPhoto__idx` ON `${TABLE_NAME}` (`_idx`)"
           }
         ],
         "foreignKeys": []
@@ -1872,7 +1860,7 @@
             "columnNames": [
               "_idx"
             ],
-            "createSql": "CREATE  INDEX `index_CPhoto__idx` ON `${TABLE_NAME}` (`_idx`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CPhoto__idx` ON `${TABLE_NAME}` (`_idx`)"
           }
         ],
         "foreignKeys": []
@@ -2415,7 +2403,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '180cd82660b5e0fe7b20b385936abc89')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1759c4d513b385abb921dc4f9107bd9a')"
     ]
   }
 }

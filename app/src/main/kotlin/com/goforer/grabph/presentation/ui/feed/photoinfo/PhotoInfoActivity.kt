@@ -622,7 +622,7 @@ class PhotoInfoActivity : BaseActivity() {
 
                     picture?.let {
                         uiScope.launch {
-                            displayPhotoInfo(picture)
+                            if (photoId == picture.id) displayPhotoInfo(picture)
                         }
                     }
 
@@ -797,19 +797,21 @@ class PhotoInfoActivity : BaseActivity() {
         if (name == "") {
             this@PhotoInfoActivity.tv_name_text.text = searperInfo.username?._content
         } else {
-            this@PhotoInfoActivity.  tv_name_text.text = name
+            this@PhotoInfoActivity.tv_name_text.text = name
         }
 
         if (searperInfo.iconserver == "0") {
             this@PhotoInfoActivity.iv_searper_pic.setImageDrawable(this.applicationContext!!
                     .getDrawable(R.drawable.ic_default_profile))
             this@PhotoInfoActivity.iv_searper_pic.setOnClickListener{
-                slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+                // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+                Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, ownerId, name!!, 3, photoPath)
             }
         } else {
             setImageDraw(this@PhotoInfoActivity.iv_searper_pic, photoPath)
             this@PhotoInfoActivity.iv_searper_pic.setOnClickListener{
-                slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+                // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
+                Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, ownerId, name!!, 3, photoPath)
             }
         }
 

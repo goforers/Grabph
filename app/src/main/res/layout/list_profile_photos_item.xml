@@ -7,6 +7,7 @@
     android:layout_gravity="center_horizontal|center_vertical"
     android:gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:transitionGroup="true"
     android:layout_marginTop="@dimen/margin_2">
 
     <androidx.cardview.widget.CardView
@@ -48,7 +49,6 @@
                 android:layout_height="@dimen/height_18"
                 android:elevation="1dp"
                 android:gravity="end"
-                android:text="12$"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_12"
                 app:layout_constraintBottom_toBottomOf="parent"

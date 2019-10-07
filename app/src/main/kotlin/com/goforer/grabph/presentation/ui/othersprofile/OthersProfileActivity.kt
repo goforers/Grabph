@@ -19,62 +19,77 @@ package com.goforer.grabph.presentation.ui.othersprofile
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.text.Html
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
+import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
-import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PEOPLE
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_RANKING
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_PLACE_CALLED_USER_PROFILE
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_ID
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_NAME
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_PHOTO_URL
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_RANKING
 import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAdapter
+import com.goforer.grabph.presentation.vm.profile.OthersPhotosViewModel
 import com.goforer.grabph.presentation.vm.profile.OthersProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.MyPhotoDataSource
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.ProfileDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Owner
+import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
+import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_others_profile.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
+import kotlinx.android.synthetic.main.activity_others_profile.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 @SuppressLint("Registered")
 @RunWithMockData(true)
-class OthersProfileActivity: BaseActivity() {
+class OthersProfileActivity : BaseActivity() {
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
-
     private var adapter: OthersProfileAdapter? = null
-
-    private var userId: String = ""
-    private var userName: String = ""
-    private var userPhotoUrl: String = ""
-    private var userBackgroundPhoto: String = ""
+    private var user: Person? = null
+    private lateinit var userId: String
+    private var page: Int = 0
+    private lateinit var userName: String
+    private lateinit var userPhotoUrl: String
+    private lateinit var userBackgroundPhoto: String
     private var userRanking: Int = 0
     private var calledFrom: Int = 0
     private var halfOffsetAppBar: Int = 0
@@ -82,13 +97,21 @@ class OthersProfileActivity: BaseActivity() {
     private var isAppBarExpanded = true
     private var isRecyclerTop = true
 
+    private val job = Job()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
+
     private lateinit var params: CoordinatorLayout.LayoutParams
     private lateinit var behavior: AppBarLayout.Behavior
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
+    @field: Inject
+    lateinit var query: PhotogQuery
+
     @field:Inject
-    internal lateinit var viewModel: OthersProfileViewModel
+    internal lateinit var photosViewModel: OthersPhotosViewModel
+    @field:Inject
+    internal lateinit var personViewModel: OthersProfileViewModel
 
     override fun setContentView() { setContentView(R.layout.activity_others_profile) }
 
@@ -100,6 +123,7 @@ class OthersProfileActivity: BaseActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.statusBarColor = Color.TRANSPARENT
             networkStatusVisible(true)
+            networkProgressBarVisible(true)
         } else {
             networkStatusVisible(false)
         }
@@ -108,10 +132,22 @@ class OthersProfileActivity: BaseActivity() {
     override fun setViews(savedInstanceState: Bundle?) {
         super.setViews(savedInstanceState)
         getIntentData(savedInstanceState)
+        setButtonsClickListener()
+        setAppbarScrollingBehavior()
+        removeCache()
         createAdapter()
-        observeUserProfileLiveData()
+        getProfile()
+    }
 
-        if (savedInstanceState == null) getProfile() else viewModel.loadUserProfileFromCache()
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.run {
+            putString(EXTRA_PROFILE_USER_ID, userId)
+            putString(EXTRA_PROFILE_USER_NAME, userName)
+            putInt(EXTRA_PROFILE_USER_RANKING, userRanking)
+            putString(EXTRA_PROFILE_USER_PHOTO_URL, userPhotoUrl)
+            putInt(EXTRA_PLACE_CALLED_USER_PROFILE, calledFrom)
+        }
     }
 
     override fun setActionBar() {
@@ -127,64 +163,164 @@ class OthersProfileActivity: BaseActivity() {
         }
     }
 
-    private fun observeUserProfileLiveData() {
-        viewModel.getUserProfileLiveData().observe(this, Observer {
-            setTopPortionViewData(it)
+    override fun onDestroy() {
+        super.onDestroy()
 
-            val config = PagedList.Config.Builder()
-                    .setInitialLoadSizeHint(10)
-                    .setPageSize(20)
-                    .setPrefetchDistance(10)
-                    .build()
-
-            LivePagedListBuilder(object: DataSource.Factory<Int, MyPhoto>() {
-                override fun create(): DataSource<Int, MyPhoto> {
-                    return MyPhotoDataSource(it.photos.photos)
-                }
-            }, config).build().observe(this, Observer { pagedList ->
-                adapter?.submitList(pagedList)
-            })
-        })
+        ioScope.cancel()
+        job.cancel()
     }
 
     private fun getProfile() {
         when (mock) {
             @MockData
-            true -> transactMockData()
-            false -> transactRealData()
+            true -> { getMockProfile(); setBottomPortionViewMock() }
+            false -> { getRealProfile(); setBottomPortionView() }
         }
     }
 
     @MockData
-    private fun transactMockData() {
+    private fun getMockProfile() {
         setBackgroundImageForMock()
-        var profile: HomeProfile.MyPagePhotos? = null
-        val homeProfile = ProfileDataSource()
-        homeProfile.setHomeProfile()
-        homeProfile.getHomeProfile()?.let { profile = it.sellPhotos }
 
-        val userProfile = Owner(userId, "", 0, "", userName, "",
-                homeProfile.getHomeProfile()?.coverletter, Owner.Photourl(userPhotoUrl),
-                userRanking.toString(), "", "", "124", "16",
-                "23", "46", userBackgroundPhoto, profile!!)
+        when (calledFrom) {
+            CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
+                personViewModel.loadType = NetworkBoundResource.LOAD_PERSON
+                personViewModel.boundType = BOUND_FROM_BACKEND
+                personViewModel.setSearperId(userId)
 
-        viewModel.setUserProfile(userProfile)
-        viewModel.setUserProfileLiveData(userProfile)
+                personViewModel.person.observe(this, Observer { resource ->
+                    when (resource?.getStatus()) {
+                        Status.SUCCESS -> {
+                            resource.getData().let { person ->
+                                user = person as Person?
+                                withDelay(800L) {
+                                    if (user?.id == userId) user?.let { setTopPortionViewData(it) }
+                                }
+                            }
+
+                            resource.getMessage()?.let {
+                                showNetworkError(resource)
+                                personViewModel.person.removeObservers(this)
+                            }
+                        }
+
+                        Status.LOADING -> {}
+
+                        Status.ERROR -> {
+                            showNetworkError(resource)
+                            personViewModel.person.removeObservers(this)
+                        }
+
+                        else -> {
+                            showNetworkError(resource)
+                            personViewModel.person.removeObservers(this)
+                        }
+                    }
+                })
+            }
+
+            else -> {
+                val mockPerson = Person(
+                    userId,
+                    "",
+                    0,
+                    Person.Username(userName),
+                    Person.Realname(""),
+                    Person.Location(""),
+                    Person.Description(getString(R.string.description_sample)),
+                    Person.Photosurl(""),
+                    Person.Profileurl(userPhotoUrl),
+                    Person.Mobileurl(""),
+                    Person.Photos(
+                        Person.Photos.Firstdatetaken(""),
+                        Person.Photos.Firstdate(""),
+                        Person.Photos.Count("49"))
+                )
+                mockPerson.followers = "24"
+                mockPerson.followings = "45"
+                withDelay(800L) { setTopPortionViewData(mockPerson) }
+            }
+        }
     }
 
-    private fun transactRealData() {
-        val liveData = viewModel.userProfile
+    private fun getRealProfile() {
+        personViewModel.loadType = NetworkBoundResource.LOAD_PERSON
+        personViewModel.boundType = BOUND_FROM_BACKEND
+        personViewModel.setSearperId(userId)
 
-        setUserProfileLoadParam(NetworkBoundResource.LOAD_OTHERS_PROFILE,
-                NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FROM_OTHERS_PROFILE, "")
-
-        liveData.observe(this, Observer { resource ->
+        personViewModel.person.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
-                    resource.getData()?.let { othersProfile ->
-                        val profile = othersProfile as Owner
-                        viewModel.setUserProfile(profile)
-                        viewModel.setUserProfileLiveData(profile)
+                    resource.getData().let { person ->
+                        user = person as Person?
+                        if (user?.id == userId) user?.let { setTopPortionViewData(it) }
+                    }
+                }
+
+                Status.LOADING -> {}
+
+                Status.ERROR -> {
+                    showNetworkError(resource)
+                }
+
+                else -> {
+                    showNetworkError(resource)
+                }
+            }
+        })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setTopPortionViewData(person: Person) {
+        networkProgressBarVisible(false)
+        setRankColor(userRanking)
+        setImageDraw(iv_others_profile_icon, userPhotoUrl)
+        // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
+        setFixedImageSize(0, 0)
+        setImageDraw(this.iv_others_profile_title_photo, this.backdrop_container, userBackgroundPhoto, false)
+
+        this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
+        this.tv_others_profile_name.text = person.realname?._content?.let { if (it.isEmpty()) person.username?._content else it } ?: "unknown user"
+        val desc = getDescription(person.description?._content!!, userId)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.tv_others_profile_coverLetter.text = Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY)
+        }
+        this.tv_others_profile_number_searper.text = person.followings ?: "35"
+        this.tv_others_profile_number_searple.text = person.followers ?: "46"
+        // this.tv_others_profile_number_like.text = person.purchased ?: "145" // should be edited!!
+        this.tv_photo_number_others_profile.text = "${person.photos?.count?._content} Photos"
+        this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
+    }
+
+    @MockData
+    private fun setBottomPortionViewMock() {
+        val user: String = when (calledFrom) {
+            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "183109783@N06"
+            else -> userId
+        }
+        setLoadParam(LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL, user, page, calledFrom)
+
+        val liveData: LiveData<Resource>? = photosViewModel.userProfile
+
+        liveData?.observe(this, Observer { resource ->
+            when (resource.getStatus()) {
+                Status.SUCCESS -> {
+                    resource.getData()?.let { list ->
+                        @Suppress("UNCHECKED_CAST")
+                        val photos = list as? PagedList<Photo>?
+
+                        photos?.let {
+                            if (it.size > 0) {
+                                when (calledFrom) {
+                                    CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
+                                        if (userId == photos[0]?.owner) adapter?.submitList(photos)
+                                    }
+                                    else -> {
+                                        adapter?.submitList(photos)
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     resource.getMessage()?.let {
@@ -193,7 +329,7 @@ class OthersProfileActivity: BaseActivity() {
                     }
                 }
 
-                Status.LOADING -> { /* Loading Screen to be implemented */ }
+                Status.LOADING -> { }
 
                 Status.ERROR -> {
                     showNetworkError(resource)
@@ -208,33 +344,45 @@ class OthersProfileActivity: BaseActivity() {
         })
     }
 
-    @SuppressLint("SetTextI18n")
-    @MockData
-    private fun setTopPortionViewData(profile: Owner) {
-        profile.grade?.toInt()?.let { userRanking = it }
-        setRankColor(userRanking)
+    private fun setBottomPortionView() {
+        setLoadParam(LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL, userId, page, calledFrom)
+        val liveData: LiveData<Resource>? = photosViewModel.userProfile
 
-        profile.realname?.let { userName = it }
-        this.tv_others_profile_name.text = userName
+        liveData?.observe(this, Observer { resource ->
+            when (resource.getStatus()) {
+                Status.SUCCESS -> {
+                    resource.getData()?.let { list ->
+                        @Suppress("UNCHECKED_CAST")
+                        val photos = list as? PagedList<Photo>?
 
-        profile.photourl?._content?.let { userPhotoUrl = it }
-        setImageDraw(iv_others_profile_icon, userPhotoUrl)
+                        photos?.let {
+                            if (it.size > 0) {
+                                if (userId == photos[0]?.owner) adapter?.submitList(photos)
+                            } else {
+                                // show something to say that the list is empty
+                            }
+                        }
+                    }
 
-        profile.backgroundPhoto?.let { userBackgroundPhoto = it }
-        setFixedImageSize(0, 0)
-        setImageDraw(this.iv_others_profile_title_photo, this.backdrop_container, userBackgroundPhoto, false)
-        this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
+                    resource.getMessage()?.let {
+                        showNetworkError(resource)
+                        liveData.removeObservers(this)
+                    }
+                }
 
-        this.tv_others_profile_coverLetter.text = profile.description
-        this.tv_others_profile_number_searper.text = profile.followings
-        this.tv_others_profile_number_searple.text = profile.followers
-        this.tv_others_profile_number_like.text = profile.purchased // should be edited!!
-        this.tv_photo_number_others_profile.text = "${profile.galleryCount} Photos"
+                Status.LOADING -> { }
 
-        this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
+                Status.ERROR -> {
+                    showNetworkError(resource)
+                    liveData.removeObservers(this)
+                }
 
-        setButtonsClickListener()
-        setAppbarScrollingBehavior()
+                else -> {
+                    showNetworkError(resource)
+                    liveData.removeObservers(this)
+                }
+            }
+        })
     }
 
     private fun setButtonsClickListener() {
@@ -252,9 +400,9 @@ class OthersProfileActivity: BaseActivity() {
         }
 
         this.backdrop_container.setOnClickListener { appBarLayout.setExpanded(false, true) }
-        this.others_profile_container_searper.setOnClickListener {  }
-        this.others_profile_container_searple.setOnClickListener {  }
-        this.others_profile_container_like.setOnClickListener {  }
+        this.others_profile_container_searper.setOnClickListener { /* see my following */ }
+        this.others_profile_container_searple.setOnClickListener { /* see my follower */ }
+        this.others_profile_container_like.setOnClickListener { /* see my photos got likes */ }
     }
 
     private fun setAppbarScrollingBehavior() {
@@ -272,8 +420,8 @@ class OthersProfileActivity: BaseActivity() {
         var alpha: Int
         var offSetPercentage: Float
 
-        this.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { //appBarLayout Offset Change Listener
-            appBarLayout: AppBarLayout, verticalOffset: Int ->
+        this.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { // appBarLayout Offset Change Listener
+                appBarLayout: AppBarLayout, verticalOffset: Int ->
 
             currentOffSet = abs(verticalOffset)
             offSetPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
@@ -317,51 +465,51 @@ class OthersProfileActivity: BaseActivity() {
         var swipeUp = false
         var swipeDown = false
 
-        this.others_profile_coordinator_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener { //Coordinate Layout Swipe Listener
-            override fun onSwipeLeft(x: Float, y: Float) { }
-            override fun onSwipeRight(x: Float, y: Float) { }
+        this.others_profile_coordinator_layout.setOnSwipeOutListener(
+            this,
+            object : OnSwipeOutListener { // Coordinate Layout Swipe Listener
+                override fun onSwipeLeft(x: Float, y: Float) {}
+                override fun onSwipeRight(x: Float, y: Float) {}
 
-            override fun onSwipeDown(x: Float, y: Float) {
-                swipeUp = false
-                swipeDown = true
-            }
-
-            override fun onSwipeUp(x: Float, y: Float) {
-                swipeUp = true
-                swipeDown = false
-            }
-
-            override fun onSwipeDone() { //when scroll movement stops
-                if (swipeUp) {
-                    appBarLayout.setExpanded(false, true)
+                override fun onSwipeDown(x: Float, y: Float) {
+                    swipeUp = false
+                    swipeDown = true
                 }
 
-                if (swipeDown && isRecyclerTop) {
-                    appBarLayout.setExpanded(true, true)
-                    enableAppBarDraggable(true)
+                override fun onSwipeUp(x: Float, y: Float) {
+                    swipeUp = true
+                    swipeDown = false
                 }
 
-                swipeUp = false
-                swipeDown = false
-            }
-        })
+                override fun onSwipeDone() { // when scroll movement stops
+                    if (swipeUp) {
+                        appBarLayout.setExpanded(false, true)
+                    }
+
+                    if (swipeDown && isRecyclerTop) {
+                        appBarLayout.setExpanded(true, true)
+                        enableAppBarDraggable(true)
+                    }
+
+                    swipeUp = false
+                    swipeDown = false
+                }
+            })
     }
 
     private fun enableAppBarDraggable(draggable: Boolean) {
-        behavior.setDragCallback(object: AppBarLayout.Behavior.DragCallback() { //block dragging behavior on appBarLayout
+        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
             override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
         })
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun getIntentData(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null) {
-            userId = intent.getStringExtra(EXTRA_PROFILE_USER_ID)
-            userName = intent.getStringExtra(EXTRA_PROFILE_USER_NAME)
-            userRanking = intent.getIntExtra(EXTRA_PROFILE_USER_RANKING, 0)
-            userPhotoUrl = intent.getStringExtra(EXTRA_PROFILE_USER_PHOTO_URL)
-            calledFrom = intent.getIntExtra(Caller.EXTRA_PLACE_CALLED_USER_PROFILE, 0)
-        }
+        userId = intent.getStringExtra(EXTRA_PROFILE_USER_ID)
+        userName = intent.getStringExtra(EXTRA_PROFILE_USER_NAME)
+        userRanking = intent.getIntExtra(EXTRA_PROFILE_USER_RANKING, 0)
+        userPhotoUrl = intent.getStringExtra(EXTRA_PROFILE_USER_PHOTO_URL)
+        calledFrom = intent.getIntExtra(EXTRA_PLACE_CALLED_USER_PROFILE, 0)
     }
 
     private fun createAdapter() {
@@ -370,17 +518,17 @@ class OthersProfileActivity: BaseActivity() {
         this.recycler_others_profile.setItemViewCacheSize(20)
         this.recycler_others_profile.isVerticalScrollBarEnabled = false
         gridLayoutManager = CustomStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        gridLayoutManager.enabledSrcoll = false //disable recyclerView's scroll
+        gridLayoutManager.enabledSrcoll = false // disable recyclerView's scroll
         gridLayoutManager.isItemPrefetchEnabled = true
         this.recycler_others_profile.layoutManager = gridLayoutManager
         this.recycler_others_profile.addItemDecoration(createItemDecoration())
         this.recycler_others_profile.adapter = adapter
 
-        val btnView = this.btn_follow_bottom_others_profile
+        val btnView: AppCompatButton = this.btn_follow_bottom_others_profile
         var alpha: Int
         var percentage: Float
 
-        this.recycler_others_profile.addOnScrollListener( object : RecyclerView.OnScrollListener() {
+        this.recycler_others_profile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 percentage = (1f - (btnView.translationY / btnView.height.toFloat()))
                 alpha = (255 * percentage).toInt()
@@ -388,6 +536,7 @@ class OthersProfileActivity: BaseActivity() {
                 btnView.background.alpha = alpha
                 btnView.setTextColor(btnView.textColors.withAlpha(alpha))
             }
+
             /** newState indicates: 0 = idle // 1 = dragging // 2 = settling  */
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -422,6 +571,34 @@ class OthersProfileActivity: BaseActivity() {
         userBackgroundPhoto = images[0]
     }
 
+    @MockData
+    private fun getDescription(desc: String, userID: String): String = when (desc) {
+        "" -> {
+            when (userID) {
+                "149618477@N06" -> {
+                    "여행 사진 그리고 중독 \uD83C\uDF34 팡포토<br>황도현 \uD83C\uDF3F COMMERICAL PHOTOGRAPHER"
+                }
+
+                else -> {
+                    "Contact: mail@ladyironchef.com<br>Facebook.com/ladyironchef<br>www.ladyironchef.com"
+                }
+            }
+        }
+
+        else -> {
+            when (userID) {
+                "61533954@N00" -> {
+                    "여행작가 심상우입니다<br>여행작가로 먹고 산지 7년째, 7권의 책 출간.<br>에세이 #당신의일상은안녕한가요<br>" +
+                        "가이드북 #다낭100배즐기기<br>-<br>⬇️ 서점에서 만나요 \uD83D\uDC9B<br>me2.do/FVfKro04"
+                }
+
+                else -> {
+                    desc
+                }
+            }
+        }
+    }
+
     private fun setRankColor(rank: Int) {
         when (rank) {
             PEOPLE_RANK_BEGINNER -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
@@ -432,19 +609,21 @@ class OthersProfileActivity: BaseActivity() {
         }
     }
 
-    private fun setUserProfileLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {
-        viewModel.loadType = loadType
-        viewModel.boundType = boundType
-        viewModel.calledFrom = calledFrom
-        viewModel.setId(id)
+    private fun setLoadParam(loadType: Int, boundType: Int, userID: String, pages: Int, calledFrom: Int) {
+        query.userID = userID
+        query.pages = pages
+        photosViewModel.loadType = loadType
+        photosViewModel.boundType = boundType
+        photosViewModel.calledFrom = calledFrom
+        photosViewModel.setQuery(query)
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return object : GapItemDecoration(VERTICAL_LIST,resources.getDimensionPixelSize(R.dimen.space_4)) {
+        return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.left = 2
-                outRect.right = 2
-                outRect.bottom = 0
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
@@ -455,7 +634,7 @@ class OthersProfileActivity: BaseActivity() {
     }
 
     private fun showNetworkError(resource: Resource) {
-        when(resource.errorCode) {
+        when (resource.errorCode) {
             in 400..499 -> {
                 Snackbar.make(this.others_profile_coordinator_layout, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
             }
@@ -468,15 +647,50 @@ class OthersProfileActivity: BaseActivity() {
                 Snackbar.make(this.others_profile_coordinator_layout, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
             }
         }
+
+        this.progress_bar_others_profile_holder.visibility = View.GONE
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
         this.disconnect_container_pinned_profile.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
         this.recycler_others_profile.visibility = View.VISIBLE
+        this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     } else {
         this.disconnect_container_pinned_profile.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
         this.recycler_others_profile.visibility = View.GONE
+        this.progress_bar_others_profile_holder.visibility = View.GONE
+        this.btn_follow_bottom_others_profile.visibility = View.GONE
+    }
+
+    private fun networkProgressBarVisible(isVisible: Boolean) = if (isVisible) {
+        this.progress_bar_others_profile_holder.visibility = View.VISIBLE
+        this.appbar_others_profile.visibility = View.GONE
+        this.recycler_others_profile.visibility = View.GONE
+        this.btn_follow_bottom_others_profile.visibility = View.GONE
+    } else {
+        this.progress_bar_others_profile_holder.visibility = View.GONE
+        this.appbar_others_profile.visibility = View.VISIBLE
+        this.recycler_others_profile.visibility = View.VISIBLE
+        this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
+    }
+
+    private fun removeCache() = launchWork {
+        photosViewModel.interactor.removeCache()
+        personViewModel.interactor.removePerson()
+    }
+
+    /**
+     * Helper function to call something doing function
+     *
+     * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
+     * functions.
+     *
+     * @param block lambda to actually do some work. It is called in the ioScope.
+     *              lambda the some work will do
+     */
+    internal inline fun launchWork(crossinline block: suspend () -> Unit): Job {
+        return ioScope.launch { block() }
     }
 }

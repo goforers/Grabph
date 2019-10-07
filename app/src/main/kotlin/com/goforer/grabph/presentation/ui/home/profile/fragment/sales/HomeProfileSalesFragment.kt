@@ -1,16 +1,16 @@
 /*
  * Copyright 2019 Lukoh Nam, goForer
- *    
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, 
+ * the Free Software Foundation, either version 2 of the License,
  * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
- * See the GNU General Public License for more details. 
- * You should have received a copy of the GNU General Public License along with this program.  
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -41,7 +41,7 @@ import javax.inject.Inject
  * This is one of the two fragments that can be accessed through tab layout.
  * */
 
-class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
+class HomeProfileSalesFragment : BaseFragment(), View.OnClickListener {
     private var pagerAdapter: SalePagerAdapter? = null
 
     private lateinit var acvPagerAdapter: AutoClearedValue<SalePagerAdapter>
@@ -73,7 +73,11 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
 
     private val homeActivity: HomeActivity by lazy { activity as HomeActivity }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_home_profile_sale, container, false)
     }
 
@@ -85,9 +89,11 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        when(view?.id){
+        when (view?.id) {
             R.id.constraint_profile_sale_containerAll -> setTabButtonColor(SALES_ALL_INDEX)
-            R.id.constraint_profile_sale_containerOnInspection -> setTabButtonColor(SALES_VERIFYING_INDEX)
+            R.id.constraint_profile_sale_containerOnInspection -> setTabButtonColor(
+                SALES_VERIFYING_INDEX
+            )
             R.id.constraint_profile_sale_containerApproved -> setTabButtonColor(SALES_APPROVED_INDEX)
             R.id.constraint_profile_sale_containerFail -> setTabButtonColor(SALES_INVALID_INDEX)
         }
@@ -96,10 +102,34 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        salesAllFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_SALES_ALL, it) }
-        salesVerifyingFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_SALES_VERIFYING, it) }
-        salesApprovedFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_SALES_APPROVED, it) }
-        salesInvalidFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_SALES_INVALID, it) }
+        salesAllFragment?.let {
+            if (it.isAdded) fragmentManager?.putFragment(
+                outState,
+                FRAGMENT_KEY_SALES_ALL,
+                it
+            )
+        }
+        salesVerifyingFragment?.let {
+            if (it.isAdded) fragmentManager?.putFragment(
+                outState,
+                FRAGMENT_KEY_SALES_VERIFYING,
+                it
+            )
+        }
+        salesApprovedFragment?.let {
+            if (it.isAdded) fragmentManager?.putFragment(
+                outState,
+                FRAGMENT_KEY_SALES_APPROVED,
+                it
+            )
+        }
+        salesInvalidFragment?.let {
+            if (it.isAdded) fragmentManager?.putFragment(
+                outState,
+                FRAGMENT_KEY_SALES_INVALID,
+                it
+            )
+        }
 
         outState.putInt(EXTRA_SAVED_SALES_TAB_INDEX, currentTabIndex)
     }
@@ -115,13 +145,13 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
     private fun setPagerAdapter(savedInstanceState: Bundle?) {
         savedInstanceState?.let { getViewInstance(it) }
 
-        salesAllFragment = salesAllFragment ?: HomeProfileSaleStatusFragment() //1
+        salesAllFragment = salesAllFragment ?: HomeProfileSaleStatusFragment() // 1
         salesAllFragment?.setStatusType(SALES_ALL_INDEX)
-        salesVerifyingFragment = salesVerifyingFragment ?: HomeProfileSaleStatusFragment() //2
+        salesVerifyingFragment = salesVerifyingFragment ?: HomeProfileSaleStatusFragment() // 2
         salesVerifyingFragment?.setStatusType(SALES_VERIFYING_INDEX)
-        salesApprovedFragment = salesApprovedFragment ?: HomeProfileSaleStatusFragment() //3
+        salesApprovedFragment = salesApprovedFragment ?: HomeProfileSaleStatusFragment() // 3
         salesApprovedFragment?.setStatusType(SALES_APPROVED_INDEX)
-        salesInvalidFragment = salesInvalidFragment ?: HomeProfileSaleStatusFragment() //4
+        salesInvalidFragment = salesInvalidFragment ?: HomeProfileSaleStatusFragment() // 4
         salesInvalidFragment?.setStatusType(SALES_INVALID_INDEX)
 
         pagerAdapter = pagerAdapter ?: SalePagerAdapter(requireFragmentManager())
@@ -135,15 +165,32 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
         this@HomeProfileSalesFragment.viewPager_profile_sale.adapter = acvPagerAdapter.get()
         this@HomeProfileSalesFragment.viewPager_profile_sale.disableSwipe(true)
         this@HomeProfileSalesFragment.tv_profile_sale_number_all.setBackgroundResource(R.drawable.border_circle_of_button_white)
-        this@HomeProfileSalesFragment.tv_profile_sale_number_all.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-        this@HomeProfileSalesFragment.tv_profile_sale_text_all.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+        this@HomeProfileSalesFragment.tv_profile_sale_number_all.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.white
+            )
+        )
+        this@HomeProfileSalesFragment.tv_profile_sale_text_all.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.white
+            )
+        )
     }
 
     private fun getViewInstance(savedInstanceState: Bundle) {
-        salesAllFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_ALL)?.let { it as HomeProfileSaleStatusFragment }
-        salesVerifyingFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_VERIFYING)?.let { it as HomeProfileSaleStatusFragment }
-        salesApprovedFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_APPROVED)?.let { it as HomeProfileSaleStatusFragment }
-        salesInvalidFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_INVALID)?.let { it as HomeProfileSaleStatusFragment }
+        salesAllFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_ALL)
+            ?.let { it as HomeProfileSaleStatusFragment }
+        salesVerifyingFragment =
+            fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_VERIFYING)
+                ?.let { it as HomeProfileSaleStatusFragment }
+        salesApprovedFragment =
+            fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_APPROVED)
+                ?.let { it as HomeProfileSaleStatusFragment }
+        salesInvalidFragment =
+            fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_SALES_INVALID)
+                ?.let { it as HomeProfileSaleStatusFragment }
     }
 
     private fun observeHomeProfileLiveData() {
@@ -181,8 +228,12 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
 
     private fun initStatusClickListener() {
         this@HomeProfileSalesFragment.constraint_profile_sale_containerAll.setOnClickListener(this)
-        this@HomeProfileSalesFragment.constraint_profile_sale_containerOnInspection.setOnClickListener(this)
-        this@HomeProfileSalesFragment.constraint_profile_sale_containerApproved.setOnClickListener(this)
+        this@HomeProfileSalesFragment.constraint_profile_sale_containerOnInspection.setOnClickListener(
+            this
+        )
+        this@HomeProfileSalesFragment.constraint_profile_sale_containerApproved.setOnClickListener(
+            this
+        )
         this@HomeProfileSalesFragment.constraint_profile_sale_containerFail.setOnClickListener(this)
     }
 
@@ -202,7 +253,7 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
         val color: Int = ContextCompat.getColor(requireContext(), R.color.uncheckedSalesStatusColor)
         val background: Int = R.drawable.border_circle_of_button_grey
 
-        for(i in statusNumbers.indices){
+        for (i in statusNumbers.indices) {
             statusNumbers[i].setBackgroundResource(background)
             statusNumbers[i].setTextColor(color)
             statusTexts[i].setTextColor(color)
@@ -210,7 +261,10 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
     }
 
     private fun setFontType() {
-        val krMediumTypeface = Typeface.createFromAsset(homeActivity.applicationContext?.assets, BaseActivity.NOTO_SANS_KR_MEDIUM)
+        val krMediumTypeface = Typeface.createFromAsset(
+            homeActivity.applicationContext?.assets,
+            BaseActivity.NOTO_SANS_KR_MEDIUM
+        )
 
         krMediumTypeface.let {
             tv_profile_sale_number_all.typeface = it
@@ -224,4 +278,3 @@ class HomeProfileSalesFragment: BaseFragment(), View.OnClickListener {
         }
     }
 }
-

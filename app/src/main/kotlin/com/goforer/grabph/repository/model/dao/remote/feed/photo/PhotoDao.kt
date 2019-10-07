@@ -26,8 +26,8 @@ import com.goforer.grabph.repository.model.dao.BaseDao
  */
 @Dao
 interface PhotoDao: BaseDao<Photo> {
-    @Query("SELECT * FROM Photo")
-    fun getPhotos(): DataSource.Factory<Int, Photo>
+    @Query("SELECT * FROM Photo WHERE owner = :userId")
+    fun getPhotos(userId: String): DataSource.Factory<Int, Photo>
 
     @Query("DELETE FROM Photo WHERE _id = :photoId")
     fun deleteByPhotoId(photoId: String)

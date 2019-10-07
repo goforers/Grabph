@@ -192,4 +192,5 @@
     <string name="following_button">FOLLOWING</string>
     <string name="follow_button">FOLLOW</string>
     <string name="follow_button_bottom">FOLLOWING :)</string>
+    <string name="description_sample">Lorem ipsum dolor sit amet, consectetuer adipis cing elit. Aenean commodo ligula eget dolor.</string>
 </resources>

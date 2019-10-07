@@ -39,15 +39,15 @@ import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfil
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment.Companion.SALES_INVALID_INDEX
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment.Companion.SALES_VERIFYING_INDEX
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.MyPhotoDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_home_profile_sale_status.*
+import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.MyPhotoDataSource
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_home_profile_sale_status.*
 
-class HomeProfileSaleStatusFragment: BaseFragment() {
+class HomeProfileSaleStatusFragment : BaseFragment() {
     private lateinit var adapter: HomeProfileSaleStatusAdapter
     private lateinit var acvAdapterSales: AutoClearedValue<HomeProfileSaleStatusAdapter>
 
@@ -55,7 +55,8 @@ class HomeProfileSaleStatusFragment: BaseFragment() {
 
     private var statusType = 0
 
-    @field:Inject lateinit var homeProfileViewModel: HomeProfileViewModel
+    @field:Inject
+    lateinit var homeProfileViewModel: HomeProfileViewModel
 
     internal val homeActivity: HomeActivity by lazy { activity as HomeActivity }
 
@@ -63,8 +64,15 @@ class HomeProfileSaleStatusFragment: BaseFragment() {
         private const val SPAN_COUNT = 3
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val acvView = AutoClearedValue(this, inflater.inflate(R.layout.fragment_home_profile_sale_status, container, false))
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val acvView = AutoClearedValue(
+            this,
+            inflater.inflate(R.layout.fragment_home_profile_sale_status, container, false)
+        )
 
         return acvView.get()?.rootView
     }
@@ -84,23 +92,30 @@ class HomeProfileSaleStatusFragment: BaseFragment() {
         outState.putInt(EXTRA_SALES_STATUS_TYPE, statusType)
     }
 
-    internal fun setStatusType(type: Int) { statusType = type }
+    internal fun setStatusType(type: Int) {
+        statusType = type
+    }
 
     private fun createSalesAdapter() {
         adapter = HomeProfileSaleStatusAdapter(homeActivity, statusType)
         acvAdapterSales = AutoClearedValue(this, adapter)
         this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.adapter = acvAdapterSales.get()
 
-        if(statusType == SALES_INVALID_INDEX) { //status = 3
-            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.layoutManager = LinearLayoutManager(this.context)
+        if (statusType == SALES_INVALID_INDEX) { // status = 3
+            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.layoutManager =
+                LinearLayoutManager(this.context)
 
-            val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager(context).orientation)
+            val dividerItemDecoration =
+                DividerItemDecoration(context, LinearLayoutManager(context).orientation)
 
-            homeActivity.getDrawable(R.drawable.recycer_divider)?.let { dividerItemDecoration.setDrawable(it) }
-            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.addItemDecoration(dividerItemDecoration)
-
-        } else { //status = 0,1,2
-            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.layoutManager = GridLayoutManager(context, SPAN_COUNT)
+            homeActivity.getDrawable(R.drawable.recycer_divider)
+                ?.let { dividerItemDecoration.setDrawable(it) }
+            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.addItemDecoration(
+                dividerItemDecoration
+            )
+        } else { // status = 0,1,2
+            this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.layoutManager =
+                GridLayoutManager(context, SPAN_COUNT)
         }
 
         this.mySalesPaged?.let { adapter.submitList(it) }
@@ -119,10 +134,10 @@ class HomeProfileSaleStatusFragment: BaseFragment() {
             }
 
             val config = PagedList.Config.Builder()
-                    .setInitialLoadSizeHint(10)
-                    .setPageSize(10)
-                    .setPrefetchDistance(5)
-                    .build()
+                .setInitialLoadSizeHint(10)
+                .setPageSize(10)
+                .setPrefetchDistance(5)
+                .build()
 
             LivePagedListBuilder(object : DataSource.Factory<Int, MyPhoto>() {
                 override fun create(): DataSource<Int, MyPhoto> {
@@ -137,22 +152,27 @@ class HomeProfileSaleStatusFragment: BaseFragment() {
     }
 
     private fun setScrollListener() {
-        this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        this@HomeProfileSaleStatusFragment.recycler_profile_sale_all.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
-                    RecyclerView.SCROLL_STATE_IDLE -> { }
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                    }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         homeActivity.closeFab()
                     }
-                    RecyclerView.SCROLL_STATE_SETTLING -> {}
-                    else -> { }
+                    RecyclerView.SCROLL_STATE_SETTLING -> {
+                    }
+                    else -> {
+                    }
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val vnView = homeActivity.bottom_navigation_view
 
-                vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
+                vnView.translationY =
+                    max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
                 homeActivity.closeFab()
             }
         })
