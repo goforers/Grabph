@@ -31,5 +31,5 @@ interface FeedsContentDao: BaseDao<FeedsContent> {
     fun getFeedsContent(): LiveData<FeedsContent>
 
     @Query("DELETE FROM FeedsContent")
-    fun clearAll()
+    suspend fun clearAll()
 }

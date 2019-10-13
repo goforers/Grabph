@@ -16,12 +16,10 @@
 
 package com.goforer.grabph.presentation.vm.feed.location
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.feed.location.LoadLocalLocationUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.location.LocalLocation
-import com.goforer.grabph.repository.interactor.local.LocalLocationRepository
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,13 +27,8 @@ import javax.inject.Singleton
 @Singleton
 class LocalLocationViewModel
 @Inject
-constructor(private val repository: LocalLocationRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val locationInfo: LiveData<LocalLocation?>
+constructor(private val useCase: LoadLocalLocationUseCase) : BaseViewModel<String>() {
+    internal lateinit var locationInfo: LiveData<LocalLocation>
 
     /**
      * This is the job for all coroutines started by this ViewModel.
@@ -52,11 +45,8 @@ constructor(private val repository: LocalLocationRepository) : BaseViewModel() {
      */
     private var viewModelScope: CoroutineScope? = null
 
-    init {
-        locationInfo = Transformations.switchMap(liveData) { filename ->
-            filename ?: AbsentLiveData.create<LocalLocation>()
-            repository.loadLocationInfo(filename!!)
-        }
+    override fun setParameters(parameters: String, type: Int) {
+        locationInfo = useCase.execute(viewModelScope!!, parameters)
     }
 
     /**
@@ -78,7 +68,7 @@ constructor(private val repository: LocalLocationRepository) : BaseViewModel() {
         viewModelJob = Job()
         viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob!!)
         launchWork {
-            location = repository.saveLocationInfo(filename, localLocation)
+            location = useCase.saveLocationInfo(filename, localLocation)
         }
 
         closeWork(viewModelScope)
@@ -86,22 +76,11 @@ constructor(private val repository: LocalLocationRepository) : BaseViewModel() {
         return location
     }
 
-    internal fun setFileName(filename: String) {
-        liveData.value = filename
-
-        val input = filename.trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
-
     internal fun deleteLocationInfo(filename: String) {
         viewModelJob = Job()
         viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob!!)
         launchWork {
-            repository.deleteLocationInfo(filename)
+            useCase.deleteLocationInfo(filename)
         }
 
         closeWork(viewModelScope)

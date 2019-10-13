@@ -18,10 +18,12 @@ package com.goforer.grabph.repository.interactor.remote.home
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.home.Home
 import com.goforer.grabph.repository.model.cache.data.entity.home.Homeg
 import com.goforer.grabph.repository.model.dao.remote.home.HomeDao
@@ -34,14 +36,13 @@ import javax.inject.Singleton
 @Singleton
 class HomeRepository
 @Inject
-constructor(private val dao: HomeDao): Repository() {
+constructor(private val dao: HomeDao): Repository<Query>() {
         companion object {
             const val METHOD = "searp.home.getMain"
         }
 
-        override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                                  boundType: Int, calledFrom: Int): LiveData<Resource> {
-            return object: NetworkBoundResource<Home, Home, Homeg>(loadType, boundType) {
+        override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+            return object: NetworkBoundResource<Home, Home, Homeg>(parameters.loadType, parameters.boundType) {
                 override suspend fun saveToCache(item: Home) = dao.insert(item)
 
                 // This function had been blocked at this time but it might be used in the future
@@ -57,7 +58,7 @@ constructor(private val dao: HomeDao): Repository() {
 
                 override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-                override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+                override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
                 override suspend fun clearCache() = dao.clearAll()
             }.getAsLiveData()
@@ -81,5 +82,5 @@ constructor(private val dao: HomeDao): Repository() {
 
         internal suspend fun update(home: Home) = dao.update(home)
 
-        internal fun delete() = dao.clearAll()
+        internal suspend fun delete() = dao.clearAll()
 }

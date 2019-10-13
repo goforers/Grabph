@@ -16,33 +16,40 @@
 
 package com.goforer.grabph.repository.interactor.remote.paging.boundarycallback
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.category.CategoryViewModel
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 
-class PagedListCategoryBoundaryCallback<T>(private val viewModel: CategoryViewModel,
-                                           private val userId: String, private val pages: Int,
-                                           private val calledFrom: Int) : PagedList.BoundaryCallback<T>() {
+class PagedListCategoryBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
+                                           private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
     companion object {
         private var requestPage = 0
     }
 
     override fun onZeroItemsLoaded() {
         requestPage = 1
-        load(NetworkBoundResource.LOAD_CATEGORY)
+        setQuery(Query())
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: T) {
         if (pages > requestPage) {
             requestPage++
-            load(NetworkBoundResource.LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE)
+            setQuery(Query())
         }
     }
 
-    private fun load(loadType: Int) {
-        viewModel.loadType = loadType
-        viewModel.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
-        viewModel.calledFrom = calledFrom
-        viewModel.setId(userId)
+    private fun setQuery(query: Query) {
+        query.query = userId
+        query.pages = requestPage
+        query.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
+        liveData.value = query
+
+        val input = query.pages
+        if (input == liveData.value?.pages) {
+            return
+        }
+
+        liveData.value = query
     }
 }

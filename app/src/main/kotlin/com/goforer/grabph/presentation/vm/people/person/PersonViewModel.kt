@@ -16,37 +16,23 @@
 
 package com.goforer.grabph.presentation.vm.people.person
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.people.person.LoadPersonUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.people.person.PersonRepository
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PersonViewModel
 @Inject
-constructor(val interactor: PersonRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
+constructor(private val useCase: LoadPersonUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var person: LiveData<Resource>
+
+    override fun setParameters(parameters: Parameters, type: Int) {
+        person = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val person: LiveData<Resource>
-
-    init {
-        person = Transformations.switchMap(liveData) { userId ->
-            userId ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@PersonViewModel, userId!!, -1, loadType, boundType, -1))
-            }
-        }
-    }
-
-    internal fun setSearperId(userId: String) {
-        liveData.value = userId
-    }
+    internal suspend fun removePerson() = useCase.removePerson()
 }

@@ -17,6 +17,8 @@
 package com.goforer.grabph.repository.interactor.remote
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.common.utils.RateLimiter
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.repository.network.api.SearpService
@@ -26,11 +28,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-abstract class Repository {
+abstract class Repository<T> {
     @field:Inject lateinit var searpService: SearpService
 
-    abstract suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource>
+    abstract suspend fun load(liveData: MutableLiveData<T>, parameters: Parameters): LiveData<Resource>
 
     companion object {
         const val KEY = "6d00237df3d2cefa70ea2c68579f9c0b"//"0214354eb90a5f1be88a9658fb66ec52"

@@ -16,39 +16,23 @@
 
 package com.goforer.grabph.presentation.vm.feed.exif
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.feed.exif.LoadEXIFUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.feed.exif.EXIFRepository
-import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EXIFViewModel
 @Inject
-constructor(val interactor: EXIFRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
+constructor(private val useCase: LoadEXIFUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var exif: LiveData<Resource>
+
+    override fun setParameters(parameters: Parameters, type: Int) {
+        exif = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val exif: LiveData<Resource>
-
-    init {
-        exif = Transformations.switchMap(liveData) { photoId ->
-            photoId ?: AbsentLiveData.create<Resource>()
-            Timber.d("EXIFViewModel - ViewModel")
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@EXIFViewModel, photoId!!, -1, loadType, boundType, -1))
-            }
-        }
-    }
-
-    internal fun setPhotoId(userId: String) {
-        liveData.value = userId
-    }
+    internal suspend fun removeEXIF() = useCase.removeEXIF()
 }

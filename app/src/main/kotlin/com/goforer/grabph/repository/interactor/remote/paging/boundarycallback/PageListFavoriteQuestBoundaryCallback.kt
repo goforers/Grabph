@@ -16,33 +16,40 @@
 
 package com.goforer.grabph.repository.interactor.remote.paging.boundarycallback
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.quest.FavoriteQuestViewModel
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.model.cache.data.entity.Query
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 
-class PageListFavoriteQuestBoundaryCallback<T>(private val viewModelFavorite: FavoriteQuestViewModel,
-                                               private val userId: String, private val pages: Int,
-                                               private val calledFrom: Int): PagedList.BoundaryCallback<T>() {
+class PageListFavoriteQuestBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
+                                               private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
     companion object {
         private var requestPage = 0
     }
 
     override fun onZeroItemsLoaded() {
         requestPage = 1
-        load(NetworkBoundResource.LOAD_FAVORITE_QUESTS)
+        setQuery(Query())
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: T) {
         if (pages > requestPage) {
             requestPage++
-            load(NetworkBoundResource.LOAD_FAVORITE_QUESTS_HAS_NEXT_PAGE)
+            setQuery(Query())
         }
     }
 
-    private fun load(loadType: Int) {
-        viewModelFavorite.loadType = loadType
-        viewModelFavorite.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
-        viewModelFavorite.calledFrom = calledFrom
-        viewModelFavorite.setId(userId)
+    private fun setQuery(query: Query) {
+        query.query = userId
+        query.pages = requestPage
+        query.boundType = BOUND_FROM_BACKEND
+        liveData.value = query
+
+        val input = query.pages
+        if (input == liveData.value?.pages) {
+            return
+        }
+
+        liveData.value = query
     }
 }

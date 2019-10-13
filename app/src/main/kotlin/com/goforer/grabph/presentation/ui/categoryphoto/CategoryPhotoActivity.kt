@@ -44,6 +44,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionCallback
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
@@ -51,7 +52,6 @@ import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.presentation.ui.categoryphoto.adapter.CategoryPhotoAdapter
-import com.goforer.grabph.repository.model.cache.data.entity.category.CPhotogQuery
 import com.goforer.grabph.presentation.ui.categoryphoto.sharedElementCallback.CategoryPhotoListCallback
 import com.goforer.grabph.presentation.vm.category.photo.CPhotoViewModel
 import com.goforer.grabph.presentation.ui.home.HomeActivity
@@ -60,8 +60,9 @@ import com.goforer.grabph.repository.model.cache.data.mock.datasource.categoryph
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.remote.category.photo.CPhotoRepository
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_CPHOTO_UPDATE
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -111,9 +112,6 @@ class CategoryPhotoActivity: BaseActivity() {
 
     @field:Inject
     lateinit var watermarkHandler: WatermarkHandler
-
-    @field:Inject
-    lateinit var query: CPhotogQuery
 
     private val sharedEnterListener = object : TransitionCallback() {
         override fun onTransitionEnd(transition: Transition) {
@@ -324,7 +322,7 @@ class CategoryPhotoActivity: BaseActivity() {
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removeCache(photoViewModel.interactor)
+        launchIOWork { photoViewModel.removePhotos() }
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent) {
@@ -449,12 +447,6 @@ class CategoryPhotoActivity: BaseActivity() {
         workHandler.shareToFacebook(drawable.bitmap, this)
     }
 
-    private fun removeCache(repository: Repository) {
-        launchIOWork {
-            (repository as CPhotoRepository).removePhotos()
-        }
-    }
-
     /**
      * Helper function to call something doing function
      *
@@ -501,9 +493,7 @@ class CategoryPhotoActivity: BaseActivity() {
             }
         }
 
-        setLoadParam(NetworkBoundResource.LOAD_CPHOTO_UPDATE, Repository.BOUND_FROM_BACKEND,
-                categoryID, page, Caller.CALLED_FROM_CATEGORY_PHOTO)
-
+        photoViewModel.setParameters(Parameters(categoryID, page, LOAD_CPHOTO_UPDATE, BOUND_FROM_BACKEND), -1)
         Timber.i("updateData")
     }
 
@@ -545,7 +535,7 @@ class CategoryPhotoActivity: BaseActivity() {
     }
 
     private fun transactRealData(categoryID: String, page: Int, loadType: Int, boundType: Int, calledFrom: Int) {
-        setLoadParam(loadType, boundType, categoryID, page, calledFrom)
+        photoViewModel.setParameters(Parameters(categoryID, page, loadType, boundType), -1)
         window.sharedElementEnterTransition.addListener(sharedEnterListener)
         supportPostponeEnterTransition()
         photoViewModel.categoryPhoto.observe(this, Observer { resource ->
@@ -644,16 +634,6 @@ class CategoryPhotoActivity: BaseActivity() {
         else -> {
             Snackbar.make(coordinator_category_photo_layout, resource.getMessage().toString(), LENGTH_LONG).show()
         }
-    }
-
-    private fun setLoadParam(loadType: Int, boundType: Int, categoryID: String, pages: Int, calledFrom: Int) {
-        query.categoryID = categoryID
-        query.pages = pages
-
-        photoViewModel.loadType = loadType
-        photoViewModel.boundType = boundType
-        photoViewModel.calledFrom = calledFrom
-        photoViewModel.setQuery(query)
     }
 
     private fun setItemsClear() {

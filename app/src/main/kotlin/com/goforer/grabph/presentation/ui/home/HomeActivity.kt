@@ -36,6 +36,7 @@ import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosit
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.helper.BottomNavigationViewHelper
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_CATEGORY_POSITION
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_FEED_INFO_POSITION
@@ -59,9 +60,8 @@ import com.goforer.grabph.presentation.ui.home.main.fragment.HomeMainFragment
 import com.goforer.grabph.presentation.ui.home.quest.fragment.HomeQuestFragment
 import com.goforer.grabph.presentation.vm.home.HomeViewModel
 import com.goforer.grabph.presentation.ui.home.profile.fragment.HomeProfileFragment
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.home.HomeRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton.LayoutParams
@@ -197,7 +197,10 @@ class HomeActivity: BaseActivity() {
     }
 
     override fun setViews(savedInstanceState: Bundle?) {
-        removeCache(homeViewModel.interactor)
+        launchIOWork {
+            homeViewModel.deleteHome()
+        }
+
         this@HomeActivity.appbar_layout.outlineProvider = null
     }
 
@@ -340,10 +343,6 @@ class HomeActivity: BaseActivity() {
             closeFab()
             CommonUtils.showToastMessage(this, getString(R.string.phrase_photo_upload_implement), Toast.LENGTH_SHORT)
         }
-    }
-
-    private fun removeCache(repository: Repository) = launchIOWork {
-        (repository as HomeRepository).deleteHome()
     }
 
     private fun doReenterMainQuest(intent: Intent?) {
@@ -637,7 +636,8 @@ class HomeActivity: BaseActivity() {
         homeViewModel.loadType = loadType
         homeViewModel.boundType = boundType
         homeViewModel.calledFrom = calledFrom
-        homeViewModel.setId(id)
+        homeViewModel.setParameters(Parameters(id, -1, loadType, boundType), NONE_TYPE)
+
     }
 
     internal fun showNetworkError(resource: Resource) {

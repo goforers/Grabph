@@ -18,10 +18,12 @@ package com.goforer.grabph.repository.interactor.remote.quest
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuest
 import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuestg
 import com.goforer.grabph.repository.model.dao.remote.quest.TopPortionQuestDao
@@ -34,14 +36,13 @@ import javax.inject.Singleton
 @Singleton
 class TopPortionQuestRepository
 @Inject
-constructor(private val dao: TopPortionQuestDao): Repository() {
+constructor(private val dao: TopPortionQuestDao): Repository<Query>() {
     companion object {
         const val METHOD = "searp.quest.getTopPortion"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<TopPortionQuest, TopPortionQuest, TopPortionQuestg>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<TopPortionQuest, TopPortionQuest, TopPortionQuestg>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: TopPortionQuest) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -58,7 +59,7 @@ constructor(private val dao: TopPortionQuestDao): Repository() {
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {
             }
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
 
             override suspend fun clearCache() = dao.clearAll()
@@ -73,10 +74,10 @@ constructor(private val dao: TopPortionQuestDao): Repository() {
     internal suspend fun setTopPortionQuest(topPortionQuest: TopPortionQuest) = insert(topPortionQuest)
 
     @WorkerThread
-    internal fun deleteTopPortionQuest() = delete()
+    internal suspend fun deleteTopPortionQuest() = delete()
 
     @MockData
     private suspend fun insert(topPortionQuest: TopPortionQuest) = dao.insert(topPortionQuest)
 
-    private fun delete() = dao.clearAll()
+    private suspend fun delete() = dao.clearAll()
 }

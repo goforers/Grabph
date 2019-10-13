@@ -15,5 +15,5 @@ interface RankingDao: BaseDao<Ranking> {
     suspend fun loadRanking(): Ranking
 
     @Query("DELETE FROM Ranking")
-    fun clearAll()
+    suspend fun clearAll()
 }

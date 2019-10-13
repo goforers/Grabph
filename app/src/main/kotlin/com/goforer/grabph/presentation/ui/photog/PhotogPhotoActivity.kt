@@ -31,6 +31,7 @@ import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_SEARPER_ICONFARM
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_SEARPER_ICONSERVER
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PAGES
@@ -45,12 +46,12 @@ import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.view.SlidingDrawer
 import com.goforer.grabph.presentation.vm.people.person.PersonViewModel
 import com.goforer.grabph.presentation.ui.photog.fragment.PhotogPhotoFragment
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
 import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.people.person.PersonRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photog_photo.*
@@ -126,9 +127,13 @@ class PhotogPhotoActivity: BaseActivity() {
             // The cache should be removed whenever App is started again and then
             // the data are fetched from the Back-end.
             // The Cache has to be light-weight.
-            removeCache(searperProfileViewModel.interactor)
-            searperProfileViewModel.loadType = NetworkBoundResource.LOAD_PERSON
-            searperProfileViewModel.boundType = Repository.BOUND_FROM_BACKEND
+            launchIOWork {
+                searperProfileViewModel.removePerson()
+                searperProfileViewModel.removePerson()
+            }
+
+            searperProfileViewModel.loadType = LOAD_PERSON
+            searperProfileViewModel.boundType = BOUND_FROM_BACKEND
 
             displaySearperPicture(iconFarm, iconServer, searperID, searperName)
         } else {
@@ -284,7 +289,7 @@ class PhotogPhotoActivity: BaseActivity() {
 
     @SuppressLint("CheckResult")
     private fun displaySearperPicture(iconFarm: Int, iconServer: String, id: String, searperName: String) {
-        searperProfileViewModel.setSearperId(id)
+        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
         getSearperProfile()
 
         searperPhotoPath = workHandler.getProfilePhotoURL(iconFarm, iconServer, id)
@@ -327,10 +332,6 @@ class PhotogPhotoActivity: BaseActivity() {
         }
     }
 
-    private fun removeCache(repository: Repository) = launchWork {
-        (repository as PersonRepository).removePerson()
-    }
-
     /**
      * Helper function to call something doing function
      *
@@ -340,7 +341,7 @@ class PhotogPhotoActivity: BaseActivity() {
      * @param block lambda to actually do some work. It is called in the ioScope.
      *              lambda the some work will do
      */
-    private inline fun launchWork(crossinline block: suspend () -> Unit): Job {
+    private inline fun launchIOWork(crossinline block: suspend () -> Unit): Job {
         return ioScope.launch {
             block()
         }

@@ -30,5 +30,5 @@ interface LocationDao: BaseDao<Location> {
     fun getLocation(): LiveData<Location>
 
     @Query("DELETE FROM Location")
-    fun clearAll()
+    suspend fun clearAll()
 }

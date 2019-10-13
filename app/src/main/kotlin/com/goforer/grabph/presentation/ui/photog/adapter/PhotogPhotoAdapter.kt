@@ -48,10 +48,7 @@ import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.presentation.ui.photog.fragment.PhotogPhotoFragment
 import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.repository.interactor.remote.feed.photo.FavoritePhotoRepository
 import com.goforer.grabph.repository.interactor.remote.feed.photo.PhotoRepository
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PopularPhotoRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_photog_photo.*
 import kotlinx.android.synthetic.main.list_photo_item.*
@@ -140,15 +137,15 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
 
         when(type) {
             Caller.PHOTOG_PHOTO_GENERAL_TYPE -> {
-                delete(fragment.photoViewModel.interactor, currentList!![position]?.id!!, type)
+                delete(currentList!![position]?.id!!, type)
             }
 
             Caller.PHOTOG_PHOTO_POPULAR_TYPE -> {
-                delete(fragment.popularPhotoViewModel.interactor, currentList!![position]?.id!!, type)
+                delete(currentList!![position]?.id!!, type)
             }
 
             Caller.PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                delete(fragment.favoritePhotoViewModel.interactor, currentList!![position]?.id!!, type)
+                delete(currentList!![position]?.id!!, type)
             }
         }
     }
@@ -170,7 +167,7 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
         fromPhoto = passByValue(fromPhoto, toPhoto)
         assert(photo != null)
         toPhoto = passByValue(toPhoto, photo!!)
-        move(fragment.photoViewModel.interactor, fromPhoto, toPhoto, fragment.photogPhotoActivity.type)
+        move(fromPhoto, toPhoto, fragment.photogPhotoActivity.type)
     }
 
     private fun passByValue(copyPhoto: Photo, sourcePhoto: Photo): Photo {
@@ -186,40 +183,40 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
         return copyPhoto
     }
 
-    private fun move(repository: Repository, fromPhoto: Photo, toPhoto: Photo, type: Int) {
+    private fun move(fromPhoto: Photo, toPhoto: Photo, type: Int) {
         fragment.launchWork {
             when(type) {
                 Caller.PHOTOG_PHOTO_GENERAL_TYPE -> {
-                    (repository as PhotoRepository).update(fromPhoto)
-                    repository.update(toPhoto)
+                    fragment.photoViewModel.update(fromPhoto)
+                    fragment.photoViewModel.update(toPhoto)
                 }
 
                 Caller.PHOTOG_PHOTO_POPULAR_TYPE -> {
-                    (repository as PopularPhotoRepository).update(fromPhoto)
-                    repository.update(toPhoto)
+                    fragment.popularPhotoViewModel.update(fromPhoto)
+                    fragment.popularPhotoViewModel.update(toPhoto)
                 }
 
                 Caller.PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                    (repository as FavoritePhotoRepository).update(fromPhoto)
-                    repository.update(toPhoto)
+                    fragment.favoritePhotoViewModel.update(fromPhoto)
+                    fragment.favoritePhotoViewModel.update(toPhoto)
                 }
             }
         }
     }
 
-    private fun delete(repository: Repository, id: String, type: Int) {
+    private fun delete(id: String, type: Int) {
         fragment.launchWork {
             when(type) {
                 Caller.PHOTOG_PHOTO_GENERAL_TYPE -> {
-                    (repository as PhotoRepository).deleteByPhotoId(id)
+                    fragment.photoViewModel.deleteByPhotoId(id)
                 }
 
                 Caller.PHOTOG_PHOTO_POPULAR_TYPE -> {
-                    (repository as PopularPhotoRepository).deleteByPhotoId(id)
+                    fragment.popularPhotoViewModel.deleteByPhotoId(id)
                 }
 
                 Caller.PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                    (repository as FavoritePhotoRepository).deleteByPhotoId(id)
+                    fragment.favoritePhotoViewModel.deleteByPhotoId(id)
                 }
             }
         }

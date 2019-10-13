@@ -16,61 +16,42 @@
 
 package com.goforer.grabph.presentation.vm.people
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.people.LoadPeopleUseCase
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Searper
-import com.goforer.grabph.repository.interactor.remote.people.PeopleRepository
 import kotlinx.coroutines.*
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PeopleViewModel
 @Inject
-constructor(val interactor: PeopleRepository): BaseViewModel() {
-
-    @VisibleForTesting
-    private val liveData by lazy { MutableLiveData<String>() }
-
-    internal val people: LiveData<Resource>
+constructor(private val useCase: LoadPeopleUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var people: LiveData<Resource>
 
     private val peopleLiveData = MutableLiveData<List<Searper>>()
 
     internal var calledFrom: Int = 0
 
-    init {
-        people = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@PeopleViewModel, query, -1, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        people = useCase.execute(viewModelScope, parameters)
     }
 
     @MockData
     internal fun deleteUser(id: String) {
         viewModelScope.launch {
-            interactor.deleteUser(id)
+            useCase.deleteUser(id)
         }
-    }
-
-    internal fun setId(id: String) {
-        liveData.value = id
-        val input = id.toLowerCase(Locale.getDefault()).trim { it <= ' '}
-
-        if (input == liveData.value) { return }
-        liveData.value = input
     }
 
     @MockData
     internal fun setPeople(people: List<Searper>) {
         viewModelScope.launch {
-            interactor.setPeople(people as MutableList)
+            useCase.setPeople(people as MutableList)
         }
     }
 
@@ -80,7 +61,7 @@ constructor(val interactor: PeopleRepository): BaseViewModel() {
 
     internal fun loadPeopleFromCache() {
         viewModelScope.launch {
-            setPeopleLiveData(interactor.loadPeopleCache())
+            setPeopleLiveData(useCase.loadPeopleFromCache())
         }
     }
 }

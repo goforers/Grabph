@@ -39,5 +39,5 @@ interface CategoryDao: BaseDao<Category> {
     fun getCategoryList(): LiveData<List<Category>>
 
     @Query("DELETE FROM Category")
-    fun clearAll()
+    suspend fun clearAll()
 }

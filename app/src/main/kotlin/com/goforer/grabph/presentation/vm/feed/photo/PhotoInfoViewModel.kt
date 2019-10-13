@@ -16,37 +16,23 @@
 
 package com.goforer.grabph.presentation.vm.feed.photo
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.feed.photo.LoadPhotoInfoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PhotoInfoRepository
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PhotoInfoViewModel
 @Inject
-constructor(val interactor: PhotoInfoRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
+constructor(private val useCase: LoadPhotoInfoUseCase) : BaseViewModel<Parameters>() {
+    internal lateinit var photoInfo: LiveData<Resource>
+
+    override fun setParameters(parameters: Parameters, type: Int) {
+        photoInfo = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val photoInfo: LiveData<Resource>
-
-    init {
-        photoInfo = Transformations.switchMap(liveData) { photoId ->
-            photoId ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@PhotoInfoViewModel, photoId!!, -1, loadType, boundType, -1))
-            }
-        }
-    }
-
-    internal fun setPhotoId(photoId: String) {
-        liveData.value = photoId
-    }
+    internal suspend fun removePhotoInfo() = useCase.removePhotoInfo()
 }

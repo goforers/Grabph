@@ -17,10 +17,12 @@
 package com.goforer.grabph.repository.interactor.remote.comment
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.comments.Comment
 import com.goforer.grabph.repository.model.cache.data.entity.comments.PhotoComments
 import com.goforer.grabph.repository.model.dao.remote.comment.CommentDao
@@ -32,15 +34,14 @@ import javax.inject.Singleton
 @Singleton
 class CommentRepository
 @Inject
-constructor(private val dao: CommentDao): Repository() {
+constructor(private val dao: CommentDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.photos.comments.getList"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<Comment>, PagedList<Comment>,
-                                                            PhotoComments>(loadType, boundType) {
+                                                            PhotoComments>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: MutableList<Comment>) =  dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -63,12 +64,12 @@ constructor(private val dao: CommentDao): Repository() {
                         /* PageList Config */ config).build()
             }
 
-            override suspend fun loadFromNetwork() = searpService.getComments(KEY, query1, METHOD, FORMAT_JSON, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getComments(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {
             }
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
@@ -78,5 +79,5 @@ constructor(private val dao: CommentDao): Repository() {
             /* page size */
             PagedList.Config.Builder().setPageSize(PER_PAGE).build()).build()
 
-    internal fun removeComments() = dao.clearAll()
+    internal suspend fun removeComments() = dao.clearAll()
 }

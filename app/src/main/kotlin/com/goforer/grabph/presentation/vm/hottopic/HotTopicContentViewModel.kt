@@ -16,59 +16,38 @@
 
 package com.goforer.grabph.presentation.vm.hottopic
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.hottopic.LoadHotTopicUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContent
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.hottopic.HotTopicContentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class HotTopicContentViewModel
 @Inject
-constructor(val interactor: HotTopicContentRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val hotTopicContent: LiveData<Resource>
+constructor(private val useCase: LoadHotTopicUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var hotTopicContent: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
-    init {
-        hotTopicContent = Transformations.switchMap(liveData) { hotTopicId ->
-            hotTopicId ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@HotTopicContentViewModel, hotTopicId!!, -1, loadType, boundType, -1))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        hotTopicContent = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val loadHotTopicContent: LiveData<HotTopicContent> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadHotTopicContent()) }
+    @MockData
+    internal val loadHotTopicContent: LiveData<HotTopicContent> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.loadHotTopicContent()) }
 
-    internal fun setHotTopicId(hotTopicId: String) {
-        liveData.value = hotTopicId
-
-        val input = hotTopicId.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
 
     @MockData
     internal fun setHotTopicContent(hotTopicContent: HotTopicContent) {
         viewModelScope.launch {
-            interactor.setHotTopicContent(hotTopicContent)
+            useCase.setHotTopicContent(hotTopicContent)
         }
     }
 }

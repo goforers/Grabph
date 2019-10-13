@@ -18,10 +18,12 @@ package com.goforer.grabph.repository.interactor.remote.profile
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
 import com.goforer.grabph.repository.model.dao.remote.profile.HomeProfileDao
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
@@ -32,23 +34,22 @@ import javax.inject.Singleton
 @Singleton
 class HomeProfileRepository
 @Inject
-constructor(private val profileDao: HomeProfileDao): Repository(){
+constructor(private val profileDao: HomeProfileDao): Repository<Query>(){
     companion object {
         const val METHOD = "searp.profile.getHomeProfile"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<HomeProfile, HomeProfile, HomeProfile>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<HomeProfile, HomeProfile, HomeProfile>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: HomeProfile) = profileDao.insert(item)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) { }
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = profileDao.getHomeProfile()
 
-            override suspend fun loadFromNetwork() = searpService.getMyProfile(KEY, query1, METHOD, FORMAT_JSON, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getMyProfile(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = profileDao.clearAll()
         }.getAsLiveData()

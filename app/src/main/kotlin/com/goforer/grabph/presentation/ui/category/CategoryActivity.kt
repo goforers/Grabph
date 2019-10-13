@@ -31,8 +31,6 @@ import com.goforer.grabph.presentation.common.effect.transition.TransitionCallba
 import com.goforer.grabph.presentation.ui.category.fragment.CategoryFragment
 import com.goforer.grabph.presentation.vm.category.CategoryViewModel
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.category.CategoryRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_category.*
@@ -111,7 +109,7 @@ class CategoryActivity: BaseActivity()  {
     }
 
     override fun setViews(savedInstanceState: Bundle?) {
-        removeCache(categoryViewModel.interactor)
+        launchIOWork { categoryViewModel.deleteCategory() }
         this@CategoryActivity.appbar_layout_category.outlineProvider = null
         transactFragment(CategoryFragment::class.java, R.id.disconnect_container_category, false)
     }
@@ -138,10 +136,6 @@ class CategoryActivity: BaseActivity()  {
         this@CategoryActivity.iv_disconnect_category.visibility = View.VISIBLE
         this@CategoryActivity.tv_notice1_category.visibility = View.VISIBLE
         this@CategoryActivity.tv_notice2_category.visibility = View.VISIBLE
-    }
-
-    private fun removeCache(repository: Repository) = launchIOWork {
-        (repository as CategoryRepository).deleteCategory()
     }
 
     internal fun showNetworkError(resource: Resource) {

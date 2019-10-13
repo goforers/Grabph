@@ -16,12 +16,10 @@
 
 package com.goforer.grabph.presentation.vm.feed.exif
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.feed.exif.LoadLocalEXIFUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.exif.LocalEXIF
-import com.goforer.grabph.repository.interactor.local.LocalEXIFRepository
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,45 +27,24 @@ import javax.inject.Singleton
 @Singleton
 class LocalEXIFViewModel
 @Inject
-constructor(private val repository: LocalEXIFRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
+constructor(private val useCase: LoadLocalEXIFUseCase) : BaseViewModel<String>() {
+    internal lateinit var exifInfo: LiveData<LocalEXIF>
 
-    internal val exifInfo: LiveData<LocalEXIF>
-
-    init {
-        exifInfo = Transformations.switchMap(liveData) { filename ->
-            filename ?: AbsentLiveData.create<LocalEXIF>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.loadEXIFInfo(filename!!))
-            }
-        }
+    override fun setParameters(parameters: String, type: Int) {
+        exifInfo = useCase.execute(viewModelScope, parameters)
     }
 
     internal fun setEXIFInfo(filename: String, LocalEXIF: LocalEXIF): MediatorLiveData<LocalEXIF> {
         val exif = liveData(viewModelScope.coroutineContext + Dispatchers.Main) {
-             emitSource(repository.saveEXIFInfo(filename, LocalEXIF))
+             emitSource(useCase.saveEXIFInfo(filename, LocalEXIF))
         }
 
         return exif as MediatorLiveData<LocalEXIF>
     }
 
-    internal fun setFileName(filename: String) {
-        liveData.value = filename
-
-        val input = filename.trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
-
     internal fun deleteEXIFInfo(filename: String) {
         viewModelScope.launch {
-            repository.deleteEXIFInfo(filename)
+            useCase.deleteEXIFInfo(filename)
         }
     }
 }

@@ -33,5 +33,5 @@ interface PhotoInfoDao: BaseDao<Picture> {
     fun deleteByPhotoInfoId(photoInfoId: String)
 
     @Query("DELETE FROM Picture")
-    fun clearAll()
+    suspend fun clearAll()
 }

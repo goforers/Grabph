@@ -42,6 +42,7 @@ import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayo
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PEOPLE
@@ -53,14 +54,14 @@ import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_NAME
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_PHOTO_URL
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_RANKING
 import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAdapter
-import com.goforer.grabph.presentation.vm.profile.OthersPhotosViewModel
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
+import com.goforer.grabph.presentation.vm.feed.photo.OthersPhotosViewModel
 import com.goforer.grabph.presentation.vm.profile.OthersProfileViewModel
 import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
@@ -83,13 +84,17 @@ import kotlinx.coroutines.launch
 @RunWithMockData(true)
 class OthersProfileActivity : BaseActivity() {
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
+
     private var adapter: OthersProfileAdapter? = null
+
     private var user: Person? = null
+
     private lateinit var userId: String
-    private var page: Int = 0
+    private var page: Int = -1
     private lateinit var userName: String
     private lateinit var userPhotoUrl: String
     private lateinit var userBackgroundPhoto: String
+
     private var userRanking: Int = 0
     private var calledFrom: Int = 0
     private var halfOffsetAppBar: Int = 0
@@ -104,9 +109,6 @@ class OthersProfileActivity : BaseActivity() {
     private lateinit var behavior: AppBarLayout.Behavior
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
-
-    @field: Inject
-    lateinit var query: PhotogQuery
 
     @field:Inject
     internal lateinit var photosViewModel: OthersPhotosViewModel
@@ -181,13 +183,9 @@ class OthersProfileActivity : BaseActivity() {
     @MockData
     private fun getMockProfile() {
         setBackgroundImageForMock()
-
         when (calledFrom) {
             CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
-                personViewModel.loadType = NetworkBoundResource.LOAD_PERSON
-                personViewModel.boundType = BOUND_FROM_BACKEND
-                personViewModel.setSearperId(userId)
-
+                personViewModel.setParameters(Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
                 personViewModel.person.observe(this, Observer { resource ->
                     when (resource?.getStatus()) {
                         Status.SUCCESS -> {
@@ -244,10 +242,7 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun getRealProfile() {
-        personViewModel.loadType = NetworkBoundResource.LOAD_PERSON
-        personViewModel.boundType = BOUND_FROM_BACKEND
-        personViewModel.setSearperId(userId)
-
+        personViewModel.setParameters(Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
         personViewModel.person.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -298,11 +293,11 @@ class OthersProfileActivity : BaseActivity() {
             CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "183109783@N06"
             else -> userId
         }
-        setLoadParam(LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL, user, page, calledFrom)
 
-        val liveData: LiveData<Resource>? = photosViewModel.userProfile
+        photosViewModel.setParameters(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_BACKEND), NONE_TYPE)
+        val liveData = photosViewModel.userProfile
 
-        liveData?.observe(this, Observer { resource ->
+        liveData.observe(this, Observer { resource ->
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { list ->
@@ -345,7 +340,7 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun setBottomPortionView() {
-        setLoadParam(LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL, userId, page, calledFrom)
+        photosViewModel.setParameters(Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL), NONE_TYPE)
         val liveData: LiveData<Resource>? = photosViewModel.userProfile
 
         liveData?.observe(this, Observer { resource ->
@@ -609,15 +604,6 @@ class OthersProfileActivity : BaseActivity() {
         }
     }
 
-    private fun setLoadParam(loadType: Int, boundType: Int, userID: String, pages: Int, calledFrom: Int) {
-        query.userID = userID
-        query.pages = pages
-        photosViewModel.loadType = loadType
-        photosViewModel.boundType = boundType
-        photosViewModel.calledFrom = calledFrom
-        photosViewModel.setQuery(query)
-    }
-
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -677,8 +663,8 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun removeCache() = launchWork {
-        photosViewModel.interactor.removeCache()
-        personViewModel.interactor.removePerson()
+        photosViewModel.removeCache()
+        personViewModel.removePerson()
     }
 
     /**

@@ -16,39 +16,40 @@
 
 package com.goforer.grabph.repository.interactor.remote.paging.boundarycallback
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
-import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
-import com.goforer.grabph.presentation.vm.profile.OthersPhotosViewModel
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 
-class PageListProfilePhotoBoundaryCallback<T>(private val viewModel: OthersPhotosViewModel,
-                                       private val userId: String, private val pages: Int,
-                                       private val calledFrom: Int): PagedList.BoundaryCallback<T>() {
+class PageListProfilePhotoBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
+                                              private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
     companion object {
-        private var requestPage = 0
+        private var requestPage = 1
     }
 
     override fun onZeroItemsLoaded() {
         requestPage = 1
-        load(NetworkBoundResource.LOAD_PHOTOG_PHOTO)
+        setQuery(Query())
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: T) {
         if (pages > requestPage) {
             requestPage++
-            load(NetworkBoundResource.LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE)
+            setQuery(Query())
         }
     }
 
-    private fun load(loadType: Int) {
-        val query = PhotogQuery()
-        query.userID = userId
+    private fun setQuery(query: Query) {
+        query.query = userId
         query.pages = requestPage
+        query.boundType = BOUND_FROM_BACKEND
+        liveData.value = query
 
-        viewModel.loadType = loadType
-        viewModel.boundType = BOUND_FROM_BACKEND
-        viewModel.calledFrom = calledFrom
-        viewModel.setQuery(query)
+        val input = query.pages
+        if (input == liveData.value?.pages) {
+            return
+        }
+
+        liveData.value = query
     }
 }

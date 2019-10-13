@@ -18,10 +18,10 @@ package com.goforer.grabph.repository.interactor.remote.feed
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.presentation.vm.feed.FeedViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.repository.model.cache.data.entity.feed.FlickrFeed
@@ -29,16 +29,18 @@ import com.goforer.grabph.repository.model.dao.remote.feed.FeedItemDao
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.interactor.remote.paging.boundarycallback.PageListFeedItemBoundaryCallback
+import com.goforer.grabph.repository.model.cache.data.entity.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedItemRepository
 @Inject
-constructor(private val dao: FeedItemDao): Repository() {
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<MutableList<FeedItem>, PagedList<FeedItem>, FlickrFeed>(loadType, boundType) {
+constructor(private val dao: FeedItemDao): Repository<Query>() {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<MutableList<FeedItem>, PagedList<FeedItem>, FlickrFeed>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: MutableList<FeedItem>) {
                 for (feedItem in item) {
                     feedItem.id = "0"
@@ -65,23 +67,25 @@ constructor(private val dao: FeedItemDao): Repository() {
                         .setEnablePlaceholders(true)
                         .build()
 
-                return if (isLatest) {
+                return withContext(Dispatchers.IO) {
+                    if (isLatest) {
                         LivePagedListBuilder(dao.getLatestFeedItems(itemCount), /* PageList Config */ config)
-                                .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
-                                        viewModel as FeedViewModel, query1, pages, calledFrom)).build()
+                            .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
+                                liveData, parameters.query1 as String, pages)).build()
                     } else {
                         LivePagedListBuilder(dao.getFeedItems(), /* PageList Config */ config)
-                                .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
-                                        viewModel as FeedViewModel, query1, pages, calledFrom)).build()
+                            .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
+                                liveData, parameters.query1 as String, pages)).build()
                     }
+                }
             }
 
-            override suspend fun loadFromNetwork() = searpService.getFeed(query1, FORMAT_JSON, LANG_ENGLISH, LANG_KOREAN,
+            override suspend fun loadFromNetwork() = searpService.getFeed(parameters.query1 as String, FORMAT_JSON, LANG_ENGLISH, LANG_KOREAN,
                     LANG_GERMAN, LANG_SPANISH, LANG_FRANCE, LANG_ITALY, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
@@ -101,11 +105,11 @@ constructor(private val dao: FeedItemDao): Repository() {
     internal fun loadFeeds() = dao.getFeeds()
 
     @WorkerThread
-    internal suspend fun deleteLastSeenItems(size: Int) =  delete(size)
+    internal fun deleteLastSeenItems(size: Int) =  delete(size)
 
     internal suspend fun update(feedItem: FeedItem) = dao.update(feedItem)
 
     internal suspend fun insert(feedItems: List<FeedItem>) = dao.insert(feedItems as MutableList<FeedItem>)
 
-    internal suspend fun delete(size: Int) = dao.removeLastSeenItems(size)
+    internal fun delete(size: Int) = dao.removeLastSeenItems(size)
 }

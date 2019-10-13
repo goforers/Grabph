@@ -16,89 +16,58 @@
 
 package com.goforer.grabph.presentation.vm.feed
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import androidx.paging.PagedList
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.feed.LoadFeedUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.feed.FeedItemRepository
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedViewModel
 @Inject
-constructor(private val interactor: FeedItemRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val feed: LiveData<Resource>
+constructor(private val useCase: LoadFeedUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var feed: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
     internal val pinnedup: LiveData<PagedList<FeedItem>> by lazy {
-        interactor.loadPinnedupFeed()
+        useCase.loadPinnedFeed()
     }
 
     internal val feeds: List<FeedItem> by lazy {
-        interactor.loadFeeds()
+        useCase.loadFeeds()
     }
 
-    init {
-        feed = liveData.switchMap { query ->
-            query ?: AbsentLiveData.create<Resource>()
-
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@FeedViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        feed = useCase.execute(viewModelScope, parameters)
     }
 
-    private fun closeWork(viewModelScope: CoroutineScope?) {
-        viewModelScope?.coroutineContext?.cancelChildren()
-    }
+    private fun closeWork(viewModelScope: CoroutineScope?) = viewModelScope?.coroutineContext?.cancelChildren()
 
-    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadFeed(id)) }
+    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadFeed(id)?.let {
+        emitSource(it)
+    } }
 
     internal fun updateFeedItem(feedItem: FeedItem) {
-        viewModelScope.launch {
-            interactor.updateFeedItem(feedItem)
-        }
-
+        viewModelScope.launch { useCase.updateFeedItem(feedItem) }
         closeWork(viewModelScope)
     }
 
     internal fun insertFeedItems(feedItems: List<FeedItem>) {
-        viewModelScope.launch {
-            interactor.insert(feedItems)
-        }
-
+        viewModelScope.launch { useCase.insertFeedItems(feedItems) }
         closeWork(viewModelScope)
     }
 
     internal fun deleteLastSeenItems(size: Int) {
-        viewModelScope.launch {
-            interactor.deleteLastSeenItems(size)
-        }
-
+        viewModelScope.launch { useCase.deleteLastSeenItems(size) }
         closeWork(viewModelScope)
-    }
-
-    internal fun setKeyword(keyword: String) {
-        liveData.value = keyword
-
-        val input = keyword.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
     }
 }

@@ -16,66 +16,42 @@
 
 package com.goforer.grabph.presentation.vm.ranking
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.ranking.LoadRankingUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.ranking.Ranking
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.ranking.RankingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class RankingViewModel
 @Inject
-constructor(val interactor: RankingRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy { MutableLiveData<String>() }
-
-    private val rankingLiveData = MutableLiveData<Ranking>()
-
-    internal val ranking: LiveData<Resource>
+constructor(private val useCase: LoadRankingUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var ranking: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
-    init {
-        ranking = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@RankingViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        ranking = useCase.execute(viewModelScope, parameters)
     }
 
-    internal fun setRankingLiveData(data: Ranking) { rankingLiveData.value = data }
-
-    internal fun getRankingLiveData(): MutableLiveData<Ranking> { return rankingLiveData }
-
-    internal fun setId(id: String) {
-        liveData.value = id
-        val input = id.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
+    internal fun getRankingLiveData() = useCase.getRankingLiveData()
 
     @MockData
-    internal fun loadRanking(): LiveData<Ranking>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadRanking()) }
+    internal fun loadRanking(): LiveData<Ranking>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadRanking()?.let {
+        emitSource(it)
+    } }
 
     @MockData
-    internal fun setRanking(ranking: Ranking) {
-        viewModelScope.launch { interactor.setRanking(ranking) }
-    }
+    internal fun setRanking(ranking: Ranking) = viewModelScope.launch { useCase.setRanking(ranking) }
 
-    internal fun loadRankingFromCache() {
-        viewModelScope.launch { setRankingLiveData(interactor.loadRankingCache()) }
-    }
+    @MockData
+    internal fun setRankingLiveData(ranking: Ranking) = useCase.setRankingLiveData(ranking)
+
+    internal fun loadRankingFromCache() = viewModelScope.launch { useCase.loadRankingFromCache() }
 }

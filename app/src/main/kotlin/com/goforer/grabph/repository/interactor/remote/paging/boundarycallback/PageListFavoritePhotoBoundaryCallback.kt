@@ -16,38 +16,44 @@
 
 package com.goforer.grabph.repository.interactor.remote.paging.boundarycallback
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
-import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
-import com.goforer.grabph.presentation.vm.feed.photo.FavoritePhotoViewModel
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.model.cache.data.entity.Query
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import javax.inject.Inject
 
-class PageListFavoritePhotoBoundaryCallback<T>(private val viewModel: FavoritePhotoViewModel,
-                                               private val userId: String, private val pages: Int,
-                                               private val calledFrom: Int) : PagedList.BoundaryCallback<T>() {
+class PageListFavoritePhotoBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
+                                               private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
+    @field:Inject
+    internal lateinit var query: Query
+
     companion object {
         private var requestPage = 0
     }
 
     override fun onZeroItemsLoaded() {
         requestPage = 1
-        load(NetworkBoundResource.LOAD_PHOTOG_PHOTO)
+        setQuery(query)
     }
 
     override fun onItemAtEndLoaded(itemAtEnd: T) {
         if (pages > requestPage) {
             requestPage++
-            load(NetworkBoundResource.LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE)
+            setQuery(query)
         }
     }
 
-    private fun load(loadType: Int) {
-        val query = PhotogQuery()
-        query.userID = userId
+    private fun setQuery(query: Query) {
+        query.query = userId
         query.pages = requestPage
+        query.boundType = BOUND_FROM_BACKEND
+        liveData.value = query
 
-        viewModel.loadType = loadType
-        viewModel.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
-        viewModel.calledFrom = calledFrom
-        viewModel.setQuery(query)
+        val input = query.pages
+        if (input == liveData.value?.pages) {
+            return
+        }
+
+        liveData.value = query
     }
 }

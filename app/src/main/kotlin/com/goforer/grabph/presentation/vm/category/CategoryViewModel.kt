@@ -16,68 +16,38 @@
 
 package com.goforer.grabph.presentation.vm.category
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.category.LoadCategoryUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.category.Category
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.category.CategoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class CategoryViewModel
 @Inject
-constructor(internal val interactor: CategoryRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val category: LiveData<Resource>
+constructor(private val useCase: LoadCategoryUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var category: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
-    init {
-        category = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@CategoryViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
-    }
-
-    /**
-     * Cancel all coroutines when the ViewModel is cleared
-     */
-    override fun onCleared() {
-        super.onCleared()
+    override fun setParameters(parameters: Parameters, type: Int) {
+        category = useCase.execute(viewModelScope, parameters)
     }
 
     @MockData
-    internal fun loadCategories(): LiveData<List<Category>>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadCategories()) }
+    internal fun loadCategories(): LiveData<List<Category>>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadCategories()?.let {
+        emitSource(it)
+    } }
 
     @MockData
-    internal fun setCategories(categories: List<Category>) {
-        viewModelScope.launch {
-            interactor.setCategory(categories as MutableList)
-        }
-    }
+    internal fun setCategories(categories: List<Category>) = viewModelScope.launch { useCase.setCategories(categories) }
 
-    internal fun setId(id: String) {
-        liveData.value = id
 
-        val input = id.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
+    internal fun deleteCategory() = viewModelScope.launch { useCase.deleteCategory() }
 }

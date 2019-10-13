@@ -31,5 +31,5 @@ interface EXIFDao: BaseDao<EXIF> {
     fun getEXIF(): LiveData<List<EXIF>>
 
     @Query("DELETE FROM EXIF")
-    fun clearAll()
+    suspend fun clearAll()
 }

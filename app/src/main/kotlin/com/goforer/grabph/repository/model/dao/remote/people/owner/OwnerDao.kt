@@ -31,5 +31,5 @@ interface OwnerDao: BaseDao<Owner> {
     fun getOwner(): LiveData<Owner>
 
     @Query("DELETE FROM Owner")
-    fun clearAll()
+    suspend fun clearAll()
 }

@@ -31,5 +31,5 @@ interface PersonDao: BaseDao<Person> {
     fun getPerson(): LiveData<Person>
 
     @Query("DELETE FROM Person")
-    fun clearAll()
+    suspend fun clearAll()
 }

@@ -15,5 +15,5 @@ interface HotTopicContentDao: BaseDao<HotTopicContent> {
     fun getHotTopicContent(): LiveData<HotTopicContent>
 
     @Query("DELETE FROM HotTopicContent")
-    fun clearAll()
+    suspend fun clearAll()
 }

@@ -31,6 +31,7 @@ import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.event.action.*
@@ -42,6 +43,8 @@ import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FEED_LOCAL
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_feed.*
@@ -272,7 +275,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
     }
 
     override fun requestData(isNew: Boolean) {
-        getFeed("", NetworkBoundResource.LOAD_FEED_LOCAL, Repository.BOUND_FROM_LOCAL, Caller.CALLED_FROM_FEED)
+        getFeed("", LOAD_FEED_LOCAL, BOUND_FROM_LOCAL, Caller.CALLED_FROM_FEED)
 
         Timber.i("requestData")
     }
@@ -285,7 +288,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
          * the backend side in this app-architecture project.
          */
 
-        setLoadParam(NetworkBoundResource.LOAD_FEED_UPDATE, Repository.BOUND_FROM_BACKEND, "", Caller.CALLED_FROM_FEED)
+        setLoadParam(NetworkBoundResource.LOAD_FEED_UPDATE, Repository.BOUND_FROM_BACKEND, "")
 
         Timber.i("updateData")
     }
@@ -293,7 +296,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
     override fun reachToLastPage() {}
 
     private fun getFeed(query: String, loadType: Int, boundType: Int, calledFrom: Int) {
-        setLoadParam(loadType, boundType, query, calledFrom)
+        setLoadParam(loadType, boundType, query)
         feedViewModel.feed.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -348,11 +351,8 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
         }
     }
 
-    private fun setLoadParam(loadType: Int, boundType: Int, query: String, calledFrom: Int) {
-        feedViewModel.loadType = loadType
-        feedViewModel.boundType = boundType
-        feedViewModel.calledFrom = calledFrom
-        feedViewModel.setKeyword(query)
+    private fun setLoadParam(loadType: Int, boundType: Int, keyword: String) {
+        feedViewModel.setParameters(Parameters(keyword, -1, loadType, boundType), -1)
     }
 
     /**

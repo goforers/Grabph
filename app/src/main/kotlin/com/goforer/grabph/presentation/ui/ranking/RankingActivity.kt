@@ -29,6 +29,7 @@ import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionCallback
 import com.goforer.grabph.presentation.ui.ranking.adapter.RankingPagerAdapter
@@ -36,7 +37,8 @@ import com.goforer.grabph.presentation.ui.ranking.fragments.RankingFragment
 import com.goforer.grabph.presentation.vm.ranking.RankingViewModel
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.ranking.RankingDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.ranking.Ranking
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_RANKING
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.snackbar.Snackbar
@@ -189,8 +191,7 @@ class RankingActivity : BaseActivity() {
     private fun transactRealData() {
         val liveData = rankingViewModel.ranking
 
-        setRankingLoadParam(NetworkBoundResource.LOAD_RANKING, NetworkBoundResource.BOUND_FROM_LOCAL, "")
-
+        rankingViewModel.setParameters(Parameters("", -1, LOAD_RANKING, BOUND_FROM_LOCAL), -1)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
 
@@ -253,12 +254,6 @@ class RankingActivity : BaseActivity() {
                 PEOPLE_RANK_FOURTH -> view.setBackgroundResource(R.drawable.border_rounded_rank_red_thin)
             }
         }
-    }
-
-    private fun setRankingLoadParam(loadType: Int, boundType: Int, id: String) {
-        rankingViewModel.loadType = loadType
-        rankingViewModel.boundType = boundType
-        rankingViewModel.setId(id)
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {

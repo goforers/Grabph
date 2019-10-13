@@ -41,6 +41,7 @@ import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.erase.PhotoEraser
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_SEARPLE_GALLERY_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
@@ -74,14 +75,14 @@ import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photoviewer.fragment.PhotoViewerFragment
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.SearpleGalleryPhotoCallback
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.repository.model.cache.data.entity.exif.LocalEXIF
 import com.goforer.grabph.repository.model.cache.data.entity.location.LocalLocation
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.remote.people.person.PersonRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_photo_viewer.*
 import kotlinx.android.synthetic.main.view_searple_gallery_photo.*
@@ -436,7 +437,7 @@ class PhotoViewerActivity: BaseActivity() {
         val isExist= booleanArrayOf(false)
         val path = StringBuilder(photoPathList[position])
 
-        localSavedPhotoViewModel.setFileName(path.substring(path.lastIndexOf("/") + 1, path.length))
+        localSavedPhotoViewModel.setParameters(path.substring(path.lastIndexOf("/") + 1, path.length), NONE_TYPE)
         localSavedPhotoViewModel.photo.observe(this, Observer { photo ->
             photo?.let {
                 isExist[0] = true
@@ -449,10 +450,13 @@ class PhotoViewerActivity: BaseActivity() {
     }
 
     private fun getSearperProfile(id: String) {
-        removePersonCache(searperProfileViewModel.interactor)
-        searperProfileViewModel.loadType = NetworkBoundResource.LOAD_PERSON
-        searperProfileViewModel.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
-        searperProfileViewModel.setSearperId(id)
+        launchIOWork {
+            searperProfileViewModel.removePerson()
+        }
+
+        searperProfileViewModel.loadType = LOAD_PERSON
+        searperProfileViewModel.boundType = BOUND_FROM_BACKEND
+        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
         searperProfileViewModel.person.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -499,7 +503,7 @@ class PhotoViewerActivity: BaseActivity() {
     private fun getEXIFInfo(position: Int) {
         val path = StringBuilder(photoPathList[position])
 
-        localEXIFViewModel.setFileName(path.substring(path.lastIndexOf("/") + 1, path.length))
+        localEXIFViewModel.setParameters(path.substring(path.lastIndexOf("/") + 1, path.length), NONE_TYPE)
 
         val liveData= localEXIFViewModel.exifInfo
 
@@ -518,7 +522,7 @@ class PhotoViewerActivity: BaseActivity() {
     private fun getLocationInfo(position: Int) {
         val path = StringBuilder(photoPathList[position])
 
-        localLocationViewModel.setFileName(path.substring(path.lastIndexOf("/") + 1, path.length))
+        localLocationViewModel.setParameters(path.substring(path.lastIndexOf("/") + 1, path.length), NONE_TYPE)
         val liveData=localLocationViewModel.locationInfo
         liveData.observe(this, Observer {
             it?.let { location ->
@@ -546,10 +550,6 @@ class PhotoViewerActivity: BaseActivity() {
         (pv_photo as AppCompatImageView).transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
         sharedElementCallback = SearpleGalleryPhotoCallback()
         (sharedElementCallback as SearpleGalleryPhotoCallback).setViewBinding(pv_photo as AppCompatImageView)
-    }
-
-    private fun removePersonCache(repository: Repository) = launchIOWork {
-        (repository as PersonRepository).removePerson()
     }
 
     private fun exifInvisible() {

@@ -30,5 +30,5 @@ interface QuestInfoDao: BaseDao<QuestInfo> {
     fun getQuestInfo(): LiveData<QuestInfo>
 
     @Query("DELETE FROM QuestInfo")
-    fun clearAll()
+    suspend fun clearAll()
 }

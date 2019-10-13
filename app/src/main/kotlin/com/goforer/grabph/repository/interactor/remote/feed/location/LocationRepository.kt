@@ -17,8 +17,10 @@
 package com.goforer.grabph.repository.interactor.remote.feed.location
 
 import androidx.lifecycle.LiveData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import androidx.lifecycle.MutableLiveData
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.location.Location
 import com.goforer.grabph.repository.model.cache.data.entity.location.PhotoGEO
 import com.goforer.grabph.repository.model.dao.remote.feed.location.LocationDao
@@ -30,14 +32,13 @@ import javax.inject.Singleton
 @Singleton
 class LocationRepository
 @Inject
-constructor(private val dao: LocationDao): Repository() {
+constructor(private val dao: LocationDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.photos.geo.getLocation"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<Location, Location, PhotoGEO>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<Location, Location, PhotoGEO>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: Location) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -49,15 +50,15 @@ constructor(private val dao: LocationDao): Repository() {
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = dao.getLocation()
 
-            override suspend fun loadFromNetwork() = searpService.getLocation(KEY, query1, METHOD, FORMAT_JSON, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getLocation(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) =  repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) =  repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
     }
 
-    internal fun removeLocation() = dao.clearAll()
+    internal suspend fun removeLocation() = dao.clearAll()
 }

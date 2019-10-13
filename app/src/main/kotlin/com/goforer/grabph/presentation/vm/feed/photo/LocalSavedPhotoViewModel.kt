@@ -17,12 +17,10 @@
 package com.goforer.grabph.presentation.vm.feed.photo
 
 import androidx.paging.PagedList
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.feed.photo.LoadSavedPhotoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.savedphoto.LocalSavedPhoto
-import com.goforer.grabph.repository.interactor.local.LocalSavedPhotoRepository
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,24 +28,19 @@ import javax.inject.Singleton
 @Singleton
 class LocalSavedPhotoViewModel
 @Inject
-constructor(private val repository: LocalSavedPhotoRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val photo: LiveData<LocalSavedPhoto>
+constructor(private val useCase: LoadSavedPhotoUseCase) : BaseViewModel<String>() {
+    internal lateinit var photo: LiveData<LocalSavedPhoto>
 
     internal val photoFileNames: LiveData<PagedList<String>> by lazy {
-        repository.loadPhotoFileNames()
+        useCase.loadPhotoFileNames()
     }
 
     internal val photoIds: LiveData<PagedList<String>> by lazy {
-        repository.loadPhotoIds()
+        useCase.loadPhotoIds()
     }
 
     internal val photoItems: List<LocalSavedPhoto> by lazy {
-        repository.loadPhotoItems()
+        useCase.loadPhotoItems()
     }
 
     /**
@@ -65,11 +58,8 @@ constructor(private val repository: LocalSavedPhotoRepository) : BaseViewModel()
      */
     private var viewModelScope: CoroutineScope? = null
 
-    init {
-        photo = Transformations.switchMap(liveData) { filename ->
-            filename ?: AbsentLiveData.create<LocalSavedPhoto>()
-            repository.loadPhotoInfo(filename!!)
-        }
+    override fun setParameters(parameters: String, type: Int) {
+        photo = useCase.execute(viewModelScope!!, parameters)
     }
 
     /**
@@ -91,7 +81,7 @@ constructor(private val repository: LocalSavedPhotoRepository) : BaseViewModel()
         viewModelJob = Job()
         viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob!!)
         launchWork {
-            photo = repository.savePhotoInfo(filename, user)
+            photo = useCase.savePhotoInfo(filename, user)
         }
 
         closeWork(viewModelScope)
@@ -99,22 +89,11 @@ constructor(private val repository: LocalSavedPhotoRepository) : BaseViewModel()
         return photo
     }
 
-    internal fun setFileName(filename: String) {
-        liveData.value = filename
-
-        val input = filename.trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
-
     internal fun deleteSavedPhotoInfo(filename: String) {
         viewModelJob = Job()
         viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob!!)
         launchWork {
-            repository.deletePhotoInfo(filename)
+            useCase.deletePhotoInfo(filename)
         }
 
         closeWork(viewModelScope)

@@ -33,6 +33,7 @@ import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.ui.comment.CommentActivity
@@ -42,8 +43,6 @@ import com.goforer.grabph.repository.model.cache.data.entity.comments.Comment
 import com.goforer.grabph.repository.network.response.Status
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_COMMENTS
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.comment.CommentRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -92,7 +91,7 @@ class CommentFragment : RecyclerFragment<Comment>() {
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removeCache(commentViewModel.interactor)
+        launchWork { commentViewModel.removeComments() }
         commentViewModel.loadType = LOAD_COMMENTS
         commentViewModel.boundType = BOUND_FROM_BACKEND
     }
@@ -166,7 +165,7 @@ class CommentFragment : RecyclerFragment<Comment>() {
     }
 
     override fun requestData(isNew: Boolean) {
-        commentViewModel.setPhotoId(photoId)
+        commentViewModel.setParameters(Parameters(photoId, -1, LOAD_COMMENTS, BOUND_FROM_BACKEND), -1)
         getComments()
 
         Timber.i("requestData")
@@ -181,11 +180,9 @@ class CommentFragment : RecyclerFragment<Comment>() {
     }
 
     override fun onSorted(items: List<Comment>) {
-
     }
 
     override fun onFirstVisibleItem(position: Int) {
-
     }
 
     override fun onLastVisibleItem(position: Int) {
@@ -232,10 +229,6 @@ class CommentFragment : RecyclerFragment<Comment>() {
         }
 
         else -> {}
-    }
-
-    private fun removeCache(repository: Repository) = launchWork {
-        (repository as CommentRepository).removeComments()
     }
 
     /**

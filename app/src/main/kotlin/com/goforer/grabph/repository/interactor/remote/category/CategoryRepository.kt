@@ -18,11 +18,11 @@ package com.goforer.grabph.repository.interactor.remote.category
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.presentation.vm.category.CategoryViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.model.cache.data.entity.category.Category
 import com.goforer.grabph.repository.model.cache.data.entity.category.Categoryg
@@ -30,6 +30,7 @@ import com.goforer.grabph.repository.model.dao.remote.category.CategoryDao
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.interactor.remote.paging.boundarycallback.PagedListCategoryBoundaryCallback
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -38,14 +39,13 @@ import javax.inject.Singleton
 @Singleton
 class CategoryRepository
 @Inject
-constructor(private val dao: CategoryDao): Repository() {
+constructor(private val dao: CategoryDao): Repository<Query>() {
     companion object {
         const val METHOD = "searp.category.getList"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object : NetworkBoundResource<MutableList<Category>, PagedList<Category>, Categoryg>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object : NetworkBoundResource<MutableList<Category>, PagedList<Category>, Categoryg>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item:  MutableList<Category>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -68,11 +68,11 @@ constructor(private val dao: CategoryDao): Repository() {
                     if (isLatest) {
                         LivePagedListBuilder(dao.getLatestCategories(itemCount), /* PageList Config */ config)
                                 .setBoundaryCallback(PagedListCategoryBoundaryCallback<Category>(
-                                        viewModel as CategoryViewModel, query1, pages, calledFrom)).build()
+                                    liveData, parameters.query1 as String, pages)).build()
                     } else {
                         LivePagedListBuilder(dao.getCategories(), /* PageList Config */ config)
                                 .setBoundaryCallback(PagedListCategoryBoundaryCallback<Category>(
-                                        viewModel as CategoryViewModel, query1, pages, calledFrom)).build()
+                                    liveData, parameters.query1 as String, pages)).build()
                     }
                 }
             }
@@ -81,7 +81,7 @@ constructor(private val dao: CategoryDao): Repository() {
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
@@ -95,10 +95,10 @@ constructor(private val dao: CategoryDao): Repository() {
     internal suspend fun setCategory(categories: MutableList<Category>) = insert(categories)
 
     @WorkerThread
-    internal fun deleteCategory() = delete()
+    internal suspend fun deleteCategory() = delete()
 
     @MockData
     internal suspend fun insert(categories: MutableList<Category>) = dao.insert(categories)
 
-    internal fun delete() = dao.clearAll()
+    internal suspend fun delete() = dao.clearAll()
 }

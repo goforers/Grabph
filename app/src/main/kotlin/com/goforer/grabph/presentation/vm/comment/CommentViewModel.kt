@@ -16,12 +16,11 @@
 
 package com.goforer.grabph.presentation.vm.comment
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.comment.LoadCommentUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.comment.CommentRepository
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,26 +28,15 @@ import javax.inject.Singleton
 @Singleton
 class CommentViewModel
 @Inject
-constructor(val interactor: CommentRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
+constructor(private val useCase: LoadCommentUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var comments: LiveData<Resource>
+
+    override fun setParameters(parameters: Parameters, type: Int) {
+        comments = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val comments: LiveData<Resource>
+    internal val commentList = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.getCommentList()) }
 
-    init {
-        comments = Transformations.switchMap(liveData) { photoId ->
-            photoId ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@CommentViewModel, photoId!!, -1, loadType, boundType, -1))
-            }
-        }
-    }
 
-    internal val commentList = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadComments()) }
-
-    internal fun setPhotoId(photoId: String) {
-        liveData.value = photoId
-    }
+    internal suspend fun removeComments() = useCase.removeComments()
 }

@@ -16,65 +16,40 @@
 
 package com.goforer.grabph.presentation.vm.people.owner
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.people.owner.LoadOwnerUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Owner
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.people.owner.OwnerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class OwnerViewModel
 @Inject
-constructor(private val interactor: OwnerRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
+constructor(private val useCase: LoadOwnerUseCase) : BaseViewModel<Parameters>() {
+    internal lateinit var owner: LiveData<Resource>
+
+    override fun setParameters(parameters: Parameters, type: Int) {
+        owner = useCase.execute(viewModelScope, parameters)
     }
 
-    internal val owner: LiveData<Resource>
-
-    internal var calledFrom: Int = 0
-
-    init {
-        owner = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@OwnerViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
-    }
-
-    internal fun loadOwner(): LiveData<Owner> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadOwner()) }
-
-    internal fun setId(id: String) {
-        liveData.value = id
-
-        val input = id.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
+    internal fun loadOwner(): LiveData<Owner> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.loadOwner()) }
 
     @MockData
     internal fun setOwner(owner: Owner) {
         viewModelScope.launch {
-            interactor.setOwner(owner)
+            useCase.setOwner(owner)
         }
     }
 
     internal fun deleteOwner() {
         viewModelScope.launch {
-            interactor.removeOwner()
+            useCase.deleteOwner()
         }
     }
 }

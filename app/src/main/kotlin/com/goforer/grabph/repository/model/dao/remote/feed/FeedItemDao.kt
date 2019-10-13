@@ -46,5 +46,5 @@ interface FeedItemDao: BaseDao<FeedItem> {
     fun removeLastSeenItems(size: Int)
 
     @Query("DELETE FROM FeedItem")
-    fun clearAll()
+    suspend fun clearAll()
 }

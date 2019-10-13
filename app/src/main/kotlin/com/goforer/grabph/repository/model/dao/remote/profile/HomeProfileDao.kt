@@ -27,7 +27,7 @@ interface HomeProfileDao: BaseDao<HomeProfile> {
     fun getHomeProfile(): LiveData<HomeProfile>
 
     @Query("DELETE FROM HomeProfile")
-    fun clearAll()
+    suspend fun clearAll()
 
     @Query("SELECT * FROM HomeProfile")
     fun loadHomeProfile(): HomeProfile

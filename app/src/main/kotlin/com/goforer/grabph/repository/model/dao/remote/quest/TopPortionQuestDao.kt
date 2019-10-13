@@ -30,5 +30,5 @@ interface TopPortionQuestDao: BaseDao<TopPortionQuest> {
     fun getTopPortionQuest(): LiveData<TopPortionQuest>
 
     @Query("DELETE FROM TopPortionQuest")
-    fun clearAll()
+    suspend fun clearAll()
 }

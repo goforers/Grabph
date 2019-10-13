@@ -206,6 +206,8 @@ class SplashActivity : BaseActivity() {
         val moreSplash = if (MIN_SPLASH_TIME <= elapsed) 0 else MIN_SPLASH_TIME - elapsed
 
         delay(moreSplash)
+        goToHome()
+        /*
         when(snsName) {
             SNS_NAME_FACEBOOK -> {
                 accessToken ?: moveToLogIn()
@@ -231,6 +233,7 @@ class SplashActivity : BaseActivity() {
                 return@launchWork
             }
         }
+         */
     }
 
     private fun moveToLogIn() {

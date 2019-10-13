@@ -32,13 +32,16 @@ import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PEOPLE_TYPE
 import com.goforer.grabph.presentation.ui.people.adapter.PeopleAdapter
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.people.PeopleViewModel
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.people.PeopleDataSource
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.people.SearperDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Searper
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PEOPLE
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.snackbar.Snackbar
@@ -187,11 +190,9 @@ class PeopleActivity: BaseActivity() {
     }
 
     private fun transactRealData() {
-        val liveData = peopleViewModel.people
-
         // "id" is needed to be inserted
-        setPeopleLoadParam(NetworkBoundResource.LOAD_PEOPLE, NetworkBoundResource.BOUND_FROM_LOCAL, "")
-
+        peopleViewModel.setParameters(Parameters("", -1, LOAD_PEOPLE, BOUND_FROM_LOCAL), NONE_TYPE)
+        val liveData = peopleViewModel.people
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
 
@@ -239,12 +240,6 @@ class PeopleActivity: BaseActivity() {
         getDrawable(R.drawable.recycer_divider)?.let { divider.setDrawable(it) }
         recycler_people_layout.addItemDecoration(divider)
         recycler_people_layout.adapter = adapter
-    }
-
-    private fun setPeopleLoadParam(loadType: Int, boundType: Int, id: String) {
-        peopleViewModel.loadType = loadType
-        peopleViewModel.boundType = boundType
-        peopleViewModel.setId(id)
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {

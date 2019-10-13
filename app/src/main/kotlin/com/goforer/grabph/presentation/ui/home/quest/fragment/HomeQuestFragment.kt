@@ -34,19 +34,15 @@ import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.quest.adapter.HomeFavoriteQuestAdapter
 import com.goforer.grabph.presentation.ui.home.quest.adapter.HomeTopPortionQuestAdapter
 import com.goforer.grabph.presentation.ui.home.SnapItem
-import com.goforer.grabph.presentation.vm.quest.FavoriteQuestViewModel
-import com.goforer.grabph.presentation.vm.quest.TopPortionQuestViewModel
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.qeust.TopPortionQuestDataSource
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.quests.FavoriteQuestDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuest
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Status
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_quest.*
@@ -59,11 +55,18 @@ import kotlin.reflect.full.findAnnotation
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.NOTO_SANS_KR_MEDIUM
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.NOTO_SANS_KR_REGULAR
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.common.menu.MenuHandler
+import com.goforer.grabph.presentation.vm.quest.QuestViewModel
+import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.FAVORITE_QUEST_TYPE
+import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.HOT_QUEST_TYPE
 import com.goforer.grabph.repository.interactor.paging.datasource.FavoriteQuestSortDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_DURATION
 import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_LATEST
 import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_PRIZE_MONEY
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUESTS
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_QUEST_TOP_PORTION
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
@@ -85,10 +88,7 @@ class HomeQuestFragment: BaseFragment() {
     }
 
     @field:Inject
-    lateinit var topPortionQuestViewModel: TopPortionQuestViewModel
-
-    @field:Inject
-    lateinit var favoriteQuestViewModel: FavoriteQuestViewModel
+    lateinit var questViewModel: QuestViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val acvView = AutoClearedValue(this,
@@ -252,7 +252,7 @@ class HomeQuestFragment: BaseFragment() {
     private fun transactTopMockData() {
         val topPortionQuest = TopPortionQuestDataSource()
 
-        topPortionQuestViewModel.loadTopPortionQuest()?.observe(this, Observer {
+        questViewModel.loadHotQuest()?.observe(this, Observer {
             it?.let { topPortionMission ->
                 createTopPortionQuestAdapter()
                 acAdapterTopPortionQuest.get()?.let { it1 -> setSnapItem(it1, topPortionMission, topPortionMission.itemcount) }
@@ -270,7 +270,7 @@ class HomeQuestFragment: BaseFragment() {
         })
 
         topPortionQuest.setTopPortionQuest()
-        topPortionQuestViewModel.setTopPortionQuest(topPortionQuest.getTopPortionQuest()!!)
+        questViewModel.setTopPortionQuest(topPortionQuest.getTopPortionQuest()!!)
     }
 
     @MockData
@@ -298,10 +298,10 @@ class HomeQuestFragment: BaseFragment() {
     }
 
     private fun transactTopRealData() {
-        val liveData = topPortionQuestViewModel.quest
+        val liveData = questViewModel.quest
 
-        setHotQuestLoadParam(NetworkBoundResource.LOAD_QUEST_TOP_PORTION, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FORM_HOME_HOT_QUEST, "")
-        topPortionQuestViewModel.quest.observe(this, Observer { resource ->
+        questViewModel.setParameters(Parameters("", -1, LOAD_QUEST_TOP_PORTION, BOUND_FROM_LOCAL), HOT_QUEST_TYPE)
+        liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { topPortionQuest ->
@@ -344,9 +344,9 @@ class HomeQuestFragment: BaseFragment() {
     }
 
     private fun transactBottomRealData() {
-        val liveData = favoriteQuestViewModel.quest
+        val liveData = questViewModel.quest
 
-        setFavoriteQuestLoadParam(NetworkBoundResource.LOAD_FAVORITE_QUESTS, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FORM_HOME_FAVORITE_QUEST, "")
+        questViewModel.setParameters(Parameters("", -1, LOAD_FAVORITE_QUESTS, BOUND_FROM_LOCAL), FAVORITE_QUEST_TYPE)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -388,20 +388,6 @@ class HomeQuestFragment: BaseFragment() {
                 }
             }
         })
-    }
-
-    private fun setFavoriteQuestLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {
-        favoriteQuestViewModel.loadType = loadType
-        favoriteQuestViewModel.boundType = boundType
-        favoriteQuestViewModel.calledFrom = calledFrom
-        favoriteQuestViewModel.setId(id)
-    }
-
-    private fun setHotQuestLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {
-        topPortionQuestViewModel.loadType = loadType
-        topPortionQuestViewModel.boundType = boundType
-        topPortionQuestViewModel.calledFrom = calledFrom
-        topPortionQuestViewModel.setId(id)
     }
 
     private fun sortBy(quests: PagedList<Quest>, type: Int): PagedList<Quest> {

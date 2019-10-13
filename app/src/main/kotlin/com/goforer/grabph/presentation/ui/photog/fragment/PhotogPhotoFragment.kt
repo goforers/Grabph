@@ -36,6 +36,7 @@ import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.base.presentation.view.helper.RecyclerItemTouchHelperCallback
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTOG_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_FAVORITE_TYPE
 import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_GENERAL_TYPE
@@ -45,7 +46,7 @@ import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photog.adapter.PhotogPhotoAdapter
-import com.goforer.grabph.repository.model.cache.data.entity.photog.PhotogQuery
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.feed.photo.FavoritePhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PopularPhotoViewModel
@@ -54,10 +55,6 @@ import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
-import com.goforer.grabph.repository.interactor.remote.feed.photo.FavoritePhotoRepository
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PhotoRepository
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PopularPhotoRepository
-import com.goforer.grabph.repository.interactor.remote.Repository
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photog_photo.*
@@ -101,9 +98,6 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
     @field:Inject
     lateinit var waterMarkHandler: WatermarkHandler
 
-    @field:Inject
-    lateinit var query: PhotogQuery
-
     companion object {
         private lateinit var photogPhotos: List<Photo>
     }
@@ -129,21 +123,21 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
                 // The cache should be removed whenever App is started again and then
                 // the data are fetched from the Back-end.
                 // The Cache has to be light-weight.
-                removePhotoCache(photoViewModel.interactor, photogPhotoActivity.type)
+                removePhotoCache(photogPhotoActivity.type)
             }
 
             PHOTOG_PHOTO_POPULAR_TYPE -> {
                 // The cache should be removed whenever App is started again and then
                 // the data are fetched from the Back-end.
                 // The Cache has to be light-weight.
-                removePhotoCache(popularPhotoViewModel.interactor, photogPhotoActivity.type)
+                removePhotoCache(photogPhotoActivity.type)
             }
 
             PHOTOG_PHOTO_FAVORITE_TYPE -> {
                 // The cache should be removed whenever App is started again and then
                 // the data are fetched from the Back-end.
                 // The Cache has to be light-weight.
-                removePhotoCache(favoritePhotoViewModel.interactor, photogPhotoActivity.type)
+                removePhotoCache(photogPhotoActivity.type)
             }
         }
 
@@ -254,16 +248,16 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
 
         val liveData: LiveData<Resource>? = when (photogPhotoActivity.type) {
             PHOTOG_PHOTO_GENERAL_TYPE -> {
-                photoViewModel.photogPhotos
+                photoViewModel.photos
             }
             PHOTOG_PHOTO_POPULAR_TYPE -> {
-                popularPhotoViewModel.photogPhotos
+                popularPhotoViewModel.photos
             }
             PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                favoritePhotoViewModel.photogPhotos
+                favoritePhotoViewModel.photos
             }
             else -> {
-                photoViewModel.photogPhotos
+                photoViewModel.photos
             }
         }
 
@@ -345,43 +339,31 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
     }
 
     private fun setLoadParam(loadType: Int, boundType: Int, userID: String, pages: Int, calledFrom: Int, type: Int) {
-        query.userID = userID
-        query.pages = pages
-
         when (type) {
             PHOTOG_PHOTO_GENERAL_TYPE -> {
-                photoViewModel.loadType = loadType
-                photoViewModel.boundType = boundType
-                photoViewModel.calledFrom = calledFrom
-                photoViewModel.setQuery(query)
+                photoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
             }
             PHOTOG_PHOTO_POPULAR_TYPE -> {
-                popularPhotoViewModel.loadType = loadType
-                popularPhotoViewModel.boundType = boundType
-                popularPhotoViewModel.calledFrom = calledFrom
-                popularPhotoViewModel.setQuery(query)
+                popularPhotoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
             }
             PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                favoritePhotoViewModel.loadType = loadType
-                favoritePhotoViewModel.boundType = boundType
-                favoritePhotoViewModel.calledFrom = calledFrom
-                favoritePhotoViewModel.setQuery(query)
+                favoritePhotoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
             }
         }
     }
 
-    private fun removePhotoCache(repository: Repository, type: Int) = launchWork {
+    private fun removePhotoCache(type: Int) = launchWork {
         when(type) {
             PHOTOG_PHOTO_GENERAL_TYPE -> {
-                (repository as PhotoRepository).removePhotos()
+                photoViewModel.removePhotos()
             }
 
             PHOTOG_PHOTO_POPULAR_TYPE -> {
-                (repository as PopularPhotoRepository).removePhotos()
+                popularPhotoViewModel.removePhotos()
             }
 
             PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                (repository as FavoritePhotoRepository).removePhotos()
+                favoritePhotoViewModel.removePhotos()
             }
         }
     }

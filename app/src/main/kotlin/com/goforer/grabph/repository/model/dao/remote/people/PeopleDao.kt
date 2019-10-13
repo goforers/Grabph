@@ -34,7 +34,7 @@ interface PeopleDao: BaseDao<Searper> {
     fun getPeoplePaged(): DataSource.Factory<Int, Searper>
 
     @Query("DELETE FROM Searper")
-    fun clearAll()
+    suspend fun clearAll()
 
     @Query("DELETE FROM Searper WHERE id = :id")
     fun delete(id: String)

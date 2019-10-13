@@ -44,6 +44,7 @@ import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.save.PhotoSaver
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
@@ -68,11 +69,12 @@ import com.goforer.grabph.presentation.common.view.SlidingDrawer
 import com.goforer.grabph.presentation.ui.feed.common.SavePhoto
 import com.goforer.grabph.presentation.ui.feed.feedinfo.adapter.RecommendedFeedAdapter
 import com.goforer.grabph.presentation.ui.feed.feedinfo.sharedelementcallback.FeedInfoItemCallback
-import com.goforer.grabph.presentation.vm.feed.FeedsContentViewModel
+import com.goforer.grabph.presentation.vm.feed.FeedContentViewModel
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.vm.home.HomeViewModel
 import com.goforer.grabph.presentation.vm.feed.FeedViewModel
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.comment.CommentViewModel
 import com.goforer.grabph.presentation.vm.feed.exif.EXIFViewModel
 import com.goforer.grabph.presentation.vm.feed.exif.LocalEXIFViewModel
@@ -92,12 +94,7 @@ import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Compa
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_GEO
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.*
 import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.interactor.remote.comment.CommentRepository
-import com.goforer.grabph.repository.interactor.remote.feed.exif.EXIFRepository
-import com.goforer.grabph.repository.interactor.remote.feed.location.LocationRepository
-import com.goforer.grabph.repository.interactor.remote.people.person.PersonRepository
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -176,7 +173,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     @field:Inject
     lateinit var localSavedPhotoViewModel: LocalSavedPhotoViewModel
     @field:Inject
-    lateinit var feedsContentViewModel: FeedsContentViewModel
+    lateinit var feedContentViewModel: FeedContentViewModel
     @field:Inject
     lateinit var exifViewModel: EXIFViewModel
     @field:Inject
@@ -379,31 +376,29 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(userProfileViewModel.interactor, CACHE_USER_PROFILE_TYPE)
+        removePhotoCache(CACHE_USER_PROFILE_TYPE)
         userProfileViewModel.loadType = LOAD_PERSON
         userProfileViewModel.boundType = BOUND_FROM_BACKEND
-        setSearplerProfileObserver()
+
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(locationViewModel.interactor, CACHE_PHOTO_LOCATION_TYPE)
+        removePhotoCache(CACHE_PHOTO_LOCATION_TYPE)
         locationViewModel.loadType = LOAD_GEO
         locationViewModel.boundType = BOUND_FROM_BACKEND
-        setPhotoLocationObserver()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(exifViewModel.interactor, CACHE_PHOTO_EXIF_TYPE)
+        removePhotoCache(CACHE_PHOTO_EXIF_TYPE)
         exifViewModel.loadType = LOAD_EXIF
         exifViewModel.boundType = BOUND_FROM_BACKEND
-        setPhotoEXIObserver()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(commentViewModel.interactor, CACHE_PHOTO_COMMENTS_TYPE)
+        removePhotoCache(CACHE_PHOTO_COMMENTS_TYPE)
         commentViewModel.loadType = LOAD_COMMENTS
         commentViewModel.boundType = BOUND_FROM_BACKEND
 
@@ -603,8 +598,11 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         }
 
         getSearplerProfile(searperId)
+        setSearplerProfileObserver()
         getPhotoEXIF(photoId)
+        setPhotoEXIObserver()
         getPhotoLocation(photoId)
+        setPhotoLocationObserver()
     }
 
     private fun getIntentData() {
@@ -640,7 +638,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun getSearplerProfile(id: String) {
-        userProfileViewModel.setSearperId(id)
+        userProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setSearplerProfileObserver() = userProfileViewModel.person.observe(this, Observer { resource ->
@@ -673,7 +671,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     })
 
     private fun getPhotoEXIF(photoId: String) {
-        exifViewModel.setPhotoId(photoId)
+        exifViewModel.setParameters(Parameters(photoId, -1, LOAD_EXIF, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setPhotoEXIObserver() = exifViewModel.exif.observe(this, Observer { resource ->
@@ -709,7 +707,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     })
 
     private fun getPhotoLocation(photoId: String) {
-        locationViewModel.setPhotoId(photoId)
+        locationViewModel.setParameters(Parameters(photoId, -1, LOAD_GEO, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setPhotoLocationObserver() = locationViewModel.location.observe(this, Observer { resource ->
@@ -743,14 +741,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     private fun transactFeedsMockData() {
         val feedsContent = FeedsContentDataSource()
 
-        feedsContentViewModel.loadFeedsContent.observe(this, Observer {
+        feedContentViewModel.loadFeedsContent.observe(this, Observer {
             it?.let { content ->
                 createAdapter(content)
             }
         })
 
         feedsContent.setFeedsContent()
-        feedsContentViewModel.setFeedsContent(feedsContent.getFeedsContent()!!)
+        feedContentViewModel.setFeedsContent(feedsContent.getFeedsContent()!!)
     }
 
     private fun createAdapter(content: FeedsContent) {
@@ -1350,22 +1348,22 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         exifHandler.resetEXIFNoneItemCount()
     }
 
-    private fun removePhotoCache(repository: Repository, type: Int) = launchIOWork {
+    private fun removePhotoCache(type: Int) = launchIOWork {
         when(type) {
             CACHE_USER_PROFILE_TYPE -> {
-                (repository as PersonRepository).removePerson()
+                userProfileViewModel.removePerson()
             }
 
             CACHE_PHOTO_EXIF_TYPE -> {
-                (repository as EXIFRepository).removeEXIF()
+                exifViewModel.removeEXIF()
             }
 
             CACHE_PHOTO_LOCATION_TYPE -> {
-                (repository as LocationRepository).removeLocation()
+                locationViewModel.removeLocation()
             }
 
             CACHE_PHOTO_COMMENTS_TYPE -> {
-                (repository as CommentRepository).removeComments()
+                commentViewModel.removeComments()
             }
         }
     }

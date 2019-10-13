@@ -16,13 +16,11 @@
 
 package com.goforer.grabph.presentation.vm.search
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.search.LoadSearchKeywordUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.search.RecentKeyword
-import com.goforer.grabph.repository.interactor.local.SearchKeywordRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,40 +28,18 @@ import javax.inject.Singleton
 @Singleton
 class SearchKeywordViewModel
 @Inject
-constructor(private val repository: SearchKeywordRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
+constructor(private val useCase: LoadSearchKeywordUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var searchKeywords: LiveData<List<RecentKeyword>>
 
-    internal val searchKeywords: LiveData<List<RecentKeyword>?>
-
-    init {
-        searchKeywords = Transformations.switchMap(liveData) { keyword ->
-            keyword ?: AbsentLiveData.create<List<RecentKeyword>>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource( repository.loadSearchKeywords())
-            }
-        }
-    }
-
-    internal fun setKeyword(keyword: String) {
-        liveData.value = keyword
-
-        val input = keyword.trim { it <= ' ' }
-
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
+    override fun setParameters(parameters: Parameters, type: Int) {
+        searchKeywords = useCase.execute(viewModelScope, parameters)
     }
 
     internal fun setSearchKeyword(searchKeyword: String, recentKeyword: RecentKeyword): LiveData<RecentKeyword> {
         var keyword = MediatorLiveData<RecentKeyword>()
 
         viewModelScope.launch {
-            keyword = repository.saveSearchKeyword(searchKeyword, recentKeyword)
+            keyword = useCase.saveSearchKeyword(searchKeyword, recentKeyword)
         }
 
         return keyword
@@ -71,8 +47,7 @@ constructor(private val repository: SearchKeywordRepository): BaseViewModel() {
 
     internal fun deleteSearchKeyword(keyword: String) {
         viewModelScope.launch {
-            repository.deleteSearchKeyword(keyword)
-
+            useCase.deleteSearchKeyword(keyword)
         }
     }
 }

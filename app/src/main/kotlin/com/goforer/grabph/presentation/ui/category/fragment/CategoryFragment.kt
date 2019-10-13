@@ -35,12 +35,12 @@ import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
 import com.goforer.grabph.presentation.ui.category.adapter.CategoryAdapter
-import com.goforer.grabph.presentation.vm.category.CategoryViewModel
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.category.CategoryDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.category.Category
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
@@ -50,7 +50,6 @@ import com.goforer.grabph.repository.interactor.paging.datasource.CategoryListDa
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.coroutines.*
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.reflect.full.findAnnotation
 
 @Suppress("SameParameterValue")
@@ -72,9 +71,6 @@ class CategoryFragment: RecyclerFragment<Category>() {
     }
 
     internal lateinit var category: Category
-
-    @field:Inject
-    internal lateinit var categoryViewModel: CategoryViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val acvView = AutoClearedValue(this,
@@ -219,7 +215,7 @@ class CategoryFragment: RecyclerFragment<Category>() {
                 .setPrefetchDistance(10)
                 .build()
 
-        categoryViewModel.loadCategories()?.observe(this, Observer {
+        categoryActivity.categoryViewModel.loadCategories()?.observe(this, Observer {
             it?.let {
                 this@CategoryFragment.swipe_layout.visibility = View.VISIBLE
                 if (it.isNotEmpty()) {
@@ -235,12 +231,12 @@ class CategoryFragment: RecyclerFragment<Category>() {
         })
 
         category.setCategories()
-        categoryViewModel.setCategories(category.getCategories()!!)
+        categoryActivity.categoryViewModel.setCategories(category.getCategories()!!)
     }
 
     private fun transactRealCategoryList(userId: String, loadType: Int, boundType: Int, calledFrom: Int) {
-        setLoadParam(loadType, boundType, userId, calledFrom)
-        categoryViewModel.category.observe(this, Observer { resource ->
+        setLoadParam(loadType, boundType, userId)
+        categoryActivity.categoryViewModel.category.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData() ?: return@Observer
@@ -254,11 +250,11 @@ class CategoryFragment: RecyclerFragment<Category>() {
 
                         resource.getMessage() != null -> {
                             categoryActivity.showNetworkError(resource)
-                            categoryViewModel.category.removeObservers(this)
+                            categoryActivity.categoryViewModel.category.removeObservers(this)
                         }
                         else -> {
                             categoryActivity.showNetworkError(resource)
-                            categoryViewModel.category.removeObservers(this)
+                            categoryActivity.categoryViewModel.category.removeObservers(this)
                         }
                     }
                 }
@@ -268,21 +264,18 @@ class CategoryFragment: RecyclerFragment<Category>() {
 
                 Status.ERROR -> {
                     categoryActivity.showNetworkError(resource)
-                    categoryViewModel.category.removeObservers(this)
+                    categoryActivity.categoryViewModel.category.removeObservers(this)
                 }
 
                 else -> {
                     categoryActivity.showNetworkError(resource)
-                    categoryViewModel.category.removeObservers(this)
+                    categoryActivity.categoryViewModel.category.removeObservers(this)
                 }
             }
         })
     }
 
-    private fun setLoadParam(loadType: Int, boundType: Int, userId: String, calledFrom: Int) {
-        categoryViewModel.loadType = loadType
-        categoryViewModel.boundType = boundType
-        categoryViewModel.calledFrom = calledFrom
-        categoryViewModel.setId(userId)
+    private fun setLoadParam(loadType: Int, boundType: Int, userId: String) {
+        categoryActivity.categoryViewModel.setParameters(Parameters(userId, -1, loadType, boundType), -1)
     }
 }

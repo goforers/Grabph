@@ -32,16 +32,19 @@ import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_T
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.ProfilePagerAdapter
 import com.goforer.grabph.presentation.ui.home.profile.fragment.photos.HomeProfilePhotosFragment
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
 import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.ProfileDataSource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_HOME_PROFILE
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.appbar.AppBarLayout
 import javax.inject.Inject
@@ -141,10 +144,6 @@ class HomeProfileFragment : BaseFragment() {
         mySalesFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_SALES, it) }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun setPagerAdapter(savedInstanceState: Bundle?) {
         savedInstanceState?.let { getFragmentInstance(it) }
 
@@ -209,7 +208,7 @@ class HomeProfileFragment : BaseFragment() {
     private fun transactRealData() {
         val liveData = homeProfileViewModel.profile
 
-        setHomeProfileLoadParam(NetworkBoundResource.LOAD_HOME_PROFILE, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FROM_HOME_PROFILE, "")
+        homeProfileViewModel.setParameters(Parameters("", -1, LOAD_HOME_PROFILE, BOUND_FROM_LOCAL), NONE_TYPE)
         liveData.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
 
@@ -357,13 +356,6 @@ class HomeProfileFragment : BaseFragment() {
         behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
             override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
         })
-    }
-
-    private fun setHomeProfileLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {
-        homeProfileViewModel.loadType = loadType
-        homeProfileViewModel.boundType = boundType
-        homeProfileViewModel.calledFrom = calledFrom
-        homeProfileViewModel.setId(id)
     }
 
     private fun setFontType() {

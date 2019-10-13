@@ -17,8 +17,10 @@
 package com.goforer.grabph.repository.interactor.remote.feed.photo
 
 import androidx.lifecycle.LiveData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import androidx.lifecycle.MutableLiveData
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.repository.model.cache.data.entity.photoinfo.Picture
 import com.goforer.grabph.repository.model.dao.remote.feed.photo.PhotoInfoDao
@@ -30,14 +32,13 @@ import javax.inject.Singleton
 @Singleton
 class PhotoInfoRepository
 @Inject
-constructor(private val dao: PhotoInfoDao): Repository() {
+constructor(private val dao: PhotoInfoDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.photos.getInfo"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<Picture, Picture, PhotoInfo>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<Picture, Picture, PhotoInfo>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: Picture) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -49,15 +50,15 @@ constructor(private val dao: PhotoInfoDao): Repository() {
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = dao.getPhotoInfo()
 
-            override suspend fun loadFromNetwork() = searpService.getPhotoInfo(KEY, query1, METHOD, FORMAT_JSON, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getPhotoInfo(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
     }
 
-    internal fun removePhotoInfo() = dao.clearAll()
+    internal suspend fun removePhotoInfo() = dao.clearAll()
 }

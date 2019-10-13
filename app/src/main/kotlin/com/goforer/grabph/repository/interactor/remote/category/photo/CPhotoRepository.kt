@@ -17,10 +17,10 @@
 package com.goforer.grabph.repository.interactor.remote.category.photo
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.presentation.vm.category.photo.CPhotoViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.model.cache.data.entity.category.CPhoto
 import com.goforer.grabph.repository.model.cache.data.entity.cphotog.CPhotog
@@ -28,6 +28,7 @@ import com.goforer.grabph.repository.model.dao.remote.category.photo.CPhotoDao
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.interactor.remote.paging.boundarycallback.PageListCPhotoBoundaryCallback
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,14 +37,13 @@ import javax.inject.Singleton
 @Singleton
 class CPhotoRepository
 @Inject
-constructor(private val dao: CPhotoDao): Repository() {
+constructor(private val dao: CPhotoDao): Repository<Query>() {
     companion object {
         const val METHOD = "searp.category.getPhotos"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int, boundType: Int,
-                              calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<MutableList<CPhoto>, PagedList<CPhoto>, CPhotog>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<MutableList<CPhoto>, PagedList<CPhoto>, CPhotog>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: MutableList<CPhoto>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -65,15 +65,15 @@ constructor(private val dao: CPhotoDao): Repository() {
                 return withContext(Dispatchers.IO) {
                     LivePagedListBuilder(dao.getCPhotos(), /* PageList Config */ config)
                             .setBoundaryCallback(PageListCPhotoBoundaryCallback<CPhoto>(
-                                    viewModel as CPhotoViewModel, query1, pages, calledFrom)).build()
+                                liveData, parameters.query1 as String, pages)).build()
                 }
             }
 
-            override suspend fun loadFromNetwork() = searpService.getCategoryPhotos(KEY, query1, METHOD, FORMAT_JSON, query2, PER_PAGE, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getCategoryPhotos(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
@@ -83,5 +83,5 @@ constructor(private val dao: CPhotoDao): Repository() {
 
     internal suspend fun update(photo: CPhoto) = dao.update(photo)
 
-    internal fun removePhotos() = dao.clearAll()
+    internal suspend fun removePhotos() = dao.clearAll()
 }

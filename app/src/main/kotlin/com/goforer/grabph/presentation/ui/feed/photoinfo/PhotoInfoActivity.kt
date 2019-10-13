@@ -45,6 +45,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.save.PhotoSaver
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_OWNER_ID
@@ -63,6 +64,7 @@ import com.goforer.grabph.presentation.ui.feed.common.SavePhoto
 import com.goforer.grabph.presentation.ui.feed.photoinfo.sharedelementcallback.PhotoInfoItemCallback
 import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
+import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.feed.exif.EXIFViewModel
 import com.goforer.grabph.presentation.vm.feed.exif.LocalEXIFViewModel
 import com.goforer.grabph.presentation.vm.feed.location.LocalLocationViewModel
@@ -75,16 +77,11 @@ import com.goforer.grabph.repository.model.cache.data.entity.location.Location
 import com.goforer.grabph.repository.model.cache.data.entity.photoinfo.Picture
 import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
 import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_GEO
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTO_INFO
-import com.goforer.grabph.repository.interactor.remote.*
 import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PhotoInfoRepository
-import com.goforer.grabph.repository.interactor.remote.feed.exif.EXIFRepository
-import com.goforer.grabph.repository.interactor.remote.feed.location.LocationRepository
-import com.goforer.grabph.repository.interactor.remote.people.person.PersonRepository
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -305,34 +302,31 @@ class PhotoInfoActivity : BaseActivity() {
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(searperProfileViewModel.interactor, CACHE_SEARPLER_PROFILE_TYPE)
-        searperProfileViewModel.loadType = NetworkBoundResource.LOAD_PERSON
+        removePhotoCache(CACHE_SEARPLER_PROFILE_TYPE)
+        searperProfileViewModel.loadType = LOAD_PERSON
         searperProfileViewModel.boundType = BOUND_FROM_BACKEND
-        setSearplerProfileObserver()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-
-        removePhotoCache(photoInfoViewModel.interactor, CACHE_PHOTOG_INFO_TYPE)
+        removePhotoCache(CACHE_PHOTOG_INFO_TYPE)
         photoInfoViewModel.loadType = LOAD_PHOTO_INFO
         photoInfoViewModel.boundType = BOUND_FROM_BACKEND
-        setPhotoInfo()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(locationViewModel.interactor, CACHE_PHOTO_LOCATION_TYPE)
+        removePhotoCache(CACHE_PHOTO_LOCATION_TYPE)
         locationViewModel.loadType = LOAD_GEO
         locationViewModel.boundType = BOUND_FROM_BACKEND
-        setPhotoLocationObserver()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
         // The Cache has to be light-weight.
-        removePhotoCache(exifViewModel.interactor, CACHE_PHOTO_EXIF_TYPE)
+        removePhotoCache(CACHE_PHOTO_EXIF_TYPE)
         exifViewModel.loadType = LOAD_EXIF
         exifViewModel.boundType = BOUND_FROM_BACKEND
-        setPhotoEXIFObserver()
+
         getData()
         window.sharedElementEnterTransition.addListener(sharedEnterListener)
         supportPostponeEnterTransition()
@@ -488,9 +482,13 @@ class PhotoInfoActivity : BaseActivity() {
 
     private fun getData() {
         getPhotoInfo(photoId)
+        setPhotoInfo()
         getSearplerProfile(ownerId)
+        setSearplerProfileObserver()
         getPhotoEXIF(photoId)
+        setPhotoEXIFObserver()
         getPhotoLocation(photoId)
+        setPhotoLocationObserver()
     }
 
     private fun setActivityResult() {
@@ -509,7 +507,7 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun  getSearplerProfile(id: String) {
-        searperProfileViewModel.setSearperId(id)
+        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setSearplerProfileObserver() = searperProfileViewModel.person.observe(this, Observer { resource ->
@@ -542,7 +540,7 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoEXIF(photoId: String) {
-        exifViewModel.setPhotoId(photoId)
+        exifViewModel.setParameters(Parameters(photoId, -1, LOAD_EXIF, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setPhotoEXIFObserver() = exifViewModel.exif.observe(this, Observer { resource ->
@@ -579,7 +577,7 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoLocation(photoId: String) {
-        locationViewModel.setPhotoId(photoId)
+        locationViewModel.setParameters(Parameters(photoId, -1, LOAD_GEO, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setPhotoLocationObserver() = locationViewModel.location.observe(this, Observer { resource ->
@@ -612,7 +610,7 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoInfo(photoId: String) {
-        photoInfoViewModel.setPhotoId(photoId)
+        photoInfoViewModel.setParameters(Parameters(photoId, -1, LOAD_PHOTO_INFO, BOUND_FROM_BACKEND), NONE_TYPE)
     }
 
     private fun setPhotoInfo() = photoInfoViewModel.photoInfo.observe(this, Observer { resource ->
@@ -1093,22 +1091,22 @@ class PhotoInfoActivity : BaseActivity() {
         exifHandler.resetEXIFNoneItemCount()
     }
 
-    private fun removePhotoCache(repository: Repository, type: Int) = launchIOWork {
+    private fun removePhotoCache(type: Int) = launchIOWork {
         when(type) {
             CACHE_SEARPLER_PROFILE_TYPE -> {
-                (repository as PersonRepository).removePerson()
+                searperProfileViewModel.removePerson()
             }
 
             CACHE_PHOTO_EXIF_TYPE -> {
-                (repository as EXIFRepository).removeEXIF()
+                exifViewModel.removeEXIF()
             }
 
             CACHE_PHOTO_LOCATION_TYPE -> {
-                (repository as LocationRepository).removeLocation()
+                locationViewModel.removeLocation()
             }
 
             CACHE_PHOTOG_INFO_TYPE -> {
-                (repository as PhotoInfoRepository).removePhotoInfo()
+                photoInfoViewModel.removePhotoInfo()
             }
         }
     }

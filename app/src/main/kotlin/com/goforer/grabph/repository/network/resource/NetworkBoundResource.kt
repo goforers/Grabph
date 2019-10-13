@@ -49,7 +49,7 @@ import kotlinx.coroutines.*
  * Guide</a>.
  */
 abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
-@MainThread constructor(loadType: Int, boundType: Int) {
+@MainThread constructor(val loadType: Int, var boundType: Int) {
     companion object {
         const val BOUND_TO_BACKEND = 0
         const val BOUND_FROM_BACKEND = 1
@@ -84,6 +84,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
         const val LOAD_PEOPLE_HAS_NEXT_PAGE = 126
         const val LOAD_RANKING = 127
         const val LOAD_OTHERS_PROFILE = 128
+        const val LOAD_SEARCH_KEYWORD = 129
 
         private const val NONE_ITEM_COUNT = 20
     }
@@ -133,7 +134,8 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
             resource.loadFromCache(false, NONE_ITEM_COUNT, 0)
         }
 
-        resource.result.addSource(cacheData) { resource.result.removeSource(cacheData)
+        resource.result.addSource(cacheData) {
+            resource.result.removeSource(cacheData)
             resource.result.addSource(cacheData) { updatedData
                 -> resource.result.postValue(resource.resource.success(updatedData, 0)) }
         }

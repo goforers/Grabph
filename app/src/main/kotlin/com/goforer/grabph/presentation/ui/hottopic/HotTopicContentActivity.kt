@@ -35,7 +35,7 @@ import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
-import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_HOP_TOPIC_POSITION
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_HOT_TOPIC_CONTENT_ID
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_BEST_PICK_HOT_TOPIC_POSITION
@@ -48,7 +48,8 @@ import com.goforer.grabph.presentation.ui.hottopic.sharedelementcallback.HotTopi
 import com.goforer.grabph.presentation.vm.hottopic.HotTopicContentViewModel
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.hottopic.HotTopicContentDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContent
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_HOT_TOPIC_CONTENT
 import com.goforer.grabph.repository.network.response.Resource
 import com.goforer.grabph.repository.network.response.Status
 import com.google.android.material.snackbar.Snackbar
@@ -327,7 +328,7 @@ class HotTopicContentActivity: BaseActivity() {
     private fun transactRealData() {
         val liveData =  hotTopicContentViewModel.hotTopicContent
 
-        setHotTopicContentLoadParam(NetworkBoundResource.LOAD_HOT_TOPIC_CONTENT, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FROM_HOT_TOPIC_CONTENT, hotTopicContentId)
+        hotTopicContentViewModel.setParameters(Parameters(hotTopicContentId, -1, LOAD_HOT_TOPIC_CONTENT, BOUND_FROM_LOCAL), -1)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -360,13 +361,6 @@ class HotTopicContentActivity: BaseActivity() {
     private fun createAdapter() {
         adapter = HotTopicContentAdapter(this)
         this@HotTopicContentActivity.recycler_hot_topic_view.adapter = adapter
-    }
-
-    private fun setHotTopicContentLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {
-        hotTopicContentViewModel.loadType = loadType
-        hotTopicContentViewModel.boundType = boundType
-        hotTopicContentViewModel.calledFrom = calledFrom
-        hotTopicContentViewModel.setHotTopicId(id)
     }
 
     private fun displayHotTopicContent(hotTopicContent: HotTopicContent) {

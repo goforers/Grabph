@@ -17,57 +17,30 @@
 package com.goforer.grabph.presentation.vm.search
 
 import androidx.paging.PagedList
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.search.LoadFeedSearchUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.search.FeedSearchRepository
-import kotlinx.coroutines.Dispatchers
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedSearchViewModel
 @Inject
-constructor(private val interactor: FeedSearchRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
+constructor(private val useCase: LoadFeedSearchUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var feed: LiveData<Resource>
 
-    internal val feed: LiveData<Resource>
-
-    internal var calledFrom: Int = 0
-
-    init {
-        feed = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@FeedSearchViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        feed = useCase.execute(viewModelScope, parameters)
     }
 
     internal val pinnedup: LiveData<PagedList<FeedItem>> by lazy {
-        interactor.loadPinnedupFeed()
+        useCase.loadPinnedupFeed()
     }
 
     internal val feeds: List<FeedItem> by lazy {
-        interactor.loadFeeds()
-    }
-
-    internal fun setKeyword(keyword: String) {
-        liveData.value = keyword
-
-        val input = keyword.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
+        useCase.loadFeeds()
     }
 }

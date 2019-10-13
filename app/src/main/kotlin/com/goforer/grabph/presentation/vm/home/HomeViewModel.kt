@@ -16,72 +16,51 @@
 
 package com.goforer.grabph.presentation.vm.home
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.home.LoadHomeUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.home.Home
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.home.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class HomeViewModel
 @Inject
-constructor(val interactor: HomeRepository) : BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<String>()
-    }
-
-    internal val home: LiveData<Resource>
+constructor(private val useCase: LoadHomeUseCase) : BaseViewModel<Parameters>() {
+    internal lateinit var home: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
-    init {
-        home = liveData.switchMap { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(interactor.load(this@HomeViewModel, query!!, -1, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        home = useCase.execute(viewModelScope, parameters)
     }
 
     @MockData
-    internal fun loadHome(): LiveData<Home>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(interactor.loadHome()) }
-
-    internal fun setId(id: String) {
-        liveData.value = id
-
-        val input = id.toLowerCase(Locale.getDefault()).trim { it <= ' ' }
-        if (input == liveData.value) {
-            return
-        }
-
-        liveData.value = input
-    }
+    internal fun loadHome(): LiveData<Home>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadHome()?.let {
+        emitSource(it)
+    } }
 
     @MockData
     internal fun setHome(Home: Home) {
         viewModelScope.launch {
-            interactor.setHome(Home)
+            useCase.setHome(Home)
         }
     }
 
     internal fun updateHome(Home: Home) {
         viewModelScope.launch {
-            interactor.updateHome(Home)
+            useCase.updateHome(Home)
         }
     }
 
     internal fun deleteHome() {
         viewModelScope.launch {
-            interactor.deleteHome()
+            useCase.deleteHome()
         }
     }
 }

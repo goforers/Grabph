@@ -43,5 +43,5 @@ interface FavoriteQuestDao: BaseDao<Quest> {
     fun deleteByQuestId(questId: String)
 
     @Query("DELETE FROM Quest")
-    fun clearAll()
+    suspend fun clearAll()
 }

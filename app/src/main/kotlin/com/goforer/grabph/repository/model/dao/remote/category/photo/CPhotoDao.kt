@@ -33,5 +33,5 @@ interface CPhotoDao: BaseDao<CPhoto> {
     fun deleteByCPhotoId(photoId: String)
 
     @Query("DELETE FROM Comment")
-    fun clearAll()
+    suspend fun clearAll()
 }

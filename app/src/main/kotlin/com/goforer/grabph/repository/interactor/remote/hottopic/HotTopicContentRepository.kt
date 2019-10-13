@@ -2,11 +2,13 @@ package com.goforer.grabph.repository.interactor.remote.hottopic
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.presentation.vm.BaseViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContent
 import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContentg
 import com.goforer.grabph.repository.model.dao.remote.hottopic.HotTopicContentDao
@@ -18,14 +20,13 @@ import javax.inject.Singleton
 @Singleton
 class HotTopicContentRepository
 @Inject
-constructor(private val dao: HotTopicContentDao): Repository() {
+constructor(private val dao: HotTopicContentDao): Repository<Query>() {
     companion object {
         const val METHOD = "searp.home.getMain"
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-        return object: NetworkBoundResource<HotTopicContent, HotTopicContent, HotTopicContentg>(loadType, boundType) {
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<HotTopicContent, HotTopicContent, HotTopicContentg>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: HotTopicContent) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
@@ -37,11 +38,11 @@ constructor(private val dao: HotTopicContentDao): Repository() {
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = dao.getHotTopicContent()
 
-            override suspend fun loadFromNetwork() = searpService.getHotTopicContent(KEY, query1, METHOD, FORMAT_JSON, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getHotTopicContent(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
@@ -57,10 +58,10 @@ constructor(private val dao: HotTopicContentDao): Repository() {
     internal suspend fun setHotTopicContent(hotTopicContent: HotTopicContent) = insert(hotTopicContent)
 
     @WorkerThread
-    internal fun deleteHotTopicContent() =  delete()
+    internal suspend fun deleteHotTopicContent() =  delete()
 
     @MockData
     internal suspend fun insert(hotTopicContent: HotTopicContent) =  dao.insert(hotTopicContent)
 
-    internal fun delete() = dao.clearAll()
+    internal suspend fun delete() = dao.clearAll()
 }

@@ -1,12 +1,13 @@
 package com.goforer.grabph.repository.interactor.remote.profile
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.presentation.vm.profile.OthersPhotosViewModel
+import com.goforer.grabph.domain.usecase.Parameters
 import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.interactor.remote.paging.boundarycallback.PageListProfilePhotoBoundaryCallback
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.repository.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.repository.model.dao.remote.feed.photo.PhotoDao
@@ -21,24 +22,17 @@ import javax.inject.Singleton
 @Singleton
 class OthersPhotosRepository
 @Inject
-constructor(private val dao: OthersPhotosDao, private val photoDao: PhotoDao): Repository() {
-
+constructor(private val dao: OthersPhotosDao, private val photoDao: PhotoDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.people.getphotos"
         const val PREFETCH_DISTANCE = 10
     }
 
-    override suspend fun load(viewModel: BaseViewModel, query1: String, query2: Int, loadType: Int,
-                              boundType: Int, calledFrom: Int): LiveData<Resource> {
-
-        return object: NetworkBoundResource<MutableList<Photo>, PagedList<Photo>, Photog>(loadType, boundType) {
-
+    override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
+        return object: NetworkBoundResource<MutableList<Photo>, PagedList<Photo>, Photog>(parameters.loadType, parameters.boundType) {
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
-
-            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(query1)
-
+            override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
             override suspend fun saveToCache(item: MutableList<Photo>) = photoDao.insert(item)
-
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int): LiveData<PagedList<Photo>> {
                 val config = PagedList.Config.Builder()
                     .setInitialLoadSizeHint(20)
@@ -48,18 +42,17 @@ constructor(private val dao: OthersPhotosDao, private val photoDao: PhotoDao): R
                     .build()
 
                 return withContext(Dispatchers.IO) {
-                    LivePagedListBuilder(photoDao.getPhotos(query1), config)
+                    LivePagedListBuilder(photoDao.getPhotos(parameters.query1 as String), config)
                         .setBoundaryCallback(PageListProfilePhotoBoundaryCallback<Photo>(
-                            viewModel as OthersPhotosViewModel, query1, pages, calledFrom
-                        )).build()
+                            liveData, parameters.query1, pages)).build()
                 }
             }
 
-            override suspend fun loadFromNetwork() = searpService.getPhotos(KEY, query1, METHOD, FORMAT_JSON, query2, PER_PAGE, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getPhotos(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
     }
 
-    internal fun removeCache() = photoDao.clearAll()
+    internal suspend fun removeCache() = photoDao.clearAll()
 }

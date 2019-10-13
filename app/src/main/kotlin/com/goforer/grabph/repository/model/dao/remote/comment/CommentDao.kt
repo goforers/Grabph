@@ -33,5 +33,5 @@ interface CommentDao: BaseDao<Comment> {
     fun deleteByCommentId(commentId: String)
 
     @Query("DELETE FROM Comment")
-    fun clearAll()
+    suspend fun clearAll()
 }

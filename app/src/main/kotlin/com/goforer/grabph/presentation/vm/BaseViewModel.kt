@@ -18,7 +18,13 @@ package com.goforer.grabph.presentation.vm
 
 import androidx.lifecycle.ViewModel
 
-open class BaseViewModel: ViewModel() {
+abstract class BaseViewModel<T>: ViewModel() {
     var loadType: Int = 0
     var boundType: Int = 0
+
+    companion object {
+        internal const val NONE_TYPE = -1
+    }
+
+    abstract fun setParameters(parameters: T, type: Int)
 }

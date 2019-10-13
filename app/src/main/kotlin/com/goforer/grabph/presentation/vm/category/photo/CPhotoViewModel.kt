@@ -16,15 +16,12 @@
 
 package com.goforer.grabph.presentation.vm.category.photo
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
+import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.category.photo.LoadCPhotoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.category.CPhotogQuery
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.category.CPhoto
 import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.category.photo.CPhotoRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,39 +29,16 @@ import javax.inject.Singleton
 @Singleton
 class CPhotoViewModel
 @Inject
-constructor(val interactor: CPhotoRepository): BaseViewModel() {
-    @VisibleForTesting
-    private val liveData by lazy {
-        MutableLiveData<CPhotogQuery>()
-    }
-
-    internal val categoryPhoto: LiveData<Resource>
+constructor(private val useCase: LoadCPhotoUseCase): BaseViewModel<Parameters>() {
+    internal lateinit var categoryPhoto: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
-    init {
-        categoryPhoto = Transformations.switchMap(liveData) { query ->
-            query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(            interactor.load(this@CPhotoViewModel, query?.categoryID!!, query.pages, loadType, boundType, calledFrom))
-            }
-        }
+    override fun setParameters(parameters: Parameters, type: Int) {
+        categoryPhoto = useCase.execute(viewModelScope, parameters)
     }
 
-    internal fun updatePhoto(photo: CPhoto) {
-        viewModelScope.launch {
-            interactor.update(photo)
-        }
-    }
+    internal fun updatePhoto(photo: CPhoto) = viewModelScope.launch { useCase.updatePhoto(photo) }
 
-    internal fun setQuery(query: CPhotogQuery) {
-        liveData.value = query
-
-        val input = query.pages
-        if (input == liveData.value?.pages) {
-            return
-        }
-
-        liveData.value = query
-    }
+    internal fun removePhotos() = viewModelScope.launch { useCase.removePhotos() }
 }
