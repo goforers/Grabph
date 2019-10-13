@@ -22,7 +22,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.goforer.grabph.domain.usecase.BaseUseCase
 import com.goforer.grabph.domain.usecase.Parameters
-import com.goforer.grabph.repository.interactor.remote.profile.OthersPhotosRepository
+import com.goforer.grabph.repository.interactor.remote.feed.photo.OthersPhotosRepository
 import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
 import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.response.Resource

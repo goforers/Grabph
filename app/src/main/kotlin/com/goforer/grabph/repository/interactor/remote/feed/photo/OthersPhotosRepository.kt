@@ -1,4 +1,4 @@
-package com.goforer.grabph.repository.interactor.remote.profile
+package com.goforer.grabph.repository.interactor.remote.feed.photo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,7 +48,8 @@ constructor(private val dao: OthersPhotosDao, private val photoDao: PhotoDao): R
                 }
             }
 
-            override suspend fun loadFromNetwork() = searpService.getPhotos(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getPhotos(KEY, parameters.query1 as String,
+                METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX)
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
