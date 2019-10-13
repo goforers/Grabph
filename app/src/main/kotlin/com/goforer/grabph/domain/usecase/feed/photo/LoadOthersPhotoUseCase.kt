@@ -43,7 +43,7 @@ constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parame
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(this@LoadOthersPhotoUseCase.liveData, Parameters(query.query, liveData.value?.pages!!, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(this@LoadOthersPhotoUseCase.liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }

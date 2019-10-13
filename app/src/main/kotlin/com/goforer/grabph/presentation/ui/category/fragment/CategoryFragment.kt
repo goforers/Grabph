@@ -36,17 +36,17 @@ import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.usecase.Parameters
-import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_TYPE
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
 import com.goforer.grabph.presentation.ui.category.adapter.CategoryAdapter
 import com.goforer.grabph.repository.model.cache.data.mock.datasource.category.CategoryDataSource
 import com.goforer.grabph.repository.model.cache.data.entity.category.Category
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.remote.Repository
 import com.goforer.grabph.repository.interactor.paging.datasource.CategoryListDataSource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_CATEGORY
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -202,7 +202,7 @@ class CategoryFragment: RecyclerFragment<Category>() {
         when(mock) {
             @MockData
             true -> transactMockCategoryList()
-            false -> transactRealCategoryList("", NetworkBoundResource.LOAD_CATEGORY, Repository.BOUND_FROM_LOCAL, Caller.CALLED_FROM_PHOTO_TYPE)
+            false -> transactRealCategoryList("", LOAD_CATEGORY, BOUND_FROM_LOCAL, CALLED_FROM_PHOTO_TYPE)
         }
     }
 

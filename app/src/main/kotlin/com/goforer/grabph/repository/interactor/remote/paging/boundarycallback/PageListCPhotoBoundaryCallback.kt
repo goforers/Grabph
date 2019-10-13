@@ -20,6 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_CPHOTO_UPDATE
 
 class PageListCPhotoBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
                                         private val categoryId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
@@ -42,6 +43,7 @@ class PageListCPhotoBoundaryCallback<T>(private val liveData: MutableLiveData<Qu
     private fun setQuery(query: Query) {
         query.query = categoryId
         query.pages = requestPage
+        query.loadType = LOAD_CPHOTO_UPDATE
         query.boundType = BOUND_FROM_BACKEND
         liveData.value = query
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PEOPLE
 
 class PagedListPeopleBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
                                          private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
@@ -26,6 +27,7 @@ class PagedListPeopleBoundaryCallback<T>(private val liveData: MutableLiveData<Q
     private fun setQuery(query: Query) {
         query.query = userId
         query.pages = requestPage
+        query.loadType = LOAD_PEOPLE
         query.boundType = NetworkBoundResource.BOUND_FROM_BACKEND
         liveData.value = query
 

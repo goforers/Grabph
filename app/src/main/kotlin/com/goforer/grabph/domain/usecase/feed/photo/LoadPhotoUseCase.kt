@@ -44,7 +44,7 @@ constructor(private val repository: PhotoRepository):  BaseUseCase<Parameters, R
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
             return@switchMap liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query.query, query.pages, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }

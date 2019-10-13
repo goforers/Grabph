@@ -252,7 +252,7 @@ class HomeQuestFragment: BaseFragment() {
     private fun transactTopMockData() {
         val topPortionQuest = TopPortionQuestDataSource()
 
-        questViewModel.loadHotQuest()?.observe(this, Observer {
+        questViewModel.loadHotQuest().observe(this, Observer {
             it?.let { topPortionMission ->
                 createTopPortionQuestAdapter()
                 acAdapterTopPortionQuest.get()?.let { it1 -> setSnapItem(it1, topPortionMission, topPortionMission.itemcount) }

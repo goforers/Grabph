@@ -27,7 +27,7 @@ constructor(private val repository: CommentRepository):  BaseUseCase<Parameters,
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query.query, -1, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }

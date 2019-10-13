@@ -45,7 +45,7 @@ constructor(private val repository: EXIFRepository):  BaseUseCase<Parameters, Re
             query ?: AbsentLiveData.create<Resource>()
             Timber.d("EXIFViewModel - ViewModel")
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query.query, query.pages, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }

@@ -46,7 +46,7 @@ constructor(private val repository: FeedItemRepository): BaseUseCase<Parameters,
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(this@LoadFeedUseCase.liveData, Parameters(query.query, query.pages, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(this@LoadFeedUseCase.liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }

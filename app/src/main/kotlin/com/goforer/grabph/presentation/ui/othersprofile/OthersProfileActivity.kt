@@ -294,7 +294,7 @@ class OthersProfileActivity : BaseActivity() {
             else -> userId
         }
 
-        photosViewModel.setParameters(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_BACKEND), NONE_TYPE)
+        photosViewModel.setParameters(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL), NONE_TYPE)
         val liveData = photosViewModel.userProfile
 
         liveData.observe(this, Observer { resource ->

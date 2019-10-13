@@ -20,6 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUESTS
 
 class PageListFavoriteQuestBoundaryCallback<T>(private val liveData: MutableLiveData<Query>,
                                                private val userId: String, private val pages: Int): PagedList.BoundaryCallback<T>() {
@@ -42,6 +43,7 @@ class PageListFavoriteQuestBoundaryCallback<T>(private val liveData: MutableLive
     private fun setQuery(query: Query) {
         query.query = userId
         query.pages = requestPage
+        query.loadType = LOAD_FAVORITE_QUESTS
         query.boundType = BOUND_FROM_BACKEND
         liveData.value = query
 

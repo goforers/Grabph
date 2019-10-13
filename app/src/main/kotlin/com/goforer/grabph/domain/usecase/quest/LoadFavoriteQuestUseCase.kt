@@ -47,7 +47,7 @@ constructor(private val repository: FavoriteQuestRepository): BaseUseCase<Parame
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query!!, query.pages, query.loadType, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData, Parameters(query!!, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
             }
         }
     }
