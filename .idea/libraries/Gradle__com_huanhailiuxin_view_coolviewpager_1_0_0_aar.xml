@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.huanhailiuxin.view:coolviewpager:1.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/64713daef44d86a66f25978ded99e9a1/jetified-coolviewpager-1.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/64713daef44d86a66f25978ded99e9a1/jetified-coolviewpager-1.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d3ceb4f0398133ef61a1e4f2f0ba7fd8/jetified-coolviewpager-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d3ceb4f0398133ef61a1e4f2f0ba7fd8/jetified-coolviewpager-1.0.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.huanhailiuxin.view/coolviewpager/1.0.0/be0102cbbac35e5eb349e255c69838ad8b4bba48/coolviewpager-1.0.0-javadoc.jar!/" />

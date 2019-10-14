@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.mikepenz:typeicons-typeface:2.0.7.5@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac19a2d6e5e214312a2ade4291060328/typeicons-typeface-2.0.7.5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac19a2d6e5e214312a2ade4291060328/typeicons-typeface-2.0.7.5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8bd8ba4d84bbffc1a6119a9be23d15f/jetified-typeicons-typeface-2.0.7.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f8bd8ba4d84bbffc1a6119a9be23d15f/jetified-typeicons-typeface-2.0.7.5/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/typeicons-typeface/2.0.7.5/fdd905f549a9ca26b355d8de96c4d8a114c8a168/typeicons-typeface-2.0.7.5-javadoc.jar!/" />

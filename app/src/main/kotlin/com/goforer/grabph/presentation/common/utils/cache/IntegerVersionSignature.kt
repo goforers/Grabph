@@ -22,10 +22,10 @@ import java.nio.ByteBuffer
 import java.security.MessageDigest
 
 class IntegerVersionSignature(private val currentVersion: Int): Key {
-    override fun equals(any: Any?): Boolean {
-        if (any is IntegerVersionSignature) {
-            val other = any as IntegerVersionSignature?
-            return currentVersion == other!!.currentVersion
+    override fun equals(other: Any?): Boolean {
+        if (other is IntegerVersionSignature) {
+            val o = other as IntegerVersionSignature?
+            return currentVersion == o!!.currentVersion
         }
 
         return false

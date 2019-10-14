@@ -25,14 +25,12 @@ import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.exif.EXIFHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.repository.model.cache.Cache
+import com.goforer.grabph.repository.model.cache.data.entity.Query
 import com.goforer.grabph.repository.network.api.SearpService
 import com.goforer.grabph.repository.network.factory.LiveDataCallAdapterFactory
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -227,8 +225,4 @@ class AppModule {
     @Singleton
     @Provides
     internal fun provideOthersProfileDao(cache: Cache) = cache.othersProfileDao()
-
-    @Singleton
-    @Provides
-    internal fun provideScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
 }

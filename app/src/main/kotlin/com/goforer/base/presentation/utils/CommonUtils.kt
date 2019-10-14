@@ -21,7 +21,6 @@ package com.goforer.base.presentation.utils
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.icu.util.Calendar
@@ -63,12 +62,12 @@ object CommonUtils {
 
         phrase.text = text
 
-        val Toast = Toast(getApplicationContext())
+        val toast = Toast(getApplicationContext())
 
-        Toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-        Toast.duration = duration
-        Toast.view = layout
-        Toast.show()
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        toast.duration = duration
+        toast.view = layout
+        toast.show()
     }
 
     @SuppressLint("TimberArgCount")
@@ -85,6 +84,7 @@ object CommonUtils {
         return packageName
     }
 
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
     @Throws(ParseException::class)
     fun convertDateToLong(text: String): Long {

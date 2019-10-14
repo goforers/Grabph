@@ -38,13 +38,12 @@ import com.goforer.grabph.presentation.caller.Caller
 import java.util.*
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.android.gms.auth.api.credentials.CredentialPickerConfig.Prompt.SIGN_IN
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.tasks.Task
 
 class LogInActivity : BaseActivity() {
     private lateinit var callbackManager: CallbackManager
@@ -52,7 +51,7 @@ class LogInActivity : BaseActivity() {
     private var auth: FirebaseAuth? = null
 
     /* Client used to interact with Google APIs. */
-    private var googleApiClient: GoogleApiClient? = null
+    private var googleApiClient: GoogleSignInClient? = null
 
     companion object {
         private const val EMAIL = "email"
@@ -61,6 +60,8 @@ class LogInActivity : BaseActivity() {
 
         internal const val SNS_NAME_FACEBOOK = "FACEBOOK"
         internal const val SNS_NAME_GOOGLE = "GOOGLE"
+
+        private const val RC_SIGN_IN = 9001
     }
 
     override fun setContentView() {
@@ -76,12 +77,8 @@ class LogInActivity : BaseActivity() {
                 .build()
 
         /* Setup the Google API object to allow Google+ logins */
-        googleApiClient = GoogleApiClient.Builder(this)
-                .enableAutoManage(this) {
-                    // connection failed, should be handled
-                }
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build()
+        googleApiClient = GoogleSignIn.getClient(this, gso)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,20 +181,22 @@ class LogInActivity : BaseActivity() {
          *              GOOGLE                 *
          ***************************************/
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode === SIGN_IN) {
+        if (requestCode === RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                account?.let {
-                    firebaseAuthWithGoogle(account)
-                }
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                // ...
-                showMessage(e.toString())
-            }
 
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+
+            account?.let {
+                firebaseAuthWithGoogle(account)
+            }
+        } catch (e: ApiException) {
+            showMessage(e.toString())
         }
     }
 
@@ -214,8 +213,8 @@ class LogInActivity : BaseActivity() {
      *              GOOGLE                 *
      ***************************************/
     private fun signIn() {
-        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
-        startActivityForResult(signInIntent, SIGN_IN)
+        val signInIntent = googleApiClient?.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     /* *************************************
