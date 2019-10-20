@@ -16,7 +16,7 @@ Please refer to below:
 [ViewModels and LiveData: Patterns + AntiPatterns](https://medium.com/androiddevelopers/viewmodels-and-livedata-patterns-antipatterns-21efaef74a54)
 
 ## Grabph Demo Video
-[![Grabph Demo Video](http://img.youtube.com/vi/CeH-gKZtZtc/0.jpg)](https://www.youtube.com/watch?v=CeH-gKZtZtc&feature=youtu.be "Grabph Demo Video")
+[![Grabph Demo Video](http://img.youtube.com/vi/CeH-gKZtZtc/0.jpg)](https://www.youtube.com/watch?v=0c5nJWvnrLc&feature=youtu.be "Grabph Demo Video")
 
 
 ## Advanced App Architecture
