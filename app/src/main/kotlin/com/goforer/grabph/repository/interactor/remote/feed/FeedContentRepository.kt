@@ -29,6 +29,7 @@ import com.goforer.grabph.repository.model.cache.data.mock.entity.feed.FeedsCont
 import com.goforer.grabph.repository.model.dao.remote.feed.FeedsContentDao
 import com.goforer.grabph.repository.network.resource.NetworkBoundResource
 import com.goforer.grabph.repository.network.response.Resource
+import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 

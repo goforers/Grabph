@@ -16,6 +16,7 @@
 
 package com.goforer.grabph.repository.network.api
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import com.goforer.grabph.repository.model.cache.data.entity.ranking.Ranking
 import com.goforer.grabph.repository.model.cache.data.entity.comments.PhotoComments
@@ -32,6 +33,7 @@ import com.goforer.grabph.repository.model.cache.data.entity.quest.info.QuestsIn
 import com.goforer.grabph.repository.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.repository.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.repository.model.cache.data.entity.category.Categoryg
+import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContentg
 import com.goforer.grabph.repository.model.cache.data.mock.entity.feed.FeedsContentg
 import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
@@ -39,10 +41,33 @@ import com.goforer.grabph.repository.model.cache.data.entity.profile.OwnerProfil
 import com.goforer.grabph.repository.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.repository.model.cache.data.entity.profile.*
 import com.goforer.grabph.repository.network.response.ApiResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
+import java.io.File
+
 interface SearpService {
+    companion object {
+        const val MULTIPART_FORM_DATA = "multipart/form-data"
+
+        fun createRequestBody(@NonNull file: File): RequestBody {
+            return RequestBody.create(
+                MULTIPART_FORM_DATA.toMediaTypeOrNull(), file
+            )
+        }
+
+        fun createRequestBody(@NonNull s: String): RequestBody {
+            return RequestBody.create(
+                MULTIPART_FORM_DATA.toMediaTypeOrNull(), s
+            )
+        }
+    }
+
     /**
      * @GET declares an HTTP GET request
      * @Query("") annotation on the parameters marks it as a
@@ -352,4 +377,16 @@ interface SearpService {
             @Query("format") format: String,
             @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Owner>>
+
+    // We've to get it fixed via Searp REST API. That is, We must substitute this API for the Searp API.
+    /**
+     * @POST declares an HTTP GET request
+     * @PartMap annotation on the parameters to denote name and value parts of a multi-part request
+     */
+    @Multipart
+    @POST("https://up.flickr.com/services/upload/")
+    fun postFeed(
+        @PartMap feedInto: Map<String, RequestBody>,
+        @PartMap photos: Map<String, RequestBody>
+    ): LiveData<ApiResponse<FeedItem>>
 }
