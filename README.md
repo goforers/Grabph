@@ -20,7 +20,7 @@ Please refer to below:
 
 
 ## Advanced App Architecture
-<img src="https://github.com/goforers/Grabph/blob/master/Advanced%20Grabph%20App%20Architecture.svg" alt="Architecture" width="880"/>
+<img src="https://github.com/goforers/Grabph/blob/master/Android%20App%20Architecture.png?raw=true" alt="Architecture" width="880"/>
 
 Repository -> Interactor
 
