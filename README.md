@@ -22,7 +22,7 @@ Please refer to below:
 ## Advanced App Architecture
 <img src="https://github.com/goforers/Grabph/blob/master/Android%20App%20Architecture.png?raw=true" alt="Architecture" width="880"/>
 
-Advanced App-Architecture consists of 3 layer, **Presentation Layer** & **Domain(Business Logic) Layer** & **Data Laery**.
+**Advanced App-Architecture consists of 3 layer, **Presentation Layer** & **Domain(Business Logic) Layer** & **Data Laery**.
 
 **1. The presentation layer**
 The presentation layer is the user layer, the graphical interface that captures the user’s events and shows the results. It also performs operations such as verifying that there are no formatting errors in the user’s data entry and formatting data to be displayed in a certain way.
@@ -62,8 +62,6 @@ In this way we are respecting the work in the chain of the factory, each area co
 In this demp App, the Entity is the data model of the business logic layer.
 * In the Repository layer, the “repository” package, we create the RepositoryImpl class that implements the interface that is in the “domain-use case” package. The Repository calls the Datasource layer, so you must instantiate this class.
 * In the Datasource layer, the “datasource” package, we create the Datasource class that develops the logic to get the API data and return them in a data model to be able to work with them. In our example, the Datasource is instantiated with the library with which the API connection is going to be used to consume the data, so the Datasource must instantiate this library in order to call its methods.
-
-<img src="https://github.com/goforers/Grabph/blob/master/Event%20Bus.svg" alt="Architecture" width="880" />
 
 ## Loading data with ViewModel
 <img src="https://github.com/goforers/Grabph/blob/master/Loading%20data%20with%20ViewModel.png" alt="Architecture" width="880"/>
