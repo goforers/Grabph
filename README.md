@@ -45,10 +45,10 @@ These operations are divided between the Repository layer and Datasource:
 **Communication between the layers of a clean architecture on Android**
 
 Each layer should talk only with their immediate friends. In this case, if we look at the software architecture scheme:
- * The UI can only communicate with the ViewModel
- * The ViewModel can only communicate with the UseCase
- * The UseCase can only communicate with the Repository
- * The Repository can only communicate with the Datasource
+ * **The UI can only communicate with the ViewModel**
+ * **The ViewModel can only communicate with the UseCase**
+ * **The UseCase can only communicate with the Repository**
+ * **The Repository can only communicate with the Datasource**
  
 In this way we are respecting the work in the chain of the factory, each area communicates with the next immediate and never with others.
 
@@ -57,7 +57,7 @@ In this way we are respecting the work in the chain of the factory, each area co
 * In the user interface layer, the “ui” package, the Activity or Fragment is created. This class must communicate with the ViewModel layer. For this, the Activity must instantiate the ViewModel object and observe the declared LiveData.
 * In the presentation logic layer, the “vm” package, we create the ViewModel. This class creates the LiveData that will be observed by the Activity or Fragment. The ViewModel communicates with the UseCase layer, for this you must instantiate the UseCase object.
 * In the business logic layer, the “domain — use case” package, we create the UseCase class. This class is instantiated with the following layer, which is the Repository, but it does not do it directly with the object, but it does so with an interface that is in the UseCase package. This is because the UseCase is the most stable layer, which means that the libraries or classes that matter, must also be, and the Repository is one of the most unstable. In this way, it is the Repository that will have an import from the “domain — use case” package and the UseCase will not know it. The UseCase is at the center of the architecture, and this can be seen in the following scheme:
-<img src="https://github.com/goforers/Grabph/blob/master/Event%20Bus.svg" alt="Architecture" width="880" />
+<img src="https://github.com/goforers/Grabph/blob/master/Clean%20Architecture.jpeg?raw=true" alt="Architecture" width="880" />
 
 In this demp App, the Entity is the data model of the business logic layer.
 * In the Repository layer, the “repository” package, we create the RepositoryImpl class that implements the interface that is in the “domain-use case” package. The Repository calls the Datasource layer, so you must instantiate this class.
