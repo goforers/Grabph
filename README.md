@@ -40,7 +40,29 @@ These operations are divided between the Repository layer and Datasource:
  * The Repository layer is the one that performs the logic of data access. Your responsibility is to obtain them and check where they are, deciding where to look at each moment. For example, you can first check the database and, if they are not, search them on the web, save them in the local database and now return the saved data. That is, it defines the flow of access to the data. In our example, it asks beers directly to the data layer that communicates with the API.
  * The Datasource layer is what the implementation performs in order to access the data. In this demo App, it is the one that implements the logic to be able to access the API data of beers.
 
-<img src="https://github.com/goforers/Grabph/blob/master/Data%20Request%20%26%20Response%20Diagram.svg" alt="Architecture" width="880"/>
+<img src="https://github.com/goforers/Grabph/blob/master/Layer%20Communication.jpeg?raw=true" alt="Architecture" width="880"/>
+
+**Communication between the layers of a clean architecture on Android**
+
+Each layer should talk only with their immediate friends. In this case, if we look at the software architecture scheme:
+ * The UI can only communicate with the ViewModel
+ * The ViewModel can only communicate with the UseCase
+ * The UseCase can only communicate with the Repository
+ * The Repository can only communicate with the Datasource
+ 
+In this way we are respecting the work in the chain of the factory, each area communicates with the next immediate and never with others.
+
+**In practice:**
+* We have a package structure where the classes are created, in which each one implements its responsibility.
+* In the user interface layer, the “ui” package, the Activity or Fragment is created. This class must communicate with the ViewModel layer. For this, the Activity must instantiate the ViewModel object and observe the declared LiveData.
+* In the presentation logic layer, the “vm” package, we create the ViewModel. This class creates the LiveData that will be observed by the Activity or Fragment. The ViewModel communicates with the UseCase layer, for this you must instantiate the UseCase object.
+* In the business logic layer, the “domain — use case” package, we create the UseCase class. This class is instantiated with the following layer, which is the Repository, but it does not do it directly with the object, but it does so with an interface that is in the UseCase package. This is because the UseCase is the most stable layer, which means that the libraries or classes that matter, must also be, and the Repository is one of the most unstable. In this way, it is the Repository that will have an import from the “domain — use case” package and the UseCase will not know it. The UseCase is at the center of the architecture, and this can be seen in the following scheme:
+<img src="https://github.com/goforers/Grabph/blob/master/Event%20Bus.svg" alt="Architecture" width="880" />
+
+In this demp App, the Entity is the data model of the business logic layer.
+* In the Repository layer, the “repository” package, we create the RepositoryImpl class that implements the interface that is in the “domain-use case” package. The Repository calls the Datasource layer, so you must instantiate this class.
+* In the Datasource layer, the “datasource” package, we create the Datasource class that develops the logic to get the API data and return them in a data model to be able to work with them. In our example, the Datasource is instantiated with the library with which the API connection is going to be used to consume the data, so the Datasource must instantiate this library in order to call its methods.
+
 <img src="https://github.com/goforers/Grabph/blob/master/Event%20Bus.svg" alt="Architecture" width="880" />
 
 ## Loading data with ViewModel
