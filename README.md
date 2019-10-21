@@ -22,7 +22,7 @@ Please refer to below:
 ## Advanced App Architecture
 <img src="https://github.com/goforers/Grabph/blob/master/Android%20App%20Architecture.png?raw=true" alt="Architecture" width="880"/>
 
-Advanced App-Architecture consists of 3 layer, #Presentation Layer & #Domain(Business Logic) Layer & #Data Laery.
+Advanced App-Architecture consists of 3 layer, **Presentation Layer** & **Domain(Business Logic) Layer** & **Data Laery**.
 
 1. The presentation layer
 The presentation layer is the user layer, the graphical interface that captures the user’s events and shows the results. It also performs operations such as verifying that there are no formatting errors in the user’s data entry and formatting data to be displayed in a certain way.
