@@ -3,7 +3,7 @@ Grabph is the photo SNS App and  also has a lot of functions such as, the photo 
 Please see below link:
 
 ## Summary
-Grabph is based on Android architectural components and follows MVVM pattern. Also Grabph Advanced App Architecture consist of Presentation layer, Domain layer and Repository layer. And new latest technologies, Clean Architecture + Dagger 2.19 + MVVM design pattern + LiveData + ViewModel + PaingLibrary + ROOM Tech + Kotlin Coroutine, were applied into Grabph App as Advanced Android App Architecture. And [RecyclreFragment](https://github.com/goforers/Grabph/blob/master/app/src/main/java/com/goforer/base/presentation/view/fragment/RecyclerFragment.kt) Ver 2.8 has been updated. The many advanced fuctions already were applied into [RecyclreFragment](https://github.com/goforers/Grabph/blob/master/app/src/main/java/com/goforer/base/presentation/view/fragment/RecyclerFragment.kt). These stuff make Android Apps to be extended being more competitive power and help them to maintain consistency.
+Grabph is based on Android architectural components and follows MVVM pattern. Also Grabph Advanced App Architecture consist of Presentation layer, Domain layer and Repository layer. And new latest technologies, Clean Architecture + Dagger 2.19 + MVI design pattern + LiveData + ViewModel + PaingLibrary + ROOM Tech + Kotlin Coroutine, were applied into Grabph App as Advanced Android App Architecture. And [RecyclreFragment](https://github.com/goforers/Grabph/blob/master/app/src/main/java/com/goforer/base/presentation/view/fragment/RecyclerFragment.kt) Ver 2.8 has been updated. The many advanced fuctions already were applied into [RecyclreFragment](https://github.com/goforers/Grabph/blob/master/app/src/main/java/com/goforer/base/presentation/view/fragment/RecyclerFragment.kt). These stuff make Android Apps to be extended being more competitive power and help them to maintain consistency.
 And I'm also applying Kotlin Language into all modules in Grabph and almost codes are written with Kotlin.
 I'd like to help someone who are trying to learn Kotlin Language to apply Kotlin Language into their project.
 
@@ -22,7 +22,23 @@ Please refer to below:
 ## Advanced App Architecture
 <img src="https://github.com/goforers/Grabph/blob/master/Android%20App%20Architecture.png?raw=true" alt="Architecture" width="880"/>
 
-Repository -> Interactor
+Advanced App-Architecture consists of 3 layer, #Presentation Layer & #Domain(Business Logic) Layer & #Data Laery.
+
+1. The presentation layer
+The presentation layer is the user layer, the graphical interface that captures the user’s events and shows the results. It also performs operations such as verifying that there are no formatting errors in the user’s data entry and formatting data to be displayed in a certain way.
+In this demo App, these operations are shared between the UI layer and the ViewModel layer:
+# The UI layer contains the activities and fragments, capturing user events and displaying data.
+# The ViewModel layer formats the data so that the UI shows them in a certain way and verifies that the user’s entries have the correct format.
+
+2. The business logic layer
+In this layer all the rules that a business must comply with are business. For this, they receive the data provided by the user and perform the necessary operations. In our example, the ordering of beers from lowest to highest alcoholic strength are the business rules for what the UseCase class will do.
+It is the most stable layer and the one that indicates what is happening in the software architecture developed.
+
+3. The data layer
+In this layer is where the data is and where they can be accessed.
+These operations are divided between the Repository layer and Datasource:
+# The Repository layer is the one that performs the logic of data access. Your responsibility is to obtain them and check where they are, deciding where to look at each moment. For example, you can first check the database and, if they are not, search them on the web, save them in the local database and now return the saved data. That is, it defines the flow of access to the data. In our example, it asks beers directly to the data layer that communicates with the API.
+# The Datasource layer is what the implementation performs in order to access the data. In this demo App, it is the one that implements the logic to be able to access the API data of beers.
 
 <img src="https://github.com/goforers/Grabph/blob/master/Data%20Request%20%26%20Response%20Diagram.svg" alt="Architecture" width="880"/>
 <img src="https://github.com/goforers/Grabph/blob/master/Event%20Bus.svg" alt="Architecture" width="880" />
