@@ -36,7 +36,7 @@ import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosit
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.helper.BottomNavigationViewHelper
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_CATEGORY_POSITION
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_FEED_INFO_POSITION
@@ -61,7 +61,7 @@ import com.goforer.grabph.presentation.ui.home.quest.fragment.HomeQuestFragment
 import com.goforer.grabph.presentation.vm.home.HomeViewModel
 import com.goforer.grabph.presentation.ui.home.profile.fragment.HomeProfileFragment
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Resource
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton.LayoutParams
@@ -636,7 +636,13 @@ class HomeActivity: BaseActivity() {
         homeViewModel.loadType = loadType
         homeViewModel.boundType = boundType
         homeViewModel.calledFrom = calledFrom
-        homeViewModel.setParameters(Parameters(id, -1, loadType, boundType), NONE_TYPE)
+        homeViewModel.setParameters(
+            Parameters(
+                id,
+                -1,
+                loadType,
+                boundType
+            ), NONE_TYPE)
 
     }
 

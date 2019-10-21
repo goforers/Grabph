@@ -38,7 +38,7 @@ import com.goforer.grabph.presentation.ui.people.PeopleActivity
 import com.goforer.grabph.presentation.ui.people.PeopleActivity.Companion.LAYOUT_SEARPER
 import com.goforer.grabph.presentation.ui.people.PeopleActivity.Companion.LAYOUT_SEARPLE
 import com.goforer.grabph.presentation.ui.people.PeopleActivity.Companion.LAYOUT_SELL
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Searper
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Searper
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_people_item.*
 

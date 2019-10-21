@@ -18,11 +18,11 @@ package com.goforer.grabph.presentation.vm.feed
 
 import androidx.lifecycle.*
 import androidx.paging.PagedList
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.feed.LoadFeedUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.network.response.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren

@@ -16,7 +16,7 @@
 
 package com.goforer.grabph.presentation.ui.search
 
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 
 object SearchedFeedItem {
     private var feedItems = ArrayList<FeedItem>()

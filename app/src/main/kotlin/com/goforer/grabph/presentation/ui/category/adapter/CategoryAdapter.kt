@@ -31,7 +31,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.category.fragment.CategoryFragment
-import com.goforer.grabph.repository.model.cache.data.entity.category.Category
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Category
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.android.synthetic.main.snap_main_catergory_item.*

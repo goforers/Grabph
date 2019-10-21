@@ -29,7 +29,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.ranking.RankingActivity
-import com.goforer.grabph.repository.model.cache.data.entity.ranking.Ranking
+import com.goforer.grabph.data.datasource.model.cache.data.entity.ranking.Ranking
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_rank_bottom_item.*
 import kotlinx.android.synthetic.main.list_rank_bottom_item.view.*

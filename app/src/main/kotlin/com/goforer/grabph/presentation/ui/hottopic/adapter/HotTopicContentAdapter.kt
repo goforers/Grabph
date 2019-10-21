@@ -25,7 +25,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_T
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.hottopic.HotTopicContentActivity
-import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContent.Content
+import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContent.Content
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_hot_topic_content_item.*
 

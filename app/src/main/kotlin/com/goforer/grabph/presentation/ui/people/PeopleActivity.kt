@@ -32,18 +32,18 @@ import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PEOPLE_TYPE
 import com.goforer.grabph.presentation.ui.people.adapter.PeopleAdapter
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.people.PeopleViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.people.PeopleDataSource
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.people.SearperDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Searper
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PEOPLE
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.people.PeopleDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.people.SearperDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Searper
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PEOPLE
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_people.*
 import kotlinx.coroutines.*
@@ -191,7 +191,13 @@ class PeopleActivity: BaseActivity() {
 
     private fun transactRealData() {
         // "id" is needed to be inserted
-        peopleViewModel.setParameters(Parameters("", -1, LOAD_PEOPLE, BOUND_FROM_LOCAL), NONE_TYPE)
+        peopleViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_PEOPLE,
+                BOUND_FROM_LOCAL
+            ), NONE_TYPE)
         val liveData = peopleViewModel.people
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {

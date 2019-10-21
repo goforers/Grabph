@@ -17,10 +17,10 @@
 package com.goforer.grabph.presentation.vm.comment
 
 import androidx.lifecycle.*
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.comment.LoadCommentUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Resource
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton

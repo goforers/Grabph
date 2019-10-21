@@ -47,7 +47,7 @@ import com.goforer.grabph.presentation.ui.photoviewer.PhotoViewerActivity
 import com.goforer.grabph.presentation.ui.photoviewer.fragment.PhotoViewerFragment
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.SearpleGalleryPhotoCallback
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
-import com.goforer.grabph.repository.model.cache.data.entity.savedphoto.LocalSavedPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.entity.savedphoto.LocalSavedPhoto
 import kotlinx.android.synthetic.main.view_searple_gallery_photo.view.*
 import java.io.ByteArrayOutputStream
 import java.io.File

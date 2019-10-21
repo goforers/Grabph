@@ -35,7 +35,7 @@ import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.base.presentation.view.helper.RecyclerItemTouchHelperCallback
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.event.action.DeleteKeywordAction
 import com.goforer.grabph.presentation.event.action.SearchKeywordSubmitAction
@@ -43,9 +43,9 @@ import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.search.adapter.RecentKeywordAdapter
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.search.SearchKeywordViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.search.RecentKeyword
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_SEARCH_KEYWORD
+import com.goforer.grabph.data.datasource.model.cache.data.entity.search.RecentKeyword
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_SEARCH_KEYWORD
 import kotlinx.android.synthetic.main.fragment_search_filter.*
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
@@ -191,13 +191,25 @@ class RecentKeywordFragment : RecyclerFragment<RecentKeyword>() {
         val keyword = feedSearchActivity.queryKeyword
 
         keyword.let {
-            searchKeywordViewModel.setParameters(Parameters(keyword, -1, LOAD_SEARCH_KEYWORD, BOUND_FROM_LOCAL), NONE_TYPE)
+            searchKeywordViewModel.setParameters(
+                Parameters(
+                    keyword,
+                    -1,
+                    LOAD_SEARCH_KEYWORD,
+                    BOUND_FROM_LOCAL
+                ), NONE_TYPE)
             getKeywords()
         }
     }
 
     private fun putKeyword(keyword: String): String {
-        searchKeywordViewModel.setParameters(Parameters(keyword, -1, LOAD_SEARCH_KEYWORD, BOUND_FROM_LOCAL), NONE_TYPE)
+        searchKeywordViewModel.setParameters(
+            Parameters(
+                keyword,
+                -1,
+                LOAD_SEARCH_KEYWORD,
+                BOUND_FROM_LOCAL
+            ), NONE_TYPE)
         getKeywords()
 
         return ""

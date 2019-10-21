@@ -41,7 +41,7 @@ import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkH
 import com.goforer.grabph.presentation.vm.feed.FeedViewModel
 import com.goforer.grabph.presentation.ui.pinnedlist.PinnedFeedsActivity
 import com.goforer.grabph.presentation.ui.pinnedlist.adapter.PinnedFeedsAdapter
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import kotlinx.android.synthetic.main.fragment_pinnedup_item.*
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import org.greenrobot.eventbus.EventBus

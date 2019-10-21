@@ -37,8 +37,8 @@ import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.photos.ProfilePhotosAdapter
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.MyPhotoDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.profile.MyPhotoDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile_photos.*
 import kotlin.math.max

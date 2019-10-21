@@ -36,7 +36,7 @@ import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.base.presentation.view.helper.RecyclerItemTouchHelperCallback
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTOG_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_FAVORITE_TYPE
 import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_GENERAL_TYPE
@@ -50,11 +50,11 @@ import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.feed.photo.FavoritePhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PopularPhotoViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photog_photo.*
@@ -341,13 +341,31 @@ class PhotogPhotoFragment: RecyclerFragment<Photo>() {
     private fun setLoadParam(loadType: Int, boundType: Int, userID: String, pages: Int, calledFrom: Int, type: Int) {
         when (type) {
             PHOTOG_PHOTO_GENERAL_TYPE -> {
-                photoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
+                photoViewModel.setParameters(
+                    Parameters(
+                        userID,
+                        pages,
+                        loadType,
+                        boundType
+                    ), NONE_TYPE)
             }
             PHOTOG_PHOTO_POPULAR_TYPE -> {
-                popularPhotoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
+                popularPhotoViewModel.setParameters(
+                    Parameters(
+                        userID,
+                        pages,
+                        loadType,
+                        boundType
+                    ), NONE_TYPE)
             }
             PHOTOG_PHOTO_FAVORITE_TYPE -> {
-                favoritePhotoViewModel.setParameters(Parameters(userID, pages, loadType, boundType), NONE_TYPE)
+                favoritePhotoViewModel.setParameters(
+                    Parameters(
+                        userID,
+                        pages,
+                        loadType,
+                        boundType
+                    ), NONE_TYPE)
             }
         }
     }

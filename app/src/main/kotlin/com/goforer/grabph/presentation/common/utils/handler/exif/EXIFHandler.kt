@@ -16,7 +16,7 @@
 
 package com.goforer.grabph.presentation.common.utils.handler.exif
 
-import com.goforer.grabph.repository.model.cache.data.entity.exif.EXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
 import javax.inject.Inject
 import javax.inject.Singleton
 

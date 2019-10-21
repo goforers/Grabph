@@ -31,7 +31,7 @@ import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_SEARPER_ICONFARM
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_SEARPER_ICONSERVER
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PAGES
@@ -47,11 +47,11 @@ import com.goforer.grabph.presentation.common.view.SlidingDrawer
 import com.goforer.grabph.presentation.vm.people.person.PersonViewModel
 import com.goforer.grabph.presentation.ui.photog.fragment.PhotogPhotoFragment
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photog_photo.*
@@ -289,7 +289,13 @@ class PhotogPhotoActivity: BaseActivity() {
 
     @SuppressLint("CheckResult")
     private fun displaySearperPicture(iconFarm: Int, iconServer: String, id: String, searperName: String) {
-        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+        searperProfileViewModel.setParameters(
+            Parameters(
+                id,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         getSearperProfile()
 
         searperPhotoPath = workHandler.getProfilePhotoURL(iconFarm, iconServer, id)

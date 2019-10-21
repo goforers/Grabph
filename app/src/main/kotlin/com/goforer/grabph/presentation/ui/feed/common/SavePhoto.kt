@@ -24,14 +24,14 @@ import androidx.lifecycle.Observer
 import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.save.PhotoSaver
+import com.goforer.grabph.domain.usecase.save.PhotoSaver
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.vm.feed.exif.LocalEXIFViewModel
 import com.goforer.grabph.presentation.vm.feed.location.LocalLocationViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.exif.EXIF
-import com.goforer.grabph.repository.model.cache.data.entity.location.Location
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import timber.log.Timber
 
 open class SavePhoto(private val workHandler: CommonWorkHandler, private val saver: PhotoSaver) {

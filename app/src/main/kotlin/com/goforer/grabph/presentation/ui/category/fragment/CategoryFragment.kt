@@ -35,18 +35,18 @@ import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_TYPE
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
 import com.goforer.grabph.presentation.ui.category.adapter.CategoryAdapter
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.category.CategoryDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.category.Category
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.paging.datasource.CategoryListDataSource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_CATEGORY
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.category.CategoryDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Category
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.repository.paging.datasource.CategoryListDataSource
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_CATEGORY
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -276,6 +276,12 @@ class CategoryFragment: RecyclerFragment<Category>() {
     }
 
     private fun setLoadParam(loadType: Int, boundType: Int, userId: String) {
-        categoryActivity.categoryViewModel.setParameters(Parameters(userId, -1, loadType, boundType), -1)
+        categoryActivity.categoryViewModel.setParameters(
+            Parameters(
+                userId,
+                -1,
+                loadType,
+                boundType
+            ), -1)
     }
 }

@@ -31,7 +31,7 @@ import com.goforer.base.presentation.view.holder.DefaultViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.event.action.DeleteKeywordAction
 import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
-import com.goforer.grabph.repository.model.cache.data.entity.search.RecentKeyword
+import com.goforer.grabph.data.datasource.model.cache.data.entity.search.RecentKeyword
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_search_filter.*
 import kotlinx.android.synthetic.main.view_search_filter.view.*

@@ -2,12 +2,12 @@ package com.goforer.grabph.presentation.vm.profile
 
 import androidx.lifecycle.*
 import com.goforer.base.annotation.MockData
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadHomeProfileUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
+import com.goforer.grabph.data.datasource.network.response.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -39,11 +39,11 @@ import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.quest.adapter.HomeFavoriteQuestAdapter
 import com.goforer.grabph.presentation.ui.home.quest.adapter.HomeTopPortionQuestAdapter
 import com.goforer.grabph.presentation.ui.home.SnapItem
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.qeust.TopPortionQuestDataSource
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.quests.FavoriteQuestDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
-import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuest
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.qeust.TopPortionQuestDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.quests.FavoriteQuestDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest
+import com.goforer.grabph.data.datasource.network.response.Status
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_quest.*
 import kotlinx.coroutines.*
@@ -55,18 +55,18 @@ import kotlin.reflect.full.findAnnotation
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.NOTO_SANS_KR_MEDIUM
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.NOTO_SANS_KR_REGULAR
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.vm.quest.QuestViewModel
 import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.FAVORITE_QUEST_TYPE
 import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.HOT_QUEST_TYPE
-import com.goforer.grabph.repository.interactor.paging.datasource.FavoriteQuestSortDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_DURATION
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_LATEST
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_PRIZE_MONEY
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUESTS
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_QUEST_TOP_PORTION
+import com.goforer.grabph.data.repository.paging.datasource.FavoriteQuestSortDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_DURATION
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_LATEST
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_MISSION_SORT_PRIZE_MONEY
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUESTS
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_QUEST_TOP_PORTION
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
@@ -300,7 +300,13 @@ class HomeQuestFragment: BaseFragment() {
     private fun transactTopRealData() {
         val liveData = questViewModel.quest
 
-        questViewModel.setParameters(Parameters("", -1, LOAD_QUEST_TOP_PORTION, BOUND_FROM_LOCAL), HOT_QUEST_TYPE)
+        questViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_QUEST_TOP_PORTION,
+                BOUND_FROM_LOCAL
+            ), HOT_QUEST_TYPE)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -346,7 +352,13 @@ class HomeQuestFragment: BaseFragment() {
     private fun transactBottomRealData() {
         val liveData = questViewModel.quest
 
-        questViewModel.setParameters(Parameters("", -1, LOAD_FAVORITE_QUESTS, BOUND_FROM_LOCAL), FAVORITE_QUEST_TYPE)
+        questViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_FAVORITE_QUESTS,
+                BOUND_FROM_LOCAL
+            ), FAVORITE_QUEST_TYPE)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {

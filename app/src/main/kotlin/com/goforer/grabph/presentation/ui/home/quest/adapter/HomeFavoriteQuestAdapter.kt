@@ -31,7 +31,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import com.goforer.grabph.presentation.ui.home.quest.fragment.HomeQuestFragment
 import kotlinx.android.extensions.LayoutContainer

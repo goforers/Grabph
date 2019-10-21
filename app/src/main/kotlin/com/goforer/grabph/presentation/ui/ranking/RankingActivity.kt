@@ -29,18 +29,18 @@ import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionCallback
 import com.goforer.grabph.presentation.ui.ranking.adapter.RankingPagerAdapter
 import com.goforer.grabph.presentation.ui.ranking.fragments.RankingFragment
 import com.goforer.grabph.presentation.vm.ranking.RankingViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.ranking.RankingDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.ranking.Ranking
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_RANKING
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.ranking.RankingDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.ranking.Ranking
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_RANKING
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_ranking.*
 import javax.inject.Inject
@@ -191,7 +191,13 @@ class RankingActivity : BaseActivity() {
     private fun transactRealData() {
         val liveData = rankingViewModel.ranking
 
-        rankingViewModel.setParameters(Parameters("", -1, LOAD_RANKING, BOUND_FROM_LOCAL), -1)
+        rankingViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_RANKING,
+                BOUND_FROM_LOCAL
+            ), -1)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
 

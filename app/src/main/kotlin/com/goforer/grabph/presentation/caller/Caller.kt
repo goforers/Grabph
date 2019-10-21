@@ -58,7 +58,7 @@ import com.goforer.grabph.presentation.ui.ranking.RankingActivity
 import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.ui.setting.SettingListActivity
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import java.io.ByteArrayOutputStream
 import java.util.*
 

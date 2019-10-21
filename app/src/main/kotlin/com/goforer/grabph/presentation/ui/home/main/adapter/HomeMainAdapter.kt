@@ -38,10 +38,10 @@ import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.SnapItem
 import com.goforer.grabph.presentation.ui.home.main.adapter.snapadapter.*
-import com.goforer.grabph.repository.model.cache.data.entity.category.Category
-import com.goforer.grabph.repository.model.cache.data.entity.home.Home
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
-import com.goforer.grabph.repository.interactor.paging.datasource.*
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Category
+import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.repository.paging.datasource.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.snap_main_catergory_item.*

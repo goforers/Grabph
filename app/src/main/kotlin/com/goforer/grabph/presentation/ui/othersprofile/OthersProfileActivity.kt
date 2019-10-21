@@ -42,7 +42,7 @@ import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayo
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PEOPLE
@@ -57,14 +57,14 @@ import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAda
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.feed.photo.OthersPhotosViewModel
 import com.goforer.grabph.presentation.vm.profile.OthersProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
@@ -185,7 +185,13 @@ class OthersProfileActivity : BaseActivity() {
         setBackgroundImageForMock()
         when (calledFrom) {
             CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
-                personViewModel.setParameters(Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+                personViewModel.setParameters(
+                    Parameters(
+                        userId,
+                        -1,
+                        LOAD_PERSON,
+                        BOUND_FROM_BACKEND
+                    ), NONE_TYPE)
                 personViewModel.person.observe(this, Observer { resource ->
                     when (resource?.getStatus()) {
                         Status.SUCCESS -> {
@@ -242,7 +248,13 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun getRealProfile() {
-        personViewModel.setParameters(Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+        personViewModel.setParameters(
+            Parameters(
+                userId,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         personViewModel.person.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -294,7 +306,13 @@ class OthersProfileActivity : BaseActivity() {
             else -> userId
         }
 
-        photosViewModel.setParameters(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL), NONE_TYPE)
+        photosViewModel.setParameters(
+            Parameters(
+                user,
+                page,
+                LOAD_PHOTOG_PHOTO,
+                BOUND_FROM_LOCAL
+            ), NONE_TYPE)
         val liveData = photosViewModel.userProfile
 
         liveData.observe(this, Observer { resource ->
@@ -340,7 +358,13 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun setBottomPortionView() {
-        photosViewModel.setParameters(Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL), NONE_TYPE)
+        photosViewModel.setParameters(
+            Parameters(
+                userId,
+                page,
+                LOAD_PHOTOG_PHOTO,
+                BOUND_FROM_LOCAL
+            ), NONE_TYPE)
         val liveData: LiveData<Resource>? = photosViewModel.userProfile
 
         liveData?.observe(this, Observer { resource ->

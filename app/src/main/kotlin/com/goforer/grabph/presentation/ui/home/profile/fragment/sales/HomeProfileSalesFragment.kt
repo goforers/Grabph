@@ -32,7 +32,7 @@ import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.sales.SalePagerAdapter
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
 import kotlinx.android.synthetic.main.fragment_home_profile_sale.*
 import javax.inject.Inject
 

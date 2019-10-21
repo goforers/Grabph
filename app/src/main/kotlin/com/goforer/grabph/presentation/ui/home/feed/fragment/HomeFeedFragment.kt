@@ -31,20 +31,20 @@ import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.event.action.*
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.feed.adapter.HomeFeedAdapter
 import com.goforer.grabph.presentation.vm.feed.FeedViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.remote.Repository
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FEED_LOCAL
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.repository.remote.Repository
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FEED_LOCAL
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_feed.*
@@ -352,7 +352,13 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
     }
 
     private fun setLoadParam(loadType: Int, boundType: Int, keyword: String) {
-        feedViewModel.setParameters(Parameters(keyword, -1, loadType, boundType), -1)
+        feedViewModel.setParameters(
+            Parameters(
+                keyword,
+                -1,
+                loadType,
+                boundType
+            ), -1)
     }
 
     /**

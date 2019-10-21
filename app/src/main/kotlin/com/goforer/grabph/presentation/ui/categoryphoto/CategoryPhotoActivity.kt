@@ -44,7 +44,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionCallback
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
@@ -55,14 +55,14 @@ import com.goforer.grabph.presentation.ui.categoryphoto.adapter.CategoryPhotoAda
 import com.goforer.grabph.presentation.ui.categoryphoto.sharedElementCallback.CategoryPhotoListCallback
 import com.goforer.grabph.presentation.vm.category.photo.CPhotoViewModel
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.repository.model.cache.data.entity.category.CPhoto
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.categoryphotos.PhotoCategoryListDataSource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.interactor.remote.Repository
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_CPHOTO_UPDATE
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.CPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.categoryphotos.PhotoCategoryListDataSource
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.repository.remote.Repository
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_CPHOTO_UPDATE
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -493,7 +493,13 @@ class CategoryPhotoActivity: BaseActivity() {
             }
         }
 
-        photoViewModel.setParameters(Parameters(categoryID, page, LOAD_CPHOTO_UPDATE, BOUND_FROM_BACKEND), -1)
+        photoViewModel.setParameters(
+            Parameters(
+                categoryID,
+                page,
+                LOAD_CPHOTO_UPDATE,
+                BOUND_FROM_BACKEND
+            ), -1)
         Timber.i("updateData")
     }
 
@@ -535,7 +541,13 @@ class CategoryPhotoActivity: BaseActivity() {
     }
 
     private fun transactRealData(categoryID: String, page: Int, loadType: Int, boundType: Int, calledFrom: Int) {
-        photoViewModel.setParameters(Parameters(categoryID, page, loadType, boundType), -1)
+        photoViewModel.setParameters(
+            Parameters(
+                categoryID,
+                page,
+                loadType,
+                boundType
+            ), -1)
         window.sharedElementEnterTransition.addListener(sharedEnterListener)
         supportPostponeEnterTransition()
         photoViewModel.categoryPhoto.observe(this, Observer { resource ->

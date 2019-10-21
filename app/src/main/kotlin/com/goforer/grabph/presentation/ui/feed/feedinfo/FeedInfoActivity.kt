@@ -43,8 +43,8 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.save.PhotoSaver
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.save.PhotoSaver
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
@@ -82,19 +82,19 @@ import com.goforer.grabph.presentation.vm.feed.location.LocalLocationViewModel
 import com.goforer.grabph.presentation.vm.feed.location.LocationViewModel
 import com.goforer.grabph.presentation.vm.people.person.PersonViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.feeds.FeedsContentDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.exif.EXIF
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
-import com.goforer.grabph.repository.model.cache.data.entity.location.Location
-import com.goforer.grabph.repository.model.cache.data.mock.entity.feed.FeedsContent
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_COMMENTS
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_GEO
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.feeds.FeedsContentDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
+import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContent
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_COMMENTS
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_GEO
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -638,7 +638,13 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun getSearplerProfile(id: String) {
-        userProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+        userProfileViewModel.setParameters(
+            Parameters(
+                id,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setSearplerProfileObserver() = userProfileViewModel.person.observe(this, Observer { resource ->
@@ -671,7 +677,13 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     })
 
     private fun getPhotoEXIF(photoId: String) {
-        exifViewModel.setParameters(Parameters(photoId, -1, LOAD_EXIF, BOUND_FROM_BACKEND), NONE_TYPE)
+        exifViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_EXIF,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setPhotoEXIObserver() = exifViewModel.exif.observe(this, Observer { resource ->
@@ -707,7 +719,13 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     })
 
     private fun getPhotoLocation(photoId: String) {
-        locationViewModel.setParameters(Parameters(photoId, -1, LOAD_GEO, BOUND_FROM_BACKEND), NONE_TYPE)
+        locationViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_GEO,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setPhotoLocationObserver() = locationViewModel.location.observe(this, Observer { resource ->

@@ -21,11 +21,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import com.goforer.grabph.domain.usecase.Parameters
-import com.goforer.grabph.repository.interactor.local.SearchKeywordRepository
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
-import com.goforer.grabph.repository.model.cache.data.entity.Query
-import com.goforer.grabph.repository.model.cache.data.entity.search.RecentKeyword
+import com.goforer.grabph.domain.Parameters
+import com.goforer.grabph.data.repository.local.SearchKeywordRepository
+import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
+import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
+import com.goforer.grabph.data.datasource.model.cache.data.entity.search.RecentKeyword
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject

@@ -22,12 +22,12 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.goforer.base.annotation.MockData
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import com.goforer.grabph.domain.usecase.Parameters
-import com.goforer.grabph.repository.interactor.remote.home.HomeRepository
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
-import com.goforer.grabph.repository.model.cache.data.entity.Query
-import com.goforer.grabph.repository.model.cache.data.entity.home.Home
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.domain.Parameters
+import com.goforer.grabph.data.repository.remote.home.HomeRepository
+import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
+import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
+import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
+import com.goforer.grabph.data.datasource.network.response.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -45,7 +45,14 @@ constructor(private val repository: HomeRepository):  BaseUseCase<Parameters, Re
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData,
+                    Parameters(
+                        query.query,
+                        liveData.value?.pages!!,
+                        liveData.value?.loadType!!,
+                        liveData.value?.boundType!!
+                    )
+                ))
             }
         }
     }

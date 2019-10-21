@@ -19,7 +19,7 @@ package com.goforer.grabph.presentation.vm.feed.location
 import androidx.lifecycle.*
 import com.goforer.grabph.domain.usecase.feed.location.LoadLocalLocationUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.location.LocalLocation
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.LocalLocation
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton

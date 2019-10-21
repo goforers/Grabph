@@ -46,7 +46,7 @@ import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.ui.searplegallery.adapter.SearpleGalleryAdapter
 import com.goforer.grabph.presentation.ui.searplegallery.SavedPhoto
-import com.goforer.grabph.repository.interactor.remote.Repository
+import com.goforer.grabph.data.repository.remote.Repository
 import kotlinx.android.synthetic.main.fragment_searple_gallery.*
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.coroutines.*

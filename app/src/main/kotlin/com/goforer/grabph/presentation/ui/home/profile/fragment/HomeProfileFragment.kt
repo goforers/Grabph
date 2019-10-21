@@ -32,7 +32,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_T
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
@@ -41,11 +41,11 @@ import com.goforer.grabph.presentation.ui.home.profile.fragment.photos.HomeProfi
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.profile.HomeProfile
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.ProfileDataSource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_HOME_PROFILE
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.profile.ProfileDataSource
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_HOME_PROFILE
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.google.android.material.appbar.AppBarLayout
 import javax.inject.Inject
 import kotlin.math.abs
@@ -208,7 +208,13 @@ class HomeProfileFragment : BaseFragment() {
     private fun transactRealData() {
         val liveData = homeProfileViewModel.profile
 
-        homeProfileViewModel.setParameters(Parameters("", -1, LOAD_HOME_PROFILE, BOUND_FROM_LOCAL), NONE_TYPE)
+        homeProfileViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_HOME_PROFILE,
+                BOUND_FROM_LOCAL
+            ), NONE_TYPE)
         liveData.observe(this, Observer { resource ->
             when (resource?.getStatus()) {
 

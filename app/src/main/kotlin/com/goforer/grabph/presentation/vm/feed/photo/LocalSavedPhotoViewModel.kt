@@ -20,7 +20,7 @@ import androidx.paging.PagedList
 import androidx.lifecycle.*
 import com.goforer.grabph.domain.usecase.feed.photo.LoadSavedPhotoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.savedphoto.LocalSavedPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.entity.savedphoto.LocalSavedPhoto
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton

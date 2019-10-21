@@ -44,8 +44,8 @@ import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.save.PhotoSaver
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.save.PhotoSaver
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_OWNER_ID
@@ -72,16 +72,16 @@ import com.goforer.grabph.presentation.vm.feed.location.LocationViewModel
 import com.goforer.grabph.presentation.vm.people.person.PersonViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoInfoViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.exif.EXIF
-import com.goforer.grabph.repository.model.cache.data.entity.location.Location
-import com.goforer.grabph.repository.model.cache.data.entity.photoinfo.Picture
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_GEO
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PHOTO_INFO
-import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.Picture
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_GEO
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTO_INFO
+import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -507,7 +507,13 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun  getSearplerProfile(id: String) {
-        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+        searperProfileViewModel.setParameters(
+            Parameters(
+                id,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setSearplerProfileObserver() = searperProfileViewModel.person.observe(this, Observer { resource ->
@@ -540,7 +546,13 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoEXIF(photoId: String) {
-        exifViewModel.setParameters(Parameters(photoId, -1, LOAD_EXIF, BOUND_FROM_BACKEND), NONE_TYPE)
+        exifViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_EXIF,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setPhotoEXIFObserver() = exifViewModel.exif.observe(this, Observer { resource ->
@@ -577,7 +589,13 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoLocation(photoId: String) {
-        locationViewModel.setParameters(Parameters(photoId, -1, LOAD_GEO, BOUND_FROM_BACKEND), NONE_TYPE)
+        locationViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_GEO,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setPhotoLocationObserver() = locationViewModel.location.observe(this, Observer { resource ->
@@ -610,7 +628,13 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun getPhotoInfo(photoId: String) {
-        photoInfoViewModel.setParameters(Parameters(photoId, -1, LOAD_PHOTO_INFO, BOUND_FROM_BACKEND), NONE_TYPE)
+        photoInfoViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_PHOTO_INFO,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
     }
 
     private fun setPhotoInfo() = photoInfoViewModel.photoInfo.observe(this, Observer { resource ->

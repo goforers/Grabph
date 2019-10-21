@@ -32,7 +32,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.ui.comment.fragment.CommentFragment
-import com.goforer.grabph.repository.model.cache.data.entity.comments.Comment
+import com.goforer.grabph.data.datasource.model.cache.data.entity.comments.Comment
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_photo_comment.*
 import kotlinx.android.synthetic.main.list_comment_item.*

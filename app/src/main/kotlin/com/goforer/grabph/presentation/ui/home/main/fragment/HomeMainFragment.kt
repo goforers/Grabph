@@ -38,10 +38,10 @@ import com.goforer.grabph.presentation.ui.home.main.adapter.HomeMainAdapter.Comp
 import com.goforer.grabph.presentation.ui.home.main.adapter.HomeMainAdapter.Companion.ADAPTER_POPULAR_SEARPER_INDEX
 import com.goforer.grabph.presentation.ui.home.main.adapter.HomeMainAdapter.Companion.ADAPTER_POPULAR_QUEST_INDEX
 import com.goforer.grabph.presentation.ui.home.SnapItem
-import com.goforer.grabph.repository.model.cache.data.entity.home.Home
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.home.HomeDataSource
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.home.HomeDataSource
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
+import com.goforer.grabph.data.datasource.network.response.Status
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_main.*
 import kotlinx.coroutines.*

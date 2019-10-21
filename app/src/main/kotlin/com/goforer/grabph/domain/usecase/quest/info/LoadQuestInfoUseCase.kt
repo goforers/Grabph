@@ -20,18 +20,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.goforer.base.annotation.MockData
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import com.goforer.grabph.domain.usecase.Parameters
-import com.goforer.grabph.repository.interactor.remote.quest.QuestInfoRepository
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
-import com.goforer.grabph.repository.model.cache.data.entity.Query
-import com.goforer.grabph.repository.model.cache.data.entity.quest.info.QuestInfo
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.domain.Parameters
+import com.goforer.grabph.data.repository.remote.quest.QuestInfoRepository
+import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
+import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.info.QuestInfo
+import com.goforer.grabph.data.datasource.network.response.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,7 +45,14 @@ constructor(private val repository: QuestInfoRepository): BaseUseCase<Parameters
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(liveData, Parameters(query.query, liveData.value?.pages!!, liveData.value?.loadType!!, liveData.value?.boundType!!)))
+                emitSource(repository.load(liveData,
+                    Parameters(
+                        query.query,
+                        liveData.value?.pages!!,
+                        liveData.value?.loadType!!,
+                        liveData.value?.boundType!!
+                    )
+                ))
             }
         }
     }

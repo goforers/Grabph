@@ -26,7 +26,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
 import kotlinx.android.synthetic.main.snap_quest_favorite_keyword.*
 import android.text.TextPaint
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM

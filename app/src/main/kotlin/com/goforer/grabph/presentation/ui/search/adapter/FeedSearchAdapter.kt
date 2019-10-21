@@ -33,7 +33,7 @@ import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_SEARCHED_FEED
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_SEARCH_ITEM_POSITION
 import com.goforer.grabph.presentation.ui.search.fragment.FeedSearchFragment
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_feed_search.*
 import kotlinx.android.synthetic.main.grid_feed_item.view.*

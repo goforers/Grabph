@@ -20,9 +20,9 @@ import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.SnapItem
 import com.goforer.grabph.presentation.ui.home.quest.adapter.snapadapter.FavoriteKeywordAdapter
 import com.goforer.grabph.presentation.ui.home.quest.adapter.snapadapter.HotQuestAdapter
-import com.goforer.grabph.repository.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
-import com.goforer.grabph.repository.interactor.paging.datasource.*
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.repository.paging.datasource.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_quest_item.*
 import kotlinx.android.synthetic.main.snap_quest_item.indicator

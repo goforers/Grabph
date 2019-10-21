@@ -47,8 +47,8 @@ import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.presentation.ui.photog.fragment.PhotogPhotoFragment
-import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.repository.interactor.remote.feed.photo.PhotoRepository
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.data.repository.remote.feed.photo.PhotoRepository
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_photog_photo.*
 import kotlinx.android.synthetic.main.list_photo_item.*

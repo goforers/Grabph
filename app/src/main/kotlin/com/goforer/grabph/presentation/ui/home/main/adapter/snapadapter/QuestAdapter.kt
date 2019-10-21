@@ -32,7 +32,7 @@ import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN_QUEST
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_QUEST_INFO_ITEM_FROM_HOME_MAIN_POSITION
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_common_quest_item.*
 

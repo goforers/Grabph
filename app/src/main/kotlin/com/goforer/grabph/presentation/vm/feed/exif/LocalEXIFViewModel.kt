@@ -19,7 +19,7 @@ package com.goforer.grabph.presentation.vm.feed.exif
 import androidx.lifecycle.*
 import com.goforer.grabph.domain.usecase.feed.exif.LoadLocalEXIFUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.exif.LocalEXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.LocalEXIF
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton

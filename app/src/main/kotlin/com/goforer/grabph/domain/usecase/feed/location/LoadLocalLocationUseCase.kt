@@ -21,9 +21,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import com.goforer.grabph.repository.interactor.local.LocalLocationRepository
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
-import com.goforer.grabph.repository.model.cache.data.entity.location.LocalLocation
+import com.goforer.grabph.data.repository.local.LocalLocationRepository
+import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.LocalLocation
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton

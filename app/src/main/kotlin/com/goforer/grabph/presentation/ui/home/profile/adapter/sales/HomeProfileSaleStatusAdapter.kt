@@ -30,7 +30,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment.Companion.SALES_INVALID_INDEX
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_sale_item.*
 import kotlinx.android.synthetic.main.list_profile_sale_item.iv_profile_sale_item_cover

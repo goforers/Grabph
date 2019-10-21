@@ -57,8 +57,8 @@ import com.goforer.grabph.presentation.common.view.drawer.item.AdvancePrimaryDra
 import com.goforer.grabph.presentation.common.view.drawer.item.CustomPanelDrawableItem
 import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity
 import com.goforer.grabph.presentation.ui.feed.photoinfo.PhotoInfoActivity
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Owner
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Owner
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer

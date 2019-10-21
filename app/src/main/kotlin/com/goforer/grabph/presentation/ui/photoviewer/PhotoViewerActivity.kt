@@ -40,8 +40,8 @@ import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.erase.PhotoEraser
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.usecase.erase.PhotoEraser
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_SEARPLE_GALLERY_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
@@ -76,13 +76,13 @@ import com.goforer.grabph.presentation.ui.photoviewer.fragment.PhotoViewerFragme
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.SearpleGalleryPhotoCallback
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.repository.model.cache.data.entity.exif.LocalEXIF
-import com.goforer.grabph.repository.model.cache.data.entity.location.LocalLocation
-import com.goforer.grabph.repository.model.cache.data.entity.profile.Person
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.LocalEXIF
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.LocalLocation
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_photo_viewer.*
 import kotlinx.android.synthetic.main.view_searple_gallery_photo.*
@@ -456,7 +456,13 @@ class PhotoViewerActivity: BaseActivity() {
 
         searperProfileViewModel.loadType = LOAD_PERSON
         searperProfileViewModel.boundType = BOUND_FROM_BACKEND
-        searperProfileViewModel.setParameters(Parameters(id, -1, LOAD_PERSON, BOUND_FROM_BACKEND), NONE_TYPE)
+        searperProfileViewModel.setParameters(
+            Parameters(
+                id,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         searperProfileViewModel.person.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {

@@ -33,17 +33,17 @@ import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.view.decoration.RemoverItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.ui.comment.CommentActivity
 import com.goforer.grabph.presentation.ui.comment.adapter.CommentAdapter
 import com.goforer.grabph.presentation.vm.comment.CommentViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.comments.Comment
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_COMMENTS
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.model.cache.data.entity.comments.Comment
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_COMMENTS
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.fragment_photo_comment.*
@@ -165,7 +165,13 @@ class CommentFragment : RecyclerFragment<Comment>() {
     }
 
     override fun requestData(isNew: Boolean) {
-        commentViewModel.setParameters(Parameters(photoId, -1, LOAD_COMMENTS, BOUND_FROM_BACKEND), -1)
+        commentViewModel.setParameters(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_COMMENTS,
+                BOUND_FROM_BACKEND
+            ), -1)
         getComments()
 
         Timber.i("requestData")

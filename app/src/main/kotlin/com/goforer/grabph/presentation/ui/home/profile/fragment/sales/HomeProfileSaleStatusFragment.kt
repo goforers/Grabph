@@ -39,8 +39,8 @@ import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfil
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment.Companion.SALES_INVALID_INDEX
 import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment.Companion.SALES_VERIFYING_INDEX
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.profile.MyPhoto
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.profile.MyPhotoDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.profile.MyPhotoDataSource
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min

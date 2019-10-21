@@ -33,10 +33,10 @@ import com.goforer.grabph.presentation.caller.Caller.SELECTED_BEST_PICK_HOT_TOPI
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_BEST_PICK_SEARPER_PHOTO_POSITION
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.repository.model.cache.data.entity.category.Category
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
-import com.goforer.grabph.repository.model.cache.data.entity.home.Home.HotTopic
-import com.goforer.grabph.repository.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Category
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home.HotTopic
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_main_hottopic_category_item.*
 import kotlinx.android.synthetic.main.snap_main_hottopic_hot_photo.*

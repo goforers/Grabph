@@ -35,7 +35,7 @@ import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_HOP_TOPIC_POSITION
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_HOT_TOPIC_CONTENT_ID
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_BEST_PICK_HOT_TOPIC_POSITION
@@ -46,12 +46,12 @@ import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.hottopic.adapter.HotTopicContentAdapter
 import com.goforer.grabph.presentation.ui.hottopic.sharedelementcallback.HotTopicContentCallback
 import com.goforer.grabph.presentation.vm.hottopic.HotTopicContentViewModel
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.hottopic.HotTopicContentDataSource
-import com.goforer.grabph.repository.model.cache.data.entity.hottopic.HotTopicContent
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_HOT_TOPIC_CONTENT
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.hottopic.HotTopicContentDataSource
+import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContent
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_HOT_TOPIC_CONTENT
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_hot_topic.*
 import kotlinx.android.synthetic.main.activity_hot_topic.appbar_layout
@@ -328,7 +328,13 @@ class HotTopicContentActivity: BaseActivity() {
     private fun transactRealData() {
         val liveData =  hotTopicContentViewModel.hotTopicContent
 
-        hotTopicContentViewModel.setParameters(Parameters(hotTopicContentId, -1, LOAD_HOT_TOPIC_CONTENT, BOUND_FROM_LOCAL), -1)
+        hotTopicContentViewModel.setParameters(
+            Parameters(
+                hotTopicContentId,
+                -1,
+                LOAD_HOT_TOPIC_CONTENT,
+                BOUND_FROM_LOCAL
+            ), -1)
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {

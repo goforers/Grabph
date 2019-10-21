@@ -17,10 +17,10 @@
 package com.goforer.grabph.presentation.vm.search
 
 import androidx.lifecycle.*
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.search.LoadSearchKeywordUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.search.RecentKeyword
+import com.goforer.grabph.data.datasource.model.cache.data.entity.search.RecentKeyword
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton

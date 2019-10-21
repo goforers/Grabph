@@ -25,7 +25,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity
-import com.goforer.grabph.repository.model.cache.data.mock.entity.feed.FeedsContent
+import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContent
 import kotlinx.android.synthetic.main.grid_feed_item.view.*
 
 class RecommendedFeedAdapter(private val activity: FeedInfoActivity): RecyclerView.Adapter<RecommendedFeedAdapter.ViewHolder>() {

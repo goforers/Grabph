@@ -28,7 +28,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.ui.othersprofile.OthersProfileActivity
-import com.goforer.grabph.repository.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
 import java.net.URL

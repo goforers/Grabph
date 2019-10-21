@@ -26,11 +26,9 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
-import com.goforer.grabph.presentation.caller.Caller.FIRST_PAGE
-import com.goforer.grabph.presentation.caller.Caller.PHOTOG_PHOTO_POPULAR_TYPE
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.repository.model.cache.data.entity.home.Home
+import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_main_popular_searper_item.*
 

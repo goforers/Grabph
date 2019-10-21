@@ -16,7 +16,7 @@ import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.categoryphoto.CategoryPhotoActivity
-import com.goforer.grabph.repository.model.cache.data.entity.category.CPhoto
+import com.goforer.grabph.data.datasource.model.cache.data.entity.category.CPhoto
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_category_photo.*
 import kotlinx.android.synthetic.main.grid_category_photo_item.*

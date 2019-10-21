@@ -21,9 +21,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import com.goforer.grabph.repository.interactor.local.LocalEXIFRepository
-import com.goforer.grabph.repository.model.cache.data.AbsentLiveData
-import com.goforer.grabph.repository.model.cache.data.entity.exif.LocalEXIF
+import com.goforer.grabph.data.repository.local.LocalEXIFRepository
+import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
+import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.LocalEXIF
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject

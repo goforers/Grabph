@@ -30,7 +30,7 @@ import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.effect.transition.TransitionCallback
 import com.goforer.grabph.presentation.ui.category.fragment.CategoryFragment
 import com.goforer.grabph.presentation.vm.category.CategoryViewModel
-import com.goforer.grabph.repository.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_category.*

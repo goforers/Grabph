@@ -37,19 +37,19 @@ import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.RecyclerFragment
 import com.goforer.base.presentation.view.helper.RecyclerItemTouchHelperCallback
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.event.action.TakeSearchedFeedsAction
 import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.search.adapter.FeedSearchAdapter
 import com.goforer.grabph.presentation.vm.search.FeedSearchViewModel
-import com.goforer.grabph.repository.model.cache.data.entity.feed.FeedItem
-import com.goforer.grabph.repository.network.response.Resource
-import com.goforer.grabph.repository.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.ui.search.SearchedFeedItem
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FEED_SEARCH
-import com.goforer.grabph.repository.interactor.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FEED_SEARCH
+import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_feed_search.*
@@ -218,7 +218,13 @@ class FeedSearchFragment : RecyclerFragment<FeedItem>() {
     }
 
     override fun requestData(isNew: Boolean) {
-        feedSearchModel.setParameters(Parameters(query, -1, LOAD_FEED_SEARCH, BOUND_FROM_BACKEND), NONE_TYPE)
+        feedSearchModel.setParameters(
+            Parameters(
+                query,
+                -1,
+                LOAD_FEED_SEARCH,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         getSearchedFeed(query)
 
         Timber.i("requestData")
@@ -233,14 +239,26 @@ class FeedSearchFragment : RecyclerFragment<FeedItem>() {
          */
         //stopRefreshing();
 
-        feedSearchModel.setParameters(Parameters(query, -1, LOAD_FEED_SEARCH, BOUND_FROM_BACKEND), NONE_TYPE)
+        feedSearchModel.setParameters(
+            Parameters(
+                query,
+                -1,
+                LOAD_FEED_SEARCH,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         Timber.i("updateData")
     }
 
     override fun reachToLastPage() {}
 
     fun searchKeyword(keyword: String) {
-        feedSearchModel.setParameters(Parameters(keyword, -1, LOAD_FEED_SEARCH, BOUND_FROM_BACKEND), NONE_TYPE)
+        feedSearchModel.setParameters(
+            Parameters(
+                keyword,
+                -1,
+                LOAD_FEED_SEARCH,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         getSearchedFeed(keyword)
     }
 

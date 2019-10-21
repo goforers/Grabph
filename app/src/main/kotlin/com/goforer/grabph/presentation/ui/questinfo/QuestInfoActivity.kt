@@ -35,7 +35,7 @@ import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
-import com.goforer.grabph.domain.usecase.Parameters
+import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FORM_HOME_FAVORITE_QUEST
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FORM_HOME_HOT_QUEST
@@ -61,11 +61,11 @@ import com.goforer.grabph.presentation.ui.questinfo.sharedelementcallback.QuestI
 import com.goforer.grabph.presentation.vm.quest.info.QuestInfoViewModel
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.repository.model.cache.data.entity.quest.info.QuestInfo
-import com.goforer.grabph.repository.model.cache.data.mock.datasource.questinfo.QuestInfoDataSource
-import com.goforer.grabph.repository.network.response.Status
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.repository.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUEST_INFO
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.info.QuestInfo
+import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.questinfo.QuestInfoDataSource
+import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUEST_INFO
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -422,7 +422,13 @@ class QuestInfoActivity: BaseActivity() {
     }
 
     private fun transactRealData() {
-        questInfoViewModel.setParameters(Parameters("", -1, LOAD_FAVORITE_QUEST_INFO, BOUND_FROM_BACKEND), NONE_TYPE)
+        questInfoViewModel.setParameters(
+            Parameters(
+                "",
+                -1,
+                LOAD_FAVORITE_QUEST_INFO,
+                BOUND_FROM_BACKEND
+            ), NONE_TYPE)
         questInfoViewModel.mission.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
