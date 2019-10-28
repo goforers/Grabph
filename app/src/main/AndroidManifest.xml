@@ -12,51 +12,62 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
 
     <application
-        android:name="com.goforer.grabph.Grabph"
-        android:largeHeap="true"
+        android:name=".Grabph"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
+        <activity android:name=".presentation.ui.upload.UploadPhotoActivity"></activity>
+        <activity
+            android:name=".presentation.ui.upload.AuthActivity"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
+                <data
+                    android:host="searp.io"
+                    android:pathPrefix="/searpapp/"
+                    android:scheme="searp" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".presentation.ui.ranking.RankingActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
-
         <activity
             android:name=".presentation.ui.othersprofile.OthersProfileActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
-
         <activity
             android:name=".presentation.ui.people.PeopleActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="com.goforer.grabph.presentation.ui.splash.SplashActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="fullSensor"
+            android:name=".presentation.ui.splash.SplashActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,20 +76,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.goforer.grabph.presentation.ui.home.HomeActivity"
+            android:name=".presentation.ui.home.HomeActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.login.LogInActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:name=".presentation.ui.login.LogInActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity"
+            android:name=".presentation.ui.feed.feedinfo.FeedInfoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedInfo">
@@ -96,12 +107,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.goforer.grabph.presentation.ui.photoviewer.PhotoViewerActivity"
+            android:name=".presentation.ui.photoviewer.PhotoViewerActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.DarkActionBar.Viewer" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.search.FeedSearchActivity"
+            android:name=".presentation.ui.search.FeedSearchActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.Search">
@@ -114,73 +125,74 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.goforer.grabph.presentation.ui.map.MapsActivity"
+            android:name=".presentation.ui.map.MapsActivity"
             android:label="@string/title_activity_maps"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity"
+            android:name=".presentation.ui.photog.PhotogPhotoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.Photog" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.feed.photoinfo.PhotoInfoActivity"
+            android:name=".presentation.ui.feed.photoinfo.PhotoInfoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.PhotoInfo"/>
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.PhotoInfo" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.comment.CommentActivity"
+            android:name=".presentation.ui.comment.CommentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.Comment" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.questinfo.QuestInfoActivity"
+            android:name=".presentation.ui.questinfo.QuestInfoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.QuestInfo"/>
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.QuestInfo" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.pinnedlist.PinnedFeedsActivity"
+            android:name=".presentation.ui.pinnedlist.PinnedFeedsActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.PinnedFeedList" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity"
+            android:name=".presentation.ui.searplegallery.SearpleGalleryActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.categoryphoto.CategoryPhotoActivity"
+            android:name=".presentation.ui.categoryphoto.CategoryPhotoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.PhotoType" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.category.CategoryActivity"
+            android:name=".presentation.ui.category.CategoryActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.hottopic.HotTopicContentActivity"
+            android:name=".presentation.ui.hottopic.HotTopicContentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.HotTopicContent"/>
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.HotTopicContent" />
         <activity
-            android:name="com.goforer.grabph.presentation.ui.setting.SettingListActivity"
+            android:name=".presentation.ui.setting.SettingListActivity"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
@@ -194,7 +206,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_key" />
-
     </application>
 
 </manifest>

@@ -287,7 +287,9 @@ class OthersProfileActivity : BaseActivity() {
         setImageDraw(this.iv_others_profile_title_photo, this.backdrop_container, userBackgroundPhoto, false)
 
         this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
-        this.tv_others_profile_name.text = person.realname?._content?.let { if (it.isEmpty()) person.username?._content else it } ?: "unknown user"
+        this.tv_others_profile_name.text = person.realname?._content?.let {
+            if (it.isEmpty()) person.username?._content else it
+        } ?: person.username?._content
         val desc = getDescription(person.description?._content!!, userId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             this.tv_others_profile_coverLetter.text = Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY)

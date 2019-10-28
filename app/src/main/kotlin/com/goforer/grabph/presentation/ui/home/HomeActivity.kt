@@ -17,9 +17,11 @@
 package com.goforer.grabph.presentation.ui.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.transition.Transition
 import android.view.*
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
+import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.helper.BottomNavigationViewHelper
 import com.goforer.grabph.R
@@ -62,6 +65,7 @@ import com.goforer.grabph.presentation.vm.home.HomeViewModel
 import com.goforer.grabph.presentation.ui.home.profile.fragment.HomeProfileFragment
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton.LayoutParams
@@ -76,6 +80,7 @@ import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.android.synthetic.main.snap_main_item.*
 import kotlinx.android.synthetic.main.snap_quest_item.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -83,6 +88,7 @@ import kotlin.system.exitProcess
 @RunWithMockData(true)
 class HomeActivity: BaseActivity() {
     private var resultCode: Int = 0
+    private val requestCodeForImage = 100
 
     private lateinit var mainFragment: HomeMainFragment
     private lateinit var feedFragment: HomeFeedFragment
@@ -220,6 +226,23 @@ class HomeActivity: BaseActivity() {
         itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == requestCodeForImage) { // move to choose photo
+                data?.let { intent ->
+                    val imageUri: Uri? = intent.clipData?.getItemAt(0)?.uri ?: intent.data
+                    if (imageUri == null) {
+                        Timber.e("Invalid input image Uri.")
+                        return
+                    }
+                    Caller.callUploadPhoto(this, imageUri.toString(), CALLED_FROM_HOME_MAIN)
+                }
+            }
+        }
+    }
+
     override fun onActivityReenter(resultCode: Int, data: Intent?) {
         super.onActivityReenter(resultCode, data)
 
@@ -341,8 +364,23 @@ class HomeActivity: BaseActivity() {
 
         sabGallery.setOnClickListener {
             closeFab()
-            CommonUtils.showToastMessage(this, getString(R.string.phrase_photo_upload_implement), Toast.LENGTH_SHORT)
+            uploadPhotos()
         }
+    }
+
+    private fun uploadPhotos() {
+        // if (isAuthValid()) choosePhotos() else getAuthorization()
+        choosePhotos()
+    }
+
+    private fun isAuthValid(): Boolean = SharedPreference.hasAccessToken(this)
+
+    private fun choosePhotos() {
+        Caller.callPhotoGallery(this, CALLED_FROM_HOME_MAIN, requestCodeForImage)
+    }
+
+    private fun getAuthorization() {
+        Caller.callAuthActivity(this)
     }
 
     private fun doReenterMainQuest(intent: Intent?) {

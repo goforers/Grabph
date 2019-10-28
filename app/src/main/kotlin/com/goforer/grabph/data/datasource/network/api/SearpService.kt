@@ -33,7 +33,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.info.Que
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categoryg
-import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContentg
 import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContentg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
@@ -41,11 +40,15 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.OwnerP
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.*
 import com.goforer.grabph.data.datasource.network.response.ApiResponse
+import com.goforer.grabph.presentation.ui.upload.data.FlickrLoginResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Query
 
@@ -378,6 +381,43 @@ interface SearpService {
             @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Owner>>
 
+    @GET("https://flickr.com/services/oauth/request_token")
+    suspend fun getRequestToken(
+        @Query(value = "oauth_nonce", encoded = true) nonce: String,
+        @Query(value = "oauth_timestamp", encoded = true) timeStamp: String,
+        @Query(value = "oauth_consumer_key", encoded = true) consumerKey: String,
+        @Query(value = "oauth_signature_method", encoded = true) signatureMethod: String,
+        @Query(value = "oauth_version", encoded = true) oauthVersion: String,
+        @Query(value = "oauth_callback", encoded = true) callback: String,
+        @Query(value = "oauth_signature", encoded = true) signature: String
+    ): Response<String>
+
+    @GET("https://flickr.com/services/oauth/access_token")
+    suspend fun getAccessToken(
+        @Query(value = "oauth_nonce", encoded = true) nonce: String,
+        @Query(value = "oauth_timestamp", encoded = true) timeStamp: String,
+        @Query(value = "oauth_verifier", encoded = true) verifier: String,
+        @Query(value = "oauth_consumer_key", encoded = true) consumerKey: String,
+        @Query(value = "oauth_signature_method", encoded = true) signatureMethod: String,
+        @Query(value = "oauth_version", encoded = true) oauthVersion: String,
+        @Query(value = "oauth_token", encoded = true) token: String,
+        @Query(value = "oauth_signature", encoded = true) signature: String
+    ): Response<String>
+
+    @GET("https://flickr.com/services/rest")
+    suspend fun testLogin(
+        @Query(value = "nojsoncallback", encoded = true)  noJsonCallback: String,
+        @Query(value = "oauth_nonce", encoded = true) nonce: String,
+        @Query(value = "format", encoded = true) format: String,
+        @Query(value = "oauth_consumer_key", encoded = true) consumerKey: String,
+        @Query(value = "oauth_timestamp", encoded = true) timeStamp: String,
+        @Query(value = "oauth_signature_method", encoded = true) signatureMethod: String,
+        @Query(value = "oauth_version", encoded = true) oauthVersion: String,
+        @Query(value = "oauth_token", encoded = true) token: String,
+        @Query(value = "oauth_signature", encoded = true) signature: String,
+        @Query(value = "method", encoded = true) method: String
+    ): Response<FlickrLoginResult>
+
     // We've to get it fixed via Searp REST API. That is, We must substitute this API for the Searp API.
     /**
      * @POST declares an HTTP GET request
@@ -385,8 +425,8 @@ interface SearpService {
      */
     @Multipart
     @POST("https://up.flickr.com/services/upload/")
-    fun postFeed(
-        @PartMap feedInto: Map<String, RequestBody>,
-        @PartMap photos: Map<String, RequestBody>
-    ): LiveData<ApiResponse<FeedItem>>
+    suspend fun postFeed(
+        @Part photo: MultipartBody.Part,
+        @PartMap map: Map<String, @JvmSuppressWildcards RequestBody>
+    ): Response<String>
 }

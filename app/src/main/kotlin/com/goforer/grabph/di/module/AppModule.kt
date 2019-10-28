@@ -32,9 +32,11 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.net.CookieManager
 import java.net.CookiePolicy
 import java.util.concurrent.TimeUnit
@@ -55,6 +57,52 @@ class AppModule {
 
         var rawResponseBody: String? = null
             private set
+
+        fun create(): SearpService {
+            val cookieManager = CookieManager()
+
+            cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+
+            val cookieJar = JavaNetCookieJar(cookieManager)
+            val logger = HttpLoggingInterceptor()
+            logger.level = HttpLoggingInterceptor.Level.BASIC
+
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(logger)
+                .cookieJar(cookieJar)
+                .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
+
+            okHttpClient.addInterceptor { chain ->
+                val original = chain.request()
+
+                val builder = original.newBuilder()
+
+                val request = builder
+                    .header("Connection", "keep-alive")
+                    .method(original.method, original.body)
+                    .build()
+
+                val response = chain.proceed(request)
+
+                rawResponseBody = response.body?.string()
+
+                response.newBuilder().body(
+                    rawResponseBody!!.toResponseBody(response.body?.contentType())).build()
+            }
+
+            val gson = GsonBuilder().setLenient().create()
+
+            return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient.build())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(LiveDataCallAdapterFactory())
+                .build()
+                .create(SearpService::class.java)
+        }
     }
 
     @Singleton
@@ -65,7 +113,11 @@ class AppModule {
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL)
 
         val cookieJar = JavaNetCookieJar(cookieManager)
+        val logger = HttpLoggingInterceptor()
+        logger.level = HttpLoggingInterceptor.Level.BASIC
+
         val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logger)
                 .cookieJar(cookieJar)
                 .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
@@ -94,6 +146,7 @@ class AppModule {
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient.build())
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .build()

@@ -65,7 +65,7 @@ object GeneralFunctions {
     fun getSplashBackgroundUrl(): String {
         val baseUrl = "https://raw.githubusercontent.com/Lukoh/Grabph_Splash/master/grabph_splash_image"
         val baseRestUrl = ".jpg"
-
-        return baseUrl + GeneralFunctions.rand(1, 39).toString() + baseRestUrl
+        val list = arrayListOf(1,4,8,9); list.shuffle()
+        return baseUrl + list[0].toString() + baseRestUrl
     }
 }

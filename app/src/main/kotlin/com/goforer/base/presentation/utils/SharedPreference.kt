@@ -58,4 +58,59 @@ object SharedPreference {
 
         return pref.getString("pref_login", "").toString()
     }
+
+    fun hasAccessToken(context: Context): Boolean {
+        val pref = context.getSharedPreferences("pref_login", MODE_PRIVATE)
+        val token = pref.getString(SHARED_PREF_ACCESS_TOKEN, "null") ?: "null"
+        return token != "null"
+    }
+
+    /**
+     * SharedPreferences Key should be modified to unique value like User's Id.
+     * */
+    fun saveAccessToken(context: Context, token: String, secret: String, userId: String) {
+        val edit = context.getSharedPreferences("pref_login", MODE_PRIVATE).edit()
+        edit.putString(SHARED_PREF_ACCESS_TOKEN, token)
+        edit.putString(SHARED_PREF_ACCESS_TOKEN_SECRET, secret)
+        edit.putString(SHARED_PREF_FLICKR_USER_ID, userId)
+        edit.apply()
+    }
+
+    fun removeAllTokenInfo(context: Context) {
+        val edit = context.getSharedPreferences("pref_login", MODE_PRIVATE).edit()
+        edit.clear()
+        edit.apply()
+    }
+
+    fun getAccessToken(context: Context): String {
+        val pref = context.getSharedPreferences("pref_login", MODE_PRIVATE)
+        return pref.getString(SHARED_PREF_ACCESS_TOKEN, "null") ?: "null"
+    }
+
+    fun getAccessTokenSecret(context: Context): String {
+        val pref = context.getSharedPreferences("pref_login", MODE_PRIVATE)
+        return pref.getString(SHARED_PREF_ACCESS_TOKEN_SECRET, "null") ?: "null"
+    }
+
+    fun getUserId(context: Context): String {
+        val pref = context.getSharedPreferences("pref_login", MODE_PRIVATE)
+        return pref.getString(SHARED_PREF_FLICKR_USER_ID, "null") ?: "null"
+    }
+
+    fun saveTokenSecret(context: Context, secret: String) {
+        val edit = context.getSharedPreferences("pref_login", MODE_PRIVATE).edit()
+        edit.putString(SHARED_PREF_REQUEST_TOKEN_SECRET, secret)
+        edit.apply()
+    }
+
+    fun getTokenSecret(context: Context): String {
+        val pref = context.getSharedPreferences("pref_login", MODE_PRIVATE)
+        val secret = pref.getString(SHARED_PREF_REQUEST_TOKEN_SECRET, "null") ?: "null"
+        val editor = pref.edit()
+
+        editor.remove(SHARED_PREF_REQUEST_TOKEN_SECRET)
+        editor.apply()
+
+        return secret
+    }
 }

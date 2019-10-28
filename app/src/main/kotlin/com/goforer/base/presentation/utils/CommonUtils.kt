@@ -21,6 +21,8 @@ package com.goforer.base.presentation.utils
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.icu.util.Calendar
@@ -40,18 +42,46 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
+import android.util.Base64
+import android.util.Xml
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.domain.common.GeneralFunctions
+import com.goforer.grabph.presentation.ui.upload.data.RequestParams
+import com.goforer.grabph.presentation.ui.upload.data.UploadResponse
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.File
+import java.io.IOException
+import java.io.StringReader
+import java.io.UnsupportedEncodingException
+import java.lang.RuntimeException
+import java.lang.StringBuilder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.security.InvalidKeyException
+import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import java.security.SignatureException
+import java.sql.Timestamp
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 object CommonUtils {
     private const val MAX_SCROLL = 10
+    private const val REQUEST_TOKEN_PARAMS = 1
+    private const val ACCESS_TOKEN_PARAMS = 2
+    private const val TEST_LOGIN_PARAMS = 3
+    private const val UPDATE_PARAMS = 4
+    private const val GET = "GET"
+    private const val POST = "POST"
 
     fun showToastMessage(activity: Activity, text: String, duration: Int) {
         val inflater = activity.layoutInflater
@@ -250,6 +280,228 @@ object CommonUtils {
         json = String(buffer)
 
         return json
+    }
+
+    fun getParamsForRequestToken(): RequestParams {
+        val nonce = getNonce()
+        val timeStamp = getTimestamp()
+        val params = getOauthParams(REQUEST_TOKEN_PARAMS, nonce, timeStamp)
+        val baseString = getBaseString(GET, REQUEST_TOKEN_URL, params)
+        val signature = makeSignature(baseString, "")
+        val encodedSignature = urlEncoding(signature)
+        return RequestParams(nonce, timeStamp, encodedSignature)
+    }
+
+    fun getParamsForAccessToken(token: String, verifier: String, secret: String): RequestParams {
+        val nonce = getNonce()
+        val timeStamp = getTimestamp()
+        val params = getOauthParams(ACCESS_TOKEN_PARAMS, nonce, timeStamp, requestToken = token,verifier = verifier)
+        val baseString = getBaseString(GET, ACCESS_TOKEN_URL, params)
+        val signature = makeSignature(baseString, secret)
+        val encodedSignature = urlEncoding(signature)
+
+        return RequestParams(nonce, timeStamp, encodedSignature)
+    }
+
+    fun getParamsForTestLogin(accessToken: String, secret: String): RequestParams {
+        val nonce = getNonce()
+        val timeStamp = getTimestamp()
+        val params = getOauthParams(TEST_LOGIN_PARAMS, nonce, timeStamp, accessToken = accessToken)
+        val baseString = getBaseString(GET, TEST_LOGIN_URL, params)
+        val signature = makeSignature(baseString, secret)
+        val encodedSignature = urlEncoding(signature)
+
+        return RequestParams(nonce, timeStamp, encodedSignature)
+    }
+
+    fun getParamsUpload(accessToken: String, secret: String, title: String, desc: String): RequestParams {
+        val nonce = getNonce()
+        val timeStamp = getTimestamp()
+        val params = getOauthParams(
+            UPDATE_PARAMS,
+            nonce,
+            timeStamp,
+            accessToken = accessToken,
+            title = urlEncoding(title),
+            description = urlEncoding(desc)
+        )
+        val baseString = getBaseString(POST, UPLOAD_URL, params)
+        val signature = makeSignature(baseString, secret)
+
+        return RequestParams(nonce, timeStamp, signature)
+    }
+
+    @Throws(SignatureException::class, NoSuchAlgorithmException::class, InvalidKeyException::class)
+    private fun makeSignature(data: String, secret: String): String {
+        val key = "$CONSUMER_SECRET&$secret"
+        val signKey = SecretKeySpec(key.toByteArray(StandardCharsets.UTF_8), "HmacSHA1")
+        val mac = Mac.getInstance("HmacSHA1")
+        mac.init(signKey)
+        val bytes = mac.doFinal(data.toByteArray(Charsets.UTF_8))
+        return Base64.encodeToString(bytes, Base64.NO_WRAP)
+    }
+
+    private fun getBaseString(httpMethod: String, baseUrl: String, params: String): String {
+        val sb = StringBuilder()
+        sb.append(httpMethod)
+            .append('&').append(urlEncoding(baseUrl))
+            .append('&').append(urlEncoding(params))
+        return sb.toString()
+    }
+
+    private fun getOauthParams(
+        type: Int,
+        nonce: String,
+        timeStamp: String,
+        requestToken: String = "",
+        verifier: String = "",
+        accessToken: String = "",
+        title: String = "",
+        description: String = ""
+    ): String {
+
+        return when (type) {
+            REQUEST_TOKEN_PARAMS -> {
+                "oauth_callback=$CALLBACK_URL" +
+                    "&oauth_consumer_key=$CONSUMER_KEY" +
+                    "&oauth_nonce=$nonce" +
+                    "&oauth_signature_method=$SIGN_METHOD" +
+                    "&oauth_timestamp=$timeStamp" +
+                    "&oauth_version=$OAUTH_VERSION"
+            }
+            ACCESS_TOKEN_PARAMS -> {
+                "oauth_consumer_key=$CONSUMER_KEY" +
+                    "&oauth_nonce=$nonce" +
+                    "&oauth_signature_method=$SIGN_METHOD" +
+                    "&oauth_timestamp=$timeStamp" +
+                    "&oauth_token=$requestToken" +
+                    "&oauth_verifier=$verifier" +
+                    "&oauth_version=$OAUTH_VERSION"
+            }
+            TEST_LOGIN_PARAMS -> {
+                "format=json" +
+                    "&method=flickr.test.login" +
+                    "&nojsoncallback=1" +
+                    "&oauth_consumer_key=$CONSUMER_KEY" +
+                    "&oauth_nonce=$nonce" +
+                    "&oauth_signature_method=$SIGN_METHOD" +
+                    "&oauth_timestamp=$timeStamp" +
+                    "&oauth_token=$accessToken" +
+                    "&oauth_version=$OAUTH_VERSION"
+            }
+            UPDATE_PARAMS -> {
+                "description=$description" +
+                    "&oauth_consumer_key=$CONSUMER_KEY" +
+                    "&oauth_nonce=$nonce" +
+                    "&oauth_signature_method=$SIGN_METHOD" +
+                    "&oauth_timestamp=$timeStamp" +
+                    "&oauth_token=$accessToken" +
+                    "&title=$title"
+            }
+
+            else -> "null"
+        }
+    }
+
+    private fun urlEncoding(value: String): String {
+        try {
+            return URLEncoder.encode(value, "UTF-8").replace("%2B", "%2520") // encoding %2B(empty space) to %2520
+        } catch (ex: UnsupportedEncodingException) {
+            throw RuntimeException(ex.cause)
+        }
+    }
+
+    private fun getNonce(): String {
+        val secureRandom = SecureRandom()
+        val stringBuilder = StringBuilder()
+        for (i in 0..7) {
+            stringBuilder.append(secureRandom.nextInt(10))
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun getTimestamp(): String {
+        return Timestamp(System.currentTimeMillis()).time.toString()
+    }
+
+    /**
+     * This series of functions below for XML is to parse XML text response from Uploading Photo to Flickr service.
+     * */
+    @Throws(XmlPullParserException::class, IOException::class)
+    fun parseXml(xml: String): UploadResponse {
+        val parser: XmlPullParser = Xml.newPullParser()
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+        parser.setInput(StringReader(xml))
+        parser.nextTag()
+        return readTag(parser)
+    }
+
+    @Throws(XmlPullParserException::class, IOException::class)
+    private fun readTag(parser: XmlPullParser): UploadResponse {
+        val stat = parser.getAttributeValue(null, "stat")
+        var response = UploadResponse(null, null, null, null)
+        parser.require(XmlPullParser.START_TAG, null, "rsp")
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.eventType != XmlPullParser.START_TAG) continue
+
+            response = when (stat) {
+                "ok" -> getSuccessMsg(parser, stat)
+                "fail" -> getErrorMsg(parser, stat)
+                else -> getErrorMsg(parser, stat)
+            }
+        }
+        return response
+    }
+
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun getSuccessMsg(parser: XmlPullParser, stat: String): UploadResponse {
+        parser.require(XmlPullParser.START_TAG, null, "photoid")
+        val response = readText(parser, stat)
+        parser.require(XmlPullParser.END_TAG, null, "photoid")
+        return response
+    }
+
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun getErrorMsg(parser: XmlPullParser, stat: String): UploadResponse {
+        parser.require(XmlPullParser.START_TAG, null, "err")
+        val errCode = parser.getAttributeValue(null, "code")
+        val errMsg = parser.getAttributeValue(null, "msg")
+        readText(parser, stat)
+        parser.require(XmlPullParser.END_TAG, null, "err")
+        return UploadResponse(stat, errCode, errMsg, null)
+    }
+
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun readText(parser: XmlPullParser, stat: String): UploadResponse {
+        var photoId = ""
+        if (parser.next() == XmlPullParser.TEXT) {
+            photoId = parser.text
+            parser.nextTag()
+        }
+        return UploadResponse(stat, null, null, photoId)
+    }
+
+    fun makeStatusNotification(message: String, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = VERBOSE_NOTIFICATION_CHANNEL_NAME
+            val description = VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            channel.description = description
+
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+
+            notificationManager?.createNotificationChannel(channel)
+        }
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVibrate(LongArray(0))
+
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
     }
 }
 

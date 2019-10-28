@@ -28,6 +28,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import androidx.browser.customtabs.CustomTabsCallback
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -36,8 +37,11 @@ import android.view.View
 import com.goforer.base.presentation.customtabsclient.shared.CustomTabsHelper
 import com.goforer.base.presentation.customtabsclient.shared.ServiceConnection
 import com.goforer.base.presentation.customtabsclient.shared.ServiceConnectionCallback
+import com.goforer.base.presentation.utils.AUTHORIZE_URL
+import com.goforer.base.presentation.utils.KEY_SELECTED_IMAGE_URI
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.fragment.BaseFragment
+import com.goforer.grabph.presentation.ui.upload.AuthActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
 import com.goforer.grabph.presentation.ui.categoryphoto.CategoryPhotoActivity
@@ -59,6 +63,7 @@ import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.ui.setting.SettingListActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.presentation.ui.upload.UploadPhotoActivity
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -172,6 +177,7 @@ object Caller {
     const val CALLED_FROM_PEOPLE = 4021
     const val CALLED_FROM_RANKING = 4022
     const val CALLED_FROM_OTHERS_PROFILE = 4022
+    const val CALLED_FROM_AUTH_ACTIVITY = 4023
 
     const val PHOTOG_PHOTO_POPULAR_TYPE = 5000
     const val PHOTOG_PHOTO_GENERAL_TYPE = 5001
@@ -897,6 +903,55 @@ object Caller {
         val intent = createIntent(context, RankingActivity::class.java, true)
         intent.flags = FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
+    }
+
+    fun callAuthActivity(activity: Activity) {
+        val context = activity as Context
+        val intent = createIntent(context, AuthActivity::class.java, true)
+        activity.startActivity(intent)
+    }
+
+    fun callPhotoGallery(activity: Activity, calledFrom: Int, requestCode: Int) {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+        when (calledFrom) {
+            CALLED_FROM_HOME_MAIN -> {
+                (activity as HomeActivity).startActivityForResult(galleryIntent, requestCode)
+            }
+            CALLED_FROM_AUTH_ACTIVITY -> {
+                galleryIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                (activity as AuthActivity).startActivityForResult(galleryIntent, requestCode)
+            }
+        }
+    }
+
+    fun callUploadPhoto(activity: Activity, imageUri: String, calledFrom: Int) {
+        val context = activity as Context
+        val intent = Intent(context, UploadPhotoActivity::class.java)
+        intent.putExtra(KEY_SELECTED_IMAGE_URI, imageUri)
+
+        when (calledFrom) {
+            CALLED_FROM_HOME_MAIN -> {
+                (activity as HomeActivity).startActivity(intent)
+            }
+            CALLED_FROM_AUTH_ACTIVITY -> {
+                (activity as AuthActivity).startActivity(intent)
+            }
+        }
+    }
+
+    fun callVerifierUrl(activity: Activity, token:String, calledFrom: Int) {
+        val authUrl = "$AUTHORIZE_URL?oauth_token=$token&perms=write&perms=delete"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)) // open web browser(probably Chrome)
+
+        when (calledFrom) {
+            CALLED_FROM_AUTH_ACTIVITY -> {
+                (activity as AuthActivity).run {
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }
     }
 
 
