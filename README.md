@@ -60,7 +60,7 @@ In this way we are respecting the work in the chain of the factory, each area co
 <img src="https://github.com/goforers/Grabph/blob/master/Clean%20Architecture.jpeg?raw=true" alt="Architecture" width="880" />
 
 In this demp App, the Entity is the data model of the business logic layer.
-* In the Repository layer, the “repository” package, we create the BaseRepository class that implements the interface that is in the “domain-use case” package. The Repository calls the Datasource layer, so you must instantiate this class.
+* In the Repository layer, the “repository” package, we create the each Repository class is inherited from BaseRepository class that implements the interface that is in the “domain-use case” package. The Repository calls the Datasource layer, so you must instantiate this class.
 * In the Datasource layer, the “datasource” package, we create the Datasource class that develops the logic to get the API data and return them in a data model to be able to work with them. In our example, the Datasource is instantiated with the library with which the API connection is going to be used to consume the data, so the Datasource must instantiate this library in order to call its methods.
 
 ## Loading data with ViewModel
