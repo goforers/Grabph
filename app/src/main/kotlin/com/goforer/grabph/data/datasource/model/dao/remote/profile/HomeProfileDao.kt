@@ -18,17 +18,17 @@ package com.goforer.grabph.data.datasource.model.dao.remote.profile
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.model.dao.BaseDao
 
 @Dao
-interface HomeProfileDao: BaseDao<HomeProfile> {
-    @Query("SELECT * FROM HomeProfile")
-    fun getHomeProfile(): LiveData<HomeProfile>
+interface HomeProfileDao: BaseDao<Person> {
+    @Query("SELECT * FROM Person")
+    fun getHomeProfile(): LiveData<Person>
 
-    @Query("DELETE FROM HomeProfile")
+    @Query("DELETE FROM Person")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM HomeProfile")
-    fun loadHomeProfile(): HomeProfile
+    @Query("SELECT * FROM Person")
+    fun loadHomeProfile(): Person
 }

@@ -11,6 +11,23 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progress_bar_home_profile_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/action_button_size"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminateTint="@color/colorSearp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!--top portion container-->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_home_profile"
@@ -29,8 +46,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true"
             app:expandedTitleTextAppearance="@style/CollapsingToolbar.Title"
-            app:titleEnabled="true"
-            android:layout_marginBottom="@dimen/margin_12">
+            app:titleEnabled="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 app:layout_collapseMode="parallax"
@@ -111,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/height_29"
                     android:textSize="@dimen/text_size_20"
-                    android:text="Michael Scott"
+                    android:text="Daniel Hennry"
                     android:shadowColor="@color/colorShadowOfName"
                     android:shadowRadius="4"
                     android:shadowDy="2"
@@ -124,11 +140,11 @@
                     android:id="@+id/tv_profile_coverLetter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="@dimen/height_40"
-                    android:maxHeight="@dimen/height_60"
+                    android:minHeight="@dimen/height_20"
+                    android:maxHeight="@dimen/height_254"
                     android:textSize="@dimen/text_size_14"
                     android:textColor="@color/colorLightWhite"
-                    android:text="hello world!"
+                    android:text="@string/description_sample"
                     app:layout_constraintTop_toBottomOf="@id/tv_profile_name"
                     android:layout_marginTop="@dimen/margin_6"/>
 
@@ -146,7 +162,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/profile_container_status"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_50"
+                    android:layout_height="@dimen/height_60"
                     app:layout_constraintTop_toBottomOf="@id/divider_profile_first"
                     android:layout_marginTop="@dimen/margin_12">
 
@@ -297,7 +313,7 @@
             app:layout_collapseMode="parallax"
             android:id="@+id/divider_profile_second"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_4"
+            android:layout_height="@dimen/margin_1"
             android:background="@color/colorDivider" />
 
         <com.google.android.material.tabs.TabLayout

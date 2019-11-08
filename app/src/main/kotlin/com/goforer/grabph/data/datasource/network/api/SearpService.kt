@@ -34,8 +34,8 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categoryg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContentg
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalleryg
 import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContentg
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.OwnerProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.*
@@ -78,15 +78,15 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/feeds/photos_public.gne")
     fun getFeed(
-            @Query("tags") query: String,
-            @Query("format") format: String,
-            @Query("lang") langEng: String,
-            @Query("lang") langKor: String,
-            @Query("lang") langGer: String,
-            @Query("lang") langSpa: String,
-            @Query("lang") langFra: String,
-            @Query("lang") langIta: String,
-            @Query("nojsoncallback") index: Int
+        @Query("tags") query: String,
+        @Query("format") format: String,
+        @Query("lang") langEng: String,
+        @Query("lang") langKor: String,
+        @Query("lang") langGer: String,
+        @Query("lang") langSpa: String,
+        @Query("lang") langFra: String,
+        @Query("lang") langIta: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<FlickrFeed>>
 
     /**
@@ -96,11 +96,11 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getSearperProfile(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<SearperProfile>>
 
     /**
@@ -110,11 +110,11 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getOwnerProfile(
-            @Query("api_key") apikey: String,
-            @Query("owner_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("owner_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<OwnerProfile>>
 
     /**
@@ -124,11 +124,11 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getPhotoEXIF(
-            @Query("api_key") apikey: String,
-            @Query("photo_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("photo_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<PhotoEXIF>>
 
     /**
@@ -138,11 +138,11 @@ interface SearpService {
      */
     @GET("services/rest/")
     fun getLocation(
-            @Query("api_key") apikey: String,
-            @Query("photo_id") photoId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("photo_id") photoId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<PhotoGEO>>
 
     /**
@@ -152,13 +152,13 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getPhotos(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Photog>>
 
     /**
@@ -167,12 +167,28 @@ interface SearpService {
      * replacement for the placeholder in the @GET query
      */
     @GET("https://api.flickr.com/services/rest/")
+    fun getMyGallery(
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
+    ): LiveData<ApiResponse<MyGalleryg>>
+
+    /**
+     * @GET declares an HTTP GET request
+     * @Query("") annotation on the parameters marks it as a
+     * replacement for the placeholder in the @GET query
+     */
+    @GET("https://api.flickr.com/services/rest/")
     fun getComments(
-            @Query("api_key") apikey: String,
-            @Query("photo_id") photoId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("photo_id") photoId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<PhotoComments>>
 
     /**
@@ -182,11 +198,11 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getPhotoInfo(
-            @Query("api_key") apikey: String,
-            @Query("photo_id") photoId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("photo_id") photoId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<PhotoInfo>>
 
     /**
@@ -196,13 +212,13 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getPopularPhotos(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Photog>>
 
     /**
@@ -212,13 +228,13 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getFavoritePhotos(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Photog>>
 
     /**
@@ -228,12 +244,12 @@ interface SearpService {
      */
     @GET("https://api.searp.com/services/rest/")
     fun getQuests(
-            @Query("api_key") apikey: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<QuestsInfog>>
 
     /**
@@ -243,11 +259,11 @@ interface SearpService {
      */
     @GET("https://api.searp.com/rest/")
     fun getQuestInfo(
-            @Query("api_key") apikey: String,
-            @Query("mission_id") missionId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("mission_id") missionId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<QuestInfog>>
 
     /**
@@ -257,11 +273,11 @@ interface SearpService {
      */
     @GET("https://api.searp.com/rest/")
     fun getFollowers(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Followerg>>
 
     /**
@@ -271,11 +287,11 @@ interface SearpService {
      */
     @GET("https://api.searp.com/rest/")
     fun getFollowings(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Followingg>>
 
     /**
@@ -285,10 +301,10 @@ interface SearpService {
      */
     @GET("https://api.searp.com/rest/")
     fun getHome(
-            @Query("api_key") apikey: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Homeg>>
 
     /**
@@ -298,73 +314,73 @@ interface SearpService {
      */
     @GET("https://api.searp.com/rest/")
     fun getCategoryPhotos(
-            @Query("api_key") apikey: String,
-            @Query("category_id") categoryId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("page") page: Int,
-            @Query("per_page") perPage: Int,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("category_id") categoryId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<CPhotog>>
 
     @GET("https://api.searp.com/rest/")
     fun getHotQuest(
-            @Query("api_key") apikey: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<TopPortionQuestg>>
 
     @GET("https://api.searp.com/rest/")
     fun getCategories(
-            @Query("api_key") apikey: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Categoryg>>
 
-    @GET("https://api.searp.com/rest/")
+    @GET("https://api.flickr.com/services/rest/")
     fun getMyProfile(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
-    ): LiveData<ApiResponse<HomeProfile>>
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
+    ): LiveData<ApiResponse<MyProfileHolder>>
 
     @GET("https://api.searp.com/rest/")
     fun getHotTopicContent(
-            @Query("api_key") apikey: String,
-            @Query("topic_id") topicId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("topic_id") topicId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<HotTopicContentg>>
 
     @GET("https://api.searp.com/rest/")
     fun getFeedsContent(
-            @Query("api_key") apikey: String,
-            @Query("photo_id") topicId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("photo_id") topicId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<FeedsContentg>>
 
     @GET("https://api.searp.com/services/rest/")
     fun getPeople(
-            @Query("api_key") apikey: String,
-            @Query("user_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<People>>
 
     @GET("https://api.searp.com/services/rest/")
     fun getRanking(
-            @Query("api_key") apikey: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Ranking>>
 
     /**
@@ -374,11 +390,11 @@ interface SearpService {
      */
     @GET("https://api.flickr.com/services/rest/")
     fun getOthersProfile(
-            @Query("api_key") apikey: String,
-            @Query("owner_id") userId: String,
-            @Query("method") method: String,
-            @Query("format") format: String,
-            @Query("nojsoncallback") index: Int
+        @Query("api_key") apikey: String,
+        @Query("owner_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<Owner>>
 
     @GET("https://flickr.com/services/oauth/request_token")

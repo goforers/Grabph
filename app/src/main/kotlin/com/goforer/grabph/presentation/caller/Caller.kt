@@ -127,6 +127,7 @@ object Caller {
     const val EXTRA_PROFILE_USER_RANKING = "goforer:profile_user_ranking"
     const val EXTRA_PROFILE_USER_PHOTO_URL = "goforer:profile_user_photo_url"
     const val EXTRA_PLACE_CALLED_USER_PROFILE = "goforer:place_called_user_profile"
+    const val EXTRA_IS_PLAYER_BUTTN_VISIBILEW = "goforer:is_player_buttn_visible"
 
     const val FONT_SIZE = "fontSize"
     const val PADDING = "padding"
@@ -267,8 +268,8 @@ object Caller {
 
     @SuppressLint("RestrictedApi")
     fun callFeedInfo(context: Context, imageView: View, textView: View,
-                     feedIdx: Long, position: Int, authorId: String?,
-                     photoId: String?, calledFrom: Int, requestCode: Int) {
+        feedIdx: Long, position: Int, authorId: String?,
+        photoId: String?, calledFrom: Int, requestCode: Int) {
         val intent = createIntent(context, FeedInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -291,19 +292,19 @@ object Caller {
 
         when (calledFrom) {
             CALLED_FROM_FEED, CALLED_FROM_PINNED_FEED -> (context as HomeActivity).startActivityForResult(intent, requestCode,
-                    getFeedViewActivityOptions(context, imageView).toBundle())
+                getFeedViewActivityOptions(context, imageView).toBundle())
             CALLED_FROM_SEARCHED_FEED -> (context as FeedSearchActivity).startActivityForResult(intent, requestCode,
-                    getSearchViewActivityOptions(context, imageView, textView).toBundle())
+                getSearchViewActivityOptions(context, imageView, textView).toBundle())
             CALLED_FROM_PINNED_FEEDS -> (context as HomeActivity).startActivityForResult(intent, requestCode,
-                    getPinnedFeedViewActivityOptions(context, imageView, textView).toBundle())
+                getPinnedFeedViewActivityOptions(context, imageView, textView).toBundle())
             else -> (context as HomeActivity).startActivityForResult(intent, requestCode,
-                    getFeedViewActivityOptions(context, imageView).toBundle())
+                getFeedViewActivityOptions(context, imageView).toBundle())
         }
     }
 
     @SuppressLint("RestrictedApi")
     fun callFeedInfo(context: Context, imageView: View, feedIdx: Long, position:
-                     Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int) {
+    Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
         val intent = createIntent(context, FeedInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -312,14 +313,15 @@ object Caller {
         intent.putExtra(EXTRA_SEARPER_ID, authorId)
         intent.putExtra(EXTRA_PHOTO_ID, photoId)
         intent.putExtra(EXTRA_FEED_INFO_CALLED_FROM, calledFrom)
+        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
-                getHomeViewActivityOptions(context, imageView).toBundle())
+            getHomeViewActivityOptions(context, imageView).toBundle())
     }
 
     @SuppressLint("RestrictedApi")
     fun callViewer(context: Context, imageView: View, position: Int,
-                   fileNames: List<String>, ids: List<String>, requestCode: Int) {
+        fileNames: List<String>, ids: List<String>, requestCode: Int) {
         val intent = createIntent(context, PhotoViewerActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -329,13 +331,13 @@ object Caller {
         intent.putStringArrayListExtra(EXTRA_PHOTO_FILE_ID_LIST, ids as ArrayList<String>)
 
         val activityOptions = getSearpleGalleryViewerOptions(context, imageView)
-            (context as SearpleGalleryActivity).startActivityForResult(intent, requestCode,
-                activityOptions.toBundle())
+        (context as SearpleGalleryActivity).startActivityForResult(intent, requestCode,
+            activityOptions.toBundle())
     }
 
     @SuppressLint("RestrictedApi")
     fun callViewer(context: Context, imageView: View, position: Int, fromCalled: Int, bitmap: Bitmap,
-                   url: String, requestCode: Int) {
+        url: String, requestCode: Int) {
         val stream = ByteArrayOutputStream()
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -353,17 +355,17 @@ object Caller {
             CALLED_FROM_FEED_INFO -> {
                 val activityOptions = getFeedInfoPhotoViewerOptions(context, imageView)
                 (context as FeedInfoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
             CALLED_FROM_PHOTO_INFO -> {
                 val activityOptions = getPhotoInfoPhotoViewerOptions(context, imageView)
                 (context as PhotoInfoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
             CALLED_FROM_PHOTOG_PHOTO -> {
                 val activityOptions = getPhotogPhotoViewerOptions(context, imageView)
                 (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
         }
 
@@ -382,17 +384,17 @@ object Caller {
             CALLED_FROM_FEED_INFO -> {
                 val activityOptions = getFeedInfoPhotoViewerOptions(context, imageView)
                 (context as FeedInfoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
             CALLED_FROM_PHOTO_INFO -> {
                 val activityOptions = getPhotoInfoPhotoViewerOptions(context, imageView)
                 (context as PhotoInfoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
             CALLED_FROM_PHOTOG_PHOTO -> {
                 val activityOptions = getPhotogPhotoViewerOptions(context, imageView)
                 (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode,
-                        activityOptions.toBundle())
+                    activityOptions.toBundle())
             }
         }
 
@@ -413,7 +415,7 @@ object Caller {
     }
 
     fun callViewMap(context: Context, title: String, latitude: Double,
-                    longitude: Double, address: String) {
+        longitude: Double, address: String) {
         val intent = createIntent(context, MapsActivity::class.java, true)
 
         intent.putExtra(EXTRA_PHOTO_TITLE, title)
@@ -424,7 +426,7 @@ object Caller {
     }
 
     fun callPhotogPhoto(context: Context, userName: String, iconFarm: Int, iconServer: String,
-                        id: String, pages: Int, type: Int) {
+        id: String, pages: Int, type: Int) {
         val intent = createIntent(context, PhotogPhotoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -440,7 +442,7 @@ object Caller {
 
     @SuppressLint("RestrictedApi")
     fun callPhotoInfo(activity: Activity, imageView: View, textView: View, photoId: String,
-                      ownerId: String, position: Int, requestCode: Int) {
+        ownerId: String, position: Int, requestCode: Int) {
 
         val context = activity as Context
         val intent = createIntent(context, PhotoInfoActivity::class.java, true)
@@ -480,8 +482,8 @@ object Caller {
 
     @SuppressLint("RestrictedApi")
     fun callQuestInfo(fragment: BaseFragment, imageView: View, logoView: View, titleView: View,
-                        explanationView: View, ownerNameView: View, quest: Quest,
-                        position: Int, calledFrom: Int, requestCode: Int) {
+        explanationView: View, ownerNameView: View, quest: Quest,
+        position: Int, calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
         val context = fragment.activity as Context
         val intent = createIntent(context, QuestInfoActivity::class.java, true)
 
@@ -496,6 +498,7 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
+        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         // This code is blocked temporarily
         /*
@@ -510,13 +513,13 @@ object Caller {
 
 
         fragment.activity!!.startActivityForResult(intent, requestCode,
-                getQuestInfoViewActivityOptions(context, imageView, logoView, titleView, explanationView,
-                        ownerNameView).toBundle())
+            getQuestInfoViewActivityOptions(context, imageView, logoView, titleView, explanationView,
+                ownerNameView).toBundle())
     }
 
     @SuppressLint("RestrictedApi")
     fun callQuestInfo(context: Context, imageView: View, quest: Quest, position: Int,
-                        calledFrom: Int, requestCode: Int) {
+        calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
         val intent = createIntent(context, QuestInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -530,6 +533,7 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
+        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         // This code is blocked temporarily
         /*
@@ -543,7 +547,7 @@ object Caller {
         */
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
-                getQuestInfoViewActivityOptions(context, imageView).toBundle())
+            getQuestInfoViewActivityOptions(context, imageView).toBundle())
     }
 
     fun callPinnedPix(context: Context, userName: String, userId: String, iconFarm: Int, iconServer: String) {
@@ -569,7 +573,7 @@ object Caller {
     }
 
     fun callCategoryPhoto(context: Context, imageView: View, image: String, id: String, title: String,
-                          pages: Int, type: Int, position: Int, requestCode: Int) {
+        pages: Int, type: Int, position: Int, requestCode: Int) {
         val intent = createIntent(context, CategoryPhotoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -581,7 +585,7 @@ object Caller {
         intent.putExtra(EXTRA_CATEGORY_POSITION, position)
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
-                getCategoryPhotoViewActivityOptions(context, imageView).toBundle())
+            getCategoryPhotoViewActivityOptions(context, imageView).toBundle())
     }
 
     fun callCategory(context: Context, imageView: View, requestCode: Int) {
@@ -598,7 +602,7 @@ object Caller {
         intent.putExtra(EXTRA_HOT_TOPIC_CONTENT_ID, id)
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
-                getHotTopicContentViewActivityOptions(context, imageView).toBundle())
+            getHotTopicContentViewActivityOptions(context, imageView).toBundle())
     }
 
     /**
@@ -654,8 +658,8 @@ object Caller {
     }
 
     private fun getQuestInfoViewActivityOptions(context: Context, imageView: View, logoView: View,
-                                           titleView: View, explanationView: View,
-                                              ownerNameView: View): ActivityOptions {
+        titleView: View, explanationView: View,
+        ownerNameView: View): ActivityOptions {
         val titlePair = Pair.create(titleView, titleView.transitionName)
         val explanationPair = Pair.create(explanationView, explanationView.transitionName)
         val imagePair = Pair.create(imageView, imageView.transitionName)
@@ -670,12 +674,12 @@ object Caller {
 
         return if (navBackground == null) {
             ActivityOptions.makeSceneTransitionAnimation(activity, titlePair, explanationPair, imagePair,
-                                                                logoPair, ownerNamePair)
+                logoPair, ownerNamePair)
         } else {
             val navPair = Pair.create(navBackground, navBackground.transitionName)
 
             ActivityOptions.makeSceneTransitionAnimation(activity, titlePair, explanationPair, imagePair,
-                                                                logoPair, navPair, ownerNamePair)
+                logoPair, navPair, ownerNamePair)
         }
     }
 
@@ -743,12 +747,12 @@ object Caller {
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 
         return if (navBackground == null) {
-                   ActivityOptions.makeSceneTransitionAnimation(context, imagePair)
-               } else {
-                   val navPair = Pair.create(navBackground, navBackground.transitionName)
+            ActivityOptions.makeSceneTransitionAnimation(context, imagePair)
+        } else {
+            val navPair = Pair.create(navBackground, navBackground.transitionName)
 
-                   ActivityOptions.makeSceneTransitionAnimation(context, imagePair, navPair)
-               }
+            ActivityOptions.makeSceneTransitionAnimation(context, imagePair, navPair)
+        }
     }
 
     private fun getFeedInfoPhotoViewerOptions(context: Context, imageView: View): ActivityOptions {
@@ -860,13 +864,13 @@ object Caller {
 
         val builder = CustomTabsIntent.Builder()
         builder.setCloseButtonIcon(BitmapFactory.decodeResource(
-                context.resources, R.drawable.ic_close))
+            context.resources, R.drawable.ic_close))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             builder.setToolbarColor(context.resources
-                    .getColor(R.color.colorPrimary, null)).setShowTitle(true)
+                .getColor(R.color.colorPrimary, null)).setShowTitle(true)
         } else {
             builder.setToolbarColor(context.resources
-                    .getColor(R.color.colorPrimary, null)).setShowTitle(true)
+                .getColor(R.color.colorPrimary, null)).setShowTitle(true)
         }
 
         builder.enableUrlBarHiding()
@@ -941,7 +945,7 @@ object Caller {
     }
 
     fun callVerifierUrl(activity: Activity, token:String, calledFrom: Int) {
-        val authUrl = "$AUTHORIZE_URL?oauth_token=$token&perms=write&perms=delete"
+        val authUrl = "$AUTHORIZE_URL?oauth_token=$token&perms=write&perms=delete&perms=read"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)) // open web browser(probably Chrome)
 
         when (calledFrom) {

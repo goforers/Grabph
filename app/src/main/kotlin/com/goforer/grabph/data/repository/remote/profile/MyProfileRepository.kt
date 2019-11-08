@@ -24,28 +24,29 @@ import com.goforer.base.annotation.MockData
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.data.repository.remote.Repository
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
-import com.goforer.grabph.data.datasource.model.dao.remote.profile.HomeProfileDao
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProfileHolder
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProfile
+import com.goforer.grabph.data.datasource.model.dao.remote.profile.MyProfileDao
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
 import com.goforer.grabph.data.datasource.network.response.Resource
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HomeProfileRepository
+class MyProfileRepository
 @Inject
-constructor(private val profileDao: HomeProfileDao): Repository<Query>(){
+constructor(private val profileDao: MyProfileDao): Repository<Query>(){
     companion object {
-        const val METHOD = "searp.profile.getHomeProfile"
+        const val METHOD = "flickr.people.getinfo"
     }
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
-        return object: NetworkBoundResource<HomeProfile, HomeProfile, HomeProfile>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: HomeProfile) = profileDao.insert(item)
+        return object: NetworkBoundResource<MyProfile, MyProfile, MyProfileHolder>(parameters.loadType, parameters.boundType) {
+            override suspend fun saveToCache(item: MyProfile) = profileDao.insert(item)
 
-            override fun onNetworkError(errorMessage: String?, errorCode: Int) { }
+            override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = profileDao.getHomeProfile()
+            override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = profileDao.getMyProfile(parameters.query1 as String)
 
             override suspend fun loadFromNetwork() = searpService.getMyProfile(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
 
@@ -54,20 +55,5 @@ constructor(private val profileDao: HomeProfileDao): Repository<Query>(){
             override suspend fun clearCache() = profileDao.clearAll()
         }.getAsLiveData()
     }
-
-
-    @MockData
-    internal fun loadHomeProfile() = Transformations.map(profileDao.getHomeProfile()) { it }
-
-    @WorkerThread
-    @MockData
-    internal suspend fun setHomeProfile(homeProfile: HomeProfile) = insert(homeProfile)
-
-    @MockData
-    private suspend fun insert(homeProfile: HomeProfile) = profileDao.insert(homeProfile)
-
-    internal suspend fun update(homeProfile: HomeProfile) = profileDao.update(homeProfile)
-
-    @WorkerThread
-    internal fun loadProfileCache() = profileDao.loadHomeProfile()
+    internal suspend fun removeCache() = profileDao.clearAll()
 }

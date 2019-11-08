@@ -41,18 +41,11 @@ constructor(private val dao: PersonDao): Repository<Query>() {
         return object: NetworkBoundResource<Person, Person, SearperProfile>(parameters.loadType, parameters.boundType) {
             override suspend fun saveToCache(item: Person) = dao.insert(item)
 
-            // This function had been blocked at this time but it might be used in the future
-            /*
-            override fun shouldFetch(): Boolean {
-                return true
-            }
-            */
+            override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
-            override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int): LiveData<Person> = dao.getPerson()
+            override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int): LiveData<Person> = dao.getPerson(parameters.query1 as String)
 
             override suspend fun loadFromNetwork() = searpService.getSearperProfile(KEY, parameters.query1 as String, METHOD, FORMAT_JSON, INDEX)
-
-            override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 
             override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
@@ -61,4 +54,5 @@ constructor(private val dao: PersonDao): Repository<Query>() {
     }
 
     internal suspend fun removePerson() = dao.clearAll()
+
 }

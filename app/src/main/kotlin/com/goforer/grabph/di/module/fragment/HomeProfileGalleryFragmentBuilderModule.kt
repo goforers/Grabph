@@ -16,12 +16,12 @@
 
 package com.goforer.grabph.di.module.fragment
 
-import com.goforer.grabph.presentation.ui.home.profile.fragment.photos.HomeProfilePhotosFragment
+import com.goforer.grabph.presentation.ui.home.profile.fragment.gallery.HomeProfileGalleryFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class HomeProfilePhotosFragmentBuilderModule {
+abstract class HomeProfileGalleryFragmentBuilderModule {
     @ContributesAndroidInjector
-    internal abstract fun contributeHomeProfilePhotosFragment(): HomeProfilePhotosFragment
+    internal abstract fun contributeHomeProfileGalleryFragment(): HomeProfileGalleryFragment
 }

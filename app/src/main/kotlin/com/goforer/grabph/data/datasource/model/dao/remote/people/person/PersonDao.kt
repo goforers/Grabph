@@ -27,8 +27,8 @@ import com.goforer.grabph.data.datasource.model.dao.BaseDao
  */
 @Dao
 interface PersonDao: BaseDao<Person> {
-    @Query("SELECT * FROM Person ")
-    fun getPerson(): LiveData<Person>
+    @Query("SELECT * FROM Person WHERE nsid = :userId")
+    fun getPerson(userId: String): LiveData<Person>
 
     @Query("DELETE FROM Person")
     suspend fun clearAll()

@@ -18,7 +18,9 @@ package com.goforer.grabph.presentation.ui.home.profile.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,36 +39,39 @@ import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.ProfilePagerAdapter
-import com.goforer.grabph.presentation.ui.home.profile.fragment.photos.HomeProfilePhotosFragment
-import com.goforer.grabph.presentation.ui.home.profile.fragment.sales.HomeProfileSalesFragment
+import com.goforer.grabph.presentation.ui.home.profile.fragment.gallery.HomeProfileGalleryFragment
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProfile
 import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.profile.ProfileDataSource
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_HOME_PROFILE
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_GALLERYG_PHOTO
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_PROFILE
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.presentation.ui.home.profile.fragment.pin.HomeProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
 import javax.inject.Inject
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile.*
 
+@Suppress("UNCHECKED_CAST")
 @RunWithMockData(true)
 class HomeProfileFragment : BaseFragment() {
+
+    @MockData val userId = "184804690@N02"
+    @MockData val pinId = "34721981@N06"
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
     private var pagerAdapter: ProfilePagerAdapter? = null
 
     private var appBarVerticalOffset = 0
 
-        private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
+    private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
 
-    private var myPhotosFragment: HomeProfilePhotosFragment? = null
-    private var mySalesFragment: HomeProfileSalesFragment? = null
+    private var myGalleryFragment: HomeProfileGalleryFragment? = null
+    private var myPinFragment: HomeProfilePinFragment? = null
+    // private var mySalesFragment: HomeProfileSalesFragment? = null
 
     internal var isAppbarExpanded = true
 
@@ -92,77 +97,81 @@ class HomeProfileFragment : BaseFragment() {
         private const val PHOTO_RATIO_WIDTH = 67
         private const val PHOTO_RATIO_HEIGHT = 67
 
-        const val FRAGMENT_KEY_HOME_PHOTOS = "searp:fragment_home_photos"
+        const val FRAGMENT_KEY_HOME_GALLERY = "searp:fragment_home_gallery"
+        const val FRAGMENT_KEY_HOME_PIN = "searp:fragment_home_pin"
         const val FRAGMENT_KEY_HOME_SALES = "searp:fragment_home_sales"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val acvView = AutoClearedValue(this, inflater.inflate(R.layout.fragment_home_profile, container, false))
-
         return acvView.get()?.rootView
     }
 
     @SuppressLint("SetTextI18n", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // this@HomeProfileFragment.appbar_home_profile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+        //     appBarLayout, verticalOffset ->
+        //     val vnView = homeActivity.bottom_navigation_view
+        //
+        //     when {
+        //         abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+        //             vnView.translationY = abs(verticalOffset).toFloat()
+        //         }
+        //
+        //         verticalOffset == 0 -> {
+        //             vnView.translationY = 0L.toFloat()
+        //         }
+        //
+        //         else -> {
+        //             if (appBarVerticalOffset < verticalOffset) {
+        //                 vnView.translationY = 0L.toFloat()
+        //             } else {
+        //                 vnView.translationY = max(0f, min(vnView.height.toFloat(), abs(verticalOffset).toFloat()))
+        //             }
+        //
+        //             appBarVerticalOffset = verticalOffset
+        //         }
+        //     }
+        // })
+
         setPagerAdapter(savedInstanceState)
-
-        this@HomeProfileFragment.appbar_home_profile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            appBarLayout, verticalOffset ->
-            val vnView = homeActivity.bottom_navigation_view
-
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-                    vnView.translationY = abs(verticalOffset).toFloat()
-                }
-
-                verticalOffset == 0 -> {
-                    vnView.translationY = 0L.toFloat()
-                }
-
-                else -> {
-                    if (appBarVerticalOffset < verticalOffset) {
-                        vnView.translationY = 0L.toFloat()
-                    } else {
-                        vnView.translationY = max(0f, min(vnView.height.toFloat(), abs(verticalOffset).toFloat()))
-                    }
-
-                    appBarVerticalOffset = verticalOffset
-                }
-            }
-        })
-
         setViewClickListener()
-        observeProfileLiveData()
-        if (savedInstanceState == null) getProfile() else homeProfileViewModel.loadProfileFromCache()
+        removeCache()
+        getProfile()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        myPhotosFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_PHOTOS, it) }
-        mySalesFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_SALES, it) }
+        myGalleryFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_GALLERY, it) }
+        myPinFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_PIN, it) }
+        // mySalesFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_SALES, it) }
     }
 
     private fun setPagerAdapter(savedInstanceState: Bundle?) {
         savedInstanceState?.let { getFragmentInstance(it) }
 
-        myPhotosFragment = myPhotosFragment ?: HomeProfilePhotosFragment()
-        mySalesFragment = mySalesFragment ?: HomeProfileSalesFragment()
+        myGalleryFragment = myGalleryFragment ?: HomeProfileGalleryFragment()
+        myPinFragment = myPinFragment ?: HomeProfilePinFragment()
+        // mySalesFragment = mySalesFragment ?: HomeProfileSalesFragment()
 
         pagerAdapter = pagerAdapter ?: ProfilePagerAdapter(requireFragmentManager())
         acvPagerAdapter = AutoClearedValue(this, pagerAdapter)
 
-        myPhotosFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_photos)) }
-        mySalesFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_sales)) }
+        myGalleryFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_photos)) }
+        myPinFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.pinned_photo)) }
+        // mySalesFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_sales)) }
 
         this@HomeProfileFragment.viewPager_profile.adapter = acvPagerAdapter.get()
         this@HomeProfileFragment.tabLayout_profile.setupWithViewPager(viewPager_profile)
     }
 
     private fun getFragmentInstance(savedInstanceState: Bundle) {
-        myPhotosFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_PHOTOS)?.let { it as HomeProfilePhotosFragment }
-        mySalesFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_SALES)?.let { it as HomeProfileSalesFragment }
+        myGalleryFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_GALLERY)?.let { it as HomeProfileGalleryFragment }
+        myPinFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_PIN)?.let { it as HomeProfilePinFragment }
+        // mySalesFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_SALES)?.let { it as HomeProfileSalesFragment }
     }
 
     private fun setViewClickListener() {
@@ -170,6 +179,8 @@ class HomeProfileFragment : BaseFragment() {
         this@HomeProfileFragment.profile_container_searple.setOnClickListener { startActivity(TAB_SEARPLE_INDEX) }
         this@HomeProfileFragment.profile_container_like.setOnClickListener { startActivity(TAB_LIKE_INDEX) }
         this@HomeProfileFragment.profile_container_sell.setOnClickListener { startActivity(TAB_SELL_INDEX) }
+        this.constraint_profile.setOnClickListener {
+        }
     }
 
     private fun startActivity(tabType: Int) {
@@ -180,94 +191,82 @@ class HomeProfileFragment : BaseFragment() {
     }
 
     private fun getProfile() {
-        when (mock) {
-            @MockData
-            true -> transactMockData()
-            false -> transactRealData()
-        }
-    }
-
-    private fun observeProfileLiveData() {
-        homeProfileViewModel.getHomeProfileLiveData().observe(this, Observer {
-            setTopPortionView(it)
-            setBottomPortionViews(it)
-        })
+        setViewLoading()
+        setMyPageData()
+        observeMyProfile()
     }
 
     @MockData
-    private fun transactMockData() {
+    private fun setMyPageData() {
         val homeProfile = ProfileDataSource()
-
-        homeProfile.setHomeProfile()
-        homeProfile.getHomeProfile()?.let {
-            homeProfileViewModel.setHomeProfile(it)
-            homeProfileViewModel.setHomeProfileLiveData(it)
-        }
-    }
-
-    private fun transactRealData() {
-        val liveData = homeProfileViewModel.profile
+        // homeProfile.setHomeProfile()
+        // homeProfile.getHomeProfile()?.let {
+        //     homeProfileViewModel.setHomeProfile(it)
+        //     homeProfileViewModel.setHomeProfileLiveData(it)
+        // }
 
         homeProfileViewModel.setParameters(
-            Parameters(
-                "",
-                -1,
-                LOAD_HOME_PROFILE,
-                BOUND_FROM_LOCAL
-            ), NONE_TYPE)
+            Parameters(userId, // userId
+                -1, LOAD_MY_PROFILE, BOUND_FROM_BACKEND), NONE_TYPE)
+
+        homeProfileViewModel.setParametersMyGallery(
+            Parameters(userId, -1, LOAD_MY_GALLERYG_PHOTO, BOUND_FROM_BACKEND))
+
+        homeProfileViewModel.setParametersMyPin(
+            Parameters(pinId, -1, LOAD_PHOTOG_PHOTO, BOUND_FROM_BACKEND)
+        )
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeMyProfile() {
+        val liveData = homeProfileViewModel.profile
         liveData.observe(this, Observer { resource ->
+            setViewLoadingFinished()
+
             when (resource?.getStatus()) {
-
                 Status.SUCCESS -> {
-                    resource.getData()?.let { homeProfile ->
-                        val profile = homeProfile as HomeProfile
+                    resource.getData()?.let { profile ->
 
-                        homeProfileViewModel.setHomeProfileLiveData(profile)
+                        val user = profile as MyProfile?
+                        if (user?.id == userId) setTopPortionView(user)
                     }
-
                     resource.getMessage()?.let {
-                        homeActivity.showNetworkError(resource)
+                        // showNetworkError(resource)
                         liveData.removeObservers(this)
                     }
                 }
 
-                Status.LOADING -> { /*로딩 이미지 구현 필요*/ }
-
+                Status.LOADING -> { }
                 Status.ERROR -> {
-                    homeActivity.showNetworkError(resource)
                     liveData.removeObservers(this)
                 }
-
                 else -> {
-                    homeActivity.showNetworkError(resource)
                     liveData.removeObservers(this)
                 }
             }
+            // setAppbarLayoutScrollingBehavior()
+            setFontType()
         })
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun setTopPortionView(profile: HomeProfile) {
-        setFontType()
-
-        this@HomeProfileFragment.tv_profile_profit.text = "Income: $${profile.revenue}"
-        this@HomeProfileFragment.tv_profile_point.text = "Point: ${profile.point}p"
-        this@HomeProfileFragment.tv_profile_name.text = profile.realname
-        this@HomeProfileFragment.tv_profile_coverLetter.text = profile.coverletter
-        this@HomeProfileFragment.tv_profile_number_searper.text = "${profile.following}"
-        this@HomeProfileFragment.tv_profile_number_searple.text = "${profile.follower}"
-        this@HomeProfileFragment.tv_profile_number_like.text = "${profile.like}"
-        this@HomeProfileFragment.tv_profile_number_sell.text = "${profile.sold}"
+    private fun setTopPortionView(profile: MyProfile) {
+        this@HomeProfileFragment.tv_profile_profit.text = "Income: $${1250}$"
+        this@HomeProfileFragment.tv_profile_point.text = "Point: ${1850}p"
+        this@HomeProfileFragment.tv_profile_name.text = profile.realname?._content?.let {
+            if (it.isEmpty()) profile.username?._content else it
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.tv_profile_coverLetter.text = Html.fromHtml(profile.description?._content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            this@HomeProfileFragment.tv_profile_coverLetter.text = profile.description?._content
+        }
+        this@HomeProfileFragment.tv_profile_number_searper.text
+        this@HomeProfileFragment.tv_profile_number_searple.text
+        this@HomeProfileFragment.tv_profile_number_like.text
+        this@HomeProfileFragment.tv_profile_number_sell.text
         homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
-        profile.profilePhoto?.let { homeActivity.setImageDraw(iv_profile_icon, constraint_profile, it, false) }
-
-        setAppbarLayoutScrollingBehavior()
-    }
-
-    private fun setBottomPortionViews(profile: HomeProfile) {
-        myPhotosFragment?.setMyPhotosView(profile.sellPhotos.photos)
-        myPhotosFragment?.recyclerView?.let { photosRv = it }
-//        setViewPagerSwipeListener()
+        val photoUrl = getProfilePhotoUrl(profile.iconfarm, profile.iconserver, profile.id)
+        baseActivity.setImageDraw(this.iv_profile_icon, photoUrl)
     }
 
     private fun setAppbarLayoutScrollingBehavior() {
@@ -282,9 +281,9 @@ class HomeProfileFragment : BaseFragment() {
 
     private fun setAppbarOffsetChangedListener() {
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            appBarLayout, verticalOffset ->
+                appBarLayout, verticalOffset ->
 
-//            when {
+            //            when {
 //                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
 //                    isAppbarExpanded = false
 //                    myPhotosFragment?.setRecyclerScrollable(true)
@@ -364,6 +363,10 @@ class HomeProfileFragment : BaseFragment() {
         })
     }
 
+    private fun getProfilePhotoUrl(iconFarm: Int, iconServer: String, id: String): String {
+        return "https://farm$iconFarm.staticflickr.com/$iconServer/buddyicons/${id}_m.jpg"
+    }
+
     private fun setFontType() {
         homeActivity.run {
             FONT_TYPE_REGULAR.let {
@@ -388,5 +391,21 @@ class HomeProfileFragment : BaseFragment() {
                 setFontTypeface(tv_profile_text_sell, it)
             }
         }
+    }
+
+    private fun removeCache() {
+        homeProfileViewModel.removeGallery()
+    }
+
+    private fun setViewLoading() {
+        this.progress_bar_home_profile_holder.visibility = View.VISIBLE
+        this.appbar_home_profile.visibility = View.GONE
+        this.viewPager_profile.visibility = View.GONE
+    }
+
+    private fun setViewLoadingFinished() {
+        this.progress_bar_home_profile_holder.visibility = View.GONE
+        this.appbar_home_profile.visibility = View.VISIBLE
+        this.viewPager_profile.visibility = View.VISIBLE
     }
 }

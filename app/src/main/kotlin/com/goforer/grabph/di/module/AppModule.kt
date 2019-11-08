@@ -118,10 +118,10 @@ class AppModule {
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(logger)
-                .cookieJar(cookieJar)
-                .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
-                .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
+            .cookieJar(cookieJar)
+            .readTimeout(READ_TIME_OUT, TimeUnit.SECONDS)
+            .writeTimeout(WRITE_TIME_OUT, TimeUnit.SECONDS)
+            .connectTimeout(CONNECT_TIME_OUT, TimeUnit.SECONDS)
 
         okHttpClient.addInterceptor { chain ->
             val original = chain.request()
@@ -129,28 +129,28 @@ class AppModule {
             val builder = original.newBuilder()
 
             val request = builder
-                    .header("Connection", "keep-alive")
-                    .method(original.method, original.body)
-                    .build()
+                .header("Connection", "keep-alive")
+                .method(original.method, original.body)
+                .build()
 
             val response = chain.proceed(request)
 
             rawResponseBody = response.body?.string()
 
             response.newBuilder().body(
-                    rawResponseBody!!.toResponseBody(response.body?.contentType())).build()
+                rawResponseBody!!.toResponseBody(response.body?.contentType())).build()
         }
 
         val gson = GsonBuilder().setLenient().create()
 
         return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient.build())
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .build()
-                .create(SearpService::class.java)
+            .baseUrl(BASE_URL)
+            .client(okHttpClient.build())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .build()
+            .create(SearpService::class.java)
     }
 
     @Singleton
@@ -273,8 +273,11 @@ class AppModule {
     @Provides
     internal fun provideFeedsContentDao(cache: Cache) = cache.feedsContentDao()
 
+    @Singleton
+    @Provides
+    internal fun provideMyGalleryDao(cache: Cache) = cache.myGalleryDao()
 
     @Singleton
     @Provides
-    internal fun provideOthersProfileDao(cache: Cache) = cache.othersProfileDao()
+    internal fun provideMyProfileDao(cache: Cache) = cache.myProfileDao()
 }

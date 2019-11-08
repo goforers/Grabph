@@ -21,6 +21,9 @@ import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.feed.photo.LoadOthersPhotoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.network.response.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,11 +33,17 @@ class OthersPhotosViewModel
 constructor(private val useCase: LoadOthersPhotoUseCase): BaseViewModel<Parameters>() {
     internal var calledFrom: Int = 0
 
-    internal lateinit var userProfile: LiveData<Resource>
+    internal lateinit var userPhotos: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        userProfile = useCase.execute(viewModelScope, parameters)
+        userPhotos = useCase.execute(viewModelScope, parameters)
     }
 
-    internal suspend fun removeCache() = useCase.removeCache()
+    internal fun removeCache() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                useCase.removeCache()
+            }
+        }
+    }
 }

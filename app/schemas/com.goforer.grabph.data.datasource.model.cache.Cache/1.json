@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1759c4d513b385abb921dc4f9107bd9a",
+    "identityHash": "f4587812f8acf3bb65d7899822ad8283",
     "entities": [
       {
         "tableName": "FeedItem",
@@ -125,7 +125,7 @@
       },
       {
         "tableName": "Person",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`grade` TEXT, `followers` TEXT, `followings` TEXT, `_id` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `username__content` TEXT, `realname__content` TEXT, `location__content` TEXT, `description__content` TEXT, `photosurl__content` TEXT, `profileurl__content` TEXT, `mobileurl__content` TEXT, `photos_firstdatetaken__content` TEXT, `photos_firstdate__content` TEXT, `photos_count__content` TEXT, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`grade` TEXT, `followers` TEXT, `followings` TEXT, `_id` TEXT NOT NULL, `nsid` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `username__content` TEXT, `realname__content` TEXT, `location__content` TEXT, `description__content` TEXT, `photosurl__content` TEXT, `profileurl__content` TEXT, `mobileurl__content` TEXT, `photos_firstdatetaken__content` TEXT, `photos_firstdate__content` TEXT, `photos_count__content` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "grade",
@@ -148,6 +148,12 @@
           {
             "fieldPath": "id",
             "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nsid",
+            "columnName": "nsid",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -2398,12 +2404,275 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "MyGallery",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`like` INTEGER NOT NULL, `_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "like",
+            "columnName": "like",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "secret",
+            "columnName": "secret",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "server",
+            "columnName": "server",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "farm",
+            "columnName": "farm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "camera",
+            "columnName": "camera",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "owner",
+            "columnName": "owner",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ispublic",
+            "columnName": "ispublic",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isfriend",
+            "columnName": "isfriend",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isfamily",
+            "columnName": "isfamily",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "MyGalleryg",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`stat` TEXT NOT NULL, PRIMARY KEY(`stat`))",
+        "fields": [
+          {
+            "fieldPath": "stat",
+            "columnName": "stat",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "stat"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Gallery",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`page` INTEGER NOT NULL, `pages` INTEGER NOT NULL, `perpage` INTEGER NOT NULL, `total` TEXT NOT NULL, PRIMARY KEY(`total`))",
+        "fields": [
+          {
+            "fieldPath": "page",
+            "columnName": "page",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pages",
+            "columnName": "pages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "perpage",
+            "columnName": "perpage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "total",
+            "columnName": "total",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "total"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "MyProfile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`grade` TEXT, `followers` TEXT, `followings` TEXT, `_id` TEXT NOT NULL, `nsid` TEXT NOT NULL, `iconserver` TEXT NOT NULL, `iconfarm` INTEGER NOT NULL, `username__content` TEXT, `realname__content` TEXT, `location__content` TEXT, `description__content` TEXT, `photosurl__content` TEXT, `profileurl__content` TEXT, `mobileurl__content` TEXT, `photos_firstdatetaken__content` TEXT, `photos_firstdate__content` TEXT, `photos_count__content` TEXT, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "grade",
+            "columnName": "grade",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "followers",
+            "columnName": "followers",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "followings",
+            "columnName": "followings",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nsid",
+            "columnName": "nsid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconserver",
+            "columnName": "iconserver",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconfarm",
+            "columnName": "iconfarm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username._content",
+            "columnName": "username__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "realname._content",
+            "columnName": "realname__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location._content",
+            "columnName": "location__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description._content",
+            "columnName": "description__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photosurl._content",
+            "columnName": "photosurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "profileurl._content",
+            "columnName": "profileurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mobileurl._content",
+            "columnName": "mobileurl__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.firstdatetaken._content",
+            "columnName": "photos_firstdatetaken__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.firstdate._content",
+            "columnName": "photos_firstdate__content",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photos.count._content",
+            "columnName": "photos_count__content",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_MyProfile__id",
+            "unique": false,
+            "columnNames": [
+              "_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_MyProfile__id` ON `${TABLE_NAME}` (`_id`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1759c4d513b385abb921dc4f9107bd9a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f4587812f8acf3bb65d7899822ad8283')"
     ]
   }
 }

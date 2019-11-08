@@ -44,12 +44,12 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
         private val PAYLOAD_TITLE = Any()
 
         private val DIFF_CALLBACK
-                                        = object: DiffUtil.ItemCallback<Quest>() {
+            = object: DiffUtil.ItemCallback<Quest>() {
             override fun areItemsTheSame(oldQuest: Quest,
-                                         newQuest: Quest): Boolean = oldQuest.id == newQuest.id
+                newQuest: Quest): Boolean = oldQuest.id == newQuest.id
 
             override fun areContentsTheSame(oldQuest: Quest,
-                                            newQuest: Quest): Boolean = oldQuest == newQuest
+                newQuest: Quest): Boolean = oldQuest == newQuest
 
             override fun getChangePayload(oldQuest: Quest, newQuest: Quest): Any? {
                 return if (sameExceptTitle(oldQuest, newQuest)) {
@@ -92,7 +92,7 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
             snap_quest_item_holder.visibility = View.VISIBLE
             activity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
             activity.setImageDraw(iv_snap_quest_content, snap_quest_content_constraintLayoutContainer,
-                    item.ownerImage, false)
+                item.ownerImage, false)
             snap_quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
             iv_snap_quest_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
@@ -121,8 +121,8 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
         private fun callQuestInfo(viewContent: ThreeTwoImageView, item: Quest, holder: BaseViewHolder<*>) {
             activity.closeFab()
             Caller.callQuestInfo(activity, viewContent,
-                    item, holder.adapterPosition, CALLED_FROM_HOME_MAIN_QUEST,
-                    SELECTED_QUEST_INFO_ITEM_FROM_HOME_MAIN_POSITION)
+                item, holder.adapterPosition, CALLED_FROM_HOME_MAIN_QUEST,
+                SELECTED_QUEST_INFO_ITEM_FROM_HOME_MAIN_POSITION, false)
         }
 
         private fun setFontTypeface() {

@@ -142,7 +142,7 @@
     <string name="facebook_app_id">310866589465901</string>
     <string name="fb_login_protocol_scheme">fb310866589465901</string>
     <string name="google_map_key">AIzaSyC6K6jlSA7IUZO4qpEKVeiGD0ZQU9mT56U</string>
-    <string name="my_profile_tab_photos">My photos</string>
+    <string name="my_profile_tab_photos">My Gallery</string>
     <string name="my_profile_tab_sales">My Sales</string>
     <string name="sale_status_invalid">Invalid</string>
     <string name="sale_status_approved">Approved</string>
@@ -193,4 +193,5 @@
     <string name="follow_button">FOLLOW</string>
     <string name="follow_button_bottom">FOLLOWING :)</string>
     <string name="description_sample">Lorem ipsum dolor sit amet, consectetuer adipis cing elit. Aenean commodo ligula eget dolor.</string>
+    <string name="pinned_photo">My Pin</string>
 </resources>

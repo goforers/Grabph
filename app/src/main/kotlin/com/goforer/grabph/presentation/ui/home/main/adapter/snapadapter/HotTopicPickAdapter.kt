@@ -95,7 +95,7 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
     }
 
     override fun getItemCount(): Int {
-       return item.size
+        return item.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -136,8 +136,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     tv_snap_best_pick_photo_title.requestLayout()
                     activity.setFixedImageSize(RATIO_HEIGHT, RATIO_WIDTH)
                     activity.setImageDraw(iv_snap_best_pick_photo_content,
-                            snap_best_pick_hot_photo_constraintLayoutContainer,
-                            hotTopic.media.urls.regular!!, false)
+                        snap_best_pick_hot_photo_constraintLayoutContainer,
+                        hotTopic.media.urls.regular!!, false)
                     tv_snap_best_pick_photo_tip_phrase.text = activity.getString(R.string.snap_home_main_hot_topic_photo_phrase)
                     tv_snap_best_pick_photo_title.text = item.title
                     snap_best_pick_hot_photo_holder.visibility = View.VISIBLE
@@ -160,8 +160,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     tv_snap_best_pick_quest_item_rewards.requestLayout()
                     activity.setFixedImageSize(RATIO_HEIGHT, RATIO_WIDTH)
                     activity.setImageDraw(iv_snap_best_pick_quest_content,
-                            snap_best_pick_quest_constraintLayoutContainer,
-                            mission.ownerImage, false)
+                        snap_best_pick_quest_constraintLayoutContainer,
+                        mission.ownerImage, false)
                     tv_snap_best_pick_quest_duration.text = activity.getString(R.string.snap_quest_duration_day_phrase) + mission.duration.toString()
                     tv_snap_best_pick_quest_item_title.text = mission.title
                     tv_snap_best_pick_quest_item_rewards.text = mission.rewards
@@ -171,8 +171,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     iv_snap_best_pick_quest_content.setOnClickListener {
                         activity.closeFab()
                         Caller.callQuestInfo(activity, iv_snap_best_pick_quest_content,
-                                mission, holder.adapterPosition, Caller.CALLED_FROM_HOME_BEST_PICK_QUEST,
-                                Caller.SELECTED_BEST_PICK_QUEST_POSITION)
+                            mission, holder.adapterPosition, Caller.CALLED_FROM_HOME_BEST_PICK_QUEST,
+                            Caller.SELECTED_BEST_PICK_QUEST_POSITION, false)
                     }
                 }
 
@@ -192,21 +192,21 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     iv_searper_pic.setOnClickListener {
                         activity.closeFab()
                         Caller.callPhotogPhoto(context.applicationContext, "Ashlea Watchman",
-                                iconfarm, iconserver, searperId,
-                                Caller.FIRST_PAGE, Caller.PHOTOG_PHOTO_GENERAL_TYPE)
+                            iconfarm, iconserver, searperId,
+                            Caller.FIRST_PAGE, Caller.PHOTOG_PHOTO_GENERAL_TYPE)
                     }
 
                     tv_searper_name_text.setOnClickListener {
                         activity.closeFab()
                         Caller.callPhotogPhoto(context.applicationContext, "Ashlea Watchman",
-                                iconfarm, iconserver, searperId,
-                                Caller.FIRST_PAGE, Caller.PHOTOG_PHOTO_GENERAL_TYPE)
+                            iconfarm, iconserver, searperId,
+                            Caller.FIRST_PAGE, Caller.PHOTOG_PHOTO_GENERAL_TYPE)
                     }
 
                     activity.setFixedImageSize(RATIO_HEIGHT, RATIO_WIDTH)
                     activity.setImageDraw(iv_snap_best_pick_searper_photo_content,
-                            snap_best_pick_searper_photo_constraintLayoutContainer,
-                            photo.media.m!!, true)
+                        snap_best_pick_searper_photo_constraintLayoutContainer,
+                        photo.media.m!!, true)
                     snap_best_pick_searper_photo_holder.visibility = View.VISIBLE
                     card_best_pick_searper_photo_holder.visibility = View.VISIBLE
                     iv_snap_best_pick_searper_photo_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
@@ -215,8 +215,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     iv_snap_best_pick_searper_photo_content.setOnClickListener {
                         activity.closeFab()
                         Caller.callFeedInfo(activity, iv_snap_best_pick_searper_photo_content,
-                                item.idx, holder.adapterPosition, item.authorId, photoId,
-                                CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO, SELECTED_BEST_PICK_SEARPER_PHOTO_POSITION)
+                            item.idx, holder.adapterPosition, item.authorId, photoId,
+                            CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO, SELECTED_BEST_PICK_SEARPER_PHOTO_POSITION, false)
                     }
                 }
 
@@ -228,8 +228,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     tv_snap_best_pick_category_item_title.requestLayout()
                     activity.setFixedImageSize(RATIO_HEIGHT, RATIO_WIDTH)
                     activity.setImageDraw(iv_snap_best_pick_category_item_content,
-                            snap_best_pick_category_constraintLayoutContainer,
-                            category.photo?.m!!, false)
+                        snap_best_pick_category_constraintLayoutContainer,
+                        category.photo?.m!!, false)
                     tv_snap_best_pick_category_item_title.text = item.title
                     snap_best_pick_category_item_holder.visibility = View.VISIBLE
                     card_snap_best_pick_category_holder.visibility = View.VISIBLE
@@ -237,8 +237,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     iv_snap_best_pick_category_item_content.setOnClickListener {
                         activity.closeFab()
                         Caller.callCategoryPhoto(activity, iv_snap_best_pick_category_item_content,
-                                category.photo.m, category.id, category.title, Caller.FIRST_PAGE,
-                                category.type, holder.adapterPosition, SELECTED_BEST_PICK_CATEGORY_POSITION)
+                            category.photo.m, category.id, category.title, Caller.FIRST_PAGE,
+                            category.type, holder.adapterPosition, SELECTED_BEST_PICK_CATEGORY_POSITION)
                     }
                 }
             }

@@ -22,6 +22,5 @@ import com.goforer.base.presentation.model.BaseModel
 
 @Entity(primaryKeys = ["stat"])
 data class SearperProfile(val stat: String) : BaseModel() {
-    @Ignore
-    val person: Person? = null
+    @Ignore val person: Person? = null
 }

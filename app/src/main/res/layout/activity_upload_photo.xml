@@ -1,76 +1,565 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/upload_constraint_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
     tools:context=".presentation.ui.upload.UploadPhotoActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_photo_upload"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_layout_upload"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:elevation="0dp">
 
-        <com.goforer.base.presentation.view.customs.imageview.PhotoImageView
-            android:id="@+id/iv_photo_upload"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_upload"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="?actionBarSize"
+            android:background="@android:color/transparent"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextAppearance="@style/TransparentToolbar.Title">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_progress_upload"
-            android:visibility="gone"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center"
+                android:transitionGroup="true">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_upload_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/text_size_18"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="@dimen/margin_64"
+                    android:text="UPLOAD"
+                    android:maxLength="32"
+                    android:gravity="center"
+                    android:ellipsize="end"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view_upload"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:transitionGroup="true"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout_upload"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/constraint_nested_holder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progress_bar_upload"
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview_holder_photo_upload"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardBackgroundColor="@color/colorPrimary"
+                android:elevation="0dp"
+                android:transitionGroup="true">
+
+                <com.goforer.base.presentation.view.customs.imageview.PhotoImageView
+                    android:id="@+id/iv_photo_upload"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="126dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardBackgroundColor="@color/colorUploadEditText"
+                android:elevation="0dp"
+                android:transitionGroup="true"
+                app:cardCornerRadius="2.5dp"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginEnd="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_15">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_desc_upload_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/text_size_12"
+                        android:textColorHint="@color/colorUploadAgrees"
+                        android:textColor="@color/colorUploadAgrees"
+                        android:background="@color/transparent"
+                        android:layout_marginTop="@dimen/margin_12"
+                        android:layout_marginBottom="@dimen/margin_12"
+                        android:layout_marginStart="@dimen/margin_9"
+                        android:layout_marginEnd="@dimen/margin_9"
+                        android:gravity="top"
+                        android:hint="사진 설명을 입력하세요 :) \n예)오늘의 멋진풍경 #파란하늘"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_52"
+                android:background="@color/colorPrimary"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_upload_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:layout_marginStart="@dimen/margin_20"
+                        android:layout_marginEnd="@dimen/margin_20"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/divider1_upload"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorDivider"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="@dimen/margin_20"
+                        android:text="라이센스"
+                        android:textColor="@color/white"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_lisence_holder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="@dimen/margin_23">
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/ib_lisence1_upload"
+                            android:layout_width="@dimen/width_20"
+                            android:layout_height="@dimen/height_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_lisence5"
+                            android:button="@null"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/ib_lisence2_upload"
+                            android:layout_width="@dimen/width_20"
+                            android:layout_height="@dimen/height_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_lisence4"
+                            android:button="@null"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="@dimen/margin_8"
+                            app:layout_constraintEnd_toStartOf="@id/ib_lisence1_upload"/>
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/ib_lisence3_upload"
+                            android:layout_width="@dimen/width_20"
+                            android:layout_height="@dimen/height_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_lisence3"
+                            android:button="@null"
+                            android:layout_marginEnd="@dimen/margin_8"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/ib_lisence2_upload"/>
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/ib_lisence4_upload"
+                            android:layout_width="@dimen/width_20"
+                            android:layout_height="@dimen/height_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_lisence2"
+                            android:button="@null"
+                            android:layout_marginEnd="@dimen/margin_8"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/ib_lisence3_upload"/>
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/ib_lisence5_upload"
+                            android:layout_width="@dimen/width_20"
+                            android:layout_height="@dimen/height_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_lisence1"
+                            android:button="@null"
+                            android:layout_marginEnd="@dimen/margin_8"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/ib_lisence4_upload"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_1"
+                android:background="@color/colorDivider"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_60"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_photo_price_upload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="@dimen/margin_20"
+                        android:text="사진가격"
+                        android:textColor="@color/white"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_upload_info"
+                        android:background="@color/transparent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_photo_price_upload"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_photo_price_upload"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="137dp"
+                        android:layout_height="32dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="20dp"
+                        app:cardBackgroundColor="@color/colorUploadEditText"
+                        app:cardCornerRadius="2.5dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/margin_7">
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tv_price_currecy"
+                                app:layout_constraintHorizontal_weight="10"
+                                android:textSize="@dimen/text_size_13"
+                                android:layout_marginRight="@dimen/margin_2"
+                                android:background="@color/transparent"
+                                android:hint="0"
+                                android:inputType="number"
+                                android:textColorHint="@color/white"
+                                android:textColor="@color/white"
+                                android:gravity="right|center"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tv_price_currecy"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:text="$"
+                                android:textSize="@dimen/text_size_13"
+                                android:textColor="@color/white"
+                                app:layout_constraintHorizontal_weight="1"
+                                android:gravity="center"/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_1"
+                android:background="@color/colorDivider"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/colorSearp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:cardBackgroundColor="@color/colorPrimary">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_uploading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="UPLOADING.."
-                android:textSize="@dimen/text_size_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/progress_bar_upload"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/margin_22"
+                    android:layout_marginBottom="@dimen/margin_22"
+                    android:layout_marginStart="@dimen/margin_32"
+                    android:layout_marginEnd="@dimen/margin_32">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_check_all_holder"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/width_17"
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cb_check_all_upload"
+                            android:layout_width="@dimen/width_17"
+                            android:layout_height="match_parent"
+                            android:button="@null"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:background="@drawable/custom_checkbox_upload_agree"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/margin_12"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/white"
+                            android:text="모든 업로드 운영 원칙에 동의하기"
+                            app:layout_constraintStart_toEndOf="@+id/cb_check_all_upload"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/constraint_check_all_holder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/margin_20"
+                        android:layout_marginStart="@dimen/margin_11">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_upload_agree1_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cb_upload_agree_1"
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:button="@null"
+                                android:background="@drawable/custom_checkbox_upload_agree"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/cb_upload_agree_1"
+                                android:layout_marginStart="@dimen/margin_9"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:textSize="@dimen/text_size_12"
+                                android:textColor="@color/colorUploadAgrees"
+                                android:text="[필수]이 사진의 창작자는 본인이며 창작물에 대한 저작권은 본인에게 있습니다."/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_upload_agree2_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_17"
+                            app:layout_constraintTop_toBottomOf="@+id/constraint_upload_agree1_holder">
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cb_upload_agree_2"
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:button="@null"
+                                android:background="@drawable/custom_checkbox_upload_agree"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/cb_upload_agree_2"
+                                android:layout_marginStart="@dimen/margin_9"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:textSize="@dimen/text_size_12"
+                                android:textColor="@color/colorUploadAgrees"
+                                android:text="본인은 현재의 위치정보 데이터의 사용에 동의합니다."/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_upload_agree3_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_17"
+                            app:layout_constraintTop_toBottomOf="@+id/constraint_upload_agree2_holder">
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cb_upload_agree_3"
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:button="@null"
+                                android:background="@drawable/custom_checkbox_upload_agree"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tv_upload_agree3"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/cb_upload_agree_3"
+                                android:layout_marginStart="@dimen/margin_9"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:textSize="@dimen/text_size_12"
+                                android:textColor="@color/colorUploadAgrees"
+                                android:text="창작물에 있는 사물 또는 인물에 대한 저작물에 대한 동의를 구하셨나요?"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_9"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_upload_agree3"
+                                app:layout_constraintStart_toStartOf="@+id/tv_upload_agree3"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:text="*동의를 구하지 않은 창작물에 대해서는 추후 법적인 이슈가 발생할 수 있습니다."
+                                android:textSize="@dimen/text_size_10"
+                                android:textColor="@color/colorUploadAgrees"/>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_50"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="업로드"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/ic_btn_searp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_progress_upload"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/colorSearp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar_upload"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="업로딩 중.."
+            android:textColor="@color/colorSearp"
+            android:layout_marginTop="@dimen/margin_5"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_title_upload_image"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/disconnect_container_upload"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="photo title (optional)"
-        app:layout_constraintTop_toBottomOf="@id/container_photo_upload"/>
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_desc_upload_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="photo description (optional)"
-        app:layout_constraintTop_toBottomOf="@id/et_title_upload_image"/>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_disconnect_upload"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_disconnect"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_144"
+            tools:ignore="ContentDescription"/>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notice1_upload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_disconnect_pinned_people"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/margin_44"
+            android:textColor="@color/grayLight"
+            android:text="@string/not_connected_internet"
+            android:textSize="@dimen/text_size_32"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/et_desc_upload_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="upload"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notice2_upload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_notice1_pinned_people"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/margin_8"
+            android:textColor="@color/grayLight"
+            android:text="@string/check_connection"
+            android:textSize="@dimen/text_size_24" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

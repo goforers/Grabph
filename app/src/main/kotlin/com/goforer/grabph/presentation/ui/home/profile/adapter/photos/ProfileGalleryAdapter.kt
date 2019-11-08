@@ -21,23 +21,27 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
 import com.goforer.grabph.presentation.ui.home.HomeActivity
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyPhoto
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
 
-class ProfilePhotosAdapter(private val activity: HomeActivity) : PagedListAdapter<MyPhoto,
-        ProfilePhotosAdapter.MyPhotosViewHolder>(DIFF_CALLBACK) {
+class ProfileGalleryAdapter(private val activity: HomeActivity)
+    : PagedListAdapter<MyGallery, ProfileGalleryAdapter.MyPhotosViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<MyPhoto>() {
-            override fun areItemsTheSame(oldItem: MyPhoto, newItem: MyPhoto): Boolean = oldItem.id == newItem.id
-            override fun areContentsTheSame(oldItem: MyPhoto, newItem: MyPhoto): Boolean = oldItem == newItem
+        private const val STOP_LOADING_TIME_OUT = 50L
+
+        private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<MyGallery>() {
+            override fun areItemsTheSame(oldItem: MyGallery, newItem: MyGallery): Boolean = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: MyGallery, newItem: MyGallery): Boolean = oldItem == newItem
         }
     }
 
@@ -50,20 +54,28 @@ class ProfilePhotosAdapter(private val activity: HomeActivity) : PagedListAdapte
 
     override fun onBindViewHolder(holder: MyPhotosViewHolder, position: Int) {
         val item = getItem(position)
-
         item?.let { holder.bindItemHolder(holder, it, position) }
     }
 
-    class MyPhotosViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<MyPhoto>(containerView), LayoutContainer {
+    override fun onCurrentListChanged(previousList: PagedList<MyGallery>?, currentList: PagedList<MyGallery>?) {
+        super.onCurrentListChanged(previousList, currentList)
+        withDelay(STOP_LOADING_TIME_OUT) {
+            previousList?.let {
+
+            }
+        }
+    }
+    class MyPhotosViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<MyGallery>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
-        override fun bindItemHolder(holder: BaseViewHolder<*>, item: MyPhoto, position: Int) {
+        override fun bindItemHolder(holder: BaseViewHolder<*>, item: MyGallery, position: Int) {
             activity.setFontTypeface(tv_profile_mission_price, FONT_TYPE_BOLD)
             iv_profile_my_photo.requestLayout()
             tv_profile_mission_price.requestLayout()
-            activity.setFixedImageSize(0, 0)
-            item.media?.urls?.let { activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, it.regular, false) }
-            tv_profile_mission_price.visibility = View.VISIBLE
-            tv_profile_mission_price.text = "$${item.price}"
+            activity.setFixedImageSize(400, 400) // original value: 0, 0
+
+            val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
+            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
+            // tv_profile_mission_price.visibility = View.VISIBLE
         }
 
         override fun onItemSelected() { containerView.setBackgroundColor(Color.LTGRAY) }

@@ -23,7 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
@@ -194,10 +193,10 @@ class HomeProfileSalesFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun observeHomeProfileLiveData() {
-        homeProfileViewModel.getHomeProfileLiveData().observe(this, Observer {
-            setSalesStatusNumber(it.sellPhotos.photos)
-            homeProfileViewModel.setSalesStatusLiveData(it.sellPhotos.photos)
-        })
+        // homeProfileViewModel.getHomeProfileLiveData().observe(this, Observer {
+        //     // setSalesStatusNumber(it.sellPhotos.photos)
+        //     // homeProfileViewModel.setSalesStatusLiveData(it.sellPhotos.photos)
+        // })
     }
 
     private fun setTabButtonColor(index: Int) {

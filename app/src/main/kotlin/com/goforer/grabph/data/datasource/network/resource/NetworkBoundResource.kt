@@ -31,7 +31,8 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categoryg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContentg
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalleryg
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProfileHolder
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.People
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuestg
@@ -40,6 +41,7 @@ import com.goforer.grabph.data.datasource.network.response.ApiResponse
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.Repository.Companion.PER_PAGE
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Owner
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import kotlinx.coroutines.*
 
 /**
@@ -85,6 +87,9 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
         const val LOAD_RANKING = 127
         const val LOAD_OTHERS_PROFILE = 128
         const val LOAD_SEARCH_KEYWORD = 129
+        const val LOAD_MY_GALLERYG_PHOTO = 130
+        const val LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE = 131
+        const val LOAD_MY_PROFILE = 132
 
         private const val NONE_ITEM_COUNT = 20
     }
@@ -142,7 +147,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
     }
 
     private suspend fun fetchDataFromNetwork(resource: NetworkBoundResource<SaveType, ResultType, RequestType>,
-                                             cacheSource: MediatorLiveData<SaveType>, loadType: Int) {
+        cacheSource: MediatorLiveData<SaveType>, loadType: Int) {
         val responseData = resource.loadFromNetwork()
 
         // we re-attach cacheSource as a new source, it will dispatch its latest value quickly
@@ -174,7 +179,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
     }
 
     private fun failed(resource: NetworkBoundResource<SaveType, ResultType, RequestType>,
-                           response: ApiResponse<RequestType>) {
+        response: ApiResponse<RequestType>) {
         resource.result.postValue(resource.resource.error(response.errorMessage, response.code))
         resource.onNetworkError(response.errorMessage, response.code)
     }
@@ -206,7 +211,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
     @WorkerThread
     private suspend fun saveResultAndReInit(resource: NetworkBoundResource<SaveType, ResultType, RequestType>,
-                                            response: ApiResponse<RequestType>, result: MediatorLiveData<Resource>, loadType: Int) {
+        response: ApiResponse<RequestType>, result: MediatorLiveData<Resource>, loadType: Int) {
         var hasNextPage = false
         var pages = 0
 
@@ -215,7 +220,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
             when (loadType) {
                 LOAD_HOME -> {
                     if (listOf(response.body as Homeg, (response.body as Homeg).home).any { it == null }
-                            || (response.body as Homeg).stat == "fail") {
+                        || (response.body as Homeg).stat == "fail") {
                         resource.onFetchFailed("There is no information of the home.")
                     } else {
                         resource.saveToCache((response.body as Homeg).home as SaveType)
@@ -233,16 +238,25 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_PERSON -> {
                     if (listOf(response.body as SearperProfile, (response.body as SearperProfile).person).any { it == null }
-                            || (response.body as SearperProfile).stat == "fail") {
+                        || (response.body as SearperProfile).stat == "fail") {
                         resource.onFetchFailed("There is no the profile data of the searper.")
                     } else {
                         resource.saveToCache((response.body as SearperProfile).person as SaveType)
                     }
                 }
 
+                LOAD_MY_PROFILE -> {
+                    if (listOf(response.body as MyProfileHolder, (response.body as MyProfileHolder).person).any { it == null }
+                        || (response.body as MyProfileHolder).stat == "fail") {
+                        resource.onFetchFailed("There is no the profile data of the searper.")
+                    } else {
+                        resource.saveToCache((response.body as MyProfileHolder).person as SaveType)
+                    }
+                }
+
                 LOAD_EXIF -> {
                     if (listOf(response.body as PhotoEXIF, (response.body as PhotoEXIF).photo?.exif).any { it == null }
-                            || (response.body as PhotoEXIF).stat == "fail") {
+                        || (response.body as PhotoEXIF).stat == "fail") {
                         resource.onFetchFailed("There are no any EXIF data in the photo.")
                     } else {
                         resource.saveToCache((response.body as PhotoEXIF).photo?.exif as SaveType)
@@ -251,8 +265,8 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_GEO -> {
                     if (listOf(response.body as PhotoGEO, (response.body as PhotoGEO).photo,
-                                    (response.body as PhotoGEO).photo?.location).any { it == null }
-                            || (response.body as PhotoGEO).stat == "fail") {
+                            (response.body as PhotoGEO).photo?.location).any { it == null }
+                        || (response.body as PhotoGEO).stat == "fail") {
                         resource.onFetchFailed("There is no the geo data of the photo.")
                     } else {
                         resource.saveToCache((response.body as PhotoGEO).photo?.location as SaveType)
@@ -261,9 +275,10 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_PHOTOG_PHOTO, LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE -> {
                     hasNextPage = loadType == LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE
-                    if (listOf(response.body as Photog, (response.body as Photog).photos,
-                                    (response.body as Photog).photos?.photo).any { it == null }
-                            || (response.body as Photog).stat == "fail") {
+                    if (listOf(response.body as Photog,
+                            (response.body as Photog).photos,
+                            (response.body as Photog).photos?.photo).any { it == null }
+                        || (response.body as Photog).stat == "fail") {
                         resource.onFetchFailed("There is no any more photos.")
                     } else {
                         pages = (response.body as Photog).photos?.pages ?: 0
@@ -271,20 +286,33 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
                     }
                 }
 
+                LOAD_MY_GALLERYG_PHOTO, LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE -> {
+                    hasNextPage = loadType == LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE
+                    if (listOf(response.body as MyGalleryg,
+                            (response.body as MyGalleryg).photos,
+                            (response.body as MyGalleryg).photos?.photo).any { it == null }
+                        || (response.body as MyGalleryg).stat == "fail") {
+                        resource.onFetchFailed("There is no any more my gallery.")
+                    } else {
+                        pages = (response.body as MyGalleryg).photos?.pages ?: 0
+                        resource.saveToCache((response.body as MyGalleryg).photos!!.photo as SaveType)
+                    }
+                }
+
                 LOAD_COMMENTS -> {
                     if (listOf(response.body as PhotoComments, (response.body as PhotoComments).comments,
-                                    (response.body as PhotoComments).comments?.comment).any { it == null }
-                            || (response.body as PhotoComments).stat == "fail") {
+                            (response.body as PhotoComments).comments?.comment).any { it == null }
+                        || (response.body as PhotoComments).stat == "fail") {
                         resource.onFetchFailed("There is no any comment of the photo.")
                     } else {
                         resource.saveToCache((response.body as PhotoComments)
-                                .comments?.comment as SaveType)
+                            .comments?.comment as SaveType)
                     }
                 }
 
                 LOAD_PHOTO_INFO -> {
                     if (listOf(response.body as PhotoInfo, (response.body as PhotoInfo).photo).any { it == null }
-                            || (response.body as PhotoInfo).stat == "fail") {
+                        || (response.body as PhotoInfo).stat == "fail") {
                         resource.onFetchFailed("There is no information of the photo.")
                     } else {
                         resource.saveToCache((response.body as PhotoInfo).photo as SaveType)
@@ -293,7 +321,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_FAVORITE_QUEST_INFO -> {
                     if (listOf(response.body as QuestInfog, (response.body as QuestInfog).questInfo).any { it == null }
-                            || (response.body as Questg).stat == "fail") {
+                        || (response.body as Questg).stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
                         resource.saveToCache((response.body as QuestInfog).questInfo as SaveType)
@@ -302,7 +330,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_QUEST_TOP_PORTION -> {
                     if (listOf(response.body as TopPortionQuestg, (response.body as TopPortionQuestg).topPortionQuest).any { it == null }
-                            || (response.body as TopPortionQuestg).stat == "fail") {
+                        || (response.body as TopPortionQuestg).stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
                         resource.saveToCache((response.body as TopPortionQuestg).topPortionQuest as SaveType)
@@ -312,8 +340,8 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
                 LOAD_FAVORITE_QUESTS, LOAD_FAVORITE_QUESTS_HAS_NEXT_PAGE -> {
                     hasNextPage = loadType == LOAD_FAVORITE_QUESTS_HAS_NEXT_PAGE
                     if (listOf(response.body as QuestsInfog, (response.body as QuestsInfog).questG,
-                                    (response.body as QuestsInfog).questG?.quest).any { it == null }
-                            || (response.body as QuestsInfog).stat == "fail") {
+                            (response.body as QuestsInfog).questG?.quest).any { it == null }
+                        || (response.body as QuestsInfog).stat == "fail") {
                         resource.onFetchFailed("There is no any questInfo.")
                     } else {
                         pages = (response.body as QuestsInfog).questG?.pages ?: 0
@@ -323,7 +351,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_CATEGORY -> {
                     if (listOf(response.body as Categoryg, (response.body as Categoryg).categories).any { it == null }
-                            || (response.body as Questg).stat == "fail") {
+                        || (response.body as Questg).stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
                         resource.saveToCache((response.body as Categoryg).categories as SaveType)
@@ -332,7 +360,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_HOT_TOPIC_CONTENT -> {
                     if (listOf(response.body as HotTopicContentg, (response.body as HotTopicContentg).hotTopicContent).any { it == null }
-                            || (response.body as Questg).stat == "fail") {
+                        || (response.body as Questg).stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
                         resource.saveToCache((response.body as HotTopicContentg).hotTopicContent as SaveType)
@@ -341,7 +369,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
 
                 LOAD_HOME_PROFILE -> {
                     response.body ?: resource.onFetchFailed("There is no information of HomeProfile")
-                    response.body?.let { resource.saveToCache((response.body as HomeProfile) as SaveType) }
+                    response.body?.let { resource.saveToCache((response.body as Person) as SaveType) }
                 }
 
                 LOAD_PEOPLE -> {
@@ -384,7 +412,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
             result.addSource<ResultType>(cacheData) { newData ->
                 if (response.links.isNotEmpty()) {
                     result.postValue(resource.resource.success(newData,
-                            response.getNextPage!!))
+                        response.getNextPage!!))
                 } else {
                     result.postValue(resource.resource.success(newData, 0))
                 }

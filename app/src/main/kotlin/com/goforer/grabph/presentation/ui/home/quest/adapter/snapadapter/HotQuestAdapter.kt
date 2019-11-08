@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.goforer.base.annotation.MockData
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
@@ -43,12 +44,12 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
         private val PAYLOAD_TITLE = Any()
 
         private val DIFF_CALLBACK
-                = object: DiffUtil.ItemCallback<Quest>() {
+            = object: DiffUtil.ItemCallback<Quest>() {
             override fun areItemsTheSame(oldQuest: Quest,
-                                         newQuest: Quest): Boolean = oldQuest.id == newQuest.id
+                newQuest: Quest): Boolean = oldQuest.id == newQuest.id
 
             override fun areContentsTheSame(oldQuest: Quest,
-                                            newKeyword: Quest): Boolean = oldQuest == newKeyword
+                newKeyword: Quest): Boolean = oldQuest == newKeyword
 
             override fun getChangePayload(oldQuest: Quest, newKeyword: Quest): Any? {
                 return if (sameExceptTitle(oldQuest, newKeyword)) {
@@ -81,7 +82,10 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
 
     class HotQuestViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<Quest>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Quest, position: Int) {
+            var isPlayerVisible = false
+
             setFontTypeface()
+            iv_play_btn_hot_quest.requestLayout()
             iv_snap_quest_content.requestLayout()
             tv_snap_quest_duration.requestLayout()
             tv_snap_quest_title.requestLayout()
@@ -94,12 +98,25 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
             snap_quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
             iv_snap_quest_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
+
+            @MockData
+            when (position) {
+                3, 4, 6 -> {
+                    iv_play_btn_hot_quest.visibility = View.VISIBLE
+                    isPlayerVisible = true
+                }
+                else -> {
+                    iv_play_btn_hot_quest.visibility = View.GONE
+                    isPlayerVisible = false
+                }
+            }
+
             iv_snap_quest_content.setOnClickListener {
-                callQuestInfo(iv_snap_quest_content, item, holder)
+                callQuestInfo(iv_snap_quest_content, item, holder, isPlayerVisible)
             }
 
             quest_info_holder.setOnClickListener {
-                callQuestInfo(iv_snap_quest_content, item, holder)
+                callQuestInfo(iv_snap_quest_content, item, holder, isPlayerVisible)
             }
 
             tv_snap_quest_duration.text = (activity.getString(R.string.snap_quest_duration_day_phrase) + item.duration)
@@ -116,11 +133,11 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
             containerView.setBackgroundColor(0)
         }
 
-        private fun callQuestInfo(viewContent: ThreeTwoImageView, item: Quest, holder: BaseViewHolder<*>) {
+        private fun callQuestInfo(viewContent: ThreeTwoImageView, item: Quest, holder: BaseViewHolder<*>, isPlayerVisible: Boolean) {
             activity.closeFab()
             Caller.callQuestInfo(activity, viewContent,
-                    item, holder.adapterPosition, Caller.CALLED_FORM_HOME_HOT_QUEST,
-                    Caller.SELECTED_QUEST_INFO_ITEM_FROM_HOT_QUEST_POSITION)
+                item, holder.adapterPosition, Caller.CALLED_FORM_HOME_HOT_QUEST,
+                Caller.SELECTED_QUEST_INFO_ITEM_FROM_HOT_QUEST_POSITION, isPlayerVisible)
         }
 
         private fun setFontTypeface() {

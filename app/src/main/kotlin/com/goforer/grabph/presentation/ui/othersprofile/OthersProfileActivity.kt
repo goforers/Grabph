@@ -78,7 +78,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 
 @SuppressLint("Registered")
 @RunWithMockData(true)
@@ -86,8 +85,6 @@ class OthersProfileActivity : BaseActivity() {
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
     private var adapter: OthersProfileAdapter? = null
-
-    private var user: Person? = null
 
     private lateinit var userId: String
     private var page: Int = -1
@@ -125,7 +122,7 @@ class OthersProfileActivity : BaseActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.statusBarColor = Color.TRANSPARENT
             networkStatusVisible(true)
-            networkProgressBarVisible(true)
+            showProgressBarLoading()
         } else {
             networkStatusVisible(false)
         }
@@ -186,20 +183,17 @@ class OthersProfileActivity : BaseActivity() {
         when (calledFrom) {
             CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
                 personViewModel.setParameters(
-                    Parameters(
-                        userId,
-                        -1,
-                        LOAD_PERSON,
-                        BOUND_FROM_BACKEND
-                    ), NONE_TYPE)
+                    Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND),
+                    NONE_TYPE)
+
                 personViewModel.person.observe(this, Observer { resource ->
+                    showLoadingFinished()
+
                     when (resource?.getStatus()) {
                         Status.SUCCESS -> {
                             resource.getData().let { person ->
-                                user = person as Person?
-                                withDelay(800L) {
-                                    if (user?.id == userId) user?.let { setTopPortionViewData(it) }
-                                }
+                                val user = person as Person?
+                                if (user?.id == userId) setTopPortionViewData(user)
                             }
 
                             resource.getMessage()?.let {
@@ -220,11 +214,13 @@ class OthersProfileActivity : BaseActivity() {
                             personViewModel.person.removeObservers(this)
                         }
                     }
+                    // withDelay(800L) {  }
                 })
             }
 
             else -> {
                 val mockPerson = Person(
+                    userId,
                     userId,
                     "",
                     0,
@@ -242,25 +238,26 @@ class OthersProfileActivity : BaseActivity() {
                 )
                 mockPerson.followers = "24"
                 mockPerson.followings = "45"
-                withDelay(800L) { setTopPortionViewData(mockPerson) }
+                withDelay(800L) {
+                    setTopPortionViewData(mockPerson)
+                    showLoadingFinished()
+                }
             }
         }
     }
 
     private fun getRealProfile() {
         personViewModel.setParameters(
-            Parameters(
-                userId,
-                -1,
-                LOAD_PERSON,
-                BOUND_FROM_BACKEND
-            ), NONE_TYPE)
+            Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND),
+            NONE_TYPE)
+
         personViewModel.person.observe(this, Observer { resource ->
+            showLoadingFinished()
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData().let { person ->
-                        user = person as Person?
-                        if (user?.id == userId) user?.let { setTopPortionViewData(it) }
+                        val user = person as Person?
+                        if (user?.id == userId) setTopPortionViewData(user)
                     }
                 }
 
@@ -279,7 +276,6 @@ class OthersProfileActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setTopPortionViewData(person: Person) {
-        networkProgressBarVisible(false)
         setRankColor(userRanking)
         setImageDraw(iv_others_profile_icon, userPhotoUrl)
         // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
@@ -293,6 +289,8 @@ class OthersProfileActivity : BaseActivity() {
         val desc = getDescription(person.description?._content!!, userId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             this.tv_others_profile_coverLetter.text = Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            this.tv_others_profile_coverLetter.text = desc
         }
         this.tv_others_profile_number_searper.text = person.followings ?: "35"
         this.tv_others_profile_number_searple.text = person.followers ?: "46"
@@ -304,19 +302,16 @@ class OthersProfileActivity : BaseActivity() {
     @MockData
     private fun setBottomPortionViewMock() {
         val user: String = when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "183109783@N06"
+            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "183109783@N06" // this is for mock data
             else -> userId
         }
 
         photosViewModel.setParameters(
-            Parameters(
-                user,
-                page,
-                LOAD_PHOTOG_PHOTO,
-                BOUND_FROM_LOCAL
-            ), NONE_TYPE)
-        val liveData = photosViewModel.userProfile
+            Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL),
+            NONE_TYPE
+        )
 
+        val liveData = photosViewModel.userPhotos
         liveData.observe(this, Observer { resource ->
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
@@ -361,13 +356,9 @@ class OthersProfileActivity : BaseActivity() {
 
     private fun setBottomPortionView() {
         photosViewModel.setParameters(
-            Parameters(
-                userId,
-                page,
-                LOAD_PHOTOG_PHOTO,
-                BOUND_FROM_LOCAL
-            ), NONE_TYPE)
-        val liveData: LiveData<Resource>? = photosViewModel.userProfile
+            Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL),
+            NONE_TYPE)
+        val liveData: LiveData<Resource>? = photosViewModel.userPhotos
 
         liveData?.observe(this, Observer { resource ->
             when (resource.getStatus()) {
@@ -609,8 +600,8 @@ class OthersProfileActivity : BaseActivity() {
         else -> {
             when (userID) {
                 "61533954@N00" -> {
-                    "여행작가 심상우입니다<br>여행작가로 먹고 산지 7년째, 7권의 책 출간.<br>에세이 #당신의일상은안녕한가요<br>" +
-                        "가이드북 #다낭100배즐기기<br>-<br>⬇️ 서점에서 만나요 \uD83D\uDC9B<br>me2.do/FVfKro04"
+                    "여행작가 심상우입니다<br>여행작가로 먹고 산지 7년째, 5권의 책 출간.<br>에세이 #당신의여행은행복한가요<br>" +
+                        "가이드북 #하노이100배즐기기<br>-<br>⬇️ 서점에서 만나요 \uD83D\uDC9B<br>me2.do/FVfKro04"
                 }
 
                 else -> {
@@ -676,33 +667,22 @@ class OthersProfileActivity : BaseActivity() {
         this.btn_follow_bottom_others_profile.visibility = View.GONE
     }
 
-    private fun networkProgressBarVisible(isVisible: Boolean) = if (isVisible) {
+    private fun showProgressBarLoading() {
         this.progress_bar_others_profile_holder.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
         this.recycler_others_profile.visibility = View.GONE
         this.btn_follow_bottom_others_profile.visibility = View.GONE
-    } else {
+    }
+
+    private fun showLoadingFinished() {
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
         this.recycler_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     }
 
-    private fun removeCache() = launchWork {
+    private fun removeCache() {
         photosViewModel.removeCache()
         personViewModel.removePerson()
-    }
-
-    /**
-     * Helper function to call something doing function
-     *
-     * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
-     * functions.
-     *
-     * @param block lambda to actually do some work. It is called in the ioScope.
-     *              lambda the some work will do
-     */
-    internal inline fun launchWork(crossinline block: suspend () -> Unit): Job {
-        return ioScope.launch { block() }
     }
 }

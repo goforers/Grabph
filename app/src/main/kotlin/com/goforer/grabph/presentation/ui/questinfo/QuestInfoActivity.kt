@@ -66,6 +66,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.quest
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUEST_INFO
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_IS_PLAYER_BUTTN_VISIBILEW
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -90,6 +91,7 @@ class QuestInfoActivity: BaseActivity() {
     private lateinit var description: String
     private lateinit var state: String
     private lateinit var reward: String
+    private var isPlayerVisible = false
 
     private var duration: Int = 0
     private var calledFrom: Int = 0
@@ -163,7 +165,7 @@ class QuestInfoActivity: BaseActivity() {
         getQuestInfo()
 
         this@QuestInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            appBarLayout, verticalOffset ->
+                appBarLayout, verticalOffset ->
             this@QuestInfoActivity.collapsing_layout.title = title
             when {
                 abs(verticalOffset) == appBarLayout.totalScrollRange -> {
@@ -304,14 +306,14 @@ class QuestInfoActivity: BaseActivity() {
 
                 sharePopup.menuInflater.inflate(R.menu.menu_share_popup, sharePopup.menu)
                 MenuHandler().applyFontToMenuItem(sharePopup, Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_MEDIUM),
-                        resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
+                    resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
                 sharePopup.setOnMenuItemClickListener {
                     when (it.itemId) {
                         R.id.menu_share_facebook ->
                             callShareToFacebook(this@QuestInfoActivity.iv_quest_info_photo.drawable as BitmapDrawable)
                         R.id.menu_share_ect -> {
                             waterMarkHandler.putWatermark(this.applicationContext, workHandler,
-                                    (this@QuestInfoActivity.iv_quest_info_photo.drawable as BitmapDrawable).bitmap, title, description)
+                                (this@QuestInfoActivity.iv_quest_info_photo.drawable as BitmapDrawable).bitmap, title, description)
                         }
                         else -> {
                         }
@@ -392,6 +394,7 @@ class QuestInfoActivity: BaseActivity() {
         duration = intent.getIntExtra(EXTRA_QUEST_DURATION, -1)
         position = intent.getIntExtra(EXTRA_QUEST_POSITION, -1)
         calledFrom = intent.getIntExtra(EXTRA_QUEST_CALLED_FROM, -1)
+        isPlayerVisible = intent.getBooleanExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, false)
     }
 
     private fun getQuestInfo() {
@@ -484,12 +487,15 @@ class QuestInfoActivity: BaseActivity() {
     }
 
     private fun loadQuestInfo() {
+        @MockData
+        this.iv_play_btn_quest_info.visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
+
         setImageDraw(this@QuestInfoActivity.iv_quest_owner_logo, ownerLogo)
         this@QuestInfoActivity.iv_quest_info_photo.setColorFilter(getColor(R.color.colorQuestInfoMask),
-                PorterDuff.Mode.DST_IN)
+            PorterDuff.Mode.DST_IN)
         setFixedImageSize(0, 0)
         setImageDraw(this@QuestInfoActivity.iv_quest_info_photo, this@QuestInfoActivity.backdrop_container,
-                     ownerImage, false)
+            ownerImage, false)
         withDelay(50L) {
             setViewBind()
             setEnterSharedElementCallback(sharedElementCallback)
@@ -499,9 +505,9 @@ class QuestInfoActivity: BaseActivity() {
         this@QuestInfoActivity.tv_quest_owner_name.text = ownerName
 
         this@QuestInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            _, verticalOffset ->
+                _, verticalOffset ->
             if (this@QuestInfoActivity.collapsing_layout.height + verticalOffset < 2
-                    * ViewCompat.getMinimumHeight(this@QuestInfoActivity.collapsing_layout)) {
+                * ViewCompat.getMinimumHeight(this@QuestInfoActivity.collapsing_layout)) {
                 // collapsed
                 this@QuestInfoActivity.iv_quest_info_photo.animate().alpha(1.0f).duration = 600
             } else {
@@ -548,29 +554,29 @@ class QuestInfoActivity: BaseActivity() {
             0 -> {
                 setFixedImageSize(0, 0)
                 setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_first,
-                             this@QuestInfoActivity.backdrop_quest_info_photo_first_container,
-                             photoPath, true)
+                    this@QuestInfoActivity.backdrop_quest_info_photo_first_container,
+                    photoPath, true)
             }
 
             1 -> {
                 setFixedImageSize(0, 0)
                 setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_second,
-                        this@QuestInfoActivity.backdrop_quest_info_photo_second_container,
-                        photoPath, true)
+                    this@QuestInfoActivity.backdrop_quest_info_photo_second_container,
+                    photoPath, true)
             }
 
             2 -> {
                 setFixedImageSize(0, 0)
                 setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_third,
-                        this@QuestInfoActivity.backdrop_quest_info_photo_third_container,
-                        photoPath, true)
+                    this@QuestInfoActivity.backdrop_quest_info_photo_third_container,
+                    photoPath, true)
             }
 
             3 -> {
                 setFixedImageSize(0, 0)
                 setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_forth,
-                        this@QuestInfoActivity.backdrop_quest_info_photo_forth_container,
-                        photoPath, true)
+                    this@QuestInfoActivity.backdrop_quest_info_photo_forth_container,
+                    photoPath, true)
             }
         }
     }
@@ -586,7 +592,7 @@ class QuestInfoActivity: BaseActivity() {
         this@QuestInfoActivity.tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
         sharedElementCallback = QuestInfoCallback(intent)
         sharedElementCallback.setViewBinding(this@QuestInfoActivity.iv_quest_info_photo, this@QuestInfoActivity.iv_quest_owner_logo,
-                this@QuestInfoActivity.tv_quest_info_explanation, this@QuestInfoActivity.tv_quest_owner_name)
+            this@QuestInfoActivity.tv_quest_info_explanation, this@QuestInfoActivity.tv_quest_owner_name)
     }
 
     private fun setActivityResult(calledFrom: Int) {

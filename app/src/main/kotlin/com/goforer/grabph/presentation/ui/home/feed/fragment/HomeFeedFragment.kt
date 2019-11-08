@@ -91,7 +91,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
         }
 
         val acvView = AutoClearedValue(this,
-                inflater.inflate(R.layout.fragment_home_feed, container, false))
+            inflater.inflate(R.layout.fragment_home_feed, container, false))
 
         return acvView.get()?.rootView
     }
@@ -114,7 +114,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
                     }
 
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
-                        homeActivity.floatingActionMenu.close(true)
+                        // homeActivity.floatingActionMenu.close(true)
                     }
 
                     RecyclerView.SCROLL_STATE_SETTLING -> {}
@@ -129,7 +129,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
 
                 vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
                 this@HomeFeedFragment.recycler_view.invalidateItemDecorations()
-                homeActivity.floatingActionMenu.close(true)
+                // homeActivity.floatingActionMenu.close(true)
             }
         })
 
@@ -239,16 +239,16 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
 
     override fun createItemDecoration(): RecyclerView.ItemDecoration {
         return object : GapItemDecoration(VERTICAL_LIST,
-                resources.getDimensionPixelSize(R.dimen.space_4)) {
+            resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
-                                        state: RecyclerView.State) {
+                state: RecyclerView.State) {
                 outRect.left = 0
                 outRect.right = 0
                 outRect.bottom = gap
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0
-                        || parent.getChildAdapterPosition(view) == 1) {
+                    || parent.getChildAdapterPosition(view) == 1) {
                     outRect.top = gap
                 }
             }
@@ -297,6 +297,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
 
     private fun getFeed(query: String, loadType: Int, boundType: Int, calledFrom: Int) {
         setLoadParam(loadType, boundType, query)
+        // feedViewModel.removeCache()
         feedViewModel.feed.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -304,6 +305,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
                     this@HomeFeedFragment.swipe_layout.visibility = View.VISIBLE
                     @Suppress("UNCHECKED_CAST")
                     val feedItems = resource.getData() as? PagedList<FeedItem>?
+                    // val feedItems = resource.getData() as? PagedList<RecentPhoto>?
                     when {
                         feedItems?.size!! > 0 -> {
                             if (feedItems.size >= Repository.FEED_ITEM_CACHE_SIZE) {

@@ -18,33 +18,32 @@ package com.goforer.grabph.domain.usecase.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.liveData
-import com.goforer.base.annotation.MockData
+import androidx.lifecycle.switchMap
 import com.goforer.grabph.domain.usecase.BaseUseCase
 import com.goforer.grabph.domain.Parameters
-import com.goforer.grabph.data.repository.remote.profile.HomeProfileRepository
 import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.HomeProfile
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.repository.remote.profile.MyProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LoadHomeProfileUseCase
+class LoadMyProfileUseCase
 @Inject
-constructor(private val repository: HomeProfileRepository):  BaseUseCase<Parameters, Resource>() {
+constructor(private val repository: MyProfileRepository):  BaseUseCase<Parameters, Resource>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
-    private val homeProfileLiveData = MutableLiveData<HomeProfile>()
+    private val homeProfileLiveData = MutableLiveData<Person>()
 
     override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
         setQuery(parameters, Query())
 
-        return Transformations.switchMap(liveData) { query ->
+        return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
                 emitSource(repository.load(liveData,
@@ -71,16 +70,4 @@ constructor(private val repository: HomeProfileRepository):  BaseUseCase<Paramet
 
         liveData.value = query
     }
-
-    internal fun setHomeProfileLiveData(data: HomeProfile) { homeProfileLiveData.value = data }
-
-    @MockData
-    internal fun loadHomeProfile(): LiveData<HomeProfile>? = repository.loadHomeProfile()
-
-    @MockData
-    internal suspend fun setHomeProfile(homeProfile: HomeProfile) = repository.setHomeProfile(homeProfile)
-
-    internal fun loadProfileFromCache() = setHomeProfileLiveData(repository.loadProfileCache())
-
-    internal fun getHomeProfileLiveData(): LiveData<HomeProfile> { return homeProfileLiveData }
 }

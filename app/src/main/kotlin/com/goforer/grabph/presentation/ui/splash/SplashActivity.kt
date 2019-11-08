@@ -66,8 +66,8 @@ class SplashActivity : BaseActivity() {
     private val defaultScope = CoroutineScope(Dispatchers.Default + job)
 
     private val permissions = arrayOf(Manifest.permission.READ_CONTACTS,
-                    Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+        Manifest.permission.WRITE_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
 
     companion object {
         private const val MIN_SPLASH_TIME = 1500
@@ -77,7 +77,7 @@ class SplashActivity : BaseActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && context != null) {
                 for (permission in permissions) {
                     if (ActivityCompat.checkSelfPermission(context, permission)
-                            != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED) {
                         return false
                     }
                 }
@@ -147,35 +147,35 @@ class SplashActivity : BaseActivity() {
     @SuppressLint("CheckResult")
     override fun setViews(savedInstanceState: Bundle?) {
         Glide.with(this)
-                .asBitmap()
-                .load(Grabph.splashUrl)
-                .apply(RequestOptions.fitCenterTransform())
-                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
-                .apply(RequestOptions().signature(IntegerVersionSignature(getVersionNumber())))
-                .listener(object: RequestListener<Bitmap> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?,
-                                              isFirstResource: Boolean): Boolean {
-                        return false
-                    }
+            .asBitmap()
+            .load(Grabph.splashUrl)
+            .apply(RequestOptions.fitCenterTransform())
+            .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
+            .apply(RequestOptions().signature(IntegerVersionSignature(getVersionNumber())))
+            .listener(object: RequestListener<Bitmap> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?,
+                    isFirstResource: Boolean): Boolean {
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?,
-                                                 dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val set = ConstraintSet()
-                        val ratio = String.format("%d:%d", resource?.width, resource?.height)
+                override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?,
+                    dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    val set = ConstraintSet()
+                    val ratio = String.format("%d:%d", resource?.width, resource?.height)
 
-                        set.clone(splashConstraintLayoutContainer)
-                        set.setDimensionRatio(iv_background.id, ratio)
-                        set.applyTo(splashConstraintLayoutContainer)
-                        iv_background.setImageBitmap(resource)
+                    set.clone(splashConstraintLayoutContainer)
+                    set.setDimensionRatio(iv_background.id, ratio)
+                    set.applyTo(splashConstraintLayoutContainer)
+                    iv_background.setImageBitmap(resource)
 
-                        return false
-                    }
-                })
-                .submit()
+                    return false
+                }
+            })
+        // .submit()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
-                                            grantResults: IntArray) {
+        grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Note: If request is cancelled, the result arrays are empty.
         if (grantResults.isNotEmpty()) {
@@ -198,7 +198,7 @@ class SplashActivity : BaseActivity() {
     private fun setFontTypeface() {
         val krRegularTypeface = Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_MEDIUM)
 
-        tv_title.typeface = krRegularTypeface
+        tv_copyrights_splash.typeface = krRegularTypeface
     }
 
     private fun onWait(snsName: String) = launchWork {

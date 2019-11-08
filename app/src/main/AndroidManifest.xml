@@ -27,7 +27,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".presentation.ui.upload.UploadPhotoActivity"></activity>
+        <activity
+            android:name=".presentation.ui.upload.UploadPhotoActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/AppTheme.NoActionBar.SearpleGallery"/>
         <activity
             android:name=".presentation.ui.upload.AuthActivity"
             android:launchMode="singleInstance">

@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.goforer.base.annotation.MockData
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
@@ -38,7 +39,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_quest_favorite_item.*
 
 class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedListAdapter<Quest, HomeFavoriteQuestAdapter.HomeMissionViewHolder>(DIFF_CALLBACK),
-                                                                         ItemTouchHelperListener {
+    ItemTouchHelperListener {
     companion object {
         private const val PHOTO_RATIO_WIDTH = 328
         private const val PHOTO_RATIO_HEIGHT = 216
@@ -47,10 +48,10 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
 
         private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Quest>() {
             override fun areItemsTheSame(oldQuest: Quest, newQuest: Quest): Boolean =
-                    oldQuest.id == newQuest.id
+                oldQuest.id == newQuest.id
 
             override fun areContentsTheSame(oldQuest: Quest, newQuest: Quest): Boolean =
-                    oldQuest == newQuest
+                oldQuest == newQuest
 
             override fun getChangePayload(oldQuest: Quest, newQuest: Quest): Any? {
                 return if (sameExceptTitle(oldQuest, newQuest)) {
@@ -68,7 +69,7 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeMissionViewHolder {
         val view = LayoutInflater.from(parent.context.applicationContext)
-                                    .inflate(R.layout.snap_quest_favorite_item, parent, false)
+            .inflate(R.layout.snap_quest_favorite_item, parent, false)
 
         return HomeMissionViewHolder(view, fragment)
     }
@@ -100,6 +101,8 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
     class HomeMissionViewHolder(override val containerView: View, private val fragment: HomeQuestFragment): BaseViewHolder<Quest>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Quest, position: Int) {
             // In case of applying transition effect to views, have to use findViewById method
+            var isPlayerVisible = false
+            iv_play_btn_favorite_quest_item.requestLayout()
             iv_quest_item_content.requestLayout()
             tv_quest_owner_name.requestLayout()
             iv_quest_reward.requestLayout()
@@ -114,6 +117,19 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
             fragment.homeActivity.setImageDraw(iv_quest_item_content, quest_image_Container, item.ownerImage, false)
             quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
+
+            @MockData
+            when (position) {
+                0, 2, 9 -> {
+                    iv_play_btn_favorite_quest_item.visibility = View.VISIBLE
+                    isPlayerVisible = true
+                }
+                else -> {
+                    iv_play_btn_favorite_quest_item.visibility = View.GONE
+                    isPlayerVisible = false
+                }
+            }
+
             iv_quest_item_content.setOnClickListener {
                 iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
                 iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
@@ -121,13 +137,12 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
                 tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
                 tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
                 Caller.callQuestInfo(fragment, iv_quest_item_content, iv_quest_owner_logo,
-                        tv_quest_title,  tv_quest_description, tv_quest_owner_name,
-                        item, holder.adapterPosition, Caller.CALLED_FORM_HOME_FAVORITE_QUEST,
-                        Caller.SELECTED_QUEST_INFO_ITEM_POSITION)
+                    tv_quest_title,  tv_quest_description, tv_quest_owner_name,
+                    item, holder.adapterPosition, Caller.CALLED_FORM_HOME_FAVORITE_QUEST,
+                    Caller.SELECTED_QUEST_INFO_ITEM_POSITION, isPlayerVisible)
             }
 
             tv_quest_owner_name.text = item.ownerName
-
             setFontTypeface()
 
             if (item.title == "" || item.title == " ") {

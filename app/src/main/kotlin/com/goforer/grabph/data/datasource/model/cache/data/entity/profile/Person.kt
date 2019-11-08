@@ -25,27 +25,21 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.DataColumns
 
 @Entity(tableName = "Person")
 data class Person(@field:PrimaryKey
-                  @field:ColumnInfo(index = true, name = COLUMN_ID) val id: String,
-                  @field:ColumnInfo(name = "iconserver") val iconserver: String,
-                  @field:ColumnInfo(name = "iconfarm") val iconfarm: Int,
-                  @field:Embedded(prefix = "username_") val username: Username?,
-                  @field:Embedded(prefix = "realname_") val realname: Realname?,
-                  @field:Embedded(prefix = "location_") val location: Location?,
-                  @field:Embedded(prefix = "description_") val description: Description?,
-                  @field:Embedded(prefix = "photosurl_") val photosurl: Photosurl?,
-                  @field:Embedded(prefix = "profileurl_") val profileurl: Profileurl?,
-                  @field:Embedded(prefix = "mobileurl_") val mobileurl: Mobileurl?,
-                  @field:Embedded(prefix = "photos_") val photos: Photos?): BaseModel() {
+@field:ColumnInfo(index = true, name = COLUMN_ID) val id: String,
+    @field:ColumnInfo(name = "nsid") val nsid: String,
+    @field:ColumnInfo(name = "iconserver") val iconserver: String,
+    @field:ColumnInfo(name = "iconfarm") val iconfarm: Int,
+    @field:Embedded(prefix = "username_") val username: Username?,
+    @field:Embedded(prefix = "realname_") val realname: Realname?,
+    @field:Embedded(prefix = "location_") val location: Location?,
+    @field:Embedded(prefix = "description_") val description: Description?,
+    @field:Embedded(prefix = "photosurl_") val photosurl: Photosurl?,
+    @field:Embedded(prefix = "profileurl_") val profileurl: Profileurl?,
+    @field:Embedded(prefix = "mobileurl_") val mobileurl: Mobileurl?,
+    @field:Embedded(prefix = "photos_") val photos: Photos?): BaseModel() {
 
     companion object {
         private const val COLUMN_ID = DataColumns.ID
-
-        internal const val GRADE_BEGINNER = 0
-        internal const val GRADE_1 = 1
-        internal const val GRADE_2 = 2
-        internal const val GRADE_3 = 3
-        internal const val GRADE_4 = 4
-        internal const val GRADE_EXPERT = 5
     }
 
     @ColumnInfo(name = "grade")
@@ -72,8 +66,8 @@ data class Person(@field:PrimaryKey
     data class Mobileurl(@field:ColumnInfo(name = "_content") val _content: String?)
 
     data class Photos(@Embedded(prefix = "firstdatetaken_") val firstdatetaken: Firstdatetaken?,
-                      @Embedded(prefix = "firstdate_") val firstdate: Firstdate?,
-                      @Embedded(prefix = "count_") val count: Count?) {
+        @Embedded(prefix = "firstdate_") val firstdate: Firstdate?,
+        @Embedded(prefix = "count_") val count: Count?) {
         data class Firstdatetaken(@field:ColumnInfo(name = "_content") val _content: String?)
 
         data class Firstdate(@field:ColumnInfo(name = "_content") val _content: String?)

@@ -73,7 +73,6 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.appbar_layout
-import kotlinx.android.synthetic.main.activity_home.fam_post_writing
 import kotlinx.android.synthetic.main.activity_home.toolbar
 import kotlinx.android.synthetic.main.fragment_home_quest.*
 import kotlinx.android.synthetic.main.recycler_view_container.*
@@ -123,7 +122,7 @@ class HomeActivity: BaseActivity() {
         override fun onTransitionEnd(transition: Transition) {
             removeCallback()
             if (resultCode == SELECTED_FEED_ITEM_POSITION
-                    || resultCode == Caller.SELECTED_SEARCH_ITEM_POSITION) {
+                || resultCode == Caller.SELECTED_SEARCH_ITEM_POSITION) {
                 val fragment = getFragment(HomeFeedFragment::class.java) as HomeFeedFragment
 
                 if (fragment.isFeedUpdated) {
@@ -152,7 +151,7 @@ class HomeActivity: BaseActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.statusBarColor = Color.TRANSPARENT
             networkStatusVisible(true)
-            createFloatingActionMenu(this@HomeActivity.fam_post_writing)
+            // createFloatingActionMenu(this@HomeActivity.fam_post_writing)
             savedInstanceState ?: transactMainFragment()
             savedInstanceState?.let {
                 itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
@@ -337,9 +336,9 @@ class HomeActivity: BaseActivity() {
         contentParams.setMargins(fasbContentMargin, fasbContentMargin, fasbContentMargin, fasbContentMargin)
 
         val builder = SubActionButton.Builder(this)
-                .setBackgroundDrawable(getDrawable(R.drawable.fab_selector))
-                .setLayoutParams(contentParams)
-                .setLayoutParams(LayoutParams(fasbSize, fasbSize))
+            .setBackgroundDrawable(getDrawable(R.drawable.fab_selector))
+            .setLayoutParams(contentParams)
+            .setLayoutParams(LayoutParams(fasbSize, fasbSize))
 
         val sabCamera = builder.setContentView(cameraView, contentParams).build()
         val sabGallery = builder.setContentView(galleryView, contentParams).build()
@@ -348,13 +347,13 @@ class HomeActivity: BaseActivity() {
         galleryView.setImageDrawable(resources.getDrawable(R.drawable.ic_upload_album, null))
 
         floatingActionMenu = FloatingActionMenu.Builder(this)
-                .addSubActionView(sabCamera)
-                .addSubActionView(sabGallery)
-                .setRadius(fabRadius)
-                .setStartAngle(225)
-                .setEndAngle(-45)
-                .attachTo(view)
-                .build()
+            .addSubActionView(sabCamera)
+            .addSubActionView(sabGallery)
+            .setRadius(fabRadius)
+            .setStartAngle(225)
+            .setEndAngle(-45)
+            .attachTo(view)
+            .build()
 
 
         sabCamera.setOnClickListener {
@@ -572,6 +571,8 @@ class HomeActivity: BaseActivity() {
                 tv_home_title.text = getString(R.string.phrase_feed)
             }
 
+            R.id.navigation_upload -> uploadPhotos()
+
             R.id.navigation_quest -> {
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
                 questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
@@ -622,14 +623,15 @@ class HomeActivity: BaseActivity() {
             }
 
             R.id.navigation_upload -> {
-                menuItem?.let {
-                    it.isChecked = true
-                    if (floatingActionMenu.isOpen) {
-                        floatingActionMenu.close(true)
-                    } else {
-                        floatingActionMenu.open(true)
-                    }
-                }
+                uploadPhotos()
+                // menuItem?.let {
+                //     it.isChecked = true
+                //     if (floatingActionMenu.isOpen) {
+                //         floatingActionMenu.close(true)
+                //     } else {
+                //         floatingActionMenu.open(true)
+                //     }
+                // }
             }
 
             R.id.navigation_quest -> {
@@ -665,9 +667,9 @@ class HomeActivity: BaseActivity() {
     }
 
     internal fun closeFab() {
-        if (floatingActionMenu.isOpen) {
-            floatingActionMenu.close(true)
-        }
+        // if (floatingActionMenu.isOpen) {
+        //     floatingActionMenu.close(true)
+        // }
     }
 
     internal fun setHomeMainLoadParam(loadType: Int, boundType: Int, calledFrom: Int, id: String) {

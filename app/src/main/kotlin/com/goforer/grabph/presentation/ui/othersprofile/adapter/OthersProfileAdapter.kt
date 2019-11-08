@@ -16,7 +16,6 @@
 
 package com.goforer.grabph.presentation.ui.othersprofile.adapter
 
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +26,9 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
-import com.goforer.grabph.presentation.ui.othersprofile.OthersProfileActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
-import java.net.URL
 
 class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapter<Photo, OthersProfileAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
 
@@ -71,7 +68,6 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
             val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
             activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
             tv_profile_mission_price.text = ""
-            getSize(url)
 
             iv_profile_my_photo.setOnClickListener {
                 Caller.callPhotoInfo(activity, iv_profile_my_photo, tv_profile_mission_price, item.id, item.owner!!, holder.adapterPosition,
@@ -84,10 +80,5 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
 
         override fun onItemClear() { containerView.setBackgroundColor(0) }
 
-        private fun getSize(url: String) = (activity as OthersProfileActivity).launchWork {
-            val ur = URL(url)
-            val bmp = BitmapFactory.decodeStream(ur.openConnection().getInputStream())
-            // println("woogear....@OthersProfileAdapter:: bitmap($position): width(${bmp.width})  height(${bmp.height})")
-        }
     }
 }

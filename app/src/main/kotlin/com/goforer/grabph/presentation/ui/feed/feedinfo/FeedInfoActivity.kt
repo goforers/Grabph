@@ -95,6 +95,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_IS_PLAYER_BUTTN_VISIBILEW
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -143,6 +144,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     private var feedPosition = 0
     private var feedInfoCalledFrom = 0
     private var offsetChange = 0
+    private var isPlayerVisible = false
 
     private var searper: Person? = null
 
@@ -274,7 +276,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             })
 
             this@FeedInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-                appBarLayout, verticalOffset ->
+                    appBarLayout, verticalOffset ->
                 this@FeedInfoActivity.collapsing_layout.title = feedTitle
                 val btnView = this@FeedInfoActivity.btn_purchase
 
@@ -366,12 +368,12 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         savedInstanceState ?: getIntentData()
 
         slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
-                .setActivity(this)
-                .setRootView(R.id.coordinator_layout)
-                .setBundle(savedInstanceState)
-                .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
-                .setWorkHandler(workHandler)
-                .build()
+            .setActivity(this)
+            .setRootView(R.id.coordinator_layout)
+            .setBundle(savedInstanceState)
+            .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
+            .setWorkHandler(workHandler)
+            .build()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
@@ -467,19 +469,19 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
                 sharePopup.menuInflater.inflate(R.menu.menu_share_popup, sharePopup.menu)
                 MenuHandler().applyFontToMenuItem(sharePopup, Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_MEDIUM),
-                        resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
+                    resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
                 sharePopup.setOnMenuItemClickListener {
                     when (it.itemId) {
                         R.id.menu_share_facebook ->
                             callShareToFacebook(this@FeedInfoActivity.iv_feed_info_photo.drawable as BitmapDrawable,
-                                    this.applicationContext.getString(R.string.phrase_title) + "\n\n"
-                                            + this@FeedInfoActivity.collapsing_layout.title + "\n\n"
-                                            + this.applicationContext.getString(R.string.phrase_description) + "\n\n"
-                                            + description)
+                                this.applicationContext.getString(R.string.phrase_title) + "\n\n"
+                                    + this@FeedInfoActivity.collapsing_layout.title + "\n\n"
+                                    + this.applicationContext.getString(R.string.phrase_description) + "\n\n"
+                                    + description)
 
                         R.id.menu_share_ect -> {
                             watermarkHandler.putWatermark(this.applicationContext, workHandler,
-                                    (this@FeedInfoActivity.iv_feed_info_photo.drawable as BitmapDrawable).bitmap, feedTitle, description)
+                                (this@FeedInfoActivity.iv_feed_info_photo.drawable as BitmapDrawable).bitmap, feedTitle, description)
                         }
 
                         else -> {
@@ -576,16 +578,16 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     fun createItemDecoration(): RecyclerView.ItemDecoration {
         return object : GapItemDecoration(VERTICAL_LIST,
-                resources.getDimensionPixelSize(R.dimen.space_4)) {
+            resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
-                                        state: RecyclerView.State) {
+                state: RecyclerView.State) {
                 outRect.left = 0
                 outRect.right = 0
                 outRect.bottom = gap
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0
-                        || parent.getChildAdapterPosition(view) == 1) {
+                    || parent.getChildAdapterPosition(view) == 1) {
                     outRect.top = gap
                 }
             }
@@ -611,6 +613,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         searperId = intent.getStringExtra(EXTRA_SEARPER_ID)
         feedPosition = intent.getIntExtra(EXTRA_FEED_INFO_POSITION, -1)
         feedInfoCalledFrom = intent.getIntExtra(EXTRA_FEED_INFO_CALLED_FROM, -1)
+        isPlayerVisible = intent.getBooleanExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, false)
     }
 
     private suspend fun getFeedInfo(idx: Long, calledFrom: Int) = when(feedInfoCalledFrom) {
@@ -655,7 +658,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                     displayUserInfo(searper!!)
                     slidingDrawer.setHeaderBackground(GeneralFunctions.getHeaderBackgroundUrl())
                     slidingDrawer.setSearperProfileDrawer(searper,
-                            SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
+                        SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
                 }
 
                 resource.getMessage()?.let {
@@ -799,7 +802,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private suspend fun displayFeedInfo(feedItem: FeedItem, calledFrom: Int) {
-       asyncUIWork {
+        asyncUIWork {
             loadPhoto(this@FeedInfoActivity, feedItem.media.m, calledFrom)
         }
 
@@ -816,13 +819,16 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         this@FeedInfoActivity.iv_feed_info_photo.setOnClickListener {
             this@FeedInfoActivity.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
             Caller.callViewer(activity, this@FeedInfoActivity.iv_feed_info_photo, 0, CALLED_FROM_FEED_INFO,
-                              url!!, SELECTED_FEED_INFO_PHOTO_VIEW)
+                url!!, SELECTED_FEED_INFO_PHOTO_VIEW)
         }
 
+        @MockData
+        this.iv_play_btn_feed_info.visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
+
         this@FeedInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            _, verticalOffset ->
+                _, verticalOffset ->
             if (this@FeedInfoActivity.collapsing_layout.height + verticalOffset < 2
-                    * ViewCompat.getMinimumHeight(this@FeedInfoActivity.collapsing_layout)) {
+                * ViewCompat.getMinimumHeight(this@FeedInfoActivity.collapsing_layout)) {
                 // collapsed
                 this@FeedInfoActivity.iv_feed_info_photo.animate().alpha(1.0f).duration = 600
             } else {
@@ -898,7 +904,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
         this@FeedInfoActivity.iv_license1.setOnClickListener {
             showToolTip(this@FeedInfoActivity.iv_license1, getString(R.string.license_buy_on_searp),
-                        resources.displayMetrics.widthPixels, TOOL_TIP_DEFAULT_DURATION)
+                resources.displayMetrics.widthPixels, TOOL_TIP_DEFAULT_DURATION)
         }
 
         this@FeedInfoActivity.iv_license2.setOnClickListener {
@@ -975,7 +981,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     @SuppressLint("SetTextI18n")
     private fun showDescription(description: String) {
         setFontTypeface(this@FeedInfoActivity.tv_feed_explanation, FONT_TYPE_REGULAR)
-         val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val html = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY)
         } else {
             Html.fromHtml(description)
@@ -996,28 +1002,28 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     private fun addEXIF(lisEXIF: List<EXIF>): ArrayList<EXIF> {
         val usefulEXIF = ArrayList<EXIF>()
         val model = exifHandler.getEXIFByLabel(lisEXIF, "Model")
-                ?: exifHandler.putManualEXIF("Model")
+            ?: exifHandler.putManualEXIF("Model")
         usefulEXIF.add(model)
         val make = exifHandler.getEXIFByLabel(lisEXIF, "Make")
-                ?: exifHandler.putManualEXIF("Make")
+            ?: exifHandler.putManualEXIF("Make")
         usefulEXIF.add(make)
         val exifExposure = exifHandler.getEXIFByLabel(lisEXIF, "Exposure")
-                ?: exifHandler.putManualEXIF("Exposure")
+            ?: exifHandler.putManualEXIF("Exposure")
         usefulEXIF.add(exifExposure)
         val exifAperture = exifHandler.getEXIFByLabel(lisEXIF, "Aperture")
-                ?: exifHandler.putManualEXIF("Aperture")
+            ?: exifHandler.putManualEXIF("Aperture")
         usefulEXIF.add(exifAperture)
         val exifISO = exifHandler.getEXIFByLabel(lisEXIF, "ISO Speed")
-                ?: exifHandler.putManualEXIF("ISO Speed")
+            ?: exifHandler.putManualEXIF("ISO Speed")
         usefulEXIF.add(exifISO)
         val exifFlash = exifHandler.getEXIFByLabel(lisEXIF, "Flash")
-                ?: exifHandler.putManualEXIF("Flash")
+            ?: exifHandler.putManualEXIF("Flash")
         usefulEXIF.add(exifFlash)
         val exifWhiteBalance = exifHandler.getEXIFByLabel(lisEXIF, "White Balance")
-                ?: exifHandler.putManualEXIF("White Balance")
+            ?: exifHandler.putManualEXIF("White Balance")
         usefulEXIF.add(exifWhiteBalance)
         val exifFocalLength = exifHandler.getEXIFByLabel(lisEXIF, "Focal Length")
-                ?: exifHandler.putManualEXIF("Focal Length")
+            ?: exifHandler.putManualEXIF("Focal Length")
         usefulEXIF.add(exifFocalLength)
 
         return usefulEXIF
@@ -1081,7 +1087,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         savePhoto.enabledSaveEXIF = this@FeedInfoActivity.cell_portion_information_container.isShown
         savePhoto.enabledSaveLocation = this@FeedInfoActivity.place_cardholder.isShown
         savePhoto.showSaveDialog(this, localEXIFViewModel, localLocationViewModel,
-                localSavedPhotoViewModel, savePhoto)
+            localSavedPhotoViewModel, savePhoto)
     }
 
     private fun callShareToFacebook(drawable: BitmapDrawable, caption: String) {
@@ -1095,7 +1101,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             if (!this@FeedInfoActivity.cell_photo_info_container.isShown) {
                 this@FeedInfoActivity.cell_photo_info_container.visibility = View.VISIBLE
                 val animation = AnimationUtils.loadAnimation(
-                        this.applicationContext, R.anim.scale_up_enter)
+                    this.applicationContext, R.anim.scale_up_enter)
                 animation.duration = 300
                 this@FeedInfoActivity.cell_photo_info_container.animation = animation
                 this@FeedInfoActivity.cell_photo_info_container.animate()
@@ -1114,7 +1120,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     @SuppressLint("SetTextI18n")
     private fun setEXINFO(items: List<EXIF>) {
         val model: String = (items[CommonWorkHandler.EXIF_ITEM_INDEX_MAKE].raw._content + " "
-                + items[CommonWorkHandler.EXIF_ITEM_INDEX_MODEL].raw._content)
+            + items[CommonWorkHandler.EXIF_ITEM_INDEX_MODEL].raw._content)
         val none = "None"
         val by=  getString(R.string.space) + getString(R.string.by_symbol) + getString(R.string.space)
 
@@ -1155,11 +1161,11 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             map.animateCamera(zoom)
             myLocation.let {
                 marker = map.addMarker(MarkerOptions()
-                        .position(myLocation)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pegman))
-                        .title("Address").infoWindowAnchor(0.5f, 0.5f)
-                        .snippet(getAddress(location))
-                        .draggable(true))
+                    .position(myLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pegman))
+                    .title("Address").infoWindowAnchor(0.5f, 0.5f)
+                    .snippet(getAddress(location))
+                    .draggable(true))
             }
 
             marker.showInfoWindow()
@@ -1171,7 +1177,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         if (!this@FeedInfoActivity.place_cardholder.isShown) {
             this@FeedInfoActivity.place_cardholder.visibility = View.VISIBLE
             val animation = AnimationUtils.loadAnimation(
-                    this.applicationContext, R.anim.scale_up_enter)
+                this.applicationContext, R.anim.scale_up_enter)
 
             animation.duration = 300
             this@FeedInfoActivity.place_cardholder.animation = animation
@@ -1181,10 +1187,10 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
         this@FeedInfoActivity.place_cardholder.setOnClickListener {
             Caller.callViewMap(this.applicationContext,
-                    this@FeedInfoActivity.collapsing_layout.title.toString(),
-                    location.latitude!!.toDouble(),
-                    location.longitude!!.toDouble(),
-                    getAddress(location))
+                this@FeedInfoActivity.collapsing_layout.title.toString(),
+                location.latitude!!.toDouble(),
+                location.longitude!!.toDouble(),
+                getAddress(location))
         }
     }
 
@@ -1222,7 +1228,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         searperPhotoUrl = workHandler.getProfilePhotoURL(userInfo.iconfarm, userInfo.iconserver, userInfo.id)
         if (userInfo.iconserver == "0") {
             this@FeedInfoActivity.iv_searper_pic.setImageDrawable(this.applicationContext!!
-                    .getDrawable(R.drawable.ic_default_profile))
+                .getDrawable(R.drawable.ic_default_profile))
         } else {
             setImageDraw(this@FeedInfoActivity.iv_searper_pic, searperPhotoUrl!!)
         }
@@ -1387,14 +1393,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     /**
-    * Helper function to call something doing function
-    *
-    * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
-    * functions.
-    *
-    * @param block lambda to actually do some work. It is called in the uiScope.
-    *              lambda the some work will do
-    */
+     * Helper function to call something doing function
+     *
+     * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
+     * functions.
+     *
+     * @param block lambda to actually do some work. It is called in the uiScope.
+     *              lambda the some work will do
+     */
     private inline fun launchUIWork(crossinline block: suspend () -> Unit): Job {
         return uiScope.launch {
             block()
@@ -1402,14 +1408,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     /**
-    * Helper function to call something doing function
-    *
-    * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
-    * functions.
-    *
-    * @param block lambda to actually do some work. It is called in the uiScope.
-    *              lambda the some work will do
-    */
+     * Helper function to call something doing function
+     *
+     * By marking `block` as `suspend` this creates a suspend lambda which can call suspend
+     * functions.
+     *
+     * @param block lambda to actually do some work. It is called in the uiScope.
+     *              lambda the some work will do
+     */
     private suspend inline fun asyncUIWork(crossinline block: suspend () -> Unit): Job {
         val async = uiScope.async {
             block()

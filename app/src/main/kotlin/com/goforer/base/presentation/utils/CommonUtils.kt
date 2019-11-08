@@ -86,7 +86,7 @@ object CommonUtils {
     fun showToastMessage(activity: Activity, text: String, duration: Int) {
         val inflater = activity.layoutInflater
         val layout = inflater.inflate(R.layout.custom_toast,
-                activity.findViewById(R.id.custom_Toast_container))
+            activity.findViewById(R.id.custom_Toast_container))
 
         val phrase = layout.findViewById<AppCompatTextView>(R.id.tv_text)
 

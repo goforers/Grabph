@@ -33,6 +33,9 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
 import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContent
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.LocalLocation
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Gallery
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalleryg
 import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContent
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photos
@@ -55,6 +58,7 @@ import com.goforer.grabph.data.datasource.model.dao.remote.feed.exif.EXIFDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.FeedItemDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.FeedsContentDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.location.LocationDao
+import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.MyGalleryDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.MyPhotoDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.PhotoDao
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.PhotoInfoDao
@@ -64,7 +68,7 @@ import com.goforer.grabph.data.datasource.model.dao.remote.people.PeopleDao
 import com.goforer.grabph.data.datasource.model.dao.remote.people.owner.OwnerDao
 import com.goforer.grabph.data.datasource.model.dao.remote.people.person.PersonDao
 import com.goforer.grabph.data.datasource.model.dao.remote.profile.HomeProfileDao
-import com.goforer.grabph.data.datasource.model.dao.remote.profile.OthersPhotosDao
+import com.goforer.grabph.data.datasource.model.dao.remote.profile.MyProfileDao
 import com.goforer.grabph.data.datasource.model.dao.remote.quest.FavoriteQuestDao
 import com.goforer.grabph.data.datasource.model.dao.remote.quest.QuestInfoDao
 import com.goforer.grabph.data.datasource.model.dao.remote.quest.TopPortionQuestDao
@@ -75,13 +79,14 @@ import com.goforer.grabph.data.datasource.model.dao.remote.search.RecentKeywordD
  * Main cache description.
  */
 @Database(entities = [
-        FeedItem::class, Person::class, EXIF::class, LocalEXIF::class,
-        RecentKeyword::class, Location::class, Photog::class, Photos::class, Photo::class,
-        PhotoComments::class, Comments::class, Comment::class, PhotoInfo::class, Picture::class,
-        LocalLocation::class, Owner::class, LocalSavedPhoto::class, Questg::class, Quest::class,
-        QuestsInfog::class, QuestInfo::class, Home::class, CPhoto::class, TopPortionQuest::class,
-        Category::class, HomeProfile::class, MyPhoto::class, Searper::class, People::class,
-        HotTopicContent::class, Ranking::class, FeedsContent::class], version = 1)
+    FeedItem::class, Person::class, EXIF::class, LocalEXIF::class,
+    RecentKeyword::class, Location::class, Photog::class, Photos::class, Photo::class,
+    PhotoComments::class, Comments::class, Comment::class, PhotoInfo::class, Picture::class,
+    LocalLocation::class, Owner::class, LocalSavedPhoto::class, Questg::class, Quest::class,
+    QuestsInfog::class, QuestInfo::class, Home::class, CPhoto::class, TopPortionQuest::class,
+    Category::class, HomeProfile::class, MyPhoto::class, Searper::class, People::class,
+    HotTopicContent::class, Ranking::class, FeedsContent::class, MyGallery::class,
+    MyGalleryg::class, Gallery::class, MyProfile::class], version = 1)
 abstract class Cache : RoomDatabase() {
     abstract fun feedItemDao(): FeedItemDao
     abstract fun personDao(): PersonDao
@@ -107,5 +112,6 @@ abstract class Cache : RoomDatabase() {
     abstract fun peopleDao(): PeopleDao
     abstract fun rankingDao(): RankingDao
     abstract fun feedsContentDao(): FeedsContentDao
-    abstract fun othersProfileDao(): OthersPhotosDao
+    abstract fun myGalleryDao(): MyGalleryDao
+    abstract fun myProfileDao(): MyProfileDao
 }

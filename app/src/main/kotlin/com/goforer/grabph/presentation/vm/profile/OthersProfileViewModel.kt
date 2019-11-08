@@ -22,6 +22,9 @@ import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadOthersProfileUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.network.response.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,5 +38,11 @@ constructor(private val useCase: LoadOthersProfileUseCase): BaseViewModel<Parame
         person = useCase.execute(viewModelScope, parameters)
     }
 
-    internal suspend fun removePerson() = useCase.removePerson()
+    internal fun removePerson() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                useCase.removePerson()
+            }
+        }
+    }
 }

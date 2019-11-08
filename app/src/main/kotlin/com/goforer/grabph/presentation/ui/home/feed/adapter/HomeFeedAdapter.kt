@@ -25,6 +25,7 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.goforer.base.annotation.MockData
 import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
@@ -43,7 +44,7 @@ import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.coroutines.delay
 
 class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<FeedItem, HomeFeedAdapter.HomeFeedHolder>(DIFF_CALLBACK),
-                                                               ItemTouchHelperListener {
+    ItemTouchHelperListener {
     private var currentHolderPosition: Int = -1
 
     private lateinit var holderView: View
@@ -55,10 +56,10 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
 
         private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<FeedItem>() {
             override fun areItemsTheSame(oldFeedItem: FeedItem, newFeedItem: FeedItem): Boolean =
-                    oldFeedItem.media.m ==  newFeedItem.media.m
+                oldFeedItem.media.m ==  newFeedItem.media.m
 
             override fun areContentsTheSame(oldFeedItem: FeedItem, newFeedItem: FeedItem): Boolean =
-                    oldFeedItem ==  newFeedItem
+                oldFeedItem ==  newFeedItem
 
             override fun getChangePayload(oldFeedItem: FeedItem, newFeedItem: FeedItem): Any? {
                 return if (sameExceptTitle(oldFeedItem, newFeedItem)) {
@@ -76,7 +77,7 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeFeedHolder {
         val view = LayoutInflater.from(parent.context.applicationContext)
-                                        .inflate(R.layout.grid_feed_item, parent, false)
+            .inflate(R.layout.grid_feed_item, parent, false)
 
         return HomeFeedHolder(view, fragment, this)
     }
@@ -154,13 +155,15 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
 
     @Suppress("NAME_SHADOWING", "DEPRECATION")
     class HomeFeedHolder(override val containerView: View, private val fragment: HomeFeedFragment,
-                         private val adapter: HomeFeedAdapter): BaseViewHolder<FeedItem>(containerView), LayoutContainer {
+        private val adapter: HomeFeedAdapter): BaseViewHolder<FeedItem>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: FeedItem, position: Int) {
             val photoPath = item.media.m?.substring(0, item.media.m!!.indexOf("_m")) + ".jpg"
+            var isPlayerButtonVisible = false
 
             // In case of applying transition effect to views, have to use findViewById method
             fragment.homeActivity.setFontTypeface(tv_feed_item_title, FONT_TYPE_REGULAR)
+            iv_play_btn.requestLayout()
             iv_feed_item_content.requestLayout()
             tv_feed_item_title.requestLayout()
             iv_feed_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
@@ -170,6 +173,15 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 item.title = containerView.resources.getString(R.string.no_title)
             }
 
+            if (setPlayerButtonVisible()) {
+                iv_play_btn.visibility = View.VISIBLE
+                isPlayerButtonVisible = true
+            } else {
+                iv_play_btn.visibility = View.GONE
+                isPlayerButtonVisible = false
+            }
+
+
             tv_feed_item_title.text = item.title
             tv_feed_item_title.visibility = View.VISIBLE
             iv_feed_item_content.setOnClickListener {
@@ -178,7 +190,7 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 val link = GeneralFunctions.removeLastCharRegex(item.link.toString()).toString()
                 val photoId = link.substring(link.lastIndexOf("/") + 1)
                 Caller.callFeedInfo(fragment.homeActivity, iv_feed_item_content, item.idx, holder.adapterPosition,
-                        item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION)
+                    item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION, isPlayerButtonVisible)
             }
 
             if (fragment.swipe_layout.isRefreshing) {
@@ -192,6 +204,12 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
 
         override fun onItemClear() {
             containerView.setBackgroundColor(0)
+        }
+
+        @MockData
+        private fun setPlayerButtonVisible(): Boolean {
+            val ranNum = (1..3).random()
+            return ranNum == 1 // returns true when ranNum is 1
         }
     }
 }

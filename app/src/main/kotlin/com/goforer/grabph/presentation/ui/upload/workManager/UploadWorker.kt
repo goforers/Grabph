@@ -21,16 +21,23 @@ import com.goforer.base.presentation.utils.SIGN_METHOD
 import com.goforer.grabph.data.datasource.network.api.SearpService
 import com.goforer.grabph.di.module.AppModule
 import com.goforer.grabph.presentation.ui.upload.data.RequestParams
+import com.goforer.grabph.presentation.vm.upload.UploadPhotoViewModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import timber.log.Timber
 import java.io.File
-import java.io.FileNotFoundException
 import java.lang.RuntimeException
+import javax.inject.Inject
+import javax.inject.Singleton
+import java.io.FileNotFoundException as FileNotFoundException1
 
-class UploadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
+@Singleton
+class UploadWorker
+@Inject
+constructor(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
     private var searpService: SearpService = AppModule.create()
+    @field:Inject internal lateinit var viewModel: UploadPhotoViewModel
 
     override suspend fun doWork(): Result {
         val context = applicationContext
@@ -51,7 +58,7 @@ class UploadWorker(context: Context, params: WorkerParameters): CoroutineWorker(
             val response = searpService.postFeed(photo, map)
             val data = getUploadResponse(response)
             Result.success(data)
-        } catch (e: FileNotFoundException) {
+        } catch (e: FileNotFoundException1) {
             Timber.e(e)
             Result.failure()
             throw RuntimeException("Failed to decode input stream", e)
@@ -93,7 +100,7 @@ class UploadWorker(context: Context, params: WorkerParameters): CoroutineWorker(
         val map = HashMap<String, RequestBody>()
         map["oauth_consumer_key"] = createPartFromString(CONSUMER_KEY)
         // map["oauth_token"] = createPartFromString(authToken)
-        map["oauth_token"] = createPartFromString(ACCESS_TOKEN)
+        map["oauth_token"] = createPartFromString(ACCESS_TOKEN) // this is for testing auth
         map["oauth_signature_method"] = createPartFromString(SIGN_METHOD)
         map["oauth_timestamp"] = createPartFromString(params.timeStamp)
         map["oauth_nonce"] = createPartFromString(params.nonce)

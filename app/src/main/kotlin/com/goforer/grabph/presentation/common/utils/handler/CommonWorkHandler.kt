@@ -63,18 +63,18 @@ open class CommonWorkHandler @Inject constructor() {
     }
 
     fun savePhoto(saver: PhotoSaver, bitmap: Bitmap, filename: String, folderName: String,
-                  fromWhere: Int, position: Int): Int {
+        fromWhere: Int, position: Int): Int {
         return saver.savePhoto(bitmap, filename, folderName, fromWhere, position)
     }
 
     fun shareToFacebook(bitmap: Bitmap, activity: Activity) {
         if (ShareDialog.canShow(SharePhotoContent::class.java)) {
             val photo = SharePhoto.Builder()
-                    .setBitmap(bitmap)
-                    .build()
+                .setBitmap(bitmap)
+                .build()
             val content = SharePhotoContent.Builder()
-                    .addPhoto(photo)
-                    .build()
+                .addPhoto(photo)
+                .build()
             val dialog = ShareDialog(activity)
             dialog.show(content, ShareDialog.Mode.AUTOMATIC)
         }
@@ -83,18 +83,18 @@ open class CommonWorkHandler @Inject constructor() {
     fun shareToFacebook(bitmap: Bitmap, fragment: Fragment) {
         if (ShareDialog.canShow(SharePhotoContent::class.java)) {
             val photo = SharePhoto.Builder()
-                    .setBitmap(bitmap)
-                    .build()
+                .setBitmap(bitmap)
+                .build()
             val content = SharePhotoContent.Builder()
-                    .addPhoto(photo)
-                    .build()
+                .addPhoto(photo)
+                .build()
             val dialog = ShareDialog(fragment)
             dialog.show(content, ShareDialog.Mode.AUTOMATIC)
         }
     }
 
     fun showAppListToShare(context: Context, title: String?, description: String?,
-                           photo: Bitmap) {
+        photo: Bitmap) {
         var appDescription = "No Description"
         var appTitle = "No Title"
         val targetedShareIntents = ArrayList<Intent>()
@@ -108,157 +108,157 @@ open class CommonWorkHandler @Inject constructor() {
 
         val googlePlusIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.google.android.apps.plus",
-                    context.resources.getString(R.string.app_name) +
+                context.resources.getString(R.string.app_name) +
                     "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.google.android.apps.plus",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         googlePlusIntent?.let { targetedShareIntents.add(it) }
 
         val twitterIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "twitter",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "twitter",
-                    context.resources.getString(R.string.app_name) +"\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) +"\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         twitterIntent?.let { targetedShareIntents.add(it) }
 
         val whatsAppIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.whatsapp",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.whatsapp",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         whatsAppIntent?.let { targetedShareIntents.add(it) }
 
         val hangoutIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.google.android.talk",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.google.android.talk",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         hangoutIntent?.let { targetedShareIntents.add(it) }
 
         val facebookmessengerIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.facebook.orca",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.facebook.orca",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         facebookmessengerIntent?.let { targetedShareIntents.add(it) }
 
         val instagrmInt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.instagram.android",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.instagram.android",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         instagrmInt?.let { targetedShareIntents.add(it) }
 
         val pinterestInt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.pinterest",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.pinterest",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         pinterestInt?.let { targetedShareIntents.add(it) }
 
         val kakaotalkIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "com.kakao.talk",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "com.kakao.talk",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         kakaotalkIntent?.let { targetedShareIntents.add(it) }
 
         val lineIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "jp.naver.line.android",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "jp.naver.line.android",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         lineIntent?.let { targetedShareIntents.add(it) }
 
         val gmailIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             getShareIntent(context, "gmail",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription, Html.FROM_HTML_MODE_LEGACY) + "\n\n", photo)
         } else {
             TODO("VERSION.SDK_INT < N")
             getShareIntent(context, "gmail",
-                    context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
-                            + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
-                            + Html.fromHtml(appDescription) + "\n\n", photo)
+                context.resources.getString(R.string.app_name) + "\n\n" + context.resources.getString(R.string.phrase_title) + "\n" + appTitle
+                    + "\n\n" + context.resources.getString(R.string.phrase_description) + "\n"
+                    + Html.fromHtml(appDescription) + "\n\n", photo)
         }
 
         gmailIntent?.let { targetedShareIntents.add(it) }
 
         val chooser = Intent.createChooser(targetedShareIntents.removeAt(0),
-                context.resources.getString(R.string.menu_share))
+            context.resources.getString(R.string.menu_share))
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toTypedArray<Parcelable>())
         chooser.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(chooser)
@@ -268,7 +268,7 @@ open class CommonWorkHandler @Inject constructor() {
         val exif = arrayOf("None", "None", "None", "None", "None", "None", "None")
 
         exif[0] = (items[EXIF_ITEM_INDEX_MAKE].raw._content + " "
-                                                        + items[EXIF_ITEM_INDEX_MODEL].raw._content)
+            + items[EXIF_ITEM_INDEX_MODEL].raw._content)
         exif[1] = items[EXIF_ITEM_INDEX_EXPOSURE].raw._content
         exif[2] = items[EXIF_ITEM_INDEX_APERTURE].raw._content
         exif[3] = items[EXIF_ITEM_INDEX_ISO_SPEED].raw._content
@@ -277,11 +277,11 @@ open class CommonWorkHandler @Inject constructor() {
         exif[6] = items[EXIF_ITEM_INDEX_FOCAL_LENGTH].raw._content
 
         return LocalEXIF(0, filename, exif[0], exif[1], exif[2], exif[3],
-                exif[4], exif[5], exif[6])
+            exif[4], exif[5], exif[6])
     }
 
     fun copyLocation(filename: String, title: String,
-                     location: Location): LocalLocation {
+        location: Location): LocalLocation {
         val addressArray = arrayOf("", "", "", "", "", "")
 
         addressArray[0] = location.neighbourhood?._content ?: ""
@@ -300,7 +300,7 @@ open class CommonWorkHandler @Inject constructor() {
         val realname = userInfo.realname?._content ?: "No Real Name"
         val description = userInfo.description?._content ?: "No Description"
         return LocalSavedPhoto(0, filename, userInfo.id, username,
-                realname, description, searperPhotoUrl)
+            realname, description, searperPhotoUrl)
     }
 
     private fun getShareIntent(context: Context, type: String, subject: String, photo: Bitmap): Intent? {
@@ -315,7 +315,7 @@ open class CommonWorkHandler @Inject constructor() {
         if (resInfo.isNotEmpty()) {
             for (info in resInfo) {
                 if (info.activityInfo.packageName.toLowerCase(Locale.getDefault()).contains(type)
-                        || info.activityInfo.name.toLowerCase(Locale.getDefault()).contains(type)) {
+                    || info.activityInfo.name.toLowerCase(Locale.getDefault()).contains(type)) {
                     val activity = info.activityInfo
                     val name = ComponentName(activity.applicationInfo.packageName, activity.name)
                     share.component = name
@@ -343,6 +343,6 @@ open class CommonWorkHandler @Inject constructor() {
     }
 
     fun getProfilePhotoURL(iconFarm: Int, iconServer: String, id: String): String {
-         return "https://farm$iconFarm.staticflickr.com/$iconServer/buddyicons/$id.jpg"
+        return "https://farm$iconFarm.staticflickr.com/$iconServer/buddyicons/${id}_m.jpg"
     }
 }

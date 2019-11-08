@@ -99,7 +99,9 @@
     <color name="colorDarkGray1">#868E96</color>
     <color name="colorShadowOfName">#80000000</color>
     <color name="colorLightWhite">#E9ECEF</color>
-    <color name="colorDivider">#242628</color>
+    <color name="colorDivider">#414345</color>
     <color name="colorItemTopRankingPoint">#ADB5BD</color>
     <color name="colorBottomRankingPoint">#CED5DA</color>
+    <color name="colorUploadAgrees">#61ffffff</color>
+    <color name="colorUploadEditText">#61414345</color>
 </resources>
