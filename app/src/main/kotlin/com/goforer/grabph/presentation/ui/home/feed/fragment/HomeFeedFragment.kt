@@ -125,7 +125,8 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val vnView = homeActivity.bottom_navigation_view
+                // val vnView = homeActivity.bottom_navigation_view
+                val vnView = homeActivity.layout_bottom_navigation
 
                 vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
                 this@HomeFeedFragment.recycler_view.invalidateItemDecorations()

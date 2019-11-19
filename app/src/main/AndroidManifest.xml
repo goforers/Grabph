@@ -30,10 +30,11 @@
         <activity
             android:name=".presentation.ui.upload.UploadPhotoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery"/>
         <activity
             android:name=".presentation.ui.upload.AuthActivity"
+            android:screenOrientation="locked"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -49,17 +50,17 @@
         <activity
             android:name=".presentation.ui.ranking.RankingActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
         <activity
             android:name=".presentation.ui.othersprofile.OthersProfileActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
         <activity
             android:name=".presentation.ui.people.PeopleActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
 
         <meta-data
@@ -71,7 +72,7 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -83,19 +84,19 @@
             android:name=".presentation.ui.home.HomeActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".presentation.ui.login.LogInActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedInfoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedInfo">
             <intent-filter android:label="@string/feed_view">
                 <action android:name="android.intent.action.VIEW" />
@@ -113,12 +114,12 @@
         <activity
             android:name=".presentation.ui.photoviewer.PhotoViewerActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.DarkActionBar.Viewer" />
         <activity
             android:name=".presentation.ui.search.FeedSearchActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.Search">
             <meta-data
                 android:name="android.app.searchable"
@@ -132,64 +133,66 @@
             android:name=".presentation.ui.map.MapsActivity"
             android:label="@string/title_activity_maps"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified" />
+            android:screenOrientation="locked"/>
         <activity
             android:name=".presentation.ui.photog.PhotogPhotoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.Photog" />
         <activity
             android:name=".presentation.ui.feed.photoinfo.PhotoInfoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.PhotoInfo" />
         <activity
             android:name=".presentation.ui.comment.CommentActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.Comment" />
         <activity
             android:name=".presentation.ui.questinfo.QuestInfoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.QuestInfo" />
         <activity
             android:name=".presentation.ui.pinnedlist.PinnedFeedsActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PinnedFeedList" />
         <activity
             android:name=".presentation.ui.searplegallery.SearpleGalleryActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
         <activity
             android:name=".presentation.ui.categoryphoto.CategoryPhotoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PhotoType" />
         <activity
             android:name=".presentation.ui.category.CategoryActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".presentation.ui.hottopic.HotTopicContentActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.HotTopicContent" />
         <activity
             android:name=".presentation.ui.setting.SettingListActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.facebook.FacebookActivity"
+            android:screenOrientation="locked"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
+            android:screenOrientation="locked"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

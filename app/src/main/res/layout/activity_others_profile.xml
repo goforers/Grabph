@@ -18,6 +18,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_button_size"
         android:visibility="gone">
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -86,7 +87,6 @@
             android:id="@+id/collapsing_layout_others_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleGravity="bottom|start"
             app:expandedTitleMarginBottom="4dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -109,187 +109,77 @@
                     app:layout_collapseMode="parallax"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic[8]" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/others_profile_container_topPortion"
-                    app:layout_collapseMode="parallax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_collapseMode="parallax"
+                    android:background="@color/transparent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="@dimen/margin_20"
-                    android:layout_marginEnd="@dimen/margin_20"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginEnd="@dimen/margin_16"
                     android:layout_marginTop="?actionBarSize">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/others_profile_profile_holder"
-                        android:layout_width="@dimen/width_72"
-                        android:layout_height="@dimen/width_72"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:background="@drawable/border_rounded_rank_orange">
-
-                        <com.mikepenz.materialdrawer.view.BezelImageView
-                            android:id="@+id/iv_others_profile_icon"
-                            android:layout_width="@dimen/width_66_7"
-                            android:layout_height="@dimen/height_66_7"
-                            android:layout_margin="@dimen/margin_2_7"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@tools:sample/avatars[7]" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_others_profile_name"
+                        android:id="@+id/constraint_holder_of_name"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/height_29"
-                        android:textSize="@dimen/text_size_20"
-                        android:text="Michael Scott"
-                        android:shadowColor="#80000000"
-                        android:shadowDy="2"
-                        android:shadowRadius="4"
-                        android:textColor="@color/white"
-                        app:layout_constraintTop_toBottomOf="@id/others_profile_profile_holder"
-                        android:layout_marginTop="@dimen/margin_14"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        android:layout_marginStart="@dimen/margin_14"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_others_profile_coverLetter"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_profile_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textSize="@dimen/text_size_22"
+                            android:gravity="center"
+                            android:text="Daniel Hennry"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_follow_others_profile"
+                            android:layout_width="@dimen/width_85"
+                            android:layout_height="@dimen/height_28"
+                            android:text="팔로우"
+                            android:textSize="@dimen/text_size_16"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:background="@drawable/border_of_upload_category_white"
+                            android:paddingStart="@dimen/margin_9"
+                            android:paddingEnd="@dimen/margin_9"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <include
+                        layout="@layout/layout_profile_photo_and_people"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_holder_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="@dimen/height_20"
-                        android:maxHeight="@dimen/height_254"
-                        android:textSize="@dimen/text_size_14"
-                        android:textColor="@color/colorLightWhite"
-                        android:text="Lorem ipsum dolor sit amnet, consectetuer adipis cing elit, Aenean commodo ligula eget dolor."
-                        app:layout_constraintTop_toBottomOf="@id/tv_others_profile_name"
-                        android:layout_marginTop="@dimen/margin_6"
-                        android:layout_marginEnd="@dimen/margin_4"/>
+                        android:padding="@dimen/margin_20"
+                        android:layout_marginTop="@dimen/margin_26"
+                        android:background="@drawable/border_of_description_background"
+                        app:layout_constraintTop_toBottomOf="@+id/constraint_profile_status">
 
-                    <View
-                        android:id="@+id/divider_others_profile_first"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_1"
-                        android:background="@color/white"
-                        android:foregroundGravity="center"
-                        android:layout_marginTop="@dimen/margin_12"
-                        android:layout_marginBottom="@dimen/margin_12"
-                        app:layout_constraintTop_toBottomOf="@id/tv_others_profile_coverLetter"/>
-
-                    <!--SEARPER SEARPLE LIKE SELL Container-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/others_profile_container_status"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_50"
-
-                        app:layout_constraintTop_toBottomOf="@id/divider_others_profile_first"
-                        android:layout_marginTop="@dimen/margin_12">
-
-                        <!--SEARPER-->
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/others_profile_container_searper"
-                            android:layout_width="0dp"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_others_profile_coverLetter"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toLeftOf="@id/others_profile_container_searple"
-                            app:layout_constraintHorizontal_weight="1">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_profile_number_searper"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/margin_24"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:text="12"
-                                android:textSize="@dimen/text_size_16"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_profile_text_searper"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/height_18"
-                                app:layout_constraintTop_toBottomOf="@id/tv_others_profile_number_searper"
-                                android:layout_marginTop="@dimen/margin_4"
-                                android:text="@string/profile_text_searper"
-                                android:textSize="@dimen/text_size_12"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <!--SEARPLE-->
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/others_profile_container_searple"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            app:layout_constraintLeft_toRightOf="@id/others_profile_container_searper"
-                            app:layout_constraintRight_toLeftOf="@id/others_profile_container_like"
-                            app:layout_constraintHorizontal_weight="1">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_profile_number_searple"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/height_24"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:text="56"
-                                android:textSize="@dimen/text_size_16"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_others_profile_text_searple"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/height_18"
-                                app:layout_constraintTop_toBottomOf="@id/tv_others_profile_number_searple"
-                                android:layout_marginTop="@dimen/margin_4"
-                                android:text="@string/profile_text_searple"
-                                android:textSize="@dimen/text_size_12"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <!--LIKE-->
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/others_profile_container_like"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            app:layout_constraintLeft_toRightOf="@id/others_profile_container_searple"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintHorizontal_weight="1">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_profile_number_like"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/height_24"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:text="145"
-                                android:textSize="@dimen/text_size_16"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tv_others_profile_text_like"
-                                android:layout_width="match_parent"
-                                android:layout_height="@dimen/height_18"
-                                app:layout_constraintTop_toBottomOf="@id/tv_others_profile_number_like"
-                                android:layout_marginTop="@dimen/margin_4"
-                                android:text="@string/profile_text_like"
-                                android:textSize="@dimen/text_size_12"
-                                android:textColor="@color/white"
-                                android:gravity="center"
-                                android:letterSpacing="0.0"/>
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:minHeight="@dimen/height_20"
+                            android:maxHeight="@dimen/height_254"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/colorLightWhite"
+                            android:text="@string/description_sample"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -305,19 +195,6 @@
                     android:layout_marginStart="@dimen/margin_18"
                     android:layout_marginBottom="@dimen/margin_20"/>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_follow_others_profile"
-                    android:layout_width="@dimen/width_77"
-                    android:layout_height="@dimen/height_32"
-                    android:text="FOLLOW"
-                    android:textColor="@color/btn_follow_text_color_selector"
-                    android:textSize="@dimen/text_size_12"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginEnd="@dimen/margin_18"
-                    android:layout_marginBottom="@dimen/margin_20"
-                    android:background="@drawable/btn_rounded_orange_selector"/>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.Toolbar
@@ -329,6 +206,18 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="0dp"/>
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_others_profile_arrow_up"
+                android:layout_width="@dimen/width_22"
+                android:layout_height="@dimen/height_12"
+                android:layout_marginBottom="@dimen/margin_9"
+                android:layout_gravity="bottom|center"
+                app:layout_collapseMode="pin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_profile_arrow_up"/>
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -337,15 +226,15 @@
         android:id="@+id/recycler_others_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"
         android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="0dp"
+        android:orientation="vertical"
+        android:scrollbarSize="@dimen/size_6"
         android:scrollbarStyle="outsideInset"
         android:scrollbarThumbVertical="@color/transparent"
-        android:scrollbarSize="@dimen/size_6"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:elevation="0dp"/>
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_follow_bottom_others_profile"

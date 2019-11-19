@@ -32,7 +32,6 @@ import com.goforer.grabph.presentation.ui.category.fragment.CategoryFragment
 import com.goforer.grabph.presentation.vm.category.CategoryViewModel
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.activity_category.toolbar
 import kotlinx.coroutines.*
@@ -141,15 +140,15 @@ class CategoryActivity: BaseActivity()  {
     internal fun showNetworkError(resource: Resource) {
         when(resource.errorCode) {
             in 400..499 -> {
-                Snackbar.make(this@CategoryActivity.bottom_navigation_view, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this@CategoryActivity.category_constraint_layout, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
             }
 
             in 500..599 -> {
-                Snackbar.make(this@CategoryActivity.bottom_navigation_view, getString(R.string.phrase_server_wrong_response), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this@CategoryActivity.category_constraint_layout, getString(R.string.phrase_server_wrong_response), Snackbar.LENGTH_LONG).show()
             }
 
             else -> {
-                Snackbar.make(this@CategoryActivity.bottom_navigation_view, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this@CategoryActivity.category_constraint_layout, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
             }
         }
     }

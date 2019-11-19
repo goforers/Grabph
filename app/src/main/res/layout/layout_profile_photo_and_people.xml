@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraint_profile_status"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_17"
+    android:layout_marginStart="@dimen/margin_14"
+    android:layout_marginEnd="@dimen/margin_14"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/constraint_holder_of_name"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_profile"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/border_rounded_rank_orange">
+
+        <com.mikepenz.materialdrawer.view.BezelImageView
+            android:id="@+id/iv_profile_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_3"
+            tools:srcCompat="@tools:sample/avatars[0]"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Following Follower PIN Container-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_container_status"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraint_profile"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!--FOLLOWING-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_container_following"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/profile_container_follower"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_number_following"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="12"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_text_following"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_number_following"
+                android:layout_marginTop="@dimen/margin_7"
+                android:text="@string/profile_text_following"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--FOLLOWER-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_container_follower"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/profile_container_following"
+            app:layout_constraintRight_toLeftOf="@id/profile_container_pin"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_number_follower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="56"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_text_follower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_number_follower"
+                android:layout_marginTop="@dimen/margin_7"
+                android:text="@string/profile_text_follower"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--PIN-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_container_pin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/profile_container_follower"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_weight="1">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_number_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="45"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_profile_text_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_profile_number_pin"
+                android:layout_marginTop="@dimen/margin_7"
+                android:text="@string/profile_text_pinned"
+                android:textSize="@dimen/text_size_16"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:letterSpacing="0.0"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

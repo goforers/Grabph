@@ -74,6 +74,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.activity_others_profile.*
+import kotlinx.android.synthetic.main.layout_profile_photo_and_people.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -277,13 +278,13 @@ class OthersProfileActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun setTopPortionViewData(person: Person) {
         setRankColor(userRanking)
-        setImageDraw(iv_others_profile_icon, userPhotoUrl)
+        setImageDraw(this.iv_profile_icon, userPhotoUrl)
         // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
         setFixedImageSize(0, 0)
-        setImageDraw(this.iv_others_profile_title_photo, this.backdrop_container, userBackgroundPhoto, false)
+        setImageDraw(this.iv_others_profile_title_photo, userBackgroundPhoto)
 
         this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
-        this.tv_others_profile_name.text = person.realname?._content?.let {
+        this.tv_profile_name.text = person.realname?._content?.let {
             if (it.isEmpty()) person.username?._content else it
         } ?: person.username?._content
         val desc = getDescription(person.description?._content!!, userId)
@@ -292,9 +293,8 @@ class OthersProfileActivity : BaseActivity() {
         } else {
             this.tv_others_profile_coverLetter.text = desc
         }
-        this.tv_others_profile_number_searper.text = person.followings ?: "35"
-        this.tv_others_profile_number_searple.text = person.followers ?: "46"
-        // this.tv_others_profile_number_like.text = person.purchased ?: "145" // should be edited!!
+        this.tv_profile_number_following.text = person.followings ?: "35"
+        this.tv_profile_number_follower.text = person.followers ?: "46"
         this.tv_photo_number_others_profile.text = "${person.photos?.count?._content} Photos"
         this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
     }
@@ -399,22 +399,37 @@ class OthersProfileActivity : BaseActivity() {
 
     private fun setButtonsClickListener() {
         this.btn_follow_others_profile.isSelected = false
+
         this.btn_follow_others_profile.setOnClickListener {
-            (it as AppCompatButton).text = if (it.isSelected) getString(R.string.follow_button) else getString(R.string.following_button)
-            this.btn_follow_bottom_others_profile.text = if (it.isSelected) getString(R.string.follow_button) else getString(R.string.follow_button_bottom)
+            if (it.isSelected) {
+                (it as AppCompatButton).text = getString(R.string.follow_button)
+                it.setBackgroundResource(R.drawable.border_of_upload_category_white)
+            } else {
+                (it as AppCompatButton).text = getString(R.string.following_button)
+                it.setBackgroundResource(R.drawable.ic_border_of_following)
+            }
+
+            if (it.isSelected) this.btn_follow_bottom_others_profile.text = getString(R.string.follow_button)
+            else this.btn_follow_bottom_others_profile.text = getString(R.string.follow_button_bottom)
+
             it.isSelected = !it.isSelected
         }
 
         this.btn_follow_bottom_others_profile.setOnClickListener { button ->
             (button as AppCompatButton).text = if (this.btn_follow_others_profile.isSelected) getString(R.string.follow_button) else getString(R.string.follow_button_bottom)
-            this.btn_follow_others_profile.let { it.text = if (it.isSelected) getString(R.string.follow_button) else getString(R.string.following_button) }
+            this.btn_follow_others_profile.let {
+                it.text = if (it.isSelected) getString(R.string.follow_button) else getString(R.string.following_button)
+                it.setBackgroundResource(if (it.isSelected) R.drawable.border_of_upload_category_white else R.drawable.ic_border_of_following)
+            }
             this.btn_follow_others_profile.isSelected = ! this.btn_follow_others_profile.isSelected
         }
 
+        this.iv_others_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
+
         this.backdrop_container.setOnClickListener { appBarLayout.setExpanded(false, true) }
-        this.others_profile_container_searper.setOnClickListener { /* see my following */ }
-        this.others_profile_container_searple.setOnClickListener { /* see my follower */ }
-        this.others_profile_container_like.setOnClickListener { /* see my photos got likes */ }
+        this.tv_profile_number_following.setOnClickListener { /* see my following */ }
+        this.tv_profile_number_follower.setOnClickListener { /* see my follower */ }
+        this.tv_profile_number_pin.setOnClickListener { /* see my pins */ }
     }
 
     private fun setAppbarScrollingBehavior() {
@@ -444,6 +459,7 @@ class OthersProfileActivity : BaseActivity() {
                 abs(verticalOffset) == appBarLayout.totalScrollRange -> { // when appBarLayout Collapsed
                     this.collapsing_layout_others_profile.title = userName
                     this.others_profile_container_topPortion.visibility = View.INVISIBLE
+                    this.iv_others_profile_arrow_up.visibility = View.GONE
                     gridLayoutManager.enabledSrcoll = true
                     isAppBarExpanded = false
                     btnView.background.alpha = alpha
@@ -463,6 +479,7 @@ class OthersProfileActivity : BaseActivity() {
                     this.appBarLayout
                     this.collapsing_layout_others_profile.title = ""
                     this.others_profile_container_topPortion.visibility = View.VISIBLE
+                    this.iv_others_profile_arrow_up.visibility = View.VISIBLE
                     halfOffsetAppBar = appBarLayout.totalScrollRange / 2
                     isAppBarExpanded = false
                     btnView.translationY = max(0f, min(btnView.height.toFloat(), btnView.translationY + appBarLayout.scrollY))
@@ -613,11 +630,11 @@ class OthersProfileActivity : BaseActivity() {
 
     private fun setRankColor(rank: Int) {
         when (rank) {
-            PEOPLE_RANK_BEGINNER -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
-            PEOPLE_RANK_FIRST -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_blue)
-            PEOPLE_RANK_SECOND -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_orange)
-            PEOPLE_RANK_THIRD -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_purple)
-            PEOPLE_RANK_FOURTH -> others_profile_profile_holder.setBackgroundResource(R.drawable.border_rounded_rank_red)
+            PEOPLE_RANK_BEGINNER -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
+            PEOPLE_RANK_FIRST -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_blue)
+            PEOPLE_RANK_SECOND -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_orange)
+            PEOPLE_RANK_THIRD -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_purple)
+            PEOPLE_RANK_FOURTH -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_red)
         }
     }
 

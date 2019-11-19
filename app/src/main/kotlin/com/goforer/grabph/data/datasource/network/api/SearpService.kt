@@ -177,6 +177,17 @@ interface SearpService {
         @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<MyGalleryg>>
 
+    @GET("https://api.flickr.com/services/rest/")
+    suspend fun getMyGalleryTest(
+        @Query("api_key") apikey: String,
+        @Query("user_id") userId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("nojsoncallback") index: Int
+    ): Response<MyGalleryg>
+
     /**
      * @GET declares an HTTP GET request
      * @Query("") annotation on the parameters marks it as a

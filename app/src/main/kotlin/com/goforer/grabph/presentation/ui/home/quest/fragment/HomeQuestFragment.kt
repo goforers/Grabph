@@ -44,7 +44,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.quest
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest
 import com.goforer.grabph.data.datasource.network.response.Status
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_quest.*
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
@@ -67,6 +66,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Co
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUESTS
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_QUEST_TOP_PORTION
+import kotlinx.android.synthetic.main.activity_home.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
@@ -121,15 +121,18 @@ class HomeQuestFragment: BaseFragment() {
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         homeActivity.closeFab()
                     }
-                    RecyclerView.SCROLL_STATE_SETTLING -> {}
+                    RecyclerView.SCROLL_STATE_SETTLING -> { }
                     else -> { }
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val vnView = homeActivity.bottom_navigation_view
+                // val vnView = homeActivity.bottom_navigation_view
+                val vnView = homeActivity.layout_bottom_navigation
 
                 vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
+                // this@HomeQuestFragment.recycler_top_quest_view.invalidateItemDecorations()
+
                 homeActivity.closeFab()
             }
         })
@@ -152,9 +155,11 @@ class HomeQuestFragment: BaseFragment() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val metrics = DisplayMetrics()
-                val vnView = homeActivity.bottom_navigation_view
+                // val vnView = homeActivity.bottom_navigation_view
+                val vnView = homeActivity.layout_bottom_navigation
 
                 vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
+
                 if (dy > 0 && visible) {
                     vnView.y > metrics.heightPixels
                     if (!visible) {

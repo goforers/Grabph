@@ -147,11 +147,11 @@
     <string name="sale_status_invalid">Invalid</string>
     <string name="sale_status_approved">Approved</string>
     <string name="sale_status_verifying">Verifying</string>
-    <string name="profile_text_searper">SEARPER</string>
-    <string name="profile_text_searple">SEARPLE</string>
+    <string name="profile_text_following">팔로잉</string>
+    <string name="profile_text_follower">팔로워</string>
     <string name="profile_text_like">LIKE</string>
-    <string name="profile_text_sold">SOLD</string>
-    <string name="profile_button_text_edit">edit</string>
+    <string name="profile_text_pinned">찜</string>
+    <string name="profile_button_text_edit">프로필 수정</string>
     <string name="status_following">Following</string>
     <string name="status_follow">Follow</string>
     <string name="people_title_searper">SEARPER</string>
@@ -189,9 +189,9 @@
     <string name="license_by_nc_sa">This license lets others remix, tweak, and build upon your work non-commercially, as long as they credit you and license their new creations under the identical terms.</string>
     <string name="license_by_nc_nd">This license is the most restrictive of our six main licenses, only allowing others to download your works and share them with others as long as they credit you, but they can’t change them in any way or use them commercially. </string>
     <string name="default_description">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over.</string>
-    <string name="following_button">FOLLOWING</string>
-    <string name="follow_button">FOLLOW</string>
-    <string name="follow_button_bottom">FOLLOWING :)</string>
+    <string name="following_button">팔로잉</string>
+    <string name="follow_button">팔로우</string>
+    <string name="follow_button_bottom">팔로잉 :)</string>
     <string name="description_sample">Lorem ipsum dolor sit amet, consectetuer adipis cing elit. Aenean commodo ligula eget dolor.</string>
     <string name="pinned_photo">My Pin</string>
 </resources>

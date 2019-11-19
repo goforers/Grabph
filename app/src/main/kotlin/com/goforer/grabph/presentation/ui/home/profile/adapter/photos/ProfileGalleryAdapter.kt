@@ -74,7 +74,7 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             activity.setFixedImageSize(400, 400) // original value: 0, 0
 
             val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
-            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
+            activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
         }
 

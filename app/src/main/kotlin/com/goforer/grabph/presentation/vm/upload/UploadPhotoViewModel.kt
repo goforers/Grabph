@@ -19,7 +19,6 @@ import com.goforer.base.presentation.utils.TAG_OUTPUT
 import com.goforer.base.presentation.utils.UPLOADING_WORK_NAME
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_GALLERYG_PHOTO
-import com.goforer.grabph.data.repository.remote.profile.MyGalleryRepository
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadMyGalleryUseCase
 import com.goforer.grabph.domain.usecase.upload.UploadPhotosUseCase

@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/people_container"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/height_22"
-    android:layout_marginTop="@dimen/margin_15"
-    android:layout_marginBottom="@dimen/margin_15"
+    android:layout_height="match_parent"
     android:layout_marginStart="@dimen/margin_5"
     android:layout_marginEnd="@dimen/margin_5"
     android:background="@color/colorPrimary"
@@ -15,7 +13,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_upload_category"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/height_32"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +22,7 @@
         android:paddingEnd="15dp"
         android:textColor="@color/white"
         android:text="test"
-        android:textSize="@dimen/text_size_12"
+        android:textSize="@dimen/text_size_14"
         android:gravity="center"
         android:background="@drawable/border_of_upload_category_white"/>
     

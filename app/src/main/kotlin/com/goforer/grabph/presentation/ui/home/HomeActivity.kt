@@ -75,6 +75,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.appbar_layout
 import kotlinx.android.synthetic.main.activity_home.toolbar
 import kotlinx.android.synthetic.main.fragment_home_quest.*
+import kotlinx.android.synthetic.main.layout_home_bottom_navigation.*
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import kotlinx.android.synthetic.main.snap_main_item.*
 import kotlinx.android.synthetic.main.snap_quest_item.*
@@ -116,6 +117,11 @@ class HomeActivity: BaseActivity() {
 
     companion object {
         internal const val VISIBLE_UPTO_ITEMS = 20
+        private const val ID_HOME = 0
+        private const val ID_FEED = 1
+        private const val ID_UPLOAD = 2
+        private const val ID_QUEST = 3
+        private const val ID_PROFILE = 4
     }
 
     private val sharedExitListener = object : TransitionCallback() {
@@ -157,6 +163,7 @@ class HomeActivity: BaseActivity() {
                 itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
                 bottomMenuItem = this@HomeActivity.bottom_navigation_view.menu.findItem(this@HomeActivity.bottom_navigation_view.selectedItemId)
                 selectItem(itemId)
+                setBottomNavigationBehavior(itemId)
             }
 
             this@HomeActivity.bottom_navigation_view.setOnNavigationItemSelectedListener {
@@ -167,6 +174,7 @@ class HomeActivity: BaseActivity() {
                 false
             }
 
+            setBottomNavigationClickListener()
             BottomNavigationViewHelper.setupView(this@HomeActivity.bottom_navigation_view)
         } else {
             networkStatusVisible(false)
@@ -554,9 +562,84 @@ class HomeActivity: BaseActivity() {
         }
     }
 
+
+    private fun setBottomNavigationClickListener() {
+        this.constraint_holder_navi_home.setOnClickListener { setBottomNavigationBehavior(ID_HOME) }
+        this.ib_navigation_home.setOnClickListener{ setBottomNavigationBehavior(ID_HOME) }
+
+        this.constraint_holder_navi_feed.setOnClickListener{ setBottomNavigationBehavior(ID_FEED) }
+        this.ib_navigation_feed.setOnClickListener{ setBottomNavigationBehavior(ID_FEED) }
+
+        this.iv_nav_background_center.setOnClickListener{  }
+        this.ib_navigation_upload.setOnClickListener{ setBottomNavigationBehavior(ID_UPLOAD) }
+
+        this.constraint_holder_navi_quest.setOnClickListener{ setBottomNavigationBehavior(ID_QUEST) }
+        this.ib_navigation_quest.setOnClickListener{ setBottomNavigationBehavior(ID_QUEST) }
+
+        this.constraint_holder_navi_profile.setOnClickListener{ setBottomNavigationBehavior(ID_PROFILE) }
+        this.ib_navigation_profile.setOnClickListener{ setBottomNavigationBehavior(ID_PROFILE) }
+
+        setBottomIconColor(itemId)
+    }
+
+    internal fun setBottomNavigationBehavior(id: Int) {
+        when (id) {
+            ID_HOME -> {
+                itemId = ID_HOME
+                ib_navigation_home.isSelected = true
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
+                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
+                mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
+                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
+                tv_home_title.visibility = View.GONE
+            }
+
+            ID_FEED -> {
+                itemId = ID_FEED
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
+                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
+                feedFragment = transactFragment(HomeFeedFragment::class.java, R.id.home_container) as HomeFeedFragment
+                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
+                tv_home_title.visibility = View.VISIBLE
+                tv_home_title.text = getString(R.string.phrase_feed)
+            }
+
+            ID_UPLOAD -> { uploadPhotos()}
+
+            ID_QUEST -> {
+                itemId = ID_QUEST
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
+                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
+                questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
+                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
+                tv_home_title.visibility = View.VISIBLE
+                tv_home_title.text = getString(R.string.phrase_quest)
+            }
+
+            ID_PROFILE -> {
+                itemId = ID_PROFILE
+                this@HomeActivity.toolbar.visibility = View.GONE
+                profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment
+                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
+                tv_home_title.visibility = View.GONE
+            }
+        }
+
+        setBottomIconColor(itemId)
+    }
+
+    private fun setBottomIconColor(id: Int) {
+        this.ib_navigation_home.isSelected = id == ID_HOME
+        this.ib_navigation_feed.isSelected = id == ID_FEED
+        this.ib_navigation_quest.isSelected = id == ID_QUEST
+        this.ib_navigation_profile.isSelected = id == ID_PROFILE
+    }
+
+
     private fun selectItem(id: Int) {
         when (id) {
             R.id.navigation_home -> {
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -564,6 +647,7 @@ class HomeActivity: BaseActivity() {
             }
 
             R.id.navigation_feed -> {
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
                 feedFragment = transactFragment(HomeFeedFragment::class.java, R.id.home_container) as HomeFeedFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -574,6 +658,7 @@ class HomeActivity: BaseActivity() {
             R.id.navigation_upload -> uploadPhotos()
 
             R.id.navigation_quest -> {
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
                 questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -582,11 +667,10 @@ class HomeActivity: BaseActivity() {
             }
 
             R.id.navigation_profile -> {
-                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
+                this@HomeActivity.toolbar.visibility = View.GONE
                 profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.VISIBLE
-                tv_home_title.text = getString(R.string.phrase_profile)
+                tv_home_title.visibility = View.GONE
             }
         }
     }
@@ -601,6 +685,7 @@ class HomeActivity: BaseActivity() {
                     settingItem.isVisible = false
                 }
 
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -615,6 +700,7 @@ class HomeActivity: BaseActivity() {
                     settingItem.isVisible = false
                 }
 
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
                 feedFragment = transactFragment(HomeFeedFragment::class.java, R.id.home_container) as HomeFeedFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -642,6 +728,7 @@ class HomeActivity: BaseActivity() {
                     settingItem.isVisible = false
                 }
 
+                this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
                 questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
@@ -654,14 +741,12 @@ class HomeActivity: BaseActivity() {
                     it.isChecked = true
                     closeFab()
                     searchItem.isVisible = false
-                    settingItem.isVisible = true
+                    settingItem.isVisible = false
                 }
-
-                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
+                this@HomeActivity.toolbar.visibility = View.GONE
                 profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.VISIBLE
-                tv_home_title.text = getString(R.string.phrase_profile)
+                tv_home_title.visibility = View.GONE
             }
         }
     }

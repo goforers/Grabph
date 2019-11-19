@@ -202,12 +202,14 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                         adapter.activity.selectItem(adapter.activity.bottom_navigation_view
                                 .menu.getItem(3),
                                 R.id.navigation_quest)
+                        adapter.activity.setBottomNavigationBehavior(3)
                     }
 
                     btn_snap_view_all.setOnClickListener {
                         adapter.activity.selectItem(adapter.activity.bottom_navigation_view
                                 .menu.getItem(3),
                                 R.id.navigation_quest)
+                        adapter.activity.setBottomNavigationBehavior(3)
                     }
 
                     if (item.padding) {

@@ -61,7 +61,7 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Photo, position: Int) {
             iv_profile_my_photo.requestLayout()
             tv_profile_mission_price.requestLayout()
-            activity.setFixedImageSize(0, 0)
+            activity.setFixedImageSize(400, 400)
             iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
             tv_profile_mission_price.transitionName = TRANSITION_NAME_FOR_TITLE + position
 

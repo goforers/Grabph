@@ -81,6 +81,7 @@
         android:background="?android:attr/windowBackground"
         app:itemBackground="@color/colorPrimary"
         app:itemHorizontalTranslationEnabled="true"
+        android:visibility="gone"
         app:itemIconTint="@drawable/bnv_item_tint"
         app:itemTextColor="@drawable/bnv_item_tint"
         app:layout_scrollFlags="scroll|enterAlways"
@@ -88,6 +89,20 @@
         app:layout_insetEdge="bottom"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/menu_navigation" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/transparent"
+        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomConstraintBehavior"
+        app:layout_insetEdge="bottom">
+
+        <include
+            layout="@layout/layout_home_bottom_navigation"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fam_post_writing"

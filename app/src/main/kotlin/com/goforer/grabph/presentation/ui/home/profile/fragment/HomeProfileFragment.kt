@@ -24,6 +24,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -54,6 +55,7 @@ import com.google.android.material.appbar.AppBarLayout
 import javax.inject.Inject
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.fragment_home_profile.*
+import kotlinx.android.synthetic.main.layout_profile_photo_and_people.*
 
 @Suppress("UNCHECKED_CAST")
 @RunWithMockData(true)
@@ -62,6 +64,8 @@ class HomeProfileFragment : BaseFragment() {
     @MockData val userId = "184804690@N02"
     @MockData val pinId = "34721981@N06"
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
+
+    private lateinit var userBackgroundPhoto: String
 
     private var pagerAdapter: ProfilePagerAdapter? = null
 
@@ -91,8 +95,8 @@ class HomeProfileFragment : BaseFragment() {
     companion object {
         internal const val TAB_SEARPER_INDEX = 1
         internal const val TAB_SEARPLE_INDEX = 2
-        internal const val TAB_LIKE_INDEX = 3
-        internal const val TAB_SELL_INDEX = 4
+        internal const val TAB_SELL_INDEX = 3
+        internal const val TAB_SETTING = 4
 
         private const val PHOTO_RATIO_WIDTH = 67
         private const val PHOTO_RATIO_HEIGHT = 67
@@ -136,6 +140,7 @@ class HomeProfileFragment : BaseFragment() {
         //     }
         // })
 
+        setAppbarLayoutScrollingBehavior()
         setPagerAdapter(savedInstanceState)
         setViewClickListener()
         removeCache()
@@ -175,17 +180,18 @@ class HomeProfileFragment : BaseFragment() {
     }
 
     private fun setViewClickListener() {
-        this@HomeProfileFragment.profile_container_searper.setOnClickListener { startActivity(TAB_SEARPER_INDEX) }
-        this@HomeProfileFragment.profile_container_searple.setOnClickListener { startActivity(TAB_SEARPLE_INDEX) }
-        this@HomeProfileFragment.profile_container_like.setOnClickListener { startActivity(TAB_LIKE_INDEX) }
-        this@HomeProfileFragment.profile_container_sell.setOnClickListener { startActivity(TAB_SELL_INDEX) }
-        this.constraint_profile.setOnClickListener {
-        }
+        this.profile_container_following.setOnClickListener { startActivity(TAB_SEARPER_INDEX) }
+        this.profile_container_follower.setOnClickListener { startActivity(TAB_SEARPLE_INDEX) }
+        this.profile_container_pin.setOnClickListener { startActivity(TAB_SELL_INDEX) }
+        this.ib_profile_setting.setOnClickListener { startActivity(TAB_SETTING) }
+        this.iv_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
+        this.ib_profile_notification.setOnClickListener {  }
+        this.constraint_profile.setOnClickListener {}
     }
 
     private fun startActivity(tabType: Int) {
         when (tabType) {
-            TAB_LIKE_INDEX -> { /*..*/ }
+            TAB_SETTING -> Caller.callSetting(this.activity as Activity)
             else -> Caller.callPeopleList(this.activity as Activity, Caller.CALLED_FROM_HOME_PROFILE, tabType)
         }
     }
@@ -204,6 +210,7 @@ class HomeProfileFragment : BaseFragment() {
         //     homeProfileViewModel.setHomeProfile(it)
         //     homeProfileViewModel.setHomeProfileLiveData(it)
         // }
+        setBackgroundImageForMock()
 
         homeProfileViewModel.setParameters(
             Parameters(userId, // userId
@@ -250,8 +257,8 @@ class HomeProfileFragment : BaseFragment() {
     }
 
     private fun setTopPortionView(profile: MyProfile) {
-        this@HomeProfileFragment.tv_profile_profit.text = "Income: $${1250}$"
-        this@HomeProfileFragment.tv_profile_point.text = "Point: ${1850}p"
+        homeActivity.setImageDraw(this.iv_profile_title_photo, userBackgroundPhoto)
+        this.iv_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
         this@HomeProfileFragment.tv_profile_name.text = profile.realname?._content?.let {
             if (it.isEmpty()) profile.username?._content else it
         }
@@ -260,10 +267,9 @@ class HomeProfileFragment : BaseFragment() {
         } else {
             this@HomeProfileFragment.tv_profile_coverLetter.text = profile.description?._content
         }
-        this@HomeProfileFragment.tv_profile_number_searper.text
-        this@HomeProfileFragment.tv_profile_number_searple.text
-        this@HomeProfileFragment.tv_profile_number_like.text
-        this@HomeProfileFragment.tv_profile_number_sell.text
+        this@HomeProfileFragment.tv_profile_number_following.text
+        this@HomeProfileFragment.tv_profile_number_follower.text
+        this@HomeProfileFragment.tv_profile_number_pin.text
         homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
         val photoUrl = getProfilePhotoUrl(profile.iconfarm, profile.iconserver, profile.id)
         baseActivity.setImageDraw(this.iv_profile_icon, photoUrl)
@@ -370,27 +376,37 @@ class HomeProfileFragment : BaseFragment() {
     private fun setFontType() {
         homeActivity.run {
             FONT_TYPE_REGULAR.let {
-                setFontTypeface(tv_profile_profit, it)
-                setFontTypeface(tv_profile_point, it)
                 setFontTypeface(tv_profile_coverLetter, it)
                 setFontTypeface(btn_profile_edit, it)
             }
 
             FONT_TYPE_BOLD.let {
                 setFontTypeface(tv_profile_name, it)
-                setFontTypeface(tv_profile_number_searper, it)
-                setFontTypeface(tv_profile_number_searple, it)
-                setFontTypeface(tv_profile_number_like, it)
-                setFontTypeface(tv_profile_number_sell, it)
+                setFontTypeface(tv_profile_number_following, it)
+                setFontTypeface(tv_profile_number_follower, it)
+                setFontTypeface(tv_profile_number_pin, it)
             }
 
             FONT_TYPE_MEDIUM.let {
-                setFontTypeface(tv_profile_text_searper, it)
-                setFontTypeface(tv_profile_text_searple, it)
-                setFontTypeface(tv_profile_text_like, it)
-                setFontTypeface(tv_profile_text_sell, it)
+                setFontTypeface(tv_profile_text_following, it)
+                setFontTypeface(tv_profile_text_follower, it)
+                setFontTypeface(tv_profile_text_pin, it)
             }
         }
+    }
+
+    @MockData
+    private fun setBackgroundImageForMock() {
+        val images = ArrayList<String>()
+        images.add("https://images.unsplash.com/photo-1566198602178-f4d01944794e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80")
+        images.add("https://images.unsplash.com/photo-1566154247339-727cd5276a42?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=935&q=80")
+        images.add("https://images.unsplash.com/photo-1565949860070-a6c44d127f88?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80")
+        images.add("https://images.unsplash.com/photo-1566154247159-2d392eb80e28?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1649&q=80")
+        images.add("https://images.unsplash.com/photo-1566031687073-e328f7343951?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80")
+        images.add("https://images.unsplash.com/photo-1541795795328-f073b763494e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80")
+        images.add("https://images.unsplash.com/photo-1546241072-48010ad2862c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80")
+        images.shuffle()
+        userBackgroundPhoto = images[0]
     }
 
     private fun removeCache() {

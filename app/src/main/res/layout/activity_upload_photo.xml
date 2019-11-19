@@ -82,6 +82,7 @@
                     android:id="@+id/iv_photo_upload"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/colorBackgroundUploadPhoto"
                     android:scaleType="fitCenter"
                     android:layout_gravity="center"/>
 
@@ -107,7 +108,7 @@
                         android:id="@+id/et_desc_upload_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/text_size_12"
+                        android:textSize="@dimen/text_size_15"
                         android:textColorHint="@color/colorUploadAgrees"
                         android:textColor="@color/colorUploadAgrees"
                         android:background="@color/transparent"
@@ -123,7 +124,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_52"
+                android:layout_height="@dimen/height_72"
                 android:background="@color/colorPrimary"
                 app:cardBackgroundColor="@color/colorPrimary">
 
@@ -162,6 +163,7 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_16"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -258,6 +260,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="@dimen/margin_20"
+                        android:textSize="@dimen/text_size_16"
                         android:text="사진가격"
                         android:textColor="@color/white"/>
 
@@ -290,7 +293,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toStartOf="@id/tv_price_currecy"
                                 app:layout_constraintHorizontal_weight="10"
-                                android:textSize="@dimen/text_size_13"
+                                android:textSize="@dimen/text_size_16"
                                 android:layout_marginRight="@dimen/margin_2"
                                 android:background="@color/transparent"
                                 android:hint="0"
@@ -305,7 +308,7 @@
                                 android:layout_height="match_parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:text="$"
-                                android:textSize="@dimen/text_size_13"
+                                android:textSize="@dimen/text_size_16"
                                 android:textColor="@color/white"
                                 app:layout_constraintHorizontal_weight="1"
                                 android:gravity="center"/>

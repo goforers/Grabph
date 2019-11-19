@@ -79,19 +79,19 @@ class AuthActivity : BaseActivity() {
 
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    println("woogear@MainActivity...requestToken response: $responseBody")
+                    Timber.d("woogear@MainActivity...requestToken response: $responseBody")
                     responseBody?.let { result ->
                         val requestToken = getTokenFromCallback(result)
                         requestToken?.let { getVerifier(it) }
                     }
                 } else {
                     val msg = response.errorBody()?.string() ?: "unknown error"
-                    Log.e("woogear@MainActivity", "requestToken error: $msg")
+                    Log.d("woogear@MainActivity", "requestToken error: $msg")
                     showStat("got error.. please try again")
                     showErrorMsg(msg, true)
                 }
             } catch (e: Exception) {
-                println("woogear@MainActivity....exception: ${e.printStackTrace()}")
+                Timber.d("woogear@MainActivity....exception: ${e.printStackTrace()}")
             }
         }
     }
@@ -138,7 +138,7 @@ class AuthActivity : BaseActivity() {
                         Log.e("woogear@OauthActivity", "network error: $msg")
                     }
                 } catch (e: java.lang.Exception) {
-                    println("woogear@OauthActivity..exception: ${e.printStackTrace()}")
+                    Timber.d("woogear@OauthActivity..exception: ${e.printStackTrace()}")
                 }
             }
         }

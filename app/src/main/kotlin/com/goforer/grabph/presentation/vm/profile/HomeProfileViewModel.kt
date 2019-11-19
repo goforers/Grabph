@@ -1,6 +1,8 @@
 package com.goforer.grabph.presentation.vm.profile
 
 import androidx.lifecycle.*
+import androidx.paging.PagedList
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadMyProfileUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
@@ -26,6 +28,12 @@ constructor(private val useCase: LoadMyProfileUseCase,
     internal lateinit var profile: LiveData<Resource>
 
     internal lateinit var gallery: LiveData<Resource>
+    private lateinit var pagedGallery: LiveData<PagedList<MyGallery>>
+    private val queryLiveData = MutableLiveData<Parameters>()
+
+    internal val liveGallery: LiveData<PagedList<MyGallery>> = Transformations.switchMap(queryLiveData) {
+        galleryUseCase.test(it)
+    }
 
     internal lateinit var pin: LiveData<Resource>
 
@@ -36,7 +44,8 @@ constructor(private val useCase: LoadMyProfileUseCase,
     }
 
     fun setParametersMyGallery(parameters: Parameters) {
-        gallery = galleryUseCase.execute(viewModelScope, parameters)
+        // gallery = galleryUseCase.execute(viewModelScope, parameters)
+        queryLiveData.postValue(parameters)
     }
 
     fun setParametersMyPin(parameters: Parameters) {

@@ -11,11 +11,14 @@ import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.MyGalleryD
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
 import com.goforer.grabph.data.datasource.network.response.ApiResponse
 import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.data.repository.paging.datasource.MyGalleryDataFactory
 import com.goforer.grabph.data.repository.remote.Repository
 import com.goforer.grabph.data.repository.remote.paging.boundarycallback.PagedListMyGalleryBoundaryCallback
 import com.goforer.grabph.domain.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +26,8 @@ import javax.inject.Singleton
 class MyGalleryRepository
 @Inject
 constructor(private val dao: MyGalleryDao): Repository<Query>() {
+    private val executor: Executor = Executors.newFixedThreadPool(5)
+
     companion object {
         const val METHOD = "flickr.people.getphotos"
         const val PREFETCH_DISTANCE = 10
@@ -59,6 +64,24 @@ constructor(private val dao: MyGalleryDao): Repository<Query>() {
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
     }
+
+    internal fun loadGallery(parameters: Parameters): LiveData<PagedList<MyGallery>> {
+        val dataSourceFactory = MyGalleryDataFactory(searpService, parameters, KEY, METHOD, FORMAT_JSON, PER_PAGE)
+
+        val config = PagedList.Config.Builder()
+            .setPageSize(20)
+            .setInitialLoadSizeHint(20)
+            .setPrefetchDistance(PREFETCH_DISTANCE)
+            .setEnablePlaceholders(true)
+            .build()
+
+        val data: LiveData<PagedList<MyGallery>> = LivePagedListBuilder(dataSourceFactory, config)
+            .setFetchExecutor(executor)
+            .build()
+
+        return data
+    }
+
     internal fun deleteByPhotoId(id: String) = dao.deleteByPhotoId(id)
 
     internal suspend fun update(gallery: MyGallery) = dao.update(gallery)

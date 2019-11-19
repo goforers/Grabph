@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:layout_marginTop="?actionBarSize"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -39,7 +38,6 @@
             android:id="@+id/collapsing_layout_home_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleGravity="bottom|start"
             app:expandedTitleMarginBottom="4dp"
             app:expandedTitleMarginStart="16dp"
@@ -49,257 +47,121 @@
             app:titleEnabled="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                app:layout_collapseMode="parallax"
-                android:id="@+id/profile_container_topPortion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="@dimen/margin_20"
-                android:layout_marginEnd="@dimen/margin_20">
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax"
+                android:background="@color/transparent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_profile_title_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/others_profile_appbar_expanded_height"
+                    android:background="@color/transparent"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic[8]" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_profile_status"
+                    android:id="@+id/constraint_profile_actionbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/others_profile_appbar_collapsed_height"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/margin_20"
+                    android:layout_marginEnd="@dimen/margin_20">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraint_profile"
-                        android:layout_width="@dimen/width_72"
-                        android:layout_height="@dimen/width_72"
-                        app:layout_constraintStart_toStartOf="parent"
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/ib_profile_setting"
+                        android:layout_width="@dimen/width_20"
+                        android:layout_height="@dimen/height_20"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:background="@drawable/border_rounded_rank_orange">
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:src="@drawable/ic_setting"
+                        android:background="@color/transparent"/>
 
-                        <com.mikepenz.materialdrawer.view.BezelImageView
-                            android:id="@+id/iv_profile_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="@dimen/margin_3"
-                            tools:srcCompat="@tools:sample/avatars[0]"/>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_profile_profit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/height_18"
-                        android:textSize="@dimen/text_size_12"
-                        android:text="Income: 1253$"
-                        android:textColor="@color/grayDarkHard"
-                        app:layout_constraintStart_toEndOf="@id/constraint_profile"
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/ib_profile_notification"
+                        android:layout_width="@dimen/width_20"
+                        android:layout_height="@dimen/height_20"
+                        app:layout_constraintEnd_toStartOf="@+id/ib_profile_setting"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="@dimen/margin_20"
-                        android:layout_marginTop="@dimen/margin_17"
-                        android:layout_marginBottom="@dimen/margin_2"/>
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_profile_point"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/height_18"
-                        android:textSize="@dimen/text_size_12"
-                        android:text="Point: 16356p"
-                        android:textColor="@color/grayDarkHard"
-                        app:layout_constraintStart_toEndOf="@id/constraint_profile"
-                        app:layout_constraintTop_toBottomOf="@id/tv_profile_profit"
-                        android:layout_marginStart="@dimen/margin_20" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/btn_profile_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/height_22"
-                        android:text="@string/profile_button_text_edit"
-                        android:textSize="@dimen/text_size_10"
-                        android:textColor="@color/grayDarkHard"
-                        android:gravity="center"
-                        android:background="@drawable/border_of_edit_button_grey"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:background="@color/transparent"
+                        android:src="@drawable/ic_notifications_none_white_24dp"
+                        android:layout_marginEnd="@dimen/margin_15"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_profile_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_29"
-                    android:textSize="@dimen/text_size_20"
-                    android:text="Daniel Hennry"
-                    android:shadowColor="@color/colorShadowOfName"
-                    android:shadowRadius="4"
-                    android:shadowDy="2"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@id/constraint_profile_status"
-                    android:layout_marginTop="@dimen/margin_14"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_profile_coverLetter"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    app:layout_collapseMode="parallax"
+                    android:id="@+id/profile_container_topPortion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="@dimen/height_20"
-                    android:maxHeight="@dimen/height_254"
-                    android:textSize="@dimen/text_size_14"
-                    android:textColor="@color/colorLightWhite"
-                    android:text="@string/description_sample"
-                    app:layout_constraintTop_toBottomOf="@id/tv_profile_name"
-                    android:layout_marginTop="@dimen/margin_6"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintTop_toBottomOf="@id/constraint_profile_actionbar"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginEnd="@dimen/margin_16">
 
-                <View
-                    android:id="@+id/divider_profile_first"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_2"
-                    android:background="@color/colorDivider"
-                    android:foregroundGravity="center"
-                    android:layout_marginTop="@dimen/margin_20"
-                    android:layout_marginBottom="@dimen/margin_12"
-                    app:layout_constraintTop_toBottomOf="@id/tv_profile_coverLetter" />
-
-                <!--SEARPER SEARPLE LIKE SELL Container-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/profile_container_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_60"
-                    app:layout_constraintTop_toBottomOf="@id/divider_profile_first"
-                    android:layout_marginTop="@dimen/margin_12">
-
-                    <!--SEARPER-->
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/profile_container_searper"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@id/profile_container_searple"
-                        app:layout_constraintHorizontal_weight="1">
+                        android:id="@+id/constraint_holder_of_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/height_29"
+                        android:layout_marginStart="@dimen/margin_14"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_number_searper"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_24"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="12"
-                            android:textSize="@dimen/text_size_16"
+                            android:id="@+id/tv_profile_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textSize="@dimen/text_size_22"
+                            android:gravity="center"
+                            android:text="Daniel Hennry"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/btn_profile_edit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/height_22"
+                            android:text="@string/profile_button_text_edit"
+                            android:textSize="@dimen/text_size_10"
                             android:textColor="@color/white"
                             android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_text_searper"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_18"
-                            app:layout_constraintTop_toBottomOf="@id/tv_profile_number_searper"
-                            android:layout_marginTop="@dimen/margin_4"
-                            android:text="@string/profile_text_searper"
-                            android:textSize="@dimen/text_size_12"
-                            android:textColor="@color/grayDarkHard"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
+                            android:background="@drawable/border_of_upload_category_white"
+                            android:paddingStart="@dimen/margin_9"
+                            android:paddingEnd="@dimen/margin_9"
+                            android:layout_marginEnd="@dimen/margin_4"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <!--SEARPLE-->
+                    <include
+                        layout="@layout/layout_profile_photo_and_people"/>
+
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/profile_container_searple"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        app:layout_constraintLeft_toRightOf="@id/profile_container_searper"
-                        app:layout_constraintRight_toLeftOf="@id/profile_container_like"
-                        app:layout_constraintHorizontal_weight="1">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_20"
+                        android:layout_marginTop="@dimen/margin_26"
+                        android:background="@drawable/border_of_description_background"
+                        app:layout_constraintTop_toBottomOf="@+id/constraint_profile_status">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_number_searple"
+                            android:id="@+id/tv_profile_coverLetter"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_24"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="56"
-                            android:textSize="@dimen/text_size_16"
-                            android:textColor="@color/white"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_text_searple"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_18"
-                            app:layout_constraintTop_toBottomOf="@id/tv_profile_number_searple"
-                            android:layout_marginTop="@dimen/margin_4"
-                            android:text="@string/profile_text_searple"
-                            android:textSize="@dimen/text_size_12"
-                            android:textColor="@color/grayDarkHard"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <!--LIKE-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/profile_container_like"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        app:layout_constraintLeft_toRightOf="@id/profile_container_searple"
-                        app:layout_constraintRight_toLeftOf="@id/profile_container_sell"
-                        app:layout_constraintHorizontal_weight="1">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_number_like"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_24"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="145"
-                            android:textSize="@dimen/text_size_16"
-                            android:textColor="@color/white"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_text_like"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_18"
-                            app:layout_constraintTop_toBottomOf="@id/tv_profile_number_like"
-                            android:layout_marginTop="@dimen/margin_4"
-                            android:text="@string/profile_text_like"
-                            android:textSize="@dimen/text_size_12"
-                            android:textColor="@color/grayDarkHard"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <!--SELL-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/profile_container_sell"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        app:layout_constraintLeft_toRightOf="@id/profile_container_like"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintHorizontal_weight="1">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_number_sell"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/margin_24"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:text="45"
-                            android:textSize="@dimen/text_size_16"
-                            android:textColor="@color/white"
-                            android:gravity="center"
-                            android:letterSpacing="0.0" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_profile_text_sell"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/height_18"
-                            app:layout_constraintTop_toBottomOf="@id/tv_profile_number_sell"
-                            android:layout_marginTop="@dimen/margin_4"
-                            android:text="@string/profile_text_sold"
-                            android:textSize="@dimen/text_size_12"
-                            android:textColor="@color/grayDarkHard"
-                            android:gravity="center"
-                            android:letterSpacing="0.0"/>
+                            android:layout_height="match_parent"
+                            android:minHeight="@dimen/height_20"
+                            android:maxHeight="@dimen/height_254"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/colorLightWhite"
+                            android:text="@string/description_sample"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -307,14 +169,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_profile_arrow_up"
+                android:layout_width="@dimen/width_22"
+                android:layout_height="@dimen/height_12"
+                android:layout_marginBottom="@dimen/margin_9"
+                android:layout_gravity="bottom|center"
+                app:layout_collapseMode="pin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_profile_arrow_up"/>
 
-        <View
-            app:layout_collapseMode="parallax"
-            android:id="@+id/divider_profile_second"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_1"
-            android:background="@color/colorDivider" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout_profile"

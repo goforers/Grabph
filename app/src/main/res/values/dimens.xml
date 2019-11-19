@@ -209,7 +209,12 @@
     <dimen name="width_77">77dp</dimen>
     <dimen name="width_295">295dp</dimen>
     <dimen name="width_322">322dp</dimen>
-    <dimen name="others_profile_appbar_expanded_height">600dp</dimen>
+    <dimen name="others_profile_appbar_expanded_height">543dp</dimen>
     <dimen name="others_profile_appbar_collapsed_height">60dp</dimen>
     <dimen name="width_20">20dp</dimen>
+    <dimen name="height_3">3dp</dimen>
+    <dimen name="height_200">200dp</dimen>
+    <dimen name="text_size_22">22sp</dimen>
+    <dimen name="width_85">85dp</dimen>
+    <dimen name="width_22">22dp</dimen>
 </resources>

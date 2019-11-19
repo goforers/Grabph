@@ -13,12 +13,12 @@ import kotlinx.android.synthetic.main.list_upload_category_item.*
 class UploadCategoryAdapter: RecyclerView.Adapter<UploadCategoryAdapter.ViewHolder>() {
 
     private val categories = ArrayList<String>()
-    private val checkStatus = ArrayList<Boolean>()
+    internal var selectedPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context.applicationContext)
         val view = inflater.inflate(R.layout.list_upload_category_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, this)
     }
 
     override fun getItemCount(): Int = categories.size
@@ -27,8 +27,11 @@ class UploadCategoryAdapter: RecyclerView.Adapter<UploadCategoryAdapter.ViewHold
         val item = categories[position]
         holder.bindItemHolder(holder, item, position)
 
+        // this Click Listener is for selecting a category.
+        // When user clicks an item,  notifyDataSetChanged() will rearrange colors of all buttons.
         holder.itemView.setOnClickListener {
-            setSelectedButtonColor(position)
+            selectedPosition = position
+            notifyDataSetChanged()
         }
     }
 
@@ -36,25 +39,22 @@ class UploadCategoryAdapter: RecyclerView.Adapter<UploadCategoryAdapter.ViewHold
         categories.clear()
         categories.addAll(list)
         notifyDataSetChanged()
-
-        initCheckStatus(list.size)
     }
 
-    private fun initCheckStatus(listSize: Int) {
-        checkStatus.add(true)
-        for (i in 1 until listSize) { checkStatus.add(false) }
-        setSelectedButtonColor(0)
-    }
+    class ViewHolder(
+        override val containerView: View,
+        private val adapter: UploadCategoryAdapter
+    ): BaseViewHolder<String>(containerView), LayoutContainer {
 
-    private fun setSelectedButtonColor(selectedAt: Int) {
-        for (i in 0 until checkStatus.size) { checkStatus[i] = false }
-        checkStatus[selectedAt] = true
-    }
-
-    class ViewHolder(override val containerView: View): BaseViewHolder<String>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: String, position: Int) {
             tv_upload_category.requestLayout()
             tv_upload_category.text = item
+
+            if (adapter.selectedPosition == position) {
+                tv_upload_category.setBackgroundResource(R.drawable.border_of_upload_category_selected)
+            } else {
+                tv_upload_category.setBackgroundResource(R.drawable.border_of_upload_category_white)
+            }
         }
 
         override fun onItemSelected() {

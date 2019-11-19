@@ -31,6 +31,7 @@ class UploadPhotoActivity : BaseActivity() {
     @field:Inject internal lateinit var viewModel: UploadPhotoViewModel
     private lateinit var adapterCategory: UploadCategoryAdapter
     private lateinit var checkBoxes: BooleanArray
+    val list = ArrayList<String>()
 
     companion object {
         const val CHECKBOX_AGREE_FIRST = 0
@@ -91,6 +92,7 @@ class UploadPhotoActivity : BaseActivity() {
     private fun setViewClickListener() {
         this.btn_upload.setOnClickListener {
             val title = ""
+            val selectedCategory = list[adapterCategory.selectedPosition]
             val desc = this.et_desc_upload_image.text.toString()
             viewModel.upload(title, desc)
         }
@@ -106,7 +108,6 @@ class UploadPhotoActivity : BaseActivity() {
 
     @MockData
     private fun makeCategoryList(): ArrayList<String> {
-        val list = ArrayList<String>()
         list.add("All")
         list.add("푸드")
         list.add("스포츠")
@@ -134,7 +135,7 @@ class UploadPhotoActivity : BaseActivity() {
 
             val workInfo = listOfWorkInfo[0]
 
-            println("woogear workInfo ${workInfo.state}")
+            Timber.d("woogear workInfo ${workInfo.state}")
 
             if (workInfo.state.isFinished) {
                 showWorkIsFinished()
@@ -145,7 +146,7 @@ class UploadPhotoActivity : BaseActivity() {
                     val stat = workInfo.outputData.getString(KEY_UPLOAD_RESPONSE_STAT)
                     if (stat != null && stat == "ok") {
                         val photoId = workInfo.outputData.getString(KEY_UPLOAD_RESPONSE_PHOTO_ID)
-                        println("woogear.. stat=ok, photoid=$photoId")
+                        Timber.d("woogear.. stat=ok, photoid=$photoId")
                         finish()
                     } else {
                         val errorCode = workInfo.outputData.getString(KEY_UPLOAD_RESPONSE_ERROR_CODE)

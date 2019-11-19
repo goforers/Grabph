@@ -25,7 +25,7 @@
     <item
         android:id="@+id/navigation_quest"
         android:enabled="true"
-        android:icon="@drawable/ic_nav_rank"
+        android:icon="@drawable/ic_nav_quest"
         android:title="@string/phrase_quest"
         app:showAsAction="ifRoom" />
 

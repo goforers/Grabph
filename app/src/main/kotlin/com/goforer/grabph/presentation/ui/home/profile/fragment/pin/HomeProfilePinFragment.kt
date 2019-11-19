@@ -1,10 +1,12 @@
 package com.goforer.grabph.presentation.ui.home.profile.fragment.pin
 
+import android.animation.ValueAnimator
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@ import com.goforer.grabph.presentation.ui.home.profile.adapter.photos.ProfilePin
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile_photos.*
+// import kotlinx.android.synthetic.main.layout_home_bottom_navigation.*
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -37,6 +40,10 @@ class HomeProfilePinFragment: BaseFragment() {
     internal val recyclerView = this.recycler_profile_photos
     @field:Inject
     lateinit var viewModel: HomeProfileViewModel
+
+    private var offsetAnimator: ValueAnimator? = null
+    private var bottomNavHeight: Float = 0f
+    private var navHalfHeight: Double = 0.0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         @GlideModule
@@ -102,11 +109,11 @@ class HomeProfilePinFragment: BaseFragment() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 outRect.left = 2
                 outRect.right = 2
-                outRect.bottom = 0
+                outRect.bottom = 2
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                    outRect.top = 0
+                    outRect.top = 2
                 }
             }
         }
@@ -115,8 +122,16 @@ class HomeProfilePinFragment: BaseFragment() {
     private fun setScrollAddListener() {
         this@HomeProfilePinFragment.recycler_profile_photos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val vnView = homeActivity.layout_bottom_navigation
+
                 when (newState) {
-                    RecyclerView.SCROLL_STATE_IDLE -> { }
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        if (bottomNavHeight >= navHalfHeight) {
+                            animateBarVisibility(vnView, false)
+                        } else {
+                            animateBarVisibility(vnView, true)
+                        }
+                    }
                     RecyclerView.SCROLL_STATE_DRAGGING -> {
                         homeActivity.closeFab()
                     }
@@ -126,11 +141,38 @@ class HomeProfilePinFragment: BaseFragment() {
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val vnView = homeActivity.bottom_navigation_view
+                // val vnView = homeActivity.bottom_navigation_view
+                val vnView = homeActivity.layout_bottom_navigation
 
                 vnView.translationY = max(0f, min(vnView.height.toFloat(), vnView.translationY + dy))
                 homeActivity.closeFab()
+
+                bottomNavHeight = vnView.translationY
+                navHalfHeight = vnView.height * 0.5
             }
         })
+    }
+
+    private fun animateBarVisibility(child: View, isVisible: Boolean) {
+        offsetAnimator ?: createValueAnimator(child)
+        offsetAnimator?.let {
+            offsetAnimator?.cancel()
+        }
+
+        val targetTranslation = if (isVisible) 0f else child.height.toFloat()
+
+        offsetAnimator?.setFloatValues(child.translationY, targetTranslation)
+        offsetAnimator?.start()
+    }
+
+    private fun createValueAnimator(child: View) {
+        offsetAnimator = ValueAnimator().apply {
+            interpolator = DecelerateInterpolator()
+            duration = 50L
+        }
+
+        offsetAnimator?.addUpdateListener {
+            child.translationY = it.animatedValue as Float
+        }
     }
 }
