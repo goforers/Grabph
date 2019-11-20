@@ -774,15 +774,15 @@ class HomeActivity: BaseActivity() {
     internal fun showNetworkError(resource: Resource) {
         when(resource.errorCode) {
             in 400..499 -> {
-                Snackbar.make(this@HomeActivity.bottom_navigation_view, getString(R.string.phrase_client_wrong_request), LENGTH_LONG).show()
+                Snackbar.make(this@HomeActivity.layout_bottom_navigation, getString(R.string.phrase_client_wrong_request), LENGTH_LONG).show()
             }
 
             in 500..599 -> {
-                Snackbar.make(this@HomeActivity.bottom_navigation_view, getString(R.string.phrase_server_wrong_response), LENGTH_LONG).show()
+                Snackbar.make(this@HomeActivity.layout_bottom_navigation, getString(R.string.phrase_server_wrong_response), LENGTH_LONG).show()
             }
 
             else -> {
-                Snackbar.make(this@HomeActivity.bottom_navigation_view, resource.getMessage().toString(), LENGTH_LONG).show()
+                Snackbar.make(this@HomeActivity.layout_bottom_navigation, resource.getMessage().toString(), LENGTH_LONG).show()
             }
         }
     }

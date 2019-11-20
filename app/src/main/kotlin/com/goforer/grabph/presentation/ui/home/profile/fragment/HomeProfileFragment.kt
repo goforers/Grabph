@@ -44,7 +44,6 @@ import com.goforer.grabph.presentation.ui.home.profile.fragment.gallery.HomeProf
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProfile
-import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.profile.ProfileDataSource
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_GALLERYG_PHOTO
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_PROFILE
@@ -52,10 +51,12 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.ui.home.profile.fragment.pin.HomeProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.fragment_home_profile.*
 import kotlinx.android.synthetic.main.layout_profile_photo_and_people.*
+import kotlin.math.abs
 
 @Suppress("UNCHECKED_CAST")
 @RunWithMockData(true)
@@ -83,6 +84,7 @@ class HomeProfileFragment : BaseFragment() {
     private lateinit var behavior: AppBarLayout.Behavior
     @SuppressLint("StaticFieldLeak")
     private lateinit var appBarLayout: AppBarLayout
+    private var currentOffSet: Int = 0
 
     @SuppressLint("StaticFieldLeak")
     private lateinit var photosRv: RecyclerView
@@ -114,32 +116,6 @@ class HomeProfileFragment : BaseFragment() {
     @SuppressLint("SetTextI18n", "CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // this@HomeProfileFragment.appbar_home_profile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-        //     appBarLayout, verticalOffset ->
-        //     val vnView = homeActivity.bottom_navigation_view
-        //
-        //     when {
-        //         abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-        //             vnView.translationY = abs(verticalOffset).toFloat()
-        //         }
-        //
-        //         verticalOffset == 0 -> {
-        //             vnView.translationY = 0L.toFloat()
-        //         }
-        //
-        //         else -> {
-        //             if (appBarVerticalOffset < verticalOffset) {
-        //                 vnView.translationY = 0L.toFloat()
-        //             } else {
-        //                 vnView.translationY = max(0f, min(vnView.height.toFloat(), abs(verticalOffset).toFloat()))
-        //             }
-        //
-        //             appBarVerticalOffset = verticalOffset
-        //         }
-        //     }
-        // })
-
         setAppbarLayoutScrollingBehavior()
         setPagerAdapter(savedInstanceState)
         setViewClickListener()
@@ -204,12 +180,6 @@ class HomeProfileFragment : BaseFragment() {
 
     @MockData
     private fun setMyPageData() {
-        val homeProfile = ProfileDataSource()
-        // homeProfile.setHomeProfile()
-        // homeProfile.getHomeProfile()?.let {
-        //     homeProfileViewModel.setHomeProfile(it)
-        //     homeProfileViewModel.setHomeProfileLiveData(it)
-        // }
         setBackgroundImageForMock()
 
         homeProfileViewModel.setParameters(
@@ -262,11 +232,13 @@ class HomeProfileFragment : BaseFragment() {
         this@HomeProfileFragment.tv_profile_name.text = profile.realname?._content?.let {
             if (it.isEmpty()) profile.username?._content else it
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             this.tv_profile_coverLetter.text = Html.fromHtml(profile.description?._content, Html.FROM_HTML_MODE_LEGACY)
-        } else {
+        else
             this@HomeProfileFragment.tv_profile_coverLetter.text = profile.description?._content
-        }
+
+
         this@HomeProfileFragment.tv_profile_number_following.text
         this@HomeProfileFragment.tv_profile_number_follower.text
         this@HomeProfileFragment.tv_profile_number_pin.text
@@ -286,24 +258,27 @@ class HomeProfileFragment : BaseFragment() {
     }
 
     private fun setAppbarOffsetChangedListener() {
+        var offSetPercentage: Float
+        val vnView = homeActivity.layout_bottom_navigation
+        val vnHeight = vnView.height
+
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
                 appBarLayout, verticalOffset ->
 
-            //            when {
-//                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-//                    isAppbarExpanded = false
-//                    myPhotosFragment?.setRecyclerScrollable(true)
-//
-//                }
-//                abs(verticalOffset) == 0 -> {
-//                    enableAppBarDraggable(false)
-//                    isAppbarExpanded = true
-//                    myPhotosFragment?.setRecyclerScrollable(false)
-//                }
-//                else -> {
-//                    isAppbarExpanded = false
-//                }
-//            }
+            currentOffSet = abs(verticalOffset)
+            offSetPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
+
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> { // appBarr Collapsed
+                }
+
+                abs(verticalOffset) == 0 -> { // appbar Expanded
+                    vnView.translationY = 0f
+                }
+
+                else -> { // appbar on progress between expending & collapsing
+                }
+            }
         })
     }
 

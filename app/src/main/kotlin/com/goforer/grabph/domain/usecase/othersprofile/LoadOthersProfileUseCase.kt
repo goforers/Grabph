@@ -14,7 +14,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.goforer.grabph.domain.usecase.feed.photo
+package com.goforer.grabph.domain.usecase.othersprofile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +22,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.goforer.grabph.domain.usecase.BaseUseCase
 import com.goforer.grabph.domain.Parameters
-import com.goforer.grabph.data.repository.remote.feed.photo.OthersPhotosRepository
+import com.goforer.grabph.data.repository.remote.people.person.PersonRepository
 import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
 import com.goforer.grabph.data.datasource.network.response.Resource
@@ -32,9 +32,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LoadOthersPhotoUseCase
+class LoadOthersProfileUseCase
 @Inject
-constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parameters, Resource>() {
+constructor(private val repository: PersonRepository):  BaseUseCase<Parameters, Resource>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
     override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
@@ -43,7 +43,7 @@ constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parame
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-                emitSource(repository.load(this@LoadOthersPhotoUseCase.liveData,
+                emitSource(repository.load(liveData,
                     Parameters(
                         query.query,
                         liveData.value?.pages!!,
@@ -68,5 +68,5 @@ constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parame
         liveData.value = query
     }
 
-    internal suspend fun removeCache() = repository.removeCache()
+    internal suspend fun removeCache() = repository.removePerson()
 }

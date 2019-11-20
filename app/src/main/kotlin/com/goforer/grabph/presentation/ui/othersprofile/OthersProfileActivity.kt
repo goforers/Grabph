@@ -55,8 +55,7 @@ import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_PHOTO_UR
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_RANKING
 import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAdapter
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.presentation.vm.feed.photo.OthersPhotosViewModel
-import com.goforer.grabph.presentation.vm.profile.OthersProfileViewModel
+import com.goforer.grabph.presentation.vm.othersprofile.OthersProfileViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
@@ -109,9 +108,7 @@ class OthersProfileActivity : BaseActivity() {
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
     @field:Inject
-    internal lateinit var photosViewModel: OthersPhotosViewModel
-    @field:Inject
-    internal lateinit var personViewModel: OthersProfileViewModel
+    internal lateinit var viewModel: OthersProfileViewModel
 
     override fun setContentView() { setContentView(R.layout.activity_others_profile) }
 
@@ -183,11 +180,12 @@ class OthersProfileActivity : BaseActivity() {
         setBackgroundImageForMock()
         when (calledFrom) {
             CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
-                personViewModel.setParameters(
+                viewModel.setParameters(
                     Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND),
                     NONE_TYPE)
 
-                personViewModel.person.observe(this, Observer { resource ->
+                val liveData = viewModel.profile
+                liveData.observe(this, Observer { resource ->
                     showLoadingFinished()
 
                     when (resource?.getStatus()) {
@@ -199,7 +197,7 @@ class OthersProfileActivity : BaseActivity() {
 
                             resource.getMessage()?.let {
                                 showNetworkError(resource)
-                                personViewModel.person.removeObservers(this)
+                                liveData.removeObservers(this)
                             }
                         }
 
@@ -207,12 +205,12 @@ class OthersProfileActivity : BaseActivity() {
 
                         Status.ERROR -> {
                             showNetworkError(resource)
-                            personViewModel.person.removeObservers(this)
+                            liveData.removeObservers(this)
                         }
 
                         else -> {
                             showNetworkError(resource)
-                            personViewModel.person.removeObservers(this)
+                            liveData.removeObservers(this)
                         }
                     }
                     // withDelay(800L) {  }
@@ -248,11 +246,12 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun getRealProfile() {
-        personViewModel.setParameters(
+        viewModel.setParameters(
             Parameters(userId, -1, LOAD_PERSON, BOUND_FROM_BACKEND),
             NONE_TYPE)
 
-        personViewModel.person.observe(this, Observer { resource ->
+        val liveData = viewModel.profile
+        liveData.observe(this, Observer { resource ->
             showLoadingFinished()
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -260,16 +259,23 @@ class OthersProfileActivity : BaseActivity() {
                         val user = person as Person?
                         if (user?.id == userId) setTopPortionViewData(user)
                     }
+
+                    resource.getMessage()?.let {
+                        showNetworkError(resource)
+                        liveData.removeObservers(this)
+                    }
                 }
 
                 Status.LOADING -> {}
 
                 Status.ERROR -> {
                     showNetworkError(resource)
+                    liveData.removeObservers(this)
                 }
 
                 else -> {
                     showNetworkError(resource)
+                    liveData.removeObservers(this)
                 }
             }
         })
@@ -306,12 +312,11 @@ class OthersProfileActivity : BaseActivity() {
             else -> userId
         }
 
-        photosViewModel.setParameters(
-            Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL),
-            NONE_TYPE
+        viewModel.setParametersPhotos(
+            Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL)
         )
 
-        val liveData = photosViewModel.userPhotos
+        val liveData = viewModel.photos
         liveData.observe(this, Observer { resource ->
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
@@ -355,10 +360,10 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun setBottomPortionView() {
-        photosViewModel.setParameters(
-            Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL),
-            NONE_TYPE)
-        val liveData: LiveData<Resource>? = photosViewModel.userPhotos
+        viewModel.setParametersPhotos(
+            Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL)
+            )
+        val liveData: LiveData<Resource>? = viewModel.photos
 
         liveData?.observe(this, Observer { resource ->
             when (resource.getStatus()) {
@@ -476,7 +481,6 @@ class OthersProfileActivity : BaseActivity() {
 //                    btnView.translationY = btnView.height.toFloat()
                 }
                 else -> { // when appBarLayout is on progress of collapsing OR expanding
-                    this.appBarLayout
                     this.collapsing_layout_others_profile.title = ""
                     this.others_profile_container_topPortion.visibility = View.VISIBLE
                     this.iv_others_profile_arrow_up.visibility = View.VISIBLE
@@ -656,15 +660,15 @@ class OthersProfileActivity : BaseActivity() {
     private fun showNetworkError(resource: Resource) {
         when (resource.errorCode) {
             in 400..499 -> {
-                Snackbar.make(this.others_profile_coordinator_layout, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this.btn_follow_bottom_others_profile, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
             }
 
             in 500..599 -> {
-                Snackbar.make(this.others_profile_coordinator_layout, getString(R.string.phrase_server_wrong_response), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this.btn_follow_bottom_others_profile, getString(R.string.phrase_server_wrong_response), Snackbar.LENGTH_LONG).show()
             }
 
             else -> {
-                Snackbar.make(this.others_profile_coordinator_layout, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this.btn_follow_bottom_others_profile, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -699,7 +703,6 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun removeCache() {
-        photosViewModel.removeCache()
-        personViewModel.removePerson()
+        viewModel.removeCache()
     }
 }

@@ -14,14 +14,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.goforer.grabph.presentation.vm.profile
+package com.goforer.grabph.presentation.vm.othersprofile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.goforer.grabph.domain.Parameters
-import com.goforer.grabph.domain.usecase.profile.LoadOthersProfileUseCase
+import com.goforer.grabph.domain.usecase.othersprofile.LoadOthersProfileUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.domain.usecase.othersprofile.LoadOthersPhotoUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,17 +32,25 @@ import javax.inject.Singleton
 @Singleton
 class OthersProfileViewModel
 @Inject
-constructor(private val useCase: LoadOthersProfileUseCase): BaseViewModel<Parameters>() {
-    internal lateinit var person: LiveData<Resource>
+constructor(private val useCaseProfile: LoadOthersProfileUseCase,
+            private val useCasePhotos: LoadOthersPhotoUseCase
+): BaseViewModel<Parameters>() {
+    internal lateinit var profile: LiveData<Resource>
+    internal lateinit var photos: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        person = useCase.execute(viewModelScope, parameters)
+        profile = useCaseProfile.execute(viewModelScope, parameters)
     }
 
-    internal fun removePerson() {
+    internal fun setParametersPhotos(parameters: Parameters) {
+        photos = useCasePhotos.execute(viewModelScope, parameters)
+    }
+
+    internal fun removeCache() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                useCase.removePerson()
+                useCaseProfile.removeCache()
+                useCasePhotos.removeCache()
             }
         }
     }
