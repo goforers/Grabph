@@ -44,6 +44,8 @@ import com.goforer.grabph.presentation.ui.upload.data.FlickrLoginResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -56,18 +58,15 @@ import java.io.File
 
 interface SearpService {
     companion object {
-        const val MULTIPART_FORM_DATA = "multipart/form-data"
+        internal const val CONTENT_TYPE_IMAGE = "image/*"
+        private const val CONTENT_TYPE_TEXT = "text/plain"
 
         fun createRequestBody(@NonNull file: File): RequestBody {
-            return RequestBody.create(
-                MULTIPART_FORM_DATA.toMediaTypeOrNull(), file
-            )
+            return file.asRequestBody(CONTENT_TYPE_IMAGE.toMediaTypeOrNull())
         }
 
         fun createRequestBody(@NonNull s: String): RequestBody {
-            return RequestBody.create(
-                MULTIPART_FORM_DATA.toMediaTypeOrNull(), s
-            )
+            return s.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
         }
     }
 
@@ -453,7 +452,7 @@ interface SearpService {
     @Multipart
     @POST("https://up.flickr.com/services/upload/")
     suspend fun postFeed(
-        @Part photo: MultipartBody.Part,
-        @PartMap map: Map<String, @JvmSuppressWildcards RequestBody>
+        @Part photo: ArrayList<MultipartBody.Part>,
+        @PartMap map: MutableMap<String, @JvmSuppressWildcards RequestBody>
     ): Response<String>
 }

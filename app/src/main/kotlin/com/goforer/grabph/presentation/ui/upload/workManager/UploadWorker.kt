@@ -40,9 +40,10 @@ constructor(context: Context, params: WorkerParameters): CoroutineWorker(context
     @field:Inject internal lateinit var viewModel: UploadPhotoViewModel
 
     override suspend fun doWork(): Result {
+        val photoList = ArrayList<MultipartBody.Part>()
         val context = applicationContext
         val imagePath = inputData.getString(KEY_UPLOAD_IMAGE_URI)?.let { getPathOfUri(context, Uri.parse(it)) }
-        val file = File(imagePath)
+        val file = File(imagePath!!)
         val title = inputData.getString(KEY_UPLOAD_IMAGE_TITLE) ?: ""
         val desc = inputData.getString(KEY_UPLOAD_IMAGE_DESC) ?: ""
 
@@ -54,8 +55,10 @@ constructor(context: Context, params: WorkerParameters): CoroutineWorker(context
         val photo = MultipartBody.Part.createFormData("photo", file.name, requestFile)
         val map = getRequestBodyMap(params, title, desc)
 
+        photoList.add(photo)
+
         return try {
-            val response = searpService.postFeed(photo, map)
+            val response = searpService.postFeed(photoList, map)
             val data = getUploadResponse(response)
             Result.success(data)
         } catch (e: FileNotFoundException1) {
@@ -107,6 +110,7 @@ constructor(context: Context, params: WorkerParameters): CoroutineWorker(context
         map["oauth_signature"] = createPartFromString(params.signature)
         map["title"] = createPartFromString(title)
         map["description"] = createPartFromString(desc)
+
         return map
     }
 
