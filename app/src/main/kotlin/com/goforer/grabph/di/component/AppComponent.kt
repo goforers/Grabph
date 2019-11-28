@@ -36,7 +36,8 @@ import javax.inject.Singleton
                 SearpleGalleryActivityModule::class, PeopleActivityModule::class,
                 CategoryActivityModule::class, HotTopicContentActivityModule::class,
                 RankingActivityModule::class, OthersProfileActivityModule::class,
-                AuthActivityModule::class, UploadPhotoActivityModule::class
+                AuthActivityModule::class, UploadPhotoActivityModule::class,
+                FullSizePlayerActivityModule::class
             ])
 
 interface AppComponent {

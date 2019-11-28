@@ -28,6 +28,11 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".presentation.ui.player.FullSizePlayerActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensor"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".presentation.ui.upload.UploadPhotoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
@@ -97,8 +102,9 @@
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedInfoActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedInfo">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedInfo"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter android:label="@string/feed_view">
                 <action android:name="android.intent.action.VIEW" />
 

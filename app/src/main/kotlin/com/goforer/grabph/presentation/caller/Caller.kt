@@ -63,6 +63,7 @@ import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.ui.setting.SettingListActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.presentation.ui.player.FullSizePlayerActivity
 import com.goforer.grabph.presentation.ui.upload.UploadPhotoActivity
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -128,6 +129,7 @@ object Caller {
     const val EXTRA_PROFILE_USER_PHOTO_URL = "goforer:profile_user_photo_url"
     const val EXTRA_PLACE_CALLED_USER_PROFILE = "goforer:place_called_user_profile"
     const val EXTRA_IS_PLAYER_BUTTN_VISIBILEW = "goforer:is_player_buttn_visible"
+    const val EXTRA_VIDEO_SOURCE_URL = "goforer:video_source_url"
 
     const val FONT_SIZE = "fontSize"
     const val PADDING = "padding"
@@ -955,6 +957,12 @@ object Caller {
                 }
             }
         }
+    }
+
+    fun callFullSizePlayer(activity: Activity, videoSource: String) {
+        val intent = Intent(activity, FullSizePlayerActivity::class.java)
+        intent.putExtra(EXTRA_VIDEO_SOURCE_URL, videoSource)
+        activity.startActivity(intent)
     }
 
 

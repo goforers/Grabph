@@ -897,12 +897,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         when (feedItem.mediaType) {
             "photo" -> {
                 this.iv_play_btn_feed_info.visibility = View.GONE
+                this.iv_fullsize.visibility = View.GONE
                 this.iv_feed_info_photo.visibility = View.VISIBLE
                 this.video_view_feed_info.visibility = View.GONE
             }
 
             "video" -> {
                 this.iv_play_btn_feed_info.visibility = View.VISIBLE
+                this.iv_fullsize.visibility = View.VISIBLE
                 this.iv_feed_info_photo.visibility = View.VISIBLE
                 this.video_view_feed_info.visibility = View.GONE
                 this.videoUrl = feedItem.videoSource!!
@@ -967,7 +969,10 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             }
 
             isUpdated = !isUpdated
+        }
 
+        this.iv_fullsize.setOnClickListener {
+            videoUrl?.let { Caller.callFullSizePlayer(this, it) }
         }
 
         val licensePhrase = handleLicense()
@@ -1482,8 +1487,9 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         player?.let {
             playbackPosition = it.currentPosition
             currentWindow = it.currentWindowIndex
-            player?.removeListener(playBackStateListener)
-            player?.release()
+
+            it.removeListener(playBackStateListener)
+            it.release()
             player = null
         }
     }
