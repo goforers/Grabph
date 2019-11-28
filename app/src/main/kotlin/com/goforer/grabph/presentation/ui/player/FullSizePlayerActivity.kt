@@ -7,7 +7,6 @@ import android.view.View
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_VIDEO_SOURCE_URL
-import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -19,14 +18,14 @@ import kotlinx.android.synthetic.main.activity_full_size_player.*
 
 class FullSizePlayerActivity : BaseActivity() {
 
-    private var player: SimpleExoPlayer? = null
     private var currentWindow = 0
     private var playbackPosition: Long = 0
-    private var videoUrl: String? = null
     private var playWhenReady = false
 
+    private var player: SimpleExoPlayer? = null
+    private var videoUrl: String? = null
+
     private lateinit var playerView: PlayerView
-    private lateinit var playBackStateListener: FeedInfoActivity.PlayBackStateListener
 
     companion object {
         const val EXTRA_PLAYER_POSITION = "fullsize_player_position"
@@ -46,7 +45,6 @@ class FullSizePlayerActivity : BaseActivity() {
         super.onResume()
         hideSystemUi()
         if (Build.VERSION.SDK_INT < 24) {
-            println("woogear onResume")
             videoUrl?.let { initializePlayer() }
         }
     }
@@ -54,7 +52,6 @@ class FullSizePlayerActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         if (Build.VERSION.SDK_INT >= 24) {
-            println("woogear onStart")
             videoUrl?.let { initializePlayer() }
         }
     }
@@ -77,8 +74,8 @@ class FullSizePlayerActivity : BaseActivity() {
         super.onSaveInstanceState(outState)
         videoUrl?.let { url ->
             outState.putString(EXTRA_VIDEO_SOURCE_URL, url)
-            player?.currentPosition?.let { outState.putLong(EXTRA_PLAYER_POSITION, it) }
             outState.putBoolean(EXTRA_PLAY_WHEN_READY, true)
+            outState.putLong(EXTRA_PLAYER_POSITION, player?.currentPosition ?: playbackPosition)
         }
     }
 
@@ -126,7 +123,6 @@ class FullSizePlayerActivity : BaseActivity() {
         if (savedInstanceState == null) {
             videoUrl = intent.getStringExtra(EXTRA_VIDEO_SOURCE_URL)
         } else {
-            println("woogear getIntentData")
             videoUrl = savedInstanceState.getString(EXTRA_VIDEO_SOURCE_URL)
             playbackPosition = savedInstanceState.getLong(EXTRA_PLAYER_POSITION)
             playWhenReady = savedInstanceState.getBoolean(EXTRA_PLAY_WHEN_READY)
