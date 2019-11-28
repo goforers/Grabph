@@ -20,6 +20,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import com.goforer.base.presentation.model.BaseModel
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.grabph.data.datasource.model.cache.data.entity.comments.PhotoComments
 import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.PhotoEXIF
 import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FlickrFeed
@@ -232,7 +234,12 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
                     hasNextPage = loadType == LOAD_FEED_HAS_NEXT_PAGE; LOAD_FEED_SEARCH_HAS_NEXT_PAGE
                     response.body ?: resource.onFetchFailed("There is no the feed data.")
                     response.body?.let {
-                        resource.saveToCache(item = (response.body as FlickrFeed).items as SaveType)
+                        // resource.saveToCache(item = (response.body as FlickrFeed).items as SaveType)
+
+                        /* mock data from ....... home_feed.json */
+                        val json = CommonUtils.getJson("mock/home_feed.json")
+                        val flickrFeed = BaseModel.gson().fromJson(json, FlickrFeed::class.java)
+                        resource.saveToCache(item = (flickrFeed.items as SaveType))
                     }
                 }
 

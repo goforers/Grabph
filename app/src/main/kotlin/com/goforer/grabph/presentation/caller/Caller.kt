@@ -304,7 +304,7 @@ object Caller {
 
     @SuppressLint("RestrictedApi")
     fun callFeedInfo(context: Context, imageView: View, feedIdx: Long, position:
-    Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
+    Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int) {
         val intent = createIntent(context, FeedInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -313,7 +313,6 @@ object Caller {
         intent.putExtra(EXTRA_SEARPER_ID, authorId)
         intent.putExtra(EXTRA_PHOTO_ID, photoId)
         intent.putExtra(EXTRA_FEED_INFO_CALLED_FROM, calledFrom)
-        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
             getHomeViewActivityOptions(context, imageView).toBundle())

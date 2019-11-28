@@ -22,6 +22,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -95,7 +96,14 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.presentation.caller.Caller.EXTRA_IS_PLAYER_BUTTN_VISIBILEW
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -135,16 +143,23 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     private lateinit var marker: Marker
 
+    private lateinit var playBackStateListener: PlayBackStateListener
+
     private var feedTitle: String? = null
     private var description: String? = null
     private var searperPhotoUrl: String? = null
+    private var videoUrl: String? = null
+    private var mediaType: String? = null
+
+    private var player: SimpleExoPlayer? = null
+    private var currentWindow = 0
+    private var playbackPosition: Long = 0
 
     private var feedIdx: Long = 0
 
     private var feedPosition = 0
     private var feedInfoCalledFrom = 0
     private var offsetChange = 0
-    private var isPlayerVisible = false
 
     private var searper: Person? = null
 
@@ -261,6 +276,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             val krBoldTypeface = Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_BOLD)
             this@FeedInfoActivity.collapsing_layout.setCollapsedTitleTypeface(krBoldTypeface)
             this@FeedInfoActivity.collapsing_layout.setExpandedTitleTypeface(krBoldTypeface)
+            playBackStateListener = PlayBackStateListener()
 
             getData()
 
@@ -536,6 +552,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         supportPostponeEnterTransition()
         setViewBind()
         setActivityResult(feedInfoCalledFrom)
+        this.video_view_feed_info.visibility = View.GONE // for clear transition
+        this.iv_feed_info_photo.visibility = View.VISIBLE
 
         super.finishAfterTransition()
     }
@@ -557,7 +575,34 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     override fun onMarkerDrag(marker: Marker) { }
 
-    override fun onMarkerDragEnd(marker: Marker) {
+    override fun onMarkerDragEnd(marker: Marker) { }
+
+    override fun onPause() {
+        super.onPause()
+        if (mediaType == "video" && Build.VERSION.SDK_INT < 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mediaType == "video" && Build.VERSION.SDK_INT >= 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mediaType == "video" && Build.VERSION.SDK_INT < 24) {
+            videoUrl?.let { initializePlayer(it) }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (mediaType == "video" && Build.VERSION.SDK_INT >= 24) {
+            videoUrl?.let { initializePlayer(it) }
+        }
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
@@ -613,7 +658,6 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         searperId = intent.getStringExtra(EXTRA_SEARPER_ID)
         feedPosition = intent.getIntExtra(EXTRA_FEED_INFO_POSITION, -1)
         feedInfoCalledFrom = intent.getIntExtra(EXTRA_FEED_INFO_CALLED_FROM, -1)
-        isPlayerVisible = intent.getBooleanExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, false)
     }
 
     private suspend fun getFeedInfo(idx: Long, calledFrom: Int) = when(feedInfoCalledFrom) {
@@ -621,6 +665,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             homeViewModel.loadHome()?.observe(this, Observer {
                 it?.hotSearp?.searperPhoto?.let { feedItem ->
                     this.feedItem = feedItem
+                    this.mediaType = feedItem.mediaType
                     launchUIWork {
                         displayFeedInfo(feedItem, calledFrom)
                     }
@@ -632,6 +677,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             feedViewModel.getFeed(idx)?.observe(this, Observer {
                 it?.let { feedItem ->
                     this.feedItem = feedItem
+                    this.mediaType = feedItem.mediaType
                     launchUIWork {
                         displayFeedInfo(feedItem, calledFrom)
                     }
@@ -657,8 +703,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                     searper = person as? Person?
                     displayUserInfo(searper!!)
                     slidingDrawer.setHeaderBackground(GeneralFunctions.getHeaderBackgroundUrl())
-                    slidingDrawer.setSearperProfileDrawer(searper,
-                        SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
+                    // slidingDrawer.setSearperProfileDrawer(searper,
+                    //     SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
                 }
 
                 resource.getMessage()?.let {
@@ -803,7 +849,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     private suspend fun displayFeedInfo(feedItem: FeedItem, calledFrom: Int) {
         asyncUIWork {
-            loadPhoto(this@FeedInfoActivity, feedItem.media.m, calledFrom)
+            loadPhoto(this@FeedInfoActivity, feedItem.media.m, calledFrom, feedItem)
         }
 
         asyncUIWork {
@@ -811,19 +857,17 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         }
     }
 
-    private fun loadPhoto(activity: FeedInfoActivity, url: String?, calledFrom: Int) {
-        val photoPath = url?.substring(0, url.indexOf("_m")) + ".jpg"
+    private fun loadPhoto(activity: FeedInfoActivity, url: String?, calledFrom: Int, feedItem: FeedItem) {
+        val photoPath = if (feedItem.mediaType == "photo") url?.substring(0, url.indexOf("_m")) + ".jpg"
+        else url!!
 
         setFixedImageSize(0, 0)
         setImageDraw(this@FeedInfoActivity.iv_feed_info_photo, this@FeedInfoActivity.backdrop_container, photoPath, true)
         this@FeedInfoActivity.iv_feed_info_photo.setOnClickListener {
             this@FeedInfoActivity.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
             Caller.callViewer(activity, this@FeedInfoActivity.iv_feed_info_photo, 0, CALLED_FROM_FEED_INFO,
-                url!!, SELECTED_FEED_INFO_PHOTO_VIEW)
+                photoPath, SELECTED_FEED_INFO_PHOTO_VIEW)
         }
-
-        @MockData
-        this.iv_play_btn_feed_info.visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
 
         this@FeedInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
                 _, verticalOffset ->
@@ -847,6 +891,32 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                     setEnterSharedElementCallback(sharedElementCallback)
                     supportStartPostponedEnterTransition()
                 }
+            }
+        }
+
+        when (feedItem.mediaType) {
+            "photo" -> {
+                this.iv_play_btn_feed_info.visibility = View.GONE
+                this.iv_feed_info_photo.visibility = View.VISIBLE
+                this.video_view_feed_info.visibility = View.GONE
+            }
+
+            "video" -> {
+                this.iv_play_btn_feed_info.visibility = View.VISIBLE
+                this.iv_feed_info_photo.visibility = View.VISIBLE
+                this.video_view_feed_info.visibility = View.GONE
+                this.videoUrl = feedItem.videoSource!!
+                initializePlayer(feedItem.videoSource)
+
+                this.iv_play_btn_feed_info.setOnClickListener {
+                    this.video_view_feed_info.visibility = View.VISIBLE
+                    this.iv_feed_info_photo.visibility = View.INVISIBLE
+                    player?.playWhenReady = true
+                }
+            }
+
+            else -> {
+
             }
         }
     }
@@ -1392,6 +1462,38 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         }
     }
 
+    private fun initializePlayer(source: String) {
+        val trackSelector = DefaultTrackSelector()
+        trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd())
+
+        player = ExoPlayerFactory.newSimpleInstance(this)
+        player?.addListener(playBackStateListener)
+        this.video_view_feed_info.player = player
+
+        val uri = Uri.parse(source)
+        val mediaSource = buildMediaSource(uri)
+
+        player?.playWhenReady = false
+        player?.seekTo(currentWindow, playbackPosition)
+        player?.prepare(mediaSource, false, false)
+    }
+
+    private fun releasePlayer() {
+        player?.let {
+            playbackPosition = it.currentPosition
+            currentWindow = it.currentWindowIndex
+            player?.removeListener(playBackStateListener)
+            player?.release()
+            player = null
+        }
+    }
+
+    private fun buildMediaSource(uri: Uri): MediaSource {
+        val dataSourceFactory = DefaultDataSourceFactory(this, "sample_test")
+
+        return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+    }
+
     /**
      * Helper function to call something doing function
      *
@@ -1438,6 +1540,28 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     private inline fun launchIOWork(crossinline block: suspend () -> Unit): Job {
         return ioScope.launch {
             block()
+        }
+    }
+
+    inner class PlayBackStateListener: Player.EventListener {
+
+        @SuppressLint("BinaryOperationInTimber")
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            super.onPlayerStateChanged(playWhenReady, playbackState)
+            val stateString: String
+
+            when (playbackState) {
+                ExoPlayer.STATE_IDLE -> stateString = "ExoPlayer.STATE_IDLE      -"
+                ExoPlayer.STATE_BUFFERING -> stateString = "ExoPlayer.STATE_BUFFERING      -"
+                ExoPlayer.STATE_READY -> {
+                    stateString = "ExoPlayer.STATE_READY      -"
+                }
+                ExoPlayer.STATE_ENDED -> stateString = "ExoPlayer.STATE_ENDED      -"
+                else -> stateString = "UNKNOWN_STATE      -"
+            }
+
+            Timber.d("changed state to " + stateString
+                + " playWhenReady: " + playWhenReady)
         }
     }
 }

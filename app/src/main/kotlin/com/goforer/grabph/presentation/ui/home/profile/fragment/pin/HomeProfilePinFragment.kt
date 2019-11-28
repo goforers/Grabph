@@ -32,18 +32,21 @@ import kotlin.math.max
 import kotlin.math.min
 
 class HomeProfilePinFragment: BaseFragment() {
-    private var adapter: ProfilePinAdapter? = null
-    private lateinit var glideRequestManager: RequestManager
-    private lateinit var acvAdapter: AutoClearedValue<ProfilePinAdapter>
     internal val homeActivity: HomeActivity by lazy { activity as HomeActivity }
+
+    private var adapter: ProfilePinAdapter? = null
+
+    private lateinit var glideRequestManager: RequestManager
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
-    internal val recyclerView = this.recycler_profile_photos
-    @field:Inject
-    lateinit var viewModel: HomeProfileViewModel
+
+    private lateinit var acvAdapter: AutoClearedValue<ProfilePinAdapter>
 
     private var offsetAnimator: ValueAnimator? = null
     private var bottomNavHeight: Float = 0f
     private var navHalfHeight: Double = 0.0
+
+    @field:Inject
+    lateinit var viewModel: HomeProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         @GlideModule

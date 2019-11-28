@@ -22,8 +22,10 @@ import androidx.room.Ignore
 import com.goforer.base.presentation.model.BaseModel
 
 @Entity(primaryKeys = ["title"])
-data class FlickrFeed(val title: String, @field:ColumnInfo(name = "modified")
-                 val modifiedDate: String?): BaseModel() {
+data class FlickrFeed(
+    val title: String,
+    @field:ColumnInfo(name = "modified") val modifiedDate: String?
+): BaseModel() {
     @Ignore
     val items: List<FeedItem>? = null
 }

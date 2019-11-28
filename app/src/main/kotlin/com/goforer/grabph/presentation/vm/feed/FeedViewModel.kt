@@ -35,6 +35,7 @@ class FeedViewModel
 @Inject
 constructor(private val useCase: LoadFeedUseCase): BaseViewModel<Parameters>() {
     internal lateinit var feed: LiveData<Resource>
+    internal lateinit var homeFeed: LiveData<PagedList<FeedItem>>
 
     internal var calledFrom: Int = 0
 
@@ -68,6 +69,11 @@ constructor(private val useCase: LoadFeedUseCase): BaseViewModel<Parameters>() {
 
     internal fun deleteLastSeenItems(size: Int) {
         viewModelScope.launch { useCase.deleteLastSeenItems(size) }
+        closeWork(viewModelScope)
+    }
+
+    internal fun clearCache() {
+        viewModelScope.launch { useCase.clearCache() }
         closeWork(viewModelScope)
     }
 }

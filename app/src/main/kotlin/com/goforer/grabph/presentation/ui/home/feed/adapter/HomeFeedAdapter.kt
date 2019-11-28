@@ -25,7 +25,6 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.goforer.base.annotation.MockData
 import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
@@ -158,8 +157,11 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
         private val adapter: HomeFeedAdapter): BaseViewHolder<FeedItem>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: FeedItem, position: Int) {
-            val photoPath = item.media.m?.substring(0, item.media.m!!.indexOf("_m")) + ".jpg"
-            var isPlayerButtonVisible = false
+            val photoPath = if (item.mediaType == "photo") {
+                item.media.m?.substring(0, item.media.m!!.indexOf("_m")) + ".jpg"
+            } else {
+                item.media.m!!
+            }
 
             // In case of applying transition effect to views, have to use findViewById method
             fragment.homeActivity.setFontTypeface(tv_feed_item_title, FONT_TYPE_REGULAR)
@@ -173,14 +175,17 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 item.title = containerView.resources.getString(R.string.no_title)
             }
 
-            if (setPlayerButtonVisible()) {
-                iv_play_btn.visibility = View.VISIBLE
-                isPlayerButtonVisible = true
-            } else {
-                iv_play_btn.visibility = View.GONE
-                isPlayerButtonVisible = false
+            when (item.mediaType) {
+                "video" -> {
+                    iv_play_btn.visibility = View.VISIBLE
+                }
+                "photo" -> {
+                    iv_play_btn.visibility = View.GONE
+                }
+                else -> {
+                    iv_play_btn.visibility = View.VISIBLE
+                }
             }
-
 
             tv_feed_item_title.text = item.title
             tv_feed_item_title.visibility = View.VISIBLE
@@ -190,7 +195,7 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 val link = GeneralFunctions.removeLastCharRegex(item.link.toString()).toString()
                 val photoId = link.substring(link.lastIndexOf("/") + 1)
                 Caller.callFeedInfo(fragment.homeActivity, iv_feed_item_content, item.idx, holder.adapterPosition,
-                    item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION, isPlayerButtonVisible)
+                    item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION)
             }
 
             if (fragment.swipe_layout.isRefreshing) {
@@ -204,12 +209,6 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
 
         override fun onItemClear() {
             containerView.setBackgroundColor(0)
-        }
-
-        @MockData
-        private fun setPlayerButtonVisible(): Boolean {
-            val ranNum = (1..3).random()
-            return ranNum == 1 // returns true when ranNum is 1
         }
     }
 }

@@ -112,4 +112,6 @@ constructor(private val dao: FeedItemDao): Repository<Query>() {
     internal suspend fun insert(feedItems: List<FeedItem>) = dao.insert(feedItems as MutableList<FeedItem>)
 
     internal fun delete(size: Int) = dao.removeLastSeenItems(size)
+
+    internal suspend fun clearCache() = dao.clearAll()
 }

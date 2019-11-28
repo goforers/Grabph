@@ -29,8 +29,11 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "FeedItem")
 data class FeedItem(var title: String, val link: String?,
                     @field:Embedded(prefix = "media_") val media: Media,
+                    @field:SerializedName("video_source") val videoSource: String?,
+                    @field:SerializedName("media_type") val mediaType: String?,
                     @field:SerializedName("date_taken") val takenDate: String?,
-                    val description: String?, @field:ColumnInfo(name = "published")
+                    val description: String?,
+                    @field:ColumnInfo(name = "published")
                     @field:SerializedName("published") val publishedDate: String?,
                     val author: String?,
                     @field:SerializedName("author_id") val authorId: String?,
@@ -44,7 +47,7 @@ data class FeedItem(var title: String, val link: String?,
     @ColumnInfo(index = true, name = COLUMN_IDX)
     var idx: Long = 0
     @ColumnInfo(name = COLUMN_ID)
-    var id: String = ""
+    var id: String? = ""
 
     @ColumnInfo(name = "pinned")
     var isPinned: Boolean = false

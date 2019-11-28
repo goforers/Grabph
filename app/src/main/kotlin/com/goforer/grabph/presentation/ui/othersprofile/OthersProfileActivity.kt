@@ -84,20 +84,10 @@ import kotlinx.coroutines.cancel
 class OthersProfileActivity : BaseActivity() {
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
-    private var adapter: OthersProfileAdapter? = null
-
     private lateinit var userId: String
-    private var page: Int = -1
     private lateinit var userName: String
     private lateinit var userPhotoUrl: String
     private lateinit var userBackgroundPhoto: String
-
-    private var userRanking: Int = 0
-    private var calledFrom: Int = 0
-    private var halfOffsetAppBar: Int = 0
-    private var currentOffSet: Int = 0
-    private var isAppBarExpanded = true
-    private var isRecyclerTop = true
 
     private val job = Job()
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
@@ -106,6 +96,16 @@ class OthersProfileActivity : BaseActivity() {
     private lateinit var behavior: AppBarLayout.Behavior
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
+
+    private var page: Int = -1
+    private var userRanking: Int = 0
+    private var calledFrom: Int = 0
+    private var halfOffsetAppBar: Int = 0
+    private var currentOffSet: Int = 0
+    private var isAppBarExpanded = true
+    private var isRecyclerTop = true
+
+    private var adapter: OthersProfileAdapter? = null
 
     @field:Inject
     internal lateinit var viewModel: OthersProfileViewModel
