@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#000000">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/video_view_fullsize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:controller_layout_id="@layout/custom_playback_control_fullsize"
+        app:use_controller="true"
+        app:show_timeout="5000"
+        app:use_artwork="true"
+        android:visibility="visible"
+        app:rewind_increment="3000"
+        app:fastforward_increment="3000"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

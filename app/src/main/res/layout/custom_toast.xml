@@ -9,7 +9,7 @@
     android:background="@color/greyRippleDark">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:src="@drawable/ic_searp"
+        android:src="@drawable/ic_upload_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

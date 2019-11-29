@@ -142,6 +142,7 @@ class FeedSearchAdapter(private val fragment: FeedSearchFragment):
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: FeedItem, position: Int) {
             // In case of applying transition effect to views, have to use findViewById method
             with (holder.itemView) {
+                iv_play_btn.requestLayout()
                 iv_feed_item_content.requestLayout()
                 tv_feed_item_title.requestLayout()
                 iv_feed_item_content.transitionName = TRANSITION_NAME_FOR_IMAGE + holder.adapterPosition
@@ -158,6 +159,18 @@ class FeedSearchAdapter(private val fragment: FeedSearchFragment):
                 }
 
                 feed_item_holder?.visibility = View.VISIBLE
+
+                when (item.mediaType) {
+                    "video" -> {
+                        iv_play_btn.visibility = View.VISIBLE
+                    }
+                    "photo" -> {
+                        iv_play_btn.visibility = View.GONE
+                    }
+                    else -> {
+                        iv_play_btn.visibility = View.VISIBLE
+                    }
+                }
             }
 
             if (fragment.swipe_layout.isRefreshing) {

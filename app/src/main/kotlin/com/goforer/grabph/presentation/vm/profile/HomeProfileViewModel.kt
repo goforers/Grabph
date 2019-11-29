@@ -26,18 +26,17 @@ constructor(private val useCase: LoadMyProfileUseCase,
     private val salesStatusLiveData = MutableLiveData<List<MyPhoto>>()
 
     internal lateinit var profile: LiveData<Resource>
-
     internal lateinit var gallery: LiveData<Resource>
     private lateinit var pagedGallery: LiveData<PagedList<MyGallery>>
+    internal lateinit var pin: LiveData<Resource>
+
+    internal var calledFrom: Int = 0
+
     private val queryLiveData = MutableLiveData<Parameters>()
 
     internal val liveGallery: LiveData<PagedList<MyGallery>> = Transformations.switchMap(queryLiveData) {
         galleryUseCase.test(it)
     }
-
-    internal lateinit var pin: LiveData<Resource>
-
-    internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
         profile = useCase.execute(parameters)

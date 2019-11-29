@@ -27,7 +27,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
@@ -61,33 +60,31 @@ import kotlin.math.abs
 @Suppress("UNCHECKED_CAST")
 @RunWithMockData(true)
 class HomeProfileFragment : BaseFragment() {
-
     @MockData val userId = "184804690@N02"
     @MockData val pinId = "34721981@N06"
+
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
     private lateinit var userBackgroundPhoto: String
-
-    private var pagerAdapter: ProfilePagerAdapter? = null
-
-    private var appBarVerticalOffset = 0
-
     private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
+
+    private lateinit var params: CoordinatorLayout.LayoutParams
+    private lateinit var behavior: AppBarLayout.Behavior
 
     private var myGalleryFragment: HomeProfileGalleryFragment? = null
     private var myPinFragment: HomeProfilePinFragment? = null
     // private var mySalesFragment: HomeProfileSalesFragment? = null
 
-    internal var isAppbarExpanded = true
+    private var pagerAdapter: ProfilePagerAdapter? = null
 
-    private lateinit var params: CoordinatorLayout.LayoutParams
-    private lateinit var behavior: AppBarLayout.Behavior
-    @SuppressLint("StaticFieldLeak")
-    private lateinit var appBarLayout: AppBarLayout
+    private var appBarVerticalOffset = 0
+
     private var currentOffSet: Int = 0
 
+    internal var isAppbarExpanded = true
+
     @SuppressLint("StaticFieldLeak")
-    private lateinit var photosRv: RecyclerView
+    private lateinit var appBarLayout: AppBarLayout
 
     @field:Inject
     lateinit var homeProfileViewModel: HomeProfileViewModel

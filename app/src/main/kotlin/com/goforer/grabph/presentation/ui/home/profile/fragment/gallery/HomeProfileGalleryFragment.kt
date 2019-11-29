@@ -52,17 +52,21 @@ import kotlin.math.min
  * */
 
 class HomeProfileGalleryFragment: BaseFragment() {
-    private var adapter: ProfileGalleryAdapter? = null
-    private lateinit var glideRequestManager: RequestManager
-    private lateinit var acvAdapterMyGallery: AutoClearedValue<ProfileGalleryAdapter>
     internal val homeActivity: HomeActivity by lazy { activity as HomeActivity }
+
+    private var adapter: ProfileGalleryAdapter? = null
+
+    private lateinit var glideRequestManager: RequestManager
+
+    private lateinit var acvAdapterMyGallery: AutoClearedValue<ProfileGalleryAdapter>
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
-    @field:Inject
-    lateinit var viewModel: HomeProfileViewModel
 
     private var offsetAnimator: ValueAnimator? = null
     private var bottomNavHeight: Float = 0f
     private var navHalfHeight: Double = 0.0
+
+    @field:Inject
+    lateinit var viewModel: HomeProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         @GlideModule

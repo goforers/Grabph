@@ -312,6 +312,7 @@ class HomeQuestFragment: BaseFragment() {
                 LOAD_QUEST_TOP_PORTION,
                 BOUND_FROM_LOCAL
             ), HOT_QUEST_TYPE)
+
         liveData.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {

@@ -63,6 +63,7 @@ import com.goforer.grabph.presentation.ui.search.FeedSearchActivity
 import com.goforer.grabph.presentation.ui.searplegallery.SearpleGalleryActivity
 import com.goforer.grabph.presentation.ui.setting.SettingListActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.presentation.ui.player.FullSizePlayerActivity
 import com.goforer.grabph.presentation.ui.upload.UploadPhotoActivity
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -128,6 +129,7 @@ object Caller {
     const val EXTRA_PROFILE_USER_PHOTO_URL = "goforer:profile_user_photo_url"
     const val EXTRA_PLACE_CALLED_USER_PROFILE = "goforer:place_called_user_profile"
     const val EXTRA_IS_PLAYER_BUTTN_VISIBILEW = "goforer:is_player_buttn_visible"
+    const val EXTRA_VIDEO_SOURCE_URL = "goforer:video_source_url"
 
     const val FONT_SIZE = "fontSize"
     const val PADDING = "padding"
@@ -304,7 +306,7 @@ object Caller {
 
     @SuppressLint("RestrictedApi")
     fun callFeedInfo(context: Context, imageView: View, feedIdx: Long, position:
-    Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
+    Int, authorId: String?, photoId: String?, calledFrom: Int, requestCode: Int) {
         val intent = createIntent(context, FeedInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -313,7 +315,6 @@ object Caller {
         intent.putExtra(EXTRA_SEARPER_ID, authorId)
         intent.putExtra(EXTRA_PHOTO_ID, photoId)
         intent.putExtra(EXTRA_FEED_INFO_CALLED_FROM, calledFrom)
-        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
             getHomeViewActivityOptions(context, imageView).toBundle())
@@ -956,6 +957,12 @@ object Caller {
                 }
             }
         }
+    }
+
+    fun callFullSizePlayer(activity: Activity, videoSource: String) {
+        val intent = Intent(activity, FullSizePlayerActivity::class.java)
+        intent.putExtra(EXTRA_VIDEO_SOURCE_URL, videoSource)
+        activity.startActivity(intent)
     }
 
 

@@ -82,4 +82,6 @@ constructor(private val repository: FeedItemRepository): BaseUseCase<Parameters,
     internal fun loadPinnedFeed() = repository.loadPinnedupFeed()
 
     internal fun loadFeeds() = repository.loadFeeds()
+
+    internal suspend fun clearCache() = repository.clearCache()
 }

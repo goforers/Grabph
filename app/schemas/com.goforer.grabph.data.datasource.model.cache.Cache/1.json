@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f4587812f8acf3bb65d7899822ad8283",
+    "identityHash": "d283e1be89e8f6d5ed318d6c7f0bd652",
     "entities": [
       {
         "tableName": "FeedItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_idx` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `_id` TEXT NOT NULL, `pinned` INTEGER NOT NULL, `searper_photo_url` TEXT, `searper_name` TEXT, `like` INTEGER NOT NULL, `date_pinned` INTEGER NOT NULL, `title` TEXT NOT NULL, `link` TEXT, `takenDate` TEXT, `description` TEXT, `published` TEXT, `author` TEXT, `authorId` TEXT, `tags` TEXT, `media_m` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_idx` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `_id` TEXT, `pinned` INTEGER NOT NULL, `searper_photo_url` TEXT, `searper_name` TEXT, `like` INTEGER NOT NULL, `date_pinned` INTEGER NOT NULL, `title` TEXT NOT NULL, `link` TEXT, `videoSource` TEXT, `mediaType` TEXT, `takenDate` TEXT, `description` TEXT, `published` TEXT, `author` TEXT, `authorId` TEXT, `tags` TEXT, `media_m` TEXT)",
         "fields": [
           {
             "fieldPath": "idx",
@@ -18,7 +18,7 @@
             "fieldPath": "id",
             "columnName": "_id",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "isPinned",
@@ -59,6 +59,18 @@
           {
             "fieldPath": "link",
             "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "videoSource",
+            "columnName": "videoSource",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mediaType",
+            "columnName": "mediaType",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1476,7 +1488,7 @@
       },
       {
         "tableName": "Home",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemcount` INTEGER NOT NULL, `background` TEXT NOT NULL, `hotSearptitle` TEXT NOT NULL, `hotSearphotTopictitle` TEXT NOT NULL, `hotSearphotTopic_id` TEXT NOT NULL, `hotSearphotTopicmediatype` TEXT NOT NULL, `hotSearphotTopicmediaurlsfull` TEXT, `hotSearphotTopicmediaurlsregular` TEXT, `hotSearphotTopicmediaurlssmall` TEXT, `hotSearphotTopicmediaurlsthumb` TEXT, `hotSearpquest_idx` INTEGER NOT NULL, `hotSearpquest_id` TEXT NOT NULL, `hotSearpquestowner` TEXT NOT NULL, `hotSearpquestownerName` TEXT NOT NULL, `hotSearpquestownerLogo` TEXT NOT NULL, `hotSearpquestownerImage` TEXT NOT NULL, `hotSearpquestfavoriteCategory` TEXT NOT NULL, `hotSearpquesttitle` TEXT NOT NULL, `hotSearpqueststate` TEXT NOT NULL, `hotSearpquestdescription` TEXT NOT NULL, `hotSearpquestrewards` TEXT NOT NULL, `hotSearpquestduration` INTEGER NOT NULL, `hotSearpsearperPhoto_idx` INTEGER NOT NULL, `hotSearpsearperPhoto_id` TEXT NOT NULL, `hotSearpsearperPhotopinned` INTEGER NOT NULL, `hotSearpsearperPhotosearper_photo_url` TEXT, `hotSearpsearperPhotosearper_name` TEXT, `hotSearpsearperPhotolike` INTEGER NOT NULL, `hotSearpsearperPhotodate_pinned` INTEGER NOT NULL, `hotSearpsearperPhototitle` TEXT NOT NULL, `hotSearpsearperPhotolink` TEXT, `hotSearpsearperPhototakenDate` TEXT, `hotSearpsearperPhotodescription` TEXT, `hotSearpsearperPhotopublished` TEXT, `hotSearpsearperPhotoauthor` TEXT, `hotSearpsearperPhotoauthorId` TEXT, `hotSearpsearperPhototags` TEXT, `hotSearpsearperPhotomedia_m` TEXT, `hotSearpcategoryid` TEXT NOT NULL, `hotSearpcategorytype` INTEGER NOT NULL, `hotSearpcategorytitle` TEXT NOT NULL, `hotSearpcategoryphotom` TEXT, `popQuestquest` TEXT NOT NULL, `popQuesttitle` TEXT NOT NULL, `popSearpersearper` TEXT NOT NULL, `popSearpertitle` TEXT NOT NULL, `phototypecategory` TEXT NOT NULL, `phototypetitle` TEXT NOT NULL, PRIMARY KEY(`itemcount`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemcount` INTEGER NOT NULL, `background` TEXT NOT NULL, `hotSearptitle` TEXT NOT NULL, `hotSearphotTopictitle` TEXT NOT NULL, `hotSearphotTopic_id` TEXT NOT NULL, `hotSearphotTopicmediatype` TEXT NOT NULL, `hotSearphotTopicmediaurlsfull` TEXT, `hotSearphotTopicmediaurlsregular` TEXT, `hotSearphotTopicmediaurlssmall` TEXT, `hotSearphotTopicmediaurlsthumb` TEXT, `hotSearpquest_idx` INTEGER NOT NULL, `hotSearpquest_id` TEXT NOT NULL, `hotSearpquestowner` TEXT NOT NULL, `hotSearpquestownerName` TEXT NOT NULL, `hotSearpquestownerLogo` TEXT NOT NULL, `hotSearpquestownerImage` TEXT NOT NULL, `hotSearpquestfavoriteCategory` TEXT NOT NULL, `hotSearpquesttitle` TEXT NOT NULL, `hotSearpqueststate` TEXT NOT NULL, `hotSearpquestdescription` TEXT NOT NULL, `hotSearpquestrewards` TEXT NOT NULL, `hotSearpquestduration` INTEGER NOT NULL, `hotSearpsearperPhoto_idx` INTEGER NOT NULL, `hotSearpsearperPhoto_id` TEXT, `hotSearpsearperPhotopinned` INTEGER NOT NULL, `hotSearpsearperPhotosearper_photo_url` TEXT, `hotSearpsearperPhotosearper_name` TEXT, `hotSearpsearperPhotolike` INTEGER NOT NULL, `hotSearpsearperPhotodate_pinned` INTEGER NOT NULL, `hotSearpsearperPhototitle` TEXT NOT NULL, `hotSearpsearperPhotolink` TEXT, `hotSearpsearperPhotovideoSource` TEXT, `hotSearpsearperPhotomediaType` TEXT, `hotSearpsearperPhototakenDate` TEXT, `hotSearpsearperPhotodescription` TEXT, `hotSearpsearperPhotopublished` TEXT, `hotSearpsearperPhotoauthor` TEXT, `hotSearpsearperPhotoauthorId` TEXT, `hotSearpsearperPhototags` TEXT, `hotSearpsearperPhotomedia_m` TEXT, `hotSearpcategoryid` TEXT NOT NULL, `hotSearpcategorytype` INTEGER NOT NULL, `hotSearpcategorytitle` TEXT NOT NULL, `hotSearpcategoryphotom` TEXT, `popQuestquest` TEXT NOT NULL, `popQuesttitle` TEXT NOT NULL, `popSearpersearper` TEXT NOT NULL, `popSearpertitle` TEXT NOT NULL, `phototypecategory` TEXT NOT NULL, `phototypetitle` TEXT NOT NULL, PRIMARY KEY(`itemcount`))",
         "fields": [
           {
             "fieldPath": "itemcount",
@@ -1620,7 +1632,7 @@
             "fieldPath": "hotSearp.searperPhoto.id",
             "columnName": "hotSearpsearperPhoto_id",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "hotSearp.searperPhoto.isPinned",
@@ -1661,6 +1673,18 @@
           {
             "fieldPath": "hotSearp.searperPhoto.link",
             "columnName": "hotSearpsearperPhotolink",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hotSearp.searperPhoto.videoSource",
+            "columnName": "hotSearpsearperPhotovideoSource",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hotSearp.searperPhoto.mediaType",
+            "columnName": "hotSearpsearperPhotomediaType",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -2672,7 +2696,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f4587812f8acf3bb65d7899822ad8283')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd283e1be89e8f6d5ed318d6c7f0bd652')"
     ]
   }
 }

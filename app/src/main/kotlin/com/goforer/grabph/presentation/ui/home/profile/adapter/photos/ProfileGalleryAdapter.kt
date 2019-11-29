@@ -76,6 +76,9 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
             activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
+
+            iv_profile_my_photo.setOnClickListener {
+            }
         }
 
         override fun onItemSelected() { containerView.setBackgroundColor(Color.LTGRAY) }

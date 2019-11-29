@@ -37,7 +37,7 @@ constructor(private val photoDao: PhotoDao): Repository<Query>() {
                     .setInitialLoadSizeHint(20)
                     .setPageSize(itemCount)
                     .setPrefetchDistance(PREFETCH_DISTANCE)
-                    .setEnablePlaceholders(true)
+                    .setEnablePlaceholders(false)
                     .build()
 
                 return withContext(Dispatchers.IO) {
