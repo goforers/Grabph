@@ -35,10 +35,10 @@ constructor(private val useCase: LoadOwnerUseCase) : BaseViewModel<Parameters>()
     internal lateinit var owner: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        owner = useCase.execute(viewModelScope, parameters)
+        owner = useCase.execute(parameters)
     }
 
-    internal fun loadOwner(): LiveData<Owner> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.loadOwner()) }
+    internal fun loadOwner(): LiveData<Owner> = liveData { emitSource(useCase.loadOwner()) }
 
     @MockData
     internal fun setOwner(owner: Owner) {

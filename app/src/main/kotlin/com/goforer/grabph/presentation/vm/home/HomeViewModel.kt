@@ -37,11 +37,11 @@ constructor(private val useCase: LoadHomeUseCase) : BaseViewModel<Parameters>() 
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        home = useCase.execute(viewModelScope, parameters)
+        home = useCase.execute(parameters)
     }
 
     @MockData
-    internal fun loadHome(): LiveData<Home>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadHome()?.let {
+    internal fun loadHome(): LiveData<Home>? = liveData { useCase.loadHome()?.let {
         emitSource(it)
     } }
 

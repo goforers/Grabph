@@ -39,11 +39,11 @@ constructor(private val useCaseProfile: LoadOthersProfileUseCase,
     internal lateinit var photos: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        profile = useCaseProfile.execute(viewModelScope, parameters)
+        profile = useCaseProfile.execute(parameters)
     }
 
     internal fun setParametersPhotos(parameters: Parameters) {
-        photos = useCasePhotos.execute(viewModelScope, parameters)
+        photos = useCasePhotos.execute(parameters)
     }
 
     internal fun removeCache() {

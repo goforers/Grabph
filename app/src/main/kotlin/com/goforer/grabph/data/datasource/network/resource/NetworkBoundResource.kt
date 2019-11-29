@@ -26,7 +26,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FlickrFee
 import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Homeg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.PhotoGEO
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.info.QuestsInfog
-import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Questg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photog
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.PhotoInfo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categoryg
@@ -41,7 +40,6 @@ import com.goforer.grabph.data.datasource.network.response.ApiResponse
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.Repository.Companion.PER_PAGE
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Owner
-import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import kotlinx.coroutines.*
 
 /**
@@ -219,11 +217,11 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
         val cacheData = withContext(Dispatchers.IO) {
             when (loadType) {
                 LOAD_HOME -> {
-                    if (listOf(response.body as Homeg, (response.body as Homeg).home).any { it == null }
-                        || (response.body as Homeg).stat == "fail") {
+                    if (listOf(response.body as Homeg, response.body.home).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the home.")
                     } else {
-                        resource.saveToCache((response.body as Homeg).home as SaveType)
+                        resource.saveToCache(response.body.home as SaveType)
                     }
                 }
 
@@ -237,146 +235,139 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
                 }
 
                 LOAD_PERSON -> {
-                    if (listOf(response.body as SearperProfile, (response.body as SearperProfile).person).any { it == null }
-                        || (response.body as SearperProfile).stat == "fail") {
+                    if (listOf(response.body as SearperProfile, response.body.person).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no the profile data of the searper.")
                     } else {
-                        resource.saveToCache((response.body as SearperProfile).person as SaveType)
+                        resource.saveToCache(response.body.person as SaveType)
                     }
                 }
 
                 LOAD_MY_PROFILE -> {
-                    if (listOf(response.body as MyProfileHolder, (response.body as MyProfileHolder).person).any { it == null }
-                        || (response.body as MyProfileHolder).stat == "fail") {
+                    if (listOf(response.body as MyProfileHolder, response.body.person).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no the profile data of the searper.")
                     } else {
-                        resource.saveToCache((response.body as MyProfileHolder).person as SaveType)
+                        resource.saveToCache(response.body.person as SaveType)
                     }
                 }
 
                 LOAD_EXIF -> {
-                    if (listOf(response.body as PhotoEXIF, (response.body as PhotoEXIF).photo?.exif).any { it == null }
-                        || (response.body as PhotoEXIF).stat == "fail") {
+                    if (listOf(response.body as PhotoEXIF, response.body.photo?.exif).any { it == null }
+                        || (response.body).stat == "fail") {
                         resource.onFetchFailed("There are no any EXIF data in the photo.")
                     } else {
-                        resource.saveToCache((response.body as PhotoEXIF).photo?.exif as SaveType)
+                        resource.saveToCache(response.body.photo?.exif as SaveType)
                     }
                 }
 
                 LOAD_GEO -> {
-                    if (listOf(response.body as PhotoGEO, (response.body as PhotoGEO).photo,
-                            (response.body as PhotoGEO).photo?.location).any { it == null }
-                        || (response.body as PhotoGEO).stat == "fail") {
+                    if (listOf(response.body as PhotoGEO, response.body.photo, response.body.photo?.location).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no the geo data of the photo.")
                     } else {
-                        resource.saveToCache((response.body as PhotoGEO).photo?.location as SaveType)
+                        resource.saveToCache(response.body.photo?.location as SaveType)
                     }
                 }
 
                 LOAD_PHOTOG_PHOTO, LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE -> {
                     hasNextPage = loadType == LOAD_PHOTOG_PHOTO_HAS_NEXT_PAGE
-                    if (listOf(response.body as Photog,
-                            (response.body as Photog).photos,
-                            (response.body as Photog).photos?.photo).any { it == null }
-                        || (response.body as Photog).stat == "fail") {
+                    if (listOf(response.body as Photog, response.body.photos, response.body.photos?.photo).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no any more photos.")
                     } else {
-                        pages = (response.body as Photog).photos?.pages ?: 0
-                        resource.saveToCache((response.body as Photog).photos!!.photo as SaveType)
+                        pages = response.body.photos?.pages ?: 0
+                        resource.saveToCache(response.body.photos!!.photo as SaveType)
                     }
                 }
 
                 LOAD_MY_GALLERYG_PHOTO, LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE -> {
                     hasNextPage = loadType == LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE
-                    if (listOf(response.body as MyGalleryg,
-                            (response.body as MyGalleryg).photos,
-                            (response.body as MyGalleryg).photos?.photo).any { it == null }
-                        || (response.body as MyGalleryg).stat == "fail") {
+                    if (listOf(response.body as MyGalleryg, response.body.photos, response.body.photos?.photo).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no any more my gallery.")
                     } else {
-                        pages = (response.body as MyGalleryg).photos?.pages ?: 0
-                        resource.saveToCache((response.body as MyGalleryg).photos!!.photo as SaveType)
+                        pages = response.body.photos?.pages ?: 0
+                        resource.saveToCache(response.body.photos!!.photo as SaveType)
                     }
                 }
 
                 LOAD_COMMENTS -> {
-                    if (listOf(response.body as PhotoComments, (response.body as PhotoComments).comments,
-                            (response.body as PhotoComments).comments?.comment).any { it == null }
-                        || (response.body as PhotoComments).stat == "fail") {
+                    if (listOf(response.body as PhotoComments, response.body.comments,
+                            response.body.comments?.comment).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no any comment of the photo.")
                     } else {
-                        resource.saveToCache((response.body as PhotoComments)
-                            .comments?.comment as SaveType)
+                        resource.saveToCache(response.body.comments?.comment as SaveType)
                     }
                 }
 
                 LOAD_PHOTO_INFO -> {
-                    if (listOf(response.body as PhotoInfo, (response.body as PhotoInfo).photo).any { it == null }
-                        || (response.body as PhotoInfo).stat == "fail") {
+                    if (listOf(response.body as PhotoInfo, response.body.photo).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the photo.")
                     } else {
-                        resource.saveToCache((response.body as PhotoInfo).photo as SaveType)
+                        resource.saveToCache(response.body.photo as SaveType)
                     }
                 }
 
                 LOAD_FAVORITE_QUEST_INFO -> {
-                    if (listOf(response.body as QuestInfog, (response.body as QuestInfog).questInfo).any { it == null }
-                        || (response.body as Questg).stat == "fail") {
+                    if (listOf(response.body as QuestInfog, response.body.questInfo).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
-                        resource.saveToCache((response.body as QuestInfog).questInfo as SaveType)
+                        resource.saveToCache(response.body.questInfo as SaveType)
                     }
                 }
 
                 LOAD_QUEST_TOP_PORTION -> {
-                    if (listOf(response.body as TopPortionQuestg, (response.body as TopPortionQuestg).topPortionQuest).any { it == null }
-                        || (response.body as TopPortionQuestg).stat == "fail") {
+                    if (listOf(response.body as TopPortionQuestg, response.body.topPortionQuest).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
-                        resource.saveToCache((response.body as TopPortionQuestg).topPortionQuest as SaveType)
+                        resource.saveToCache(response.body.topPortionQuest as SaveType)
                     }
                 }
 
                 LOAD_FAVORITE_QUESTS, LOAD_FAVORITE_QUESTS_HAS_NEXT_PAGE -> {
                     hasNextPage = loadType == LOAD_FAVORITE_QUESTS_HAS_NEXT_PAGE
-                    if (listOf(response.body as QuestsInfog, (response.body as QuestsInfog).questG,
-                            (response.body as QuestsInfog).questG?.quest).any { it == null }
-                        || (response.body as QuestsInfog).stat == "fail") {
+                    if (listOf(response.body as QuestsInfog, response.body.questG, response.body.questG?.quest).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no any questInfo.")
                     } else {
-                        pages = (response.body as QuestsInfog).questG?.pages ?: 0
-                        resource.saveToCache((response.body as QuestsInfog).questG?.quest as SaveType)
+                        pages = response.body.questG?.pages ?: 0
+                        resource.saveToCache(response.body.questG?.quest as SaveType)
                     }
                 }
 
                 LOAD_CATEGORY -> {
-                    if (listOf(response.body as Categoryg, (response.body as Categoryg).categories).any { it == null }
-                        || (response.body as Questg).stat == "fail") {
+                    if (listOf(response.body as Categoryg, response.body.categories).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
-                        resource.saveToCache((response.body as Categoryg).categories as SaveType)
+                        resource.saveToCache(response.body.categories as SaveType)
                     }
                 }
 
                 LOAD_HOT_TOPIC_CONTENT -> {
-                    if (listOf(response.body as HotTopicContentg, (response.body as HotTopicContentg).hotTopicContent).any { it == null }
-                        || (response.body as Questg).stat == "fail") {
+                    if (listOf(response.body as HotTopicContentg, response.body.hotTopicContent).any { it == null }
+                        || response.body.stat == "fail") {
                         resource.onFetchFailed("There is no information of the questInfo.")
                     } else {
-                        resource.saveToCache((response.body as HotTopicContentg).hotTopicContent as SaveType)
+                        resource.saveToCache(response.body.hotTopicContent as SaveType)
                     }
                 }
 
                 LOAD_HOME_PROFILE -> {
                     response.body ?: resource.onFetchFailed("There is no information of HomeProfile")
-                    response.body?.let { resource.saveToCache((response.body as Person) as SaveType) }
+                    response.body?.let { resource.saveToCache(response.body as SaveType) }
                 }
 
                 LOAD_PEOPLE -> {
-                    if (listOf(response.body as People, (response.body as People).result).any { it == null}) {
+                    if (listOf(response.body as People, response.body.result).any { it == null}) {
                         resource.onFetchFailed("There is no information of People")
                     } else {
-                        resource.saveToCache((response.body as People).result as SaveType)
+                        resource.saveToCache(response.body.result as SaveType)
                     }
                 }
 

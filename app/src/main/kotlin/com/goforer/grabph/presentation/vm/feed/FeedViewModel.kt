@@ -47,12 +47,12 @@ constructor(private val useCase: LoadFeedUseCase): BaseViewModel<Parameters>() {
     }
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        feed = useCase.execute(viewModelScope, parameters)
+        feed = useCase.execute(parameters)
     }
 
     private fun closeWork(viewModelScope: CoroutineScope?) = viewModelScope?.coroutineContext?.cancelChildren()
 
-    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadFeed(id)?.let {
+    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData { useCase.loadFeed(id)?.let {
         emitSource(it)
     } }
 

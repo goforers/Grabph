@@ -29,7 +29,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CategoryViewModel
+class  CategoryViewModel
 @Inject
 constructor(private val useCase: LoadCategoryUseCase): BaseViewModel<Parameters>() {
     internal lateinit var category: LiveData<Resource>
@@ -37,11 +37,11 @@ constructor(private val useCase: LoadCategoryUseCase): BaseViewModel<Parameters>
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        category = useCase.execute(viewModelScope, parameters)
+        category = useCase.execute(parameters)
     }
 
     @MockData
-    internal fun loadCategories(): LiveData<List<Category>>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { useCase.loadCategories()?.let {
+    internal fun loadCategories(): LiveData<List<Category>>? = liveData { useCase.loadCategories()?.let {
         emitSource(it)
     } }
 

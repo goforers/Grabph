@@ -2,7 +2,6 @@ package com.goforer.grabph.presentation.ui.upload.workManager
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
@@ -21,9 +20,11 @@ import com.goforer.base.presentation.utils.SIGN_METHOD
 import com.goforer.grabph.data.datasource.network.api.SearpService
 import com.goforer.grabph.di.module.AppModule
 import com.goforer.grabph.presentation.ui.upload.data.RequestParams
-import com.goforer.grabph.presentation.vm.upload.UploadPhotoViewModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import timber.log.Timber
 import java.io.File
@@ -37,12 +38,16 @@ class UploadWorker
 @Inject
 constructor(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
     private var searpService: SearpService = AppModule.create()
-    @field:Inject internal lateinit var viewModel: UploadPhotoViewModel
+
+    companion object {
+        private const val CONTENT_TYPE_IMAGE = "image/*"
+        private const val CONTENT_TYPE_TEXT = "text/plain"
+    }
 
     override suspend fun doWork(): Result {
         val photoList = ArrayList<MultipartBody.Part>()
         val context = applicationContext
-        val imagePath = inputData.getString(KEY_UPLOAD_IMAGE_URI)?.let { getPathOfUri(context, Uri.parse(it)) }
+        val imagePath = inputData.getString(KEY_UPLOAD_IMAGE_URI)?.let { CommonUtils.getPathFromUri(context, Uri.parse(it)) }
         val file = File(imagePath!!)
         val title = inputData.getString(KEY_UPLOAD_IMAGE_TITLE) ?: ""
         val desc = inputData.getString(KEY_UPLOAD_IMAGE_DESC) ?: ""
@@ -51,7 +56,7 @@ constructor(context: Context, params: WorkerParameters): CoroutineWorker(context
         // val secret = SharedPreference.getAccessTokenSecret(context)
         // val params = CommonUtils.getParamsUpload(authToken, secret, title, desc)
         val params = CommonUtils.getParamsUpload(ACCESS_TOKEN, ACCESS_SECRET, title, desc)
-        val requestFile = SearpService.createRequestBody(file)
+        val requestFile = file.asRequestBody(CONTENT_TYPE_IMAGE.toMediaTypeOrNull())
         val photo = MultipartBody.Part.createFormData("photo", file.name, requestFile)
         val map = getRequestBodyMap(params, title, desc)
 
@@ -101,33 +106,16 @@ constructor(context: Context, params: WorkerParameters): CoroutineWorker(context
 
     private fun getRequestBodyMap(params: RequestParams, title: String, desc: String): HashMap<String, RequestBody> {
         val map = HashMap<String, RequestBody>()
-        map["oauth_consumer_key"] = createPartFromString(CONSUMER_KEY)
+        map["oauth_consumer_key"] = CONSUMER_KEY.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
         // map["oauth_token"] = createPartFromString(authToken)
-        map["oauth_token"] = createPartFromString(ACCESS_TOKEN) // this is for testing auth
-        map["oauth_signature_method"] = createPartFromString(SIGN_METHOD)
-        map["oauth_timestamp"] = createPartFromString(params.timeStamp)
-        map["oauth_nonce"] = createPartFromString(params.nonce)
-        map["oauth_signature"] = createPartFromString(params.signature)
-        map["title"] = createPartFromString(title)
-        map["description"] = createPartFromString(desc)
+        map["oauth_token"] = ACCESS_TOKEN.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull()) // this is for testing auth
+        map["oauth_signature_method"] = SIGN_METHOD.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
+        map["oauth_timestamp"] = params.timeStamp.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
+        map["oauth_nonce"] = params.nonce.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
+        map["oauth_signature"] = params.signature.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
+        map["title"] = title.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
+        map["description"] = desc.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
 
         return map
-    }
-
-    private fun getPathOfUri(context: Context, uri: Uri): String {
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        return if (cursor == null) {
-            uri.path!!
-        } else {
-            cursor.moveToFirst()
-            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            val result = cursor.getString(idx)
-            cursor.close()
-            result
-        }
-    }
-
-    private fun createPartFromString(param: String): RequestBody {
-        return SearpService.createRequestBody(param)
     }
 }

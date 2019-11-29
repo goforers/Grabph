@@ -38,7 +38,7 @@ constructor(private val useCase: LoadPeopleUseCase): BaseViewModel<Parameters>()
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        people = useCase.execute(viewModelScope, parameters)
+        people = useCase.execute(parameters)
     }
 
     @MockData

@@ -14,15 +14,10 @@ import javax.inject.Singleton
 class AuthViewModel
 @Inject
 constructor(private val authUseCase: LoadAuthUseCase): BaseViewModel<Parameters>() {
-
-    init {
-
-    }
-
     internal lateinit var requestStat: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        requestStat = authUseCase.execute(viewModelScope, parameters)
+        requestStat = authUseCase.execute(parameters)
     }
 
     internal fun getRequestToken() {

@@ -36,7 +36,7 @@ constructor(private val repository: LocalLocationRepository):  BaseUseCase<Strin
         MutableLiveData<String>()
     }
 
-    override fun execute(viewModelScope: CoroutineScope, parameters: String): LiveData<LocalLocation> {
+    override fun execute(parameters: String): LiveData<LocalLocation> {
         setFileName(parameters)
 
         return Transformations.switchMap(liveData) { filename ->

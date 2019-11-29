@@ -37,12 +37,12 @@ constructor(private val repository: LocalEXIFRepository):  BaseUseCase<String, L
         MutableLiveData<String>()
     }
 
-    override fun execute(viewModelScope: CoroutineScope, parameters: String): LiveData<LocalEXIF> {
+    override fun execute(parameters: String): LiveData<LocalEXIF> {
         setFileName(parameters)
 
         return Transformations.switchMap(liveData) { filename ->
             filename ?: AbsentLiveData.create<LocalEXIF>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            liveData {
                 emitSource(repository.loadEXIFInfo(filename!!))
             }
         }

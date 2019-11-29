@@ -46,7 +46,7 @@ constructor(private val useCase: LoadLocalLocationUseCase) : BaseViewModel<Strin
     private var viewModelScope: CoroutineScope? = null
 
     override fun setParameters(parameters: String, type: Int) {
-        locationInfo = useCase.execute(viewModelScope!!, parameters)
+        locationInfo = useCase.execute(parameters)
     }
 
     /**

@@ -34,7 +34,7 @@ constructor(private val useCase: LoadFeedContentUseCase): BaseViewModel<Paramete
     internal lateinit var feedsContent: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        feedsContent = useCase.execute(viewModelScope, parameters)
+        feedsContent = useCase.execute(parameters)
     }
 
     @MockData

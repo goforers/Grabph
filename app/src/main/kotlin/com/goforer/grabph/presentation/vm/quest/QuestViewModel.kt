@@ -44,21 +44,21 @@ constructor(private val loadHotQuestUseCase: LoadHotQuestUseCase, private val lo
     override fun setParameters(parameters: Parameters, type: Int) {
         when(type) {
             HOT_QUEST_TYPE -> {
-                quest = loadHotQuestUseCase.execute(viewModelScope, parameters)
+                quest = loadHotQuestUseCase.execute(parameters)
             }
 
             FAVORITE_QUEST_TYPE -> {
-                quest = loadFavoriteQuestUseCase.execute(viewModelScope, parameters)
+                quest = loadFavoriteQuestUseCase.execute(parameters)
             }
         }
     }
 
-    internal fun loadHotQuest() = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { loadHotQuestUseCase.loadHotQuest()?.let {
+    internal fun loadHotQuest() = liveData { loadHotQuestUseCase.loadHotQuest()?.let {
         emitSource(it)
     } }
 
 
     internal fun setTopPortionQuest(topPortionQuest: TopPortionQuest) = viewModelScope.launch { loadHotQuestUseCase.setTopPortionQuest(topPortionQuest) }
 
-    internal fun loadFavoriteQuest(id: Long) = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(loadFavoriteQuestUseCase.loadFavoriteQuest(id)) }
+    internal fun loadFavoriteQuest(id: Long) = liveData { emitSource(loadFavoriteQuestUseCase.loadFavoriteQuest(id)) }
 }

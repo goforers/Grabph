@@ -243,6 +243,9 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         private const val TOOL_TIP_MULTI_LINE_DURATION = 5000L
 
         private const val TOO_TIP_MULTI_LINE_WIDTH = 1100
+
+        private const val PURCHASE_BTN_ANIMATION_TIMEOUT = 1200L
+        private const val PURCHASE_BTN_ANIMATION_DURATION = 300L
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -337,6 +340,11 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                     Timber.d("onSwipeDone")
                 }
             })
+
+            launchUIWork {
+                delay(PURCHASE_BTN_ANIMATION_TIMEOUT)
+                purchaseButtonAnimation()
+            }
         } else {
             networkStatusVisible(false)
         }
@@ -708,8 +716,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                 }
             }
 
-            Status.LOADING -> {
-            }
+            Status.LOADING -> { }
 
             Status.ERROR -> {
                 showNetworkError(resource)
@@ -745,8 +752,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                 }
             }
 
-            Status.LOADING -> {
-            }
+            Status.LOADING -> { }
 
             Status.ERROR -> {
                 showNetworkError(resource)
@@ -790,6 +796,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
         else -> {
             Snackbar.make(this@FeedInfoActivity.coordinator_feed_info_layout, resource.getMessage().toString(), LENGTH_LONG).show()
+        }
+    }
+
+    private fun purchaseButtonAnimation() {
+        val animation = btn_purchase.animate().translationYBy(-40f).setDuration(PURCHASE_BTN_ANIMATION_DURATION)
+
+        animation.withEndAction {
+            btn_purchase.animate().translationYBy(40f).duration = PURCHASE_BTN_ANIMATION_DURATION
         }
     }
 

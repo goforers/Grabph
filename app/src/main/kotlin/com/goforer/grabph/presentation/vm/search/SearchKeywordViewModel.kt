@@ -32,7 +32,7 @@ constructor(private val useCase: LoadSearchKeywordUseCase): BaseViewModel<Parame
     internal lateinit var searchKeywords: LiveData<List<RecentKeyword>>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        searchKeywords = useCase.execute(viewModelScope, parameters)
+        searchKeywords = useCase.execute(parameters)
     }
 
     internal fun setSearchKeyword(searchKeyword: String, recentKeyword: RecentKeyword): LiveData<RecentKeyword> {

@@ -2,6 +2,10 @@ package com.goforer.grabph.presentation.ui.upload
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.Spannable
+import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.WindowManager
 import android.widget.CheckBox
@@ -24,6 +28,7 @@ import com.goforer.grabph.presentation.vm.upload.UploadPhotoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_upload_photo.*
 import timber.log.Timber
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class UploadPhotoActivity : BaseActivity() {
@@ -56,6 +61,36 @@ class UploadPhotoActivity : BaseActivity() {
             networkStatusVisible(false)
         }
         Timber.plant(Timber.DebugTree())
+
+        this@UploadPhotoActivity.et_desc_upload_image.addTextChangedListener(object :
+            TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                val fcs = ForegroundColorSpan(getColor(R.color.colorHashTag))
+
+                val pattern = Pattern.compile("#\\s*(\\w+)")
+                val matcher = pattern.matcher(s.toString())
+
+                // keeps on searching unless there is no more function string found
+                while (matcher.find()) {
+                    s.setSpan(
+                        fcs,
+                        matcher.start(),
+                        matcher.end(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     override fun setViews(savedInstanceState: Bundle?) {

@@ -32,10 +32,10 @@ constructor(private val useCase: LoadCommentUseCase): BaseViewModel<Parameters>(
     internal lateinit var comments: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        comments = useCase.execute(viewModelScope, parameters)
+        comments = useCase.execute(parameters)
     }
 
-    internal val commentList = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.getCommentList()) }
+    internal val commentList = liveData { emitSource(useCase.getCommentList()) }
 
 
     internal suspend fun removeComments() = useCase.removeComments()

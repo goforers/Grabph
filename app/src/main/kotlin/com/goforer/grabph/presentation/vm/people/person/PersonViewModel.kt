@@ -31,7 +31,7 @@ constructor(private val useCase: LoadPersonUseCase): BaseViewModel<Parameters>()
     internal lateinit var person: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        person = useCase.execute(viewModelScope, parameters)
+        person = useCase.execute(parameters)
     }
 
     internal suspend fun removePerson() = useCase.removePerson()

@@ -37,12 +37,12 @@ class LoadPhotoInfoUseCase
 constructor(private val repository: PhotoInfoRepository):  BaseUseCase<Parameters, Resource>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
-    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
+    override fun execute(parameters: Parameters): LiveData<Resource> {
         setQuery(parameters, Query())
 
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            liveData {
                 emitSource(repository.load(liveData,
                     Parameters(
                         query.query,

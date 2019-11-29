@@ -37,11 +37,11 @@ constructor(private val useCase: LoadHotTopicUseCase): BaseViewModel<Parameters>
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        hotTopicContent = useCase.execute(viewModelScope, parameters)
+        hotTopicContent = useCase.execute(parameters)
     }
 
     @MockData
-    internal val loadHotTopicContent: LiveData<HotTopicContent> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.loadHotTopicContent()) }
+    internal val loadHotTopicContent: LiveData<HotTopicContent> = liveData { emitSource(useCase.loadHotTopicContent()) }
 
 
     @MockData

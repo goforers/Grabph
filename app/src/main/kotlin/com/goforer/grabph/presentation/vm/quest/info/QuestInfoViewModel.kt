@@ -37,11 +37,11 @@ constructor(private val useCase: LoadQuestInfoUseCase): BaseViewModel<Parameters
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        mission = useCase.execute(viewModelScope, parameters)
+        mission = useCase.execute(parameters)
     }
 
     @MockData
-    internal fun getQuestInfo(): LiveData<QuestInfo> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) { emitSource(useCase.loadQuestInfo()) }
+    internal fun getQuestInfo(): LiveData<QuestInfo> = liveData { emitSource(useCase.loadQuestInfo()) }
 
     @MockData
     internal suspend fun setQuestInfo(questInfo: QuestInfo) {

@@ -57,19 +57,6 @@ import retrofit2.http.Query
 import java.io.File
 
 interface SearpService {
-    companion object {
-        internal const val CONTENT_TYPE_IMAGE = "image/*"
-        private const val CONTENT_TYPE_TEXT = "text/plain"
-
-        fun createRequestBody(@NonNull file: File): RequestBody {
-            return file.asRequestBody(CONTENT_TYPE_IMAGE.toMediaTypeOrNull())
-        }
-
-        fun createRequestBody(@NonNull s: String): RequestBody {
-            return s.toRequestBody(CONTENT_TYPE_TEXT.toMediaTypeOrNull())
-        }
-    }
-
     /**
      * @GET declares an HTTP GET request
      * @Query("") annotation on the parameters marks it as a

@@ -23,12 +23,12 @@ class LoadMyGalleryUseCase
 constructor(private val repository: MyGalleryRepository): BaseUseCase<Parameters, Resource>() {
     val liveData by lazy { MutableLiveData<Query>() }
 
-    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
+    override fun execute(parameters: Parameters): LiveData<Resource> {
         setQuery(parameters, Query())
 
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
-            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            liveData {
                 emitSource(repository.load(this@LoadMyGalleryUseCase.liveData,
                     Parameters(
                         query.query,

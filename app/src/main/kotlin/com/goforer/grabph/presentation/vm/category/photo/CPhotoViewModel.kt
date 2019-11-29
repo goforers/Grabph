@@ -35,7 +35,7 @@ constructor(private val useCase: LoadCPhotoUseCase): BaseViewModel<Parameters>()
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        categoryPhoto = useCase.execute(viewModelScope, parameters)
+        categoryPhoto = useCase.execute(parameters)
     }
 
     internal fun updatePhoto(photo: CPhoto) = viewModelScope.launch { useCase.updatePhoto(photo) }
