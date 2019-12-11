@@ -23,8 +23,9 @@ import com.goforer.grabph.domain.usecase.feed.LoadFeedUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.data.datasource.network.response.Resource
+import com.goforer.grabph.domain.usecase.feed.exif.LoadEXIFUseCase
+import com.goforer.grabph.domain.usecase.people.person.LoadPersonUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,47 +34,59 @@ import javax.inject.Singleton
 @Singleton
 class FeedViewModel
 @Inject
-constructor(private val useCase: LoadFeedUseCase): BaseViewModel<Parameters>() {
+constructor(
+    private val feedUseCase: LoadFeedUseCase,
+    private val personUseCase: LoadPersonUseCase,
+    private val exifUseCase: LoadEXIFUseCase
+): BaseViewModel<Parameters>() {
     internal lateinit var feed: LiveData<Resource>
-    internal lateinit var homeFeed: LiveData<PagedList<FeedItem>>
+    internal lateinit var person: LiveData<Resource>
+    internal lateinit var exif: LiveData<Resource>
+    internal lateinit var photo: LiveData<Resource>
 
     internal var calledFrom: Int = 0
 
     internal val pinnedup: LiveData<PagedList<FeedItem>> by lazy {
-        useCase.loadPinnedFeed()
+        feedUseCase.loadPinnedFeed()
     }
 
     internal val feeds: List<FeedItem> by lazy {
-        useCase.loadFeeds()
+        feedUseCase.loadFeeds()
     }
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        feed = useCase.execute(parameters)
+        feed = feedUseCase.execute(parameters)
+    }
+
+    internal fun setParametersForPerson(parameters: Parameters) {
+        person = personUseCase.execute(parameters)
+    }
+
+    internal fun setParametersForEXIF(parameters: Parameters) {
+        exif = exifUseCase.execute(parameters)
     }
 
     private fun closeWork(viewModelScope: CoroutineScope?) = viewModelScope?.coroutineContext?.cancelChildren()
 
-    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData { useCase.loadFeed(id)?.let {
+    internal fun getFeed(id: Long): LiveData<FeedItem>? = liveData { feedUseCase.loadFeed(id)?.let {
         emitSource(it)
     } }
 
     internal fun updateFeedItem(feedItem: FeedItem) {
-        viewModelScope.launch { useCase.updateFeedItem(feedItem) }
-        closeWork(viewModelScope)
-    }
-
-    internal fun insertFeedItems(feedItems: List<FeedItem>) {
-        viewModelScope.launch { useCase.insertFeedItems(feedItems) }
+        viewModelScope.launch { feedUseCase.updateFeedItem(feedItem) }
         closeWork(viewModelScope)
     }
 
     internal fun deleteLastSeenItems(size: Int) {
-        viewModelScope.launch { useCase.deleteLastSeenItems(size) }
+        viewModelScope.launch { feedUseCase.deleteLastSeenItems(size) }
         closeWork(viewModelScope)
     }
 
-    internal fun clearCache() {
-        viewModelScope.launch { useCase.clearCache() }
-        closeWork(viewModelScope)
+    internal fun removeFeed() = viewModelScope.launch {
+        feedUseCase.clearFeed()
     }
+
+    internal suspend fun removePerson() = personUseCase.removePerson()
+
+    internal suspend fun removeEXIF() = exifUseCase.removeEXIF()
 }

@@ -31,13 +31,13 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.annotation.MockData
-import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.base.presentation.utils.CommonUtils.convertDateToLong
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
@@ -96,6 +96,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_PATH
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
@@ -140,6 +141,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     internal lateinit var photoId: String
 
     private lateinit var searperId: String
+
+    private lateinit var photoPath: String
 
     private lateinit var marker: Marker
 
@@ -391,13 +394,13 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     override fun setViews(savedInstanceState: Bundle?) {
         savedInstanceState ?: getIntentData()
 
-        slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
-            .setActivity(this)
-            .setRootView(R.id.coordinator_layout)
-            .setBundle(savedInstanceState)
-            .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
-            .setWorkHandler(workHandler)
-            .build()
+        // slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
+        //     .setActivity(this)
+        //     .setRootView(R.id.coordinator_layout)
+        //     .setBundle(savedInstanceState)
+        //     .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
+        //     .setWorkHandler(workHandler)
+        //     .build()
 
         // The cache should be removed whenever App is started again and then
         // the data are fetched from the Back-end.
@@ -428,13 +431,13 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         commentViewModel.loadType = LOAD_COMMENTS
         commentViewModel.boundType = BOUND_FROM_BACKEND
 
-        this@FeedInfoActivity.recycler_feed_view.setHasFixedSize(true)
-        this@FeedInfoActivity.recycler_feed_view.setItemViewCacheSize(20)
-        this@FeedInfoActivity.recycler_feed_view.isVerticalScrollBarEnabled = false
-        val gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        this@FeedInfoActivity.recycler_feed_view.layoutManager = gridLayoutManager
-        gridLayoutManager.isItemPrefetchEnabled = true
-        this@FeedInfoActivity.recycler_feed_view?.addItemDecoration(createItemDecoration())
+        // this@FeedInfoActivity.recycler_feed_view.setHasFixedSize(true)
+        // this@FeedInfoActivity.recycler_feed_view.setItemViewCacheSize(20)
+        // this@FeedInfoActivity.recycler_feed_view.isVerticalScrollBarEnabled = false
+        // val gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        // this@FeedInfoActivity.recycler_feed_view.layoutManager = gridLayoutManager
+        // gridLayoutManager.isItemPrefetchEnabled = true
+        // this@FeedInfoActivity.recycler_feed_view?.addItemDecoration(createItemDecoration())
 
         when(feedInfoCalledFrom) {
             CALLED_FROM_FEED, CALLED_FROM_PINNED_FEED, CALLED_FROM_HOME_BEST_PICK_HOT_PHOTO, CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO -> {
@@ -479,7 +482,6 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
             } catch (e: Exception) {
                 throw RuntimeException(e)
             }
-
         }
 
         return super.onPreparePanel(featureId, view, menu)
@@ -516,11 +518,11 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                 }
 
                 sharePopup.show()
-
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -533,11 +535,12 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         outStateBundle.putString(EXTRA_SEARPER_ID, searperId)
         outStateBundle.putInt(EXTRA_FEED_INFO_POSITION, feedPosition)
         outStateBundle.putInt(EXTRA_FEED_INFO_CALLED_FROM, feedInfoCalledFrom)
+        outStateBundle.putString(EXTRA_PHOTO_PATH, photoPath)
 
-        slidingDrawer.searperProfileDrawerForFeedViewDrawer?.let {
-            outStateBundle = slidingDrawer.searperProfileDrawerForFeedViewDrawer?.saveInstanceState(outStateBundle)!!
-            outStateBundle = slidingDrawer.drawerHeader?.saveInstanceState(outStateBundle)!!
-        }
+        // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.let {
+        //     outStateBundle = slidingDrawer.searperProfileDrawerForFeedViewDrawer?.saveInstanceState(outStateBundle)!!
+        //     outStateBundle = slidingDrawer.drawerHeader?.saveInstanceState(outStateBundle)!!
+        // }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -547,6 +550,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         searperId = savedInstanceState.getString(EXTRA_SEARPER_ID, "")
         feedPosition = savedInstanceState.getInt(EXTRA_FEED_INFO_POSITION, 0)
         feedInfoCalledFrom = savedInstanceState.getInt(EXTRA_FEED_INFO_CALLED_FROM, -1)
+        photoPath = savedInstanceState.getString(EXTRA_PHOTO_PATH, "")
     }
 
     override fun onBackPressed() {
@@ -587,28 +591,28 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     override fun onPause() {
         super.onPause()
-        if (mediaType == "video" && Build.VERSION.SDK_INT < 24) {
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
             releasePlayer()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (mediaType == "video" && Build.VERSION.SDK_INT >= 24) {
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT >= 24) {
             releasePlayer()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (mediaType == "video" && Build.VERSION.SDK_INT < 24) {
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
             videoUrl?.let { initializePlayer(it) }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        if (mediaType == "video" && Build.VERSION.SDK_INT >= 24) {
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT >= 24) {
             videoUrl?.let { initializePlayer(it) }
         }
     }
@@ -666,6 +670,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         searperId = intent.getStringExtra(EXTRA_SEARPER_ID)
         feedPosition = intent.getIntExtra(EXTRA_FEED_INFO_POSITION, -1)
         feedInfoCalledFrom = intent.getIntExtra(EXTRA_FEED_INFO_CALLED_FROM, -1)
+        photoPath = intent.getStringExtra(EXTRA_PHOTO_PATH)
     }
 
     private suspend fun getFeedInfo(idx: Long, calledFrom: Int) = when(feedInfoCalledFrom) {
@@ -705,12 +710,12 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun setSearplerProfileObserver() = userProfileViewModel.person.observe(this, Observer { resource ->
-        when(resource?.getStatus()) {
+        when (resource?.getStatus()) {
             Status.SUCCESS -> {
                 resource.getData()?.let { person ->
                     searper = person as? Person?
                     displayUserInfo(searper!!)
-                    slidingDrawer.setHeaderBackground(GeneralFunctions.getHeaderBackgroundUrl())
+                    // slidingDrawer.setHeaderBackground(GeneralFunctions.getHeaderBackgroundUrl())
                     // slidingDrawer.setSearperProfileDrawer(searper,
                     //     SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
                 }
@@ -814,10 +819,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     private fun transactFeedsMockData() {
         val feedsContent = FeedsContentDataSource()
 
-        feedContentViewModel.loadFeedsContent.observe(this, Observer {
-            it?.let { content ->
-                createAdapter(content)
-            }
+        feedContentViewModel.loadFeedsContent.observe(this, Observer { content ->
+            createAdapter(content)
         })
 
         feedsContent.setFeedsContent()
@@ -825,6 +828,14 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun createAdapter(content: FeedsContent) {
+        this@FeedInfoActivity.recycler_feed_view.setHasFixedSize(true)
+        this@FeedInfoActivity.recycler_feed_view.setItemViewCacheSize(20)
+        this@FeedInfoActivity.recycler_feed_view.isVerticalScrollBarEnabled = false
+        val gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        this@FeedInfoActivity.recycler_feed_view.layoutManager = gridLayoutManager
+        gridLayoutManager.isItemPrefetchEnabled = true
+        this@FeedInfoActivity.recycler_feed_view?.addItemDecoration(createItemDecoration())
+
         val adapter = RecommendedFeedAdapter(this)
 
         adapter.addItem(content.contents)
@@ -872,52 +883,53 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun loadPhoto(activity: FeedInfoActivity, url: String?, calledFrom: Int, feedItem: FeedItem) {
-        val photoPath = if (feedItem.mediaType == "photo") url?.substring(0, url.indexOf("_m")) + ".jpg"
+        val photoPath = if (feedItem.mediaType == getString(R.string.media_type_photo)) url?.substring(0, url.indexOf("_m")) + ".jpg"
         else url!!
 
-        setFixedImageSize(0, 0)
-        setImageDraw(this@FeedInfoActivity.iv_feed_info_photo, this@FeedInfoActivity.backdrop_container, photoPath, true)
-        this@FeedInfoActivity.iv_feed_info_photo.setOnClickListener {
-            this@FeedInfoActivity.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
-            Caller.callViewer(activity, this@FeedInfoActivity.iv_feed_info_photo, 0, CALLED_FROM_FEED_INFO,
+        this.iv_feed_info_photo.setOnClickListener {
+            this.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
+            Caller.callViewer(activity, this.iv_feed_info_photo, 0, CALLED_FROM_FEED_INFO,
                 photoPath, SELECTED_FEED_INFO_PHOTO_VIEW)
         }
 
-        this@FeedInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-                _, verticalOffset ->
-            if (this@FeedInfoActivity.collapsing_layout.height + verticalOffset < 2
-                * ViewCompat.getMinimumHeight(this@FeedInfoActivity.collapsing_layout)) {
-                // collapsed
-                this@FeedInfoActivity.iv_feed_info_photo.animate().alpha(1.0f).duration = 600
-            } else {
-                // extended
-                this@FeedInfoActivity.iv_feed_info_photo.animate().alpha(1.0f).duration = 1000    // 1.0f means opaque
-            }
-        })
+        setFixedImageSize(0, 0)
+        setImageDraw(this.iv_feed_info_photo, this.backdrop_container, photoPath, true)
 
         withDelay(50L) {
             when(calledFrom) {
                 CALLED_FROM_FEED, CALLED_FROM_PINNED_FEED, CALLED_FROM_HOME_BEST_PICK_HOT_PHOTO,
                 CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO -> {
-                    this@FeedInfoActivity.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + feedPosition
+                    this.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + feedPosition
                     sharedElementCallback = FeedInfoItemCallback()
-                    sharedElementCallback.setViewBinding(this@FeedInfoActivity.iv_feed_info_photo)
+                    sharedElementCallback.setViewBinding(this.iv_feed_info_photo)
+
                     setEnterSharedElementCallback(sharedElementCallback)
                     supportStartPostponedEnterTransition()
                 }
             }
         }
 
+        this.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+                _, verticalOffset ->
+            if (this.collapsing_layout.height + verticalOffset < 2
+                * ViewCompat.getMinimumHeight(this.collapsing_layout)) {
+                // collapsed
+                this.iv_feed_info_photo.animate().alpha(1.0f).duration = 600
+            } else {
+                // extended
+                this.iv_feed_info_photo.animate().alpha(1.0f).duration = 1000    // 1.0f means opaque
+            }
+        })
+
         when (feedItem.mediaType) {
-            "photo" -> {
+            getString(R.string.media_type_photo) -> {
                 this.iv_play_btn_feed_info.visibility = View.GONE
                 this.iv_fullsize.visibility = View.GONE
                 this.iv_feed_info_photo.visibility = View.VISIBLE
                 this.video_view_feed_info.visibility = View.GONE
             }
 
-            "video" -> {
-                this.iv_play_btn_feed_info.visibility = View.VISIBLE
+            getString(R.string.media_type_video) -> {
                 this.iv_fullsize.visibility = View.VISIBLE
                 this.iv_feed_info_photo.visibility = View.VISIBLE
                 this.video_view_feed_info.visibility = View.GONE
@@ -926,7 +938,12 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
                 this.iv_play_btn_feed_info.setOnClickListener {
                     this.video_view_feed_info.visibility = View.VISIBLE
+                    val params = this.video_view_feed_info.layoutParams as ConstraintLayout.LayoutParams
+                    params.height = this.iv_feed_info_photo.height
+                    this.video_view_feed_info.layoutParams = params
+
                     this.iv_feed_info_photo.visibility = View.INVISIBLE
+
                     player?.playWhenReady = true
                 }
             }
@@ -1183,7 +1200,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         workHandler.shareToFacebook(drawable.bitmap, this)
     }
 
-    private fun animateEXIF(lisEXIF: List<EXIF>) {
+    private fun  animateEXIF(lisEXIF: List<EXIF>) {
         this@FeedInfoActivity.folding_photo_info_cell.visibility = View.VISIBLE
         this@FeedInfoActivity.divider_4.visibility = View.VISIBLE
         if (!this@FeedInfoActivity.folding_photo_info_cell.isUnfolded) {
@@ -1304,9 +1321,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
     @SuppressLint("CheckResult")
     fun displayUserInfo(userInfo: Person) {
-        var name = userInfo.realname?._content
+        val name = userInfo.realname?._content?: userInfo.username?._content
 
-        name = name ?: userInfo.username?._content
         setFontTypeface(this@FeedInfoActivity.tv_searper_name, FONT_TYPE_MEDIUM)
         if (name == "") {
             this@FeedInfoActivity.tv_searper_name.text = userInfo.username?._content
@@ -1316,8 +1332,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
 
         searperPhotoUrl = workHandler.getProfilePhotoURL(userInfo.iconfarm, userInfo.iconserver, userInfo.id)
         if (userInfo.iconserver == "0") {
-            this@FeedInfoActivity.iv_searper_pic.setImageDrawable(this.applicationContext!!
-                .getDrawable(R.drawable.ic_default_profile))
+            this@FeedInfoActivity.iv_searper_pic.setImageDrawable(getDrawable(R.drawable.ic_default_profile))
         } else {
             setImageDraw(this@FeedInfoActivity.iv_searper_pic, searperPhotoUrl!!)
         }
@@ -1482,6 +1497,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private fun initializePlayer(source: String) {
+        this.progress_bar_feed_info.visibility = View.VISIBLE
+        this.iv_play_btn_feed_info.visibility = View.GONE
         val trackSelector = DefaultTrackSelector()
         trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd())
 
@@ -1495,6 +1512,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         player?.playWhenReady = false
         player?.seekTo(currentWindow, playbackPosition)
         player?.prepare(mediaSource, false, false)
+        player?.volume = 0f
     }
 
     private fun releasePlayer() {
@@ -1574,6 +1592,8 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
                 ExoPlayer.STATE_IDLE -> stateString = "ExoPlayer.STATE_IDLE      -"
                 ExoPlayer.STATE_BUFFERING -> stateString = "ExoPlayer.STATE_BUFFERING      -"
                 ExoPlayer.STATE_READY -> {
+                    this@FeedInfoActivity.iv_play_btn_feed_info.visibility = View.VISIBLE
+                    this@FeedInfoActivity.progress_bar_feed_info.visibility = View.GONE
                     stateString = "ExoPlayer.STATE_READY      -"
                 }
                 ExoPlayer.STATE_ENDED -> stateString = "ExoPlayer.STATE_ENDED      -"

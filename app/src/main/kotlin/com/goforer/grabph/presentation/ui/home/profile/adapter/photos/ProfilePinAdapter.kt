@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE_MY_GALLERY
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
@@ -47,8 +51,21 @@ class MyPinViewHolder(override val containerView: View, private val activity: Ho
         tv_profile_mission_price.requestLayout()
         activity.setFixedImageSize(400, 400) // original value: 0, 0
 
-        val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
+        val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
         activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
+
+        iv_profile_my_photo.setOnClickListener {
+            Caller.callPhotoInfo(
+                activity,
+                iv_profile_my_photo,
+                item.id,
+                item.owner!!,
+                holder.adapterPosition,
+                CALLED_FROM_HOME_PROFILE_MY_GALLERY,
+                CALLED_FROM_HOME_PROFILE,
+                url
+            )
+        }
     }
 
     override fun onItemSelected() { containerView.setBackgroundColor(Color.LTGRAY) }

@@ -153,10 +153,10 @@ class QuestInfoActivity: BaseActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         savedInstanceState?.let {
             getIntentData()
         }
+
 
         val krBoldTypeface = Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_BOLD)
         this@QuestInfoActivity.collapsing_layout.setCollapsedTitleTypeface(krBoldTypeface)
@@ -292,7 +292,6 @@ class QuestInfoActivity: BaseActivity() {
             } catch (e: Exception) {
                 throw RuntimeException(e)
             }
-
         }
 
         return super.onPreparePanel(featureId, view, menu)
@@ -586,13 +585,13 @@ class QuestInfoActivity: BaseActivity() {
     }
 
     private fun setViewBind() {
-        this@QuestInfoActivity.iv_quest_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
-        this@QuestInfoActivity.iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
-        this@QuestInfoActivity.tv_quest_info_explanation.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
-        this@QuestInfoActivity.tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
+        this.iv_quest_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
+        this.iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
+        this.tv_quest_info_explanation.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
+        this.tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
         sharedElementCallback = QuestInfoCallback(intent)
-        sharedElementCallback.setViewBinding(this@QuestInfoActivity.iv_quest_info_photo, this@QuestInfoActivity.iv_quest_owner_logo,
-            this@QuestInfoActivity.tv_quest_info_explanation, this@QuestInfoActivity.tv_quest_owner_name)
+        sharedElementCallback.setViewBinding(this.iv_quest_info_photo, this.iv_quest_owner_logo,
+            this.tv_quest_info_explanation, this.tv_quest_owner_name)
     }
 
     private fun setActivityResult(calledFrom: Int) {

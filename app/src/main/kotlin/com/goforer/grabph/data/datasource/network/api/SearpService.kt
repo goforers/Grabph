@@ -16,7 +16,6 @@
 
 package com.goforer.grabph.data.datasource.network.api
 
-import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.ranking.Ranking
 import com.goforer.grabph.data.datasource.model.cache.data.entity.comments.PhotoComments
@@ -35,17 +34,15 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.Phot
 import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categoryg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.hottopic.HotTopicContentg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalleryg
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photosizes.PhotoSizeg
 import com.goforer.grabph.data.datasource.model.cache.data.mock.entity.feed.FeedsContentg
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.OwnerProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.*
 import com.goforer.grabph.data.datasource.network.response.ApiResponse
 import com.goforer.grabph.presentation.ui.upload.data.FlickrLoginResult
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -54,7 +51,6 @@ import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Query
 
-import java.io.File
 
 interface SearpService {
     /**
@@ -201,6 +197,21 @@ interface SearpService {
         @Query("format") format: String,
         @Query("nojsoncallback") index: Int
     ): LiveData<ApiResponse<PhotoInfo>>
+
+    /**
+     * @GET declares an HTTP GET request
+     * @Query("") annotation on the parameters marks it as a
+     * replacement for the placeholder in the @GET query
+     */
+    @GET("https://api.flickr.com/services/rest/")
+    suspend fun getPhotoSizes(
+        @Query("api_key") apikey: String,
+        @Query("photo_id") photoId: String,
+        @Query("method") method: String,
+        @Query("format") format: String,
+        @Query("nojsoncallback") index: Int
+    // ): LiveData<ApiResponse<PhotoSizeg>>
+    ): Response<PhotoSizeg>
 
     /**
      * @GET declares an HTTP GET request

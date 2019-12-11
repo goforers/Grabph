@@ -110,8 +110,13 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
             tv_quest_title.requestLayout()
             tv_quest_duration.requestLayout()
             tv_quest_description.requestLayout()
+
             iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
             tv_quest_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + position
+            iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
+            tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
+            tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
+
             fragment.homeActivity.setImageDraw(iv_quest_owner_logo, item.ownerLogo)
             fragment.homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
             fragment.homeActivity.setImageDraw(iv_quest_item_content, quest_image_Container, item.ownerImage, false)
@@ -131,11 +136,11 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
             }
 
             iv_quest_item_content.setOnClickListener {
-                iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
-                iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
-                tv_quest_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + position
-                tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
-                tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
+                // iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
+                // tv_quest_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + position
+                // iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
+                // tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
+                // tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
                 Caller.callQuestInfo(fragment, iv_quest_item_content, iv_quest_owner_logo,
                     tv_quest_title,  tv_quest_description, tv_quest_owner_name,
                     item, holder.adapterPosition, Caller.CALLED_FORM_HOME_FAVORITE_QUEST,

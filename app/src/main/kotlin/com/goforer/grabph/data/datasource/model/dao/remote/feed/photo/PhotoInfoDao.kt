@@ -29,6 +29,9 @@ interface PhotoInfoDao: BaseDao<Picture> {
     @Query("SELECT * FROM Picture")
     fun getPhotoInfo(): LiveData<Picture>
 
+    @Query("SELECT * FROM Picture WHERE id = :id")
+    fun getPhotoInfo(id: String): LiveData<Picture>
+
     @Query("DELETE FROM Picture WHERE id = :photoInfoId")
     fun deleteByPhotoInfoId(photoInfoId: String)
 

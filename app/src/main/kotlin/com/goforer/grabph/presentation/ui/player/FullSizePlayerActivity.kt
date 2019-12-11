@@ -92,6 +92,7 @@ class FullSizePlayerActivity : BaseActivity() {
         player?.playWhenReady = playWhenReady
         player?.seekTo(currentWindow, playbackPosition)
         player?.prepare(mediaSource, false, false)
+        player?.volume = 0f
     }
 
     private fun releasePlayer() {

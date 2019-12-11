@@ -215,8 +215,8 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                     iv_snap_best_pick_searper_photo_content.setOnClickListener {
                         activity.closeFab()
                         Caller.callFeedInfo(activity, iv_snap_best_pick_searper_photo_content,
-                            item.idx, holder.adapterPosition, item.authorId, photoId,
-                            CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO, SELECTED_BEST_PICK_SEARPER_PHOTO_POSITION)
+                            item.idx, holder.adapterPosition, item.authorId, photoId, CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO,
+                            SELECTED_BEST_PICK_SEARPER_PHOTO_POSITION, photoPath)
                     }
                 }
 

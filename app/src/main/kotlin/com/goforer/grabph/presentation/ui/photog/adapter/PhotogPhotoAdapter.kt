@@ -33,6 +33,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.paging.PagedList
 import com.goforer.base.presentation.model.BaseModel
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.NOTO_SANS_KR_MEDIUM
 import com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
@@ -265,8 +266,7 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
             tv_searper_name.text = fragment.photogPhotoActivity.searperName
             tv_searper_posted_date.text = fragment.context.applicationContext.getString(R.string.photo_safe)
 
-            val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server
-                    + "/" + item.id + "_" + item.secret + ".jpg")
+            val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
 
             fragment.photogPhotoActivity.setFixedImageSize(0, 0)
             fragment.photogPhotoActivity.setImageDraw(iv_photo_item_content, pinnedConstraintLayoutContainer, url, false)
@@ -274,10 +274,15 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
             card_holder.visibility = View.VISIBLE
 
             iv_photo_item_content.setOnClickListener {
-                Caller.callPhotoInfo(fragment.photogPhotoActivity,
-                        iv_photo_item_content, tv_photo_item_title,
-                        item.id, item.owner!!, holder.adapterPosition,
-                        SELECTED_PHOTO_INFO_ITEM_POSITION)
+                Caller.callPhotoInfo(
+                    fragment.photogPhotoActivity,
+                    iv_photo_item_content,
+                    item.id, item.owner!!,
+                    holder.adapterPosition,
+                    SELECTED_PHOTO_INFO_ITEM_POSITION,
+                    0,
+                    url
+                )
             }
 
             if (item.title == "") {

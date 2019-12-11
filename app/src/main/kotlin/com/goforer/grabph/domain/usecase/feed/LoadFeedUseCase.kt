@@ -28,8 +28,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
 import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.data.datasource.network.response.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -83,5 +81,5 @@ constructor(private val repository: FeedItemRepository): BaseUseCase<Parameters,
 
     internal fun loadFeeds() = repository.loadFeeds()
 
-    internal suspend fun clearCache() = repository.clearCache()
+    internal suspend fun clearFeed() = repository.clearCache()
 }

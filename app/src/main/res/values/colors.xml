@@ -106,4 +106,5 @@
     <color name="colorUploadEditText">#61414345</color>
     <color name="colorBackgroundUploadPhoto">#A0A0A0</color>
     <color name="colorHashTag">#DE4285F4</color>
+    <color name="colorSizeSelection">#b3ffffff</color>
 </resources>

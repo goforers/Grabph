@@ -60,5 +60,7 @@ constructor(private val dao: PhotoInfoDao): Repository<Query>() {
         }.getAsLiveData()
     }
 
+    internal fun loadPhotoInfo(id: String) = dao.getPhotoInfo(id)
+
     internal suspend fun removePhotoInfo() = dao.clearAll()
 }

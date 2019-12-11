@@ -28,7 +28,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.DataColumns
 //import java.text.SimpleDateFormat
 //import java.util.*
 
-
 @Entity(tableName = "Photo")
 data class Photo(@field:PrimaryKey
                  @field:ColumnInfo(name = COLUMN_ID) var id: String,

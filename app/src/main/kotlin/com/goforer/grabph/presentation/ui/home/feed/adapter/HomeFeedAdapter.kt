@@ -176,10 +176,10 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
             }
 
             when (item.mediaType) {
-                "video" -> {
+                fragment.homeActivity.getString(R.string.media_type_video) -> {
                     iv_play_btn.visibility = View.VISIBLE
                 }
-                "photo" -> {
+                fragment.homeActivity.getString(R.string.media_type_photo) -> {
                     iv_play_btn.visibility = View.GONE
                 }
                 else -> {
@@ -194,8 +194,9 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 adapter.setCurrentHolderPosition(holder.adapterPosition)
                 val link = GeneralFunctions.removeLastCharRegex(item.link.toString()).toString()
                 val photoId = link.substring(link.lastIndexOf("/") + 1)
+
                 Caller.callFeedInfo(fragment.homeActivity, iv_feed_item_content, item.idx, holder.adapterPosition,
-                    item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION)
+                    item.authorId, photoId, CALLED_FROM_FEED, SELECTED_FEED_ITEM_POSITION, photoPath)
             }
 
             if (fragment.swipe_layout.isRefreshing) {

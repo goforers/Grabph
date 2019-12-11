@@ -90,6 +90,7 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
         const val LOAD_MY_GALLERYG_PHOTO = 130
         const val LOAD_MY_GALLERYG_PHOTO_HAS_NEXT_PAGE = 131
         const val LOAD_MY_PROFILE = 132
+        const val LOAD_PHOTO_SIZES = 133
 
         private const val NONE_ITEM_COUNT = 20
     }
@@ -387,7 +388,9 @@ abstract class NetworkBoundResource<SaveType, ResultType, RequestType>
                     response.body?.let { resource.saveToCache((response.body as Owner) as SaveType) }
                 }
 
-
+                LOAD_PHOTO_SIZES -> {
+                    response.body ?: resource.onFetchFailed("There is no photo size data")
+                }
             }
 
             if (loadType == LOAD_FEED_SEARCH) {

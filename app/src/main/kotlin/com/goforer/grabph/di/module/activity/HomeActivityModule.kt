@@ -26,7 +26,6 @@ abstract class HomeActivityModule {
     @ContributesAndroidInjector(modules = [
         HomeMainFragmentBuilderModule::class, HomeFeedFragmentBuilderModule::class,
         HomeQuestFragmentBuilderModule::class, HomeProfileFragmentBuilderModule::class,
-        HomeProfileGalleryFragmentBuilderModule::class, HomeProfileSalesFragmentBuilderModule::class,
-        HomeProfileSaleStatusFragmentBuilderModule::class, HomeProfilePinFragmentBuilderModule::class])
+        HomeProfileGalleryFragmentBuilderModule::class, HomeProfilePinFragmentBuilderModule::class])
     internal abstract fun contributeHomeActivity(): HomeActivity
 }

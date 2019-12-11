@@ -194,4 +194,6 @@
     <string name="follow_button_bottom">팔로잉 :)</string>
     <string name="description_sample">Lorem ipsum dolor sit amet, consectetuer adipis cing elit. Aenean commodo ligula eget dolor.</string>
     <string name="pinned_photo">My Pin</string>
+    <string name="media_type_video">video</string>
+    <string name="media_type_photo">photo</string>
 </resources>

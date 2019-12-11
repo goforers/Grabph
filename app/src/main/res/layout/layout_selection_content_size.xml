@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraint_holder_size"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/divider2"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/padding_16"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIZE"
+        android:textSize="@dimen/text_size_14"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_holder_size_texts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_holder_size_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_feed_size_s"
+                android:layout_width="@dimen/height_16"
+                android:layout_height="@dimen/height_16"
+                android:background="@drawable/custom_checkbox_content_size"
+                android:button="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_s"
+                android:layout_marginEnd="@dimen/margin_18"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_s"
+                android:layout_width="@dimen/width_14"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_number_s"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="@dimen/margin_58"
+                android:text="S"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/colorSizeSelection"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_number_s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1920*1080"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/colorSizeSelection"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_holder_size_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            app:layout_constraintTop_toBottomOf="@id/constraint_holder_size_s"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_feed_size_m"
+                android:layout_width="@dimen/height_16"
+                android:layout_height="@dimen/height_16"
+                android:background="@drawable/custom_checkbox_content_size"
+                android:button="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_m"
+                android:layout_marginEnd="@dimen/margin_18"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_m"
+                android:layout_width="@dimen/width_14"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_number_m"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="@dimen/margin_58"
+                android:text="M"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/colorSizeSelection"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_number_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2220*1080"
+                android:textColor="@color/colorSizeSelection"
+                android:textSize="@dimen/text_size_14"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_holder_size_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_16"
+            app:layout_constraintTop_toBottomOf="@id/constraint_holder_size_m"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_feed_size_l"
+                android:layout_width="@dimen/height_16"
+                android:layout_height="@dimen/height_16"
+                android:background="@drawable/custom_checkbox_content_size"
+                android:button="@null"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_l"
+                android:layout_marginEnd="@dimen/margin_18"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_l"
+                android:layout_width="@dimen/width_14"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/tv_feed_size_number_l"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="@dimen/margin_58"
+                android:text="L"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/colorSizeSelection"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_feed_size_number_l"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2220*1080"
+                android:textColor="@color/colorSizeSelection"
+                android:textSize="@dimen/text_size_14"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

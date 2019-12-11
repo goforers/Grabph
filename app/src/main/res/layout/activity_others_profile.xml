@@ -30,52 +30,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/disconnect_container_pinned_profile"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_disconnect_pinned_profile"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_disconnect"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_144"
-            tools:ignore="ContentDescription"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_notice1_pinned_profile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_disconnect_pinned_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/margin_44"
-            android:textColor="@color/grayLight"
-            android:text="@string/not_connected_internet"
-            android:textSize="@dimen/text_size_32"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_notice2_pinned_profile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_notice1_pinned_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/margin_8"
-            android:textColor="@color/grayLight"
-            android:text="@string/check_connection"
-            android:textSize="@dimen/text_size_24"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <include
+        layout="@layout/layout_disconnection"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_others_profile"
@@ -134,13 +90,17 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_profile_name"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:textSize="@dimen/text_size_22"
-                            android:gravity="center"
-                            android:text="Daniel Hennry"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="Daniel Hennry flikeff sliefjk slekfj eief isf sifeoijf grigrij"
                             android:textColor="@color/white"
-                            app:layout_constraintStart_toStartOf="parent"/>
+                            android:layout_marginEnd="@dimen/margin_10"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_follow_others_profile"/>
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_follow_others_profile"

@@ -24,11 +24,15 @@ import android.view.ViewGroup
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
+import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE
+import com.goforer.grabph.presentation.caller.Caller.SELECTED_HOME_PROFILE_ITEM_POSITION
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
@@ -73,11 +77,21 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             tv_profile_mission_price.requestLayout()
             activity.setFixedImageSize(400, 400) // original value: 0, 0
 
-            val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
+            val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
             activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
 
             iv_profile_my_photo.setOnClickListener {
+                Caller.callPhotoInfo(
+                    activity,
+                    iv_profile_my_photo,
+                    item.id,
+                    item.owner!!,
+                    holder.adapterPosition,
+                    SELECTED_HOME_PROFILE_ITEM_POSITION,
+                    CALLED_FROM_HOME_PROFILE,
+                    url
+                )
             }
         }
 

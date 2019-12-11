@@ -14,24 +14,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.goforer.grabph.presentation.ui.home.profile.adapter.sales
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+package com.goforer.grabph.di.module.activity
 
-class SalePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    private val fragments = ArrayList<Fragment>()
+import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
-    }
-
-    override fun getCount(): Int {
-        return fragments.size
-    }
-
-    fun addFragment(fragment: Fragment){
-        fragments.add(fragment)
-    }
+@Module
+abstract class FeedInfoActivityModule {
+    @ContributesAndroidInjector
+    internal abstract fun contributePinnedFeedInfoActivity(): FeedInfoActivity
 }

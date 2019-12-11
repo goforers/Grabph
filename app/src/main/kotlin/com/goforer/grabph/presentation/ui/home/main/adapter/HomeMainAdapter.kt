@@ -31,6 +31,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.*
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
+import com.goforer.base.presentation.view.helper.SnapHelperOneByeOne
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
@@ -340,7 +341,7 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
             when(item.gravity) {
                 Gravity.START, Gravity.END -> {
                     recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, RecyclerView.HORIZONTAL, false)
-                    GravitySnapHelper(item.gravity, false, adapter).attachToRecyclerView(recyclerView)
+                    SnapHelperOneByeOne(item.gravity, false, adapter).attachToRecyclerView(recyclerView)
                 }
 
                 Gravity.CENTER_HORIZONTAL, Gravity.CENTER_VERTICAL -> {
@@ -359,7 +360,7 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
 
                 else -> {
                     recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
-                    GravitySnapHelper(item.gravity).attachToRecyclerView(recyclerView)
+                    SnapHelperOneByeOne(item.gravity).attachToRecyclerView(recyclerView)
                 }
             }
         }

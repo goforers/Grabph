@@ -355,7 +355,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
     }
 
     private fun setLoadParam(loadType: Int, boundType: Int, keyword: String) {
-        feedViewModel.clearCache()
+        feedViewModel.removeFeed()
         feedViewModel.setParameters(
             Parameters(
                 keyword,

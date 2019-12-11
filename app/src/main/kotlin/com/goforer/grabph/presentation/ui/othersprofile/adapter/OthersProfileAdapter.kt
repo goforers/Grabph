@@ -22,11 +22,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_OTHERS_PROFILE
+import com.goforer.grabph.presentation.caller.Caller.SELECTED_FEED_ITEM_POSITION
+import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
 
@@ -65,13 +69,20 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
             iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
             tv_profile_mission_price.transitionName = TRANSITION_NAME_FOR_TITLE + position
 
-            val url = ("https://farm" + item.farm + ".staticflickr.com/" + item.server + "/" + item.id + "_" + item.secret + ".jpg")
+            val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
             activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
             tv_profile_mission_price.text = ""
 
             iv_profile_my_photo.setOnClickListener {
-                Caller.callPhotoInfo(activity, iv_profile_my_photo, tv_profile_mission_price, item.id, item.owner!!, holder.adapterPosition,
-                    Caller.SELECTED_FEED_ITEM_POSITION
+                Caller.callPhotoInfo(
+                    activity,
+                    iv_profile_my_photo,
+                    item.id,
+                    item.owner!!,
+                    holder.adapterPosition,
+                    SELECTED_FEED_ITEM_POSITION,
+                    CALLED_FROM_OTHERS_PROFILE,
+                    url
                 )
             }
         }

@@ -104,6 +104,17 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <ProgressBar
+                        android:id="@+id/progress_bar_feed_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminateTint="@color/white"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_play_btn_feed_info"
                         android:layout_width="100dp"
@@ -655,13 +666,12 @@
                 android:visibility="gone" />
 
             <com.ramotion.foldingcell.FoldingCell
-                xmlns:folding-cell="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/folding_photo_info_cell"
+                xmlns:folding-cell="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_1"
                 android:background="@color/colorPrimary"
-                android:visibility="gone"
                 folding-cell:additionalFlipsCount="0"
                 folding-cell:animationDuration="1400"
                 folding-cell:backSideColor="@color/colorBackSlide"

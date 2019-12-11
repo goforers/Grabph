@@ -28,10 +28,15 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".presentation.ui.feed.feedinfo.FeedItemActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
+        <activity
             android:name=".presentation.ui.player.FullSizePlayerActivity"
             android:launchMode="singleTop"
             android:screenOrientation="sensor"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".presentation.ui.upload.UploadPhotoActivity"
             android:launchMode="singleTop"

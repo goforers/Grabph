@@ -170,11 +170,11 @@ class PhotoViewerActivity: BaseActivity() {
             savedInstanceState ?: getIntentData()
             savedInstanceState?.let {
                 if (calledFrom == CALLED_FROM_SEARPLE_GALLERY_PHOTO) {
-                    imagePosition = savedInstanceState.getInt(EXTRA_SEARPLE_GALLERY_PHOTO_POSITION, 0)
-                    photoPathList = savedInstanceState.getStringArrayList(EXTRA_PHOTO_FILE_NAME_LIST) as List<String>
-                    photoIdList = savedInstanceState.getStringArrayList(EXTRA_PHOTO_FILE_ID_LIST) as List<String>
+                    imagePosition = it.getInt(EXTRA_SEARPLE_GALLERY_PHOTO_POSITION, 0)
+                    photoPathList = it.getStringArrayList(EXTRA_PHOTO_FILE_NAME_LIST) as List<String>
+                    photoIdList = it.getStringArrayList(EXTRA_PHOTO_FILE_ID_LIST) as List<String>
                 } else {
-                    imagePosition = savedInstanceState.getInt(EXTRA_SELECTED_ITEM_POSITION, 0)
+                    imagePosition = it.getInt(EXTRA_SELECTED_ITEM_POSITION, 0)
                 }
             }
 

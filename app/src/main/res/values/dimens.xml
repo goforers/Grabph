@@ -217,4 +217,8 @@
     <dimen name="text_size_22">22sp</dimen>
     <dimen name="width_85">85dp</dimen>
     <dimen name="width_22">22dp</dimen>
+    <dimen name="width_68">68dp</dimen>
+    <dimen name="height_68">68dp</dimen>
+    <dimen name="height_65">65dp</dimen>
+    <dimen name="width_14">14dp</dimen>
 </resources>

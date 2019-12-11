@@ -68,5 +68,7 @@ constructor(private val repository: PersonRepository):  BaseUseCase<Parameters, 
         liveData.value = query
     }
 
+    internal suspend fun getPerson(userId: String) = repository.getPerson(userId)
+
     internal suspend fun removePerson() = repository.removePerson()
 }

@@ -28,7 +28,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
                 AndroidSupportInjectionModule::class, AppModule::class,
-                FeedItemActivityModule::class, PhotoViewerActivityModule::class,
+                FeedInfoActivityModule::class, PhotoViewerActivityModule::class,
                 FeedSearchActivityModule::class, PhotogPhotoActivityModule::class,
                 PhotoInfoActivityModule::class, CommentActivityModule::class,
                 QuestInfoActivityModule::class, PinnedFeedsActivityModule::class,
@@ -37,7 +37,7 @@ import javax.inject.Singleton
                 CategoryActivityModule::class, HotTopicContentActivityModule::class,
                 RankingActivityModule::class, OthersProfileActivityModule::class,
                 AuthActivityModule::class, UploadPhotoActivityModule::class,
-                FullSizePlayerActivityModule::class
+                FullSizePlayerActivityModule::class, FeedItemActivityModule::class
             ])
 
 interface AppComponent {

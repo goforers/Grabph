@@ -73,6 +73,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.activity_others_profile.*
+import kotlinx.android.synthetic.main.layout_disconnection.*
 import kotlinx.android.synthetic.main.layout_profile_photo_and_people.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -284,7 +285,12 @@ class OthersProfileActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun setTopPortionViewData(person: Person) {
         setRankColor(userRanking)
-        setImageDraw(this.iv_profile_icon, userPhotoUrl)
+        if (person.iconserver == "0") {
+            this.iv_profile_icon.setImageDrawable(getDrawable(R.drawable.ic_default_profile))
+        } else {
+            setImageDraw(this.iv_profile_icon, userPhotoUrl)
+        }
+
         // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
         setFixedImageSize(0, 0)
         setImageDraw(this.iv_others_profile_title_photo, userBackgroundPhoto)
@@ -676,12 +682,12 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
-        this.disconnect_container_pinned_profile.visibility = View.GONE
+        this.disconnect_container_pinned.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
         this.recycler_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     } else {
-        this.disconnect_container_pinned_profile.visibility = View.VISIBLE
+        this.disconnect_container_pinned.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
         this.recycler_others_profile.visibility = View.GONE
         this.progress_bar_others_profile_holder.visibility = View.GONE

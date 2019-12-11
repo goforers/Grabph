@@ -18,36 +18,27 @@ package com.goforer.grabph.presentation.ui.feed.photoinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.transition.Transition
 import android.view.*
-import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
-import com.elmargomez.typer.Font
-import com.elmargomez.typer.Typer
-import com.goforer.base.domain.common.GeneralFunctions
-import com.goforer.base.presentation.utils.CommonUtils.convertTime
-import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
+import com.goforer.base.annotation.MockData
+import com.goforer.base.presentation.utils.CommonUtils
+import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.usecase.save.PhotoSaver
 import com.goforer.grabph.domain.Parameters
-import com.goforer.grabph.presentation.caller.Caller
-import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_OWNER_ID
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_ID
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION
@@ -59,17 +50,10 @@ import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.exif.EXIFHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
-import com.goforer.grabph.presentation.common.view.SlidingDrawer
-import com.goforer.grabph.presentation.ui.feed.common.SavePhoto
-import com.goforer.grabph.presentation.ui.feed.photoinfo.sharedelementcallback.PhotoInfoItemCallback
 import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.presentation.vm.feed.exif.EXIFViewModel
-import com.goforer.grabph.presentation.vm.feed.exif.LocalEXIFViewModel
-import com.goforer.grabph.presentation.vm.feed.location.LocalLocationViewModel
 import com.goforer.grabph.presentation.vm.feed.location.LocationViewModel
-import com.goforer.grabph.presentation.vm.people.person.PersonViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoInfoViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
@@ -78,48 +62,65 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.Pict
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_GEO
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTO_INFO
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_INFO_CALLED_FROM
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_PATH
+import com.goforer.grabph.presentation.ui.feed.feedinfo.sharedelementcallback.FeedInfoItemCallback
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photo_info.*
+import kotlinx.android.synthetic.main.activity_photo_info.backdrop_container
+import kotlinx.android.synthetic.main.activity_photo_info.collapsing_layout
+import kotlinx.android.synthetic.main.activity_photo_info.folding_cell_photo_item
+import kotlinx.android.synthetic.main.activity_photo_info.progress_bar_bottom
 import kotlinx.android.synthetic.main.cell_photo_info.*
 import kotlinx.android.synthetic.main.cell_portion_photo_info.*
+import kotlinx.android.synthetic.main.layout_disconnection.*
+import kotlinx.android.synthetic.main.layout_selection_content_size.*
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.lang.Long.parseLong
-import java.util.*
 import javax.inject.Inject
-import kotlin.math.abs
+import kotlin.random.Random
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PhotoInfoActivity : BaseActivity() {
-    private lateinit var sharedElementCallback: PhotoInfoItemCallback
+    private lateinit var sharedElementCallback: FeedInfoItemCallback
+    private lateinit var playBackStateListener: PlayBackStateListener
 
     internal lateinit var photoId: String
-
-    private lateinit var ownerId: String
+    private lateinit var userId: String
+    private lateinit var photoPath: String
 
     private var title: String? = null
     private var description: String? = null
 
     private var photoPosition: Int = 0
     private var offsetChange: Int = 0
+    private var calledFrom: Int = 0
 
     private var exifList: List<EXIF>? = null
-
     private var location: Location? = null
-
     private var searper: Person? = null
+    private var mediaType: String? = null
+    private var videoUrl: String? = null
+    private var userPhotoUrl: String? = null
 
-    private lateinit var slidingDrawer: SlidingDrawer
-
-    private var isAppBarLayoutExpanded = false
-    private var isAppBarLayoutCollapsed = false
+    private var player: SimpleExoPlayer? = null
+    private var currentWindow = 0
+    private var playbackPosition: Long = 0
+    private var selectedContentSize = 0
 
     private val job = Job()
 
@@ -127,29 +128,17 @@ class PhotoInfoActivity : BaseActivity() {
     private val ioScope = CoroutineScope(Dispatchers.IO + job)
 
     @field:Inject
-    lateinit var searperProfileViewModel: PersonViewModel
-    @field:Inject
-    lateinit var localEXIFViewModel: LocalEXIFViewModel
-    @field:Inject
-    lateinit var localLocationViewModel: LocalLocationViewModel
-    @field:Inject
-    lateinit var exifViewModel: EXIFViewModel
+    lateinit var viewModel: PhotoInfoViewModel
     @field:Inject
     lateinit var locationViewModel: LocationViewModel
     @field:Inject
-    lateinit var photoInfoViewModel: PhotoInfoViewModel
-    @field:Inject
     lateinit var localSavedPhotoViewModel: LocalSavedPhotoViewModel
-
     @field:Inject
     lateinit var workHandler: CommonWorkHandler
-
     @field:Inject
     lateinit var waterMarkHandler: WatermarkHandler
-
     @field:Inject
     lateinit var exifHandler: EXIFHandler
-
     @field:Inject
     lateinit var saver: PhotoSaver
 
@@ -192,144 +181,51 @@ class PhotoInfoActivity : BaseActivity() {
         private const val CACHE_PHOTO_EXIF_TYPE = 1
         private const val CACHE_PHOTO_LOCATION_TYPE = 2
         private const val CACHE_PHOTOG_INFO_TYPE = 3
+
+        private const val CONTENT_SIZE_S = 1
+        private const val CONTENT_SIZE_M = 2
+        private const val CONTENT_SIZE_L = 3
     }
+
+    override fun setContentView() { setContentView(R.layout.activity_photo_info) }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (isNetworkAvailable) {
             offsetChange = 0
             networkStatusVisible(true)
-            savedInstanceState?.let {
-                photoId = savedInstanceState.getString(EXTRA_PHOTO_ID, "")
-                ownerId = savedInstanceState.getString(EXTRA_OWNER_ID, "")
-                photoPosition = savedInstanceState.getInt(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, 0)
-            }
-
-            val font = Typer.set(this.applicationContext).getFont(Font.ROBOTO_MEDIUM)
-            this@PhotoInfoActivity.collapsing_layout.setCollapsedTitleTypeface(font)
-            this@PhotoInfoActivity.collapsing_layout.setExpandedTitleTypeface(font)
-
-            this@PhotoInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-                appBarLayout, verticalOffset ->
-                this@PhotoInfoActivity.collapsing_layout.title = title
-
-                when {
-                    abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-                        isAppBarLayoutCollapsed = true
-                        isAppBarLayoutExpanded = false
-                    }
-                    verticalOffset == 0 -> {
-                        isAppBarLayoutExpanded = true
-                        launchUIWork {
-                            delay(DELAY_COLLAPSED_TIMER_INTERVAL.toLong())
-                            isAppBarLayoutCollapsed = false
-                        }
-                    }
-                    else -> {
-                        isAppBarLayoutExpanded = false
-                        isAppBarLayoutCollapsed = true
-                    }
-                }
-            })
-
-            this@PhotoInfoActivity.coordinator_photo_info_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
-                override fun onSwipeLeft(x: Float, y: Float) {
-                    Timber.d("onSwipeLeft")
-
-                    finishAfterTransition()
-                }
-
-                override fun onSwipeRight(x: Float, y: Float) {
-                    Timber.d("onSwipeRight")
-
-                }
-
-                override fun onSwipeDown(x: Float, y: Float) {
-                    Timber.d( "onSwipeDown")
-
-                    if (!isAppBarLayoutCollapsed && isAppBarLayoutExpanded) {
-                        finishAfterTransition()
-                    }
-                }
-
-                override fun onSwipeUp(x: Float, y: Float) {
-                    Timber.d("onSwipeUp")
-                }
-
-                override fun onSwipeDone() {
-                    Timber.d("onSwipeDone")
-                }
-            })
         } else {
             networkStatusVisible(false)
         }
     }
 
-    override fun setContentView() {
-        setContentView(R.layout.activity_photo_info)
+    override fun setViews(savedInstanceState: Bundle?) {
+        window.sharedElementEnterTransition.addListener(sharedEnterListener)
+        supportPostponeEnterTransition()
+        playBackStateListener = PlayBackStateListener()
+
+        getIntentData()
+        selectSizesButtonClickListener()
+        removePhotoCache()
+        getData()
+        supportPostponeEnterTransition()
+        initCoordinatorLayout()
+        setLicenseCheckRandom()
     }
 
     override fun setActionBar() {
-        setSupportActionBar(this@PhotoInfoActivity.toolbar)
+        setSupportActionBar(this.toolbar_photo_info)
         val actionBar= supportActionBar
-        actionBar?.let {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_back)
-            actionBar.displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_USE_LOGO
-            actionBar.setDisplayShowTitleEnabled(true)
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setHomeButtonEnabled(true)
+
+        actionBar?.run {
+            setHomeAsUpIndicator(R.drawable.ic_back)
+            displayOptions = ActionBar.DISPLAY_SHOW_HOME or ActionBar.DISPLAY_USE_LOGO
+            setDisplayShowTitleEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeButtonEnabled(true)
         }
-
-        this@PhotoInfoActivity.toolbar?.setNavigationOnClickListener{
-            finishAfterTransition()
-        }
-
-        this@PhotoInfoActivity.toolbar.hideOverflowMenu()
-    }
-
-    override fun setViews(savedInstanceState: Bundle?) {
-        savedInstanceState ?: getIntentData()
-
-        slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
-                .setActivity(this)
-                .setRootView(R.id.coordinator_layout)
-                .setBundle(savedInstanceState)
-                .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
-                .setWorkHandler(workHandler)
-                .build()
-
-        // The cache should be removed whenever App is started again and then
-        // the data are fetched from the Back-end.
-        // The Cache has to be light-weight.
-        removePhotoCache(CACHE_SEARPLER_PROFILE_TYPE)
-        searperProfileViewModel.loadType = LOAD_PERSON
-        searperProfileViewModel.boundType = BOUND_FROM_BACKEND
-
-        // The cache should be removed whenever App is started again and then
-        // the data are fetched from the Back-end.
-        // The Cache has to be light-
-        removePhotoCache(CACHE_PHOTOG_INFO_TYPE)
-        photoInfoViewModel.loadType = LOAD_PHOTO_INFO
-        photoInfoViewModel.boundType = BOUND_FROM_BACKEND
-
-        // The cache should be removed whenever App is started again and then
-        // the data are fetched from the Back-end.
-        // The Cache has to be light-weight.
-        removePhotoCache(CACHE_PHOTO_LOCATION_TYPE)
-        locationViewModel.loadType = LOAD_GEO
-        locationViewModel.boundType = BOUND_FROM_BACKEND
-
-        // The cache should be removed whenever App is started again and then
-        // the data are fetched from the Back-end.
-        // The Cache has to be light-weight.
-        removePhotoCache(CACHE_PHOTO_EXIF_TYPE)
-        exifViewModel.loadType = LOAD_EXIF
-        exifViewModel.boundType = BOUND_FROM_BACKEND
-
-        getData()
-        window.sharedElementEnterTransition.addListener(sharedEnterListener)
-        supportPostponeEnterTransition()
+        this.toolbar_photo_info.setNavigationOnClickListener{ finishAfterTransition() }
+        this.toolbar_photo_info.hideOverflowMenu()
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent?) {
@@ -341,8 +237,7 @@ class PhotoInfoActivity : BaseActivity() {
             supportPostponeEnterTransition()
 
             val callback = PhotoViewerCallback()
-
-            callback.setViewBinding(this@PhotoInfoActivity.iv_photo_info_photo)
+            callback.setViewBinding(this.iv_photo_info_photo)
             setEnterSharedElementCallback(callback)
             supportStartPostponedEnterTransition()
         }
@@ -382,20 +277,6 @@ class PhotoInfoActivity : BaseActivity() {
                 MenuHandler().applyFontToMenuItem(sharePopup, Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_MEDIUM),
                         resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
                 sharePopup.setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.menu_share_facebook ->
-                            callShareToFacebook(this@PhotoInfoActivity.iv_photo_info_photo.drawable as BitmapDrawable,
-                                    this.applicationContext.getString(R.string.phrase_title) + "\n\n"
-                                            + this@PhotoInfoActivity.tv_photo_info_title.text + "\n\n"
-                                            + this.applicationContext.getString(R.string.phrase_description) + "\n\n"
-                                            + description)
-                        R.id.menu_share_ect -> {
-                            waterMarkHandler.putWatermark(this.applicationContext, workHandler,
-                                    (iv_photo_info_photo.drawable as BitmapDrawable).bitmap, title, description)
-                        }
-                        else -> {
-                        }
-                    }
 
                     true
                 }
@@ -410,8 +291,6 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     override fun finishAfterTransition() {
-        this@PhotoInfoActivity.fab_like.hide()
-        (this@PhotoInfoActivity.fab_like as View).visibility = View.GONE
         this@PhotoInfoActivity.collapsing_layout.title = ""
         supportPostponeEnterTransition()
         setViewBind()
@@ -431,204 +310,82 @@ class PhotoInfoActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        var outStateBundle = outState
-
-        outStateBundle.putString(EXTRA_PHOTO_ID, photoId)
-        outStateBundle.putString(EXTRA_OWNER_ID, ownerId)
-        outStateBundle.putInt(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, photoPosition)
-
-        slidingDrawer.searperProfileDrawerForFeedViewDrawer?.let {
-            outStateBundle = slidingDrawer.searperProfileDrawerForFeedViewDrawer?.saveInstanceState(outStateBundle)!!
-            outStateBundle = slidingDrawer.drawerHeader?.saveInstanceState(outStateBundle)!!
-        }
+        outState.putString(EXTRA_PHOTO_ID, photoId)
+        outState.putString(EXTRA_OWNER_ID, userId)
+        outState.putInt(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, photoPosition)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
         photoId = savedInstanceState.getString(EXTRA_PHOTO_ID, "")
-        ownerId = savedInstanceState.getString(EXTRA_OWNER_ID, "")
+        userId = savedInstanceState.getString(EXTRA_OWNER_ID, "")
         photoPosition = savedInstanceState.getInt(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, 0)
     }
 
     override fun onBackPressed() {
         setActivityResult()
-
         super.onBackPressed()
     }
 
-    private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
-        this@PhotoInfoActivity.disconnect_container_photo_info.visibility = View.GONE
-        this@PhotoInfoActivity.iv_disconnect_photo_info.visibility = View.GONE
-        this@PhotoInfoActivity.tv_notice1_photo_info.visibility = View.GONE
-        this@PhotoInfoActivity.tv_notice2_photo_info.visibility = View.GONE
-        this@PhotoInfoActivity.appbar_layout.visibility = View.VISIBLE
-        this@PhotoInfoActivity.scroll_view.visibility = View.VISIBLE
-    } else {
-        this@PhotoInfoActivity.disconnect_container_photo_info.visibility = View.VISIBLE
-        this@PhotoInfoActivity.iv_disconnect_photo_info.visibility = View.VISIBLE
-        this@PhotoInfoActivity.tv_notice1_photo_info.visibility = View.VISIBLE
-        this@PhotoInfoActivity.tv_notice2_photo_info.visibility = View.VISIBLE
-        this@PhotoInfoActivity.appbar_layout.visibility = View.GONE
-        this@PhotoInfoActivity.scroll_view.visibility = View.GONE
+    override fun onPause() {
+        super.onPause()
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT >= 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setScreenOrientationStable()
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
+            videoUrl?.let { initializePlayer(it) }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT >= 24) {
+            videoUrl?.let { initializePlayer(it) }
+        }
     }
 
     private fun getIntentData() {
         photoId = intent.getStringExtra(EXTRA_PHOTO_ID)
-        ownerId = intent.getStringExtra(EXTRA_OWNER_ID)
+        userId = intent.getStringExtra(EXTRA_OWNER_ID)
         photoPosition = intent.getIntExtra(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, 0)
+        calledFrom = intent.getIntExtra(EXTRA_PHOTO_INFO_CALLED_FROM, -1)
+        photoPath = intent.getStringExtra(EXTRA_PHOTO_PATH)
     }
 
     private fun getData() {
+        setFixedImageSize(0, 0)
+        setImageDraw(this.iv_photo_info_photo, this.backdrop_container, photoPath, true)
+
+        withDelay(50L) {
+            setViewBind()
+            setEnterSharedElementCallback(sharedElementCallback)
+            supportStartPostponedEnterTransition()
+        }
+
+        setBottomOnLoading()
         getPhotoInfo(photoId)
         setPhotoInfo()
-        getSearplerProfile(ownerId)
-        setSearplerProfileObserver()
+        getUserProfile(userId)
+        setUserProfileObserver()
         getPhotoEXIF(photoId)
         setPhotoEXIFObserver()
-        getPhotoLocation(photoId)
-        setPhotoLocationObserver()
     }
-
-    private fun setActivityResult() {
-        val intent = Intent(this, PhotogPhotoActivity::class.java)
-
-        intent.putExtra(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, photoPosition)
-        setResult(SELECTED_PHOTO_INFO_ITEM_POSITION, intent)
-    }
-
-    private fun setViewBind() {
-        sharedElementCallback = PhotoInfoItemCallback(intent)
-        this@PhotoInfoActivity.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + photoPosition
-        this@PhotoInfoActivity.tv_photo_info_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + photoPosition
-
-        sharedElementCallback.setViewBinding(this@PhotoInfoActivity.iv_photo_info_photo, this@PhotoInfoActivity.tv_photo_info_title)
-    }
-
-    private fun  getSearplerProfile(id: String) {
-        searperProfileViewModel.setParameters(
-            Parameters(
-                id,
-                -1,
-                LOAD_PERSON,
-                BOUND_FROM_BACKEND
-            ), NONE_TYPE)
-    }
-
-    private fun setSearplerProfileObserver() = searperProfileViewModel.person.observe(this, Observer { resource ->
-        when(resource?.getStatus()) {
-            Status.SUCCESS -> {
-                resource.getData()?.let { person ->
-                    searper = person as? Person?
-                    displaySearplerInfo(searper!!)
-                    slidingDrawer.setHeaderBackground(GeneralFunctions.getHeaderBackgroundUrl())
-                    slidingDrawer.setSearperProfileDrawer(searper,
-                            SlidingDrawer.PROFILE_SEARPER_TYPE_FROM_FEED_VIEWER)
-                }
-
-                resource.getMessage()?.let {
-                    showNetworkError(resource.errorCode)
-                }
-            }
-
-            Status.LOADING -> {
-            }
-
-            Status.ERROR -> {
-                showNetworkError(resource.errorCode)
-            }
-
-            else -> {
-                showNetworkError(resource.errorCode)
-            }
-        }
-    })
-
-    private fun getPhotoEXIF(photoId: String) {
-        exifViewModel.setParameters(
-            Parameters(
-                photoId,
-                -1,
-                LOAD_EXIF,
-                BOUND_FROM_BACKEND
-            ), NONE_TYPE)
-    }
-
-    private fun setPhotoEXIFObserver() = exifViewModel.exif.observe(this, Observer { resource ->
-        folding_exif_cell.visibility = View.GONE
-        cell_portion_information_container.visibility = View.GONE
-        when(resource?.getStatus()) {
-            Status.SUCCESS -> {
-                @Suppress("UNCHECKED_CAST")
-                val exifs = resource.getData() as? List<EXIF>?
-
-                exifs?.let {
-                    if (exifs.size > CHECK_EXIF_LIST_SIZE) {
-                        exifList = exifs
-                        displayEXIF(exifs)
-                    }
-                }
-
-                resource.getMessage()?.let {
-                    showNetworkError(resource.errorCode)
-                }
-            }
-
-            Status.LOADING -> {
-            }
-
-            Status.ERROR -> {
-                showNetworkError(resource.errorCode)
-            }
-
-            else -> {
-                showNetworkError(resource.errorCode)
-            }
-        }
-    })
-
-    private fun getPhotoLocation(photoId: String) {
-        locationViewModel.setParameters(
-            Parameters(
-                photoId,
-                -1,
-                LOAD_GEO,
-                BOUND_FROM_BACKEND
-            ), NONE_TYPE)
-    }
-
-    private fun setPhotoLocationObserver() = locationViewModel.location.observe(this, Observer { resource ->
-        location_container.visibility = View.GONE
-        when(resource?.getStatus()) {
-            Status.SUCCESS -> {
-                val location = resource.getData() as? Location?
-
-                location?.let {
-                    this.location = location
-                    displayLocation(location)
-                }
-
-                resource.getMessage()?.let {
-                    showNetworkError(resource.errorCode)
-                }
-            }
-
-            Status.LOADING -> {
-            }
-
-            Status.ERROR -> {
-                showNetworkError(resource.errorCode)
-            }
-
-            else -> {
-                showNetworkError(resource.errorCode)
-            }
-        }
-    })
 
     private fun getPhotoInfo(photoId: String) {
-        photoInfoViewModel.setParameters(
+        viewModel.setParameters(
             Parameters(
                 photoId,
                 -1,
@@ -637,14 +394,196 @@ class PhotoInfoActivity : BaseActivity() {
             ), NONE_TYPE)
     }
 
-    private fun setPhotoInfo() = photoInfoViewModel.photoInfo.observe(this, Observer { resource ->
+    private fun setPhotoInfo() = viewModel.photoInfo.observe(this, Observer { resource ->
+        when(resource?.getStatus()) {
+            Status.SUCCESS -> {
+                val picture = resource.getData() as? Picture?
+
+                picture?.let {
+                    uiScope.launch {
+                        displayPhotoInfo(picture)
+                        setBottomLoadingFinished()
+                    }
+                }
+
+                resource.getMessage()?.let {
+                    showNetworkError(resource.errorCode)
+                }
+            }
+
+            Status.LOADING -> {
+            }
+
+            Status.ERROR -> {
+                showNetworkError(resource.errorCode)
+            }
+
+            else -> {
+                showNetworkError(resource.errorCode)
+            }
+        }
+    })
+
+    private fun displayPhotoInfo(picture: Picture) {
+        setPhotoInfo(picture)
+
+        this.tv_photo_info_title.text = picture.title._content
+        this.tv_description_photo_info.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(picture.description._content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            picture.description._content
+        }
+
+        val url = CommonUtils.getFlickrPhotoURL(picture.farm, picture.server, picture.id, picture.secret!!)
+
+        this.iv_photo_info_photo.setOnClickListener {
+            this.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
+            Caller.callViewer(
+                this,
+                this.iv_photo_info_photo,
+                0,
+                CALLED_FROM_PHOTO_INFO,
+                if (picture.media == "video") photoPath else url,
+                SELECTED_PHOTO_INFO_ITEM_POSITION
+            )
+        }
+    }
+
+    private fun setPhotoInfo(picture: Picture) {
+        this.mediaType = picture.media
+
+        when (mediaType) {
+            getString(R.string.media_type_photo) -> {
+                this.iv_play_btn_photo_info.visibility = View.GONE
+                this.video_view_photo_info.visibility = View.GONE
+                this.iv_fullsize_photo_info.visibility = View.GONE
+                this.iv_photo_info_photo.visibility = View.VISIBLE
+            }
+
+            getString(R.string.media_type_video) -> {
+                getVideoSource(picture.id)
+
+                this.video_view_photo_info.visibility = View.GONE
+                this.iv_photo_info_photo.visibility = View.VISIBLE
+                this.iv_fullsize_photo_info.visibility = View.VISIBLE
+
+                this.iv_play_btn_photo_info.setOnClickListener {
+                    this.video_view_photo_info.visibility = View.VISIBLE
+                    val params = this.video_view_photo_info.layoutParams as ConstraintLayout.LayoutParams
+                    params.height = this.iv_photo_info_photo.height
+                    this.video_view_photo_info.layoutParams = params
+                    this.iv_photo_info_photo.visibility = View.INVISIBLE
+
+                    player?.playWhenReady = true
+                }
+
+                this.iv_fullsize_photo_info.setOnClickListener {
+                    videoUrl?.let { Caller.callFullSizePlayer(this, it) }
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun getVideoSource(photoId: String) {
+        viewModel.getPhotoSizes(photoId) // to get video source url
+
+        viewModel.videoThumbnail.observe(this, Observer {
+            photoPath = it
+            setImageDraw(this.iv_photo_info_photo, this.backdrop_container, it, true)
+        })
+
+        viewModel.videoSource.observe(this, Observer {
+            this.videoUrl = it
+            initializePlayer(it)
+        })
+
+        viewModel.getSizeError.observe(this, Observer {
+            Snackbar.make(coordinator_photo_info_layout, it, LENGTH_LONG).show()
+        })
+    }
+
+    private fun  getUserProfile(id: String) {
+        viewModel.setParametersForPerson(
+            Parameters(
+                id,
+                -1,
+                LOAD_PERSON,
+                BOUND_FROM_BACKEND
+            )
+        )
+    }
+
+    private fun setUserProfileObserver() = viewModel.person.observe(this, Observer { resource ->
+        when(resource?.getStatus()) {
+            Status.SUCCESS -> {
+                resource.getData()?.let { person ->
+                    searper = person as? Person?
+                    searper?.let { displayUserInfo(it) }
+                }
+
+                resource.getMessage()?.let {
+                    showNetworkError(resource.errorCode)
+                }
+            }
+
+            Status.LOADING -> {
+            }
+
+            Status.ERROR -> {
+                showNetworkError(resource.errorCode)
+            }
+
+            else -> {
+                showNetworkError(resource.errorCode)
+            }
+        }
+    })
+
+    private fun displayUserInfo(user: Person) {
+        val name = user.realname?._content ?: user.username?._content
+        this.tv_username_photo_info.text = if (name == "") "unknown user" else name
+
+        userPhotoUrl = workHandler.getProfilePhotoURL(user.iconfarm, user.iconserver, user.id)
+
+        if (user.iconserver == "0" || userPhotoUrl == null) {
+            this.iv_profile_photo_info.setImageDrawable(getDrawable(R.drawable.ic_default_profile))
+        } else {
+            setImageDraw(this.iv_profile_photo_info, userPhotoUrl!!)
+        }
+
+        this.iv_profile_photo_info.setOnClickListener {
+            Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, userId, name!!, 1, userPhotoUrl!!)
+        }
+    }
+
+    private fun getPhotoEXIF(photoId: String) {
+        viewModel.setParametersForEXIF(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_EXIF,
+                BOUND_FROM_BACKEND
+            )
+        )
+    }
+
+    private fun setPhotoEXIFObserver() {
+        viewModel.exifInfo.observe(this, Observer { resource ->
+            this.folding_cell_photo_item.visibility = View.GONE
+            this.cell_portion_information_container.visibility = View.GONE
+            this.cell_photo_info_container.visibility = View.GONE
+
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
-                    val picture = resource.getData() as? Picture?
+                    @Suppress("UNCHECKED_CAST")
+                    val exifs = resource.getData() as? List<EXIF>?
 
-                    picture?.let {
-                        uiScope.launch {
-                            if (photoId == picture.id) displayPhotoInfo(picture)
+                    exifs?.let {
+                        if (exifs.size > CHECK_EXIF_LIST_SIZE) {
+                            exifList = exifs
+                            displayEXIF(exifs)
                         }
                     }
 
@@ -653,8 +592,7 @@ class PhotoInfoActivity : BaseActivity() {
                     }
                 }
 
-                Status.LOADING -> {
-                }
+                Status.LOADING -> { }
 
                 Status.ERROR -> {
                     showNetworkError(resource.errorCode)
@@ -664,7 +602,237 @@ class PhotoInfoActivity : BaseActivity() {
                     showNetworkError(resource.errorCode)
                 }
             }
-    })
+        })
+    }
+
+    private fun displayEXIF(listEXIF: List<EXIF>) {
+        val result = addEXIF(listEXIF)
+        setFoldingCellInvisible()
+
+        if (exifHandler.getEXIFNoneItemCount() < CHECK_EXIF_LIST_SIZE) { animateEXIF(result) }
+        exifHandler.resetEXIFNoneItemCount()
+    }
+
+    private fun animateEXIF(listEXIF: List<EXIF>) {
+        this.folding_cell_photo_item.visibility = View.VISIBLE
+        setEXIFInfo(listEXIF)
+        this.folding_cell_photo_item.fold(true)
+
+        if (!this.cell_portion_information_container.isShown) {
+            this.cell_portion_information_container.visibility = View.VISIBLE
+        }
+
+        this.folding_cell_photo_item.setOnClickListener {
+            this.folding_cell_photo_item.toggle(true)
+
+            if (this.folding_cell_photo_item.isUnfolded) {
+                withDelay(60L) { this.nested_scroll_view_photo_info.fullScroll(View.FOCUS_DOWN)}
+            }
+        }
+    }
+
+    private fun addEXIF(exifs: List<EXIF>): ArrayList<EXIF> {
+        val list = ArrayList<EXIF>()
+        val model = exifHandler.getEXIFByLabel(exifs, "Model")
+            ?: exifHandler.putManualEXIF("Model")
+        list.add(model)
+        val make = exifHandler.getEXIFByLabel(exifs, "Make")
+            ?: exifHandler.putManualEXIF("Make")
+        list.add(make)
+        val exifExposure = exifHandler.getEXIFByLabel(exifs, "Exposure")
+            ?: exifHandler.putManualEXIF("Exposure")
+        list.add(exifExposure)
+        val exifAperture = exifHandler.getEXIFByLabel(exifs, "Aperture")
+            ?: exifHandler.putManualEXIF("Aperture")
+        list.add(exifAperture)
+        val exifISO = exifHandler.getEXIFByLabel(exifs, "ISO Speed")
+            ?: exifHandler.putManualEXIF("ISO Speed")
+        list.add(exifISO)
+        val exifFlash = exifHandler.getEXIFByLabel(exifs, "Flash")
+            ?: exifHandler.putManualEXIF("Flash")
+        list.add(exifFlash)
+        val exifWhiteBalance = exifHandler.getEXIFByLabel(exifs, "White Balance")
+            ?: exifHandler.putManualEXIF("White Balance")
+        list.add(exifWhiteBalance)
+        val exifFocalLength = exifHandler.getEXIFByLabel(exifs, "Focal Length")
+            ?: exifHandler.putManualEXIF("Focal Length")
+        list.add(exifFocalLength)
+
+        return list
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setEXIFInfo(items: List<EXIF>) {
+        val none = "None"
+        val existedAperture: Boolean
+
+        val model = (items[CommonWorkHandler.EXIF_ITEM_INDEX_MAKE].raw._content + " "
+            + items[CommonWorkHandler.EXIF_ITEM_INDEX_MODEL].raw._content)
+
+        this.tv_cam_model.text = model
+        this.tv_exposure.text = none
+        this.tv_exposure.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_EXPOSURE].raw._content
+        this.tv_aperture.text = none
+
+        if (items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].label == "Aperture") {
+            existedAperture = true
+            this.tv_aperture.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].raw._content
+        } else {
+            existedAperture = false
+        }
+
+        if (existedAperture) {
+            this.tv_iso.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_ISO_SPEED].raw._content
+            this.tv_flash.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FLASH].raw._content
+            this.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_WHITE_BALANCE].raw._content
+            if (items[CommonWorkHandler.EXIF_ITEM_INDEX_FOCAL_LENGTH].label == "Focal Length") {
+                this.tv_focal_length.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FOCAL_LENGTH].raw._content
+            }
+        } else {
+            this.tv_iso.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].raw._content
+            this.tv_flash.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_ISO_SPEED].raw._content
+            this.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FLASH].raw._content
+            this.tv_focal_length.text = none
+
+        }
+    }
+
+    private fun initializePlayer(source: String) {
+        this.progress_bar_play_button.visibility = View.VISIBLE
+        this.iv_play_btn_photo_info.visibility = View.GONE
+        val trackSelector = DefaultTrackSelector()
+        trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd())
+
+        player = ExoPlayerFactory.newSimpleInstance(this)
+        player?.addListener(playBackStateListener)
+        this.video_view_photo_info.player = player
+
+        val uri = Uri.parse(source)
+        val mediaSource = buildMediaSource(uri)
+
+        player?.playWhenReady = false
+        player?.seekTo(currentWindow, playbackPosition)
+        player?.prepare(mediaSource, false, false)
+        player?.volume = 0f
+    }
+
+    private fun buildMediaSource(uri: Uri): MediaSource {
+        val dataSourceFactory = DefaultDataSourceFactory(this, "sample_test")
+
+        return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+    }
+
+    private fun releasePlayer() {
+        player?.let {
+            playbackPosition = it.currentPosition
+            currentWindow = it.currentWindowIndex
+
+            it.removeListener(playBackStateListener)
+            it.release()
+            player = null
+        }
+    }
+
+    private fun setFoldingCellInvisible() {
+        if (!folding_cell_photo_item.isShown) {
+            this.folding_cell_photo_item.visibility = View.GONE
+            this.cell_portion_information_container.visibility = View.GONE
+        }
+    }
+
+    private fun setBottomOnLoading() {
+        this.progress_bar_bottom.visibility = View.VISIBLE
+        this.cardview_holder_bottom_photo_info.visibility = View.GONE
+        this.folding_cell_photo_item.visibility = View.GONE
+    }
+
+    private fun setBottomLoadingFinished() {
+        this.progress_bar_bottom.visibility = View.GONE
+        this.cardview_holder_bottom_photo_info.visibility = View.VISIBLE
+        this.folding_cell_photo_item.visibility = View.VISIBLE
+    }
+
+    private fun removePhotoCache() = launchIOWork {
+        viewModel.removePerson()
+        viewModel.removeEXIF()
+        locationViewModel.removeLocation()
+        viewModel.removePhotoInfo()
+    }
+
+    private fun setActivityResult() {
+        val intent = Intent(this, PhotogPhotoActivity::class.java)
+
+        intent.putExtra(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, photoPosition)
+        setResult(SELECTED_PHOTO_INFO_ITEM_POSITION, intent)
+    }
+
+    private fun initCoordinatorLayout() {
+        this.coordinator_photo_info_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
+            override fun onSwipeLeft(x: Float, y: Float) {
+            }
+
+            override fun onSwipeRight(x: Float, y: Float) {
+            }
+
+            override fun onSwipeDown(x: Float, y: Float) {
+            }
+
+            override fun onSwipeUp(x: Float, y: Float) {
+            }
+
+            override fun onSwipeDone() {
+            }
+        })
+    }
+
+    private fun selectSizesButtonClickListener() {
+        this.cb_feed_size_s.setOnClickListener { setCheckBoxState(CONTENT_SIZE_S) }
+        this.cb_feed_size_m.setOnClickListener { setCheckBoxState(CONTENT_SIZE_M) }
+        this.cb_feed_size_l.setOnClickListener { setCheckBoxState(CONTENT_SIZE_L) }
+    }
+
+    @MockData
+    private fun setLicenseCheckRandom() {
+        this.cb_photo_info_license1.isChecked = Random.nextBoolean()
+        this.cb_photo_info_license2.isChecked = Random.nextBoolean()
+        this.cb_photo_info_license3.isChecked = Random.nextBoolean()
+        this.cb_photo_info_license4.isChecked = Random.nextBoolean()
+        this.cb_photo_info_license5.isChecked = Random.nextBoolean()
+        this.cb_photo_info_license1.isEnabled = false
+        this.cb_photo_info_license2.isEnabled = false
+        this.cb_photo_info_license3.isEnabled = false
+        this.cb_photo_info_license4.isEnabled = false
+        this.cb_photo_info_license5.isEnabled = false
+    }
+
+    private fun setCheckBoxState(selectedSize: Int) {
+        this.cb_feed_size_s.isChecked = false
+        this.cb_feed_size_m.isChecked = false
+        this.cb_feed_size_l.isChecked = false
+        this.selectedContentSize = selectedSize
+
+        when (selectedSize) {
+            CONTENT_SIZE_S -> this.cb_feed_size_s.isChecked = true
+            CONTENT_SIZE_M -> this.cb_feed_size_m.isChecked = true
+            CONTENT_SIZE_L -> this.cb_feed_size_l.isChecked = true
+        }
+    }
+
+    private fun setViewBind() {
+        sharedElementCallback = FeedInfoItemCallback()
+        this.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + photoPosition
+        sharedElementCallback.setViewBinding(this.iv_photo_info_photo)
+    }
+
+    private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
+        this.disconnect_container_pinned.visibility = View.GONE
+        this.appbar_layout_photo_info.visibility = View.VISIBLE
+        this.nested_scroll_view_photo_info.visibility = View.VISIBLE
+    } else {
+        this.disconnect_container_pinned.visibility = View.VISIBLE
+        this.appbar_layout_photo_info.visibility = View.GONE
+        this.nested_scroll_view_photo_info.visibility = View.GONE
+    }
 
     private fun showNetworkError(errorCode: Int) = when(errorCode) {
         in 400..499 -> {
@@ -676,463 +844,6 @@ class PhotoInfoActivity : BaseActivity() {
         }
 
         else -> {}
-    }
-
-    private suspend fun displayPhotoInfo(picture: Picture) {
-        val url = "https://farm" + picture.farm + ".staticflickr.com/" + picture.server +
-                "/" + picture.id + "_" + picture.secret + ".jpg"
-
-        val workPhoto = uiScope.async {
-            loadPhoto(this@PhotoInfoActivity, url)
-        }
-
-        val workExtra = uiScope.async {
-            fillExtraInfo(picture, ownerId)
-        }
-
-        workPhoto.await()
-        workExtra.await()
-    }
-
-    private fun loadPhoto(activity: PhotoInfoActivity, url: String) {
-        setFixedImageSize(0, 0)
-        setImageDraw(this@PhotoInfoActivity.iv_photo_info_photo, this@PhotoInfoActivity.backdrop_container,
-                     url, true)
-        this@PhotoInfoActivity.iv_photo_info_photo.setOnClickListener {
-            this@PhotoInfoActivity.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
-            photo?.let { it1 ->
-                Caller.callViewer(activity, this@PhotoInfoActivity.iv_photo_info_photo,
-                        0, CALLED_FROM_PHOTO_INFO, it1, url, SELECTED_PHOTO_INFO_PHOTO_VIEW)
-            }
-        }
-
-        this@PhotoInfoActivity.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + photoPosition
-        this@PhotoInfoActivity.tv_photo_info_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + photoPosition
-        sharedElementCallback = PhotoInfoItemCallback(intent)
-        sharedElementCallback.setViewBinding(this@PhotoInfoActivity.iv_photo_info_photo, this@PhotoInfoActivity.tv_photo_info_title)
-        setEnterSharedElementCallback(sharedElementCallback)
-        supportStartPostponedEnterTransition()
-        this@PhotoInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-            _, verticalOffset ->
-            if (this@PhotoInfoActivity.collapsing_layout.height + verticalOffset < 2
-                    * ViewCompat.getMinimumHeight(this@PhotoInfoActivity.collapsing_layout)) {
-                // collapsed
-                this@PhotoInfoActivity.iv_photo_info_photo.animate().alpha(1.0f).duration = 600
-            } else {
-                // extended
-                this@PhotoInfoActivity.iv_photo_info_photo.animate().alpha(1.0f).duration = 1000    // 1.0f means opaque
-            }
-        })
-    }
-
-    @SuppressLint("SetTextI18n", "DefaultLocale")
-    private fun fillExtraInfo(picture: Picture, ownerId: String) {
-        title = if (picture.title._content == " " || picture.title._content == "") {
-            this.applicationContext.getString(R.string.no_title)
-        } else {
-            picture.title._content
-        }
-
-        this@PhotoInfoActivity.collapsing_layout.title = title
-
-        this@PhotoInfoActivity.tv_views_text.text = picture.views
-
-        this@PhotoInfoActivity.tv_comments_text.text = picture.comments._content
-        this@PhotoInfoActivity.iv_comments_icon.setOnClickListener {
-            callComment(picture.comments, picture.id)
-        }
-
-        this@PhotoInfoActivity.tv_comments_text.setOnClickListener {
-            callComment(picture.comments, picture.id)
-        }
-
-        this@PhotoInfoActivity.tv_photo_info_title.text = if (title!!.isEmpty() || title == " ") {
-            getString(R.string.no_title)
-        } else {
-            title
-        }
-
-        val fabIcon: Drawable = when (picture.like) {
-            0 -> {
-                ContextCompat.getDrawable(this.applicationContext, R.drawable.ic_fab_normal)!!
-            }
-            1 -> {
-                ContextCompat.getDrawable(this.applicationContext, R.drawable.ic_fab_good)!!
-            }
-            2 -> {
-                ContextCompat.getDrawable(this.applicationContext, R.drawable.ic_fab_bad)!!
-            }
-            else -> {
-                ContextCompat.getDrawable(this.applicationContext, R.drawable.ic_fab_normal)!!
-            }
-        }
-
-        this@PhotoInfoActivity.fab_like.setImageDrawable(fabIcon)
-        this@PhotoInfoActivity.fab_like.backgroundTintList = when (picture.like) {
-            0 -> {
-                ColorStateList.valueOf(Color.WHITE)
-            }
-            1 -> {
-                ColorStateList.valueOf(Color.RED)
-            }
-            2 -> {
-                ColorStateList.valueOf(Color.BLUE)
-            }
-            else -> {
-                ColorStateList.valueOf(Color.WHITE)
-            }
-        }
-
-        this@PhotoInfoActivity.tv_date_taken.text = this.applicationContext.getString(R.string.phrase_taken) + " " + picture.dates.taken
-        // Check it tomorrow
-        val postedDate = parseLong(picture.dates.posted)
-
-        description = picture.description._content
-        showDescription(description)
-        this@PhotoInfoActivity.tv_date_posted.text = (this.applicationContext.getString(R.string.phrase_posted) + " "
-                + convertTime(postedDate))
-        this@PhotoInfoActivity.ib_download.setOnClickListener { doDownload(ownerId, postedDate) }
-        this@PhotoInfoActivity.ib_wallpaper.setOnClickListener {
-            showToastMessage(this, this.applicationContext
-                    .getString(R.string.phrase_wallpaper_implement), Toast.LENGTH_SHORT)
-        }
-
-        this@PhotoInfoActivity.fab_like.setOnClickListener { view -> doLike(view as FloatingActionButton, picture) }
-        setTags(picture.tags)
-    }
-
-    private fun showDescription(description: String?) = this@PhotoInfoActivity.webview_description.loadDataWithBaseURL(null, description,
-            "text/html; charset=UTF-8", null, null)
-
-    private fun callComment(commentCount: Picture.CommentCount, id: String) {
-        if (commentCount._content != "0") {
-            Caller.callComment(this.applicationContext, id)
-        }
-    }
-
-    @SuppressLint("CheckResult")
-    fun displaySearplerInfo(searperInfo: Person) {
-        val photoPath= workHandler.getProfilePhotoURL(searperInfo.iconfarm,
-                searperInfo.iconserver, searperInfo.id)
-        var name = searperInfo.realname?._content
-        name = name ?: searperInfo.username?._content
-        if (name == "") {
-            this@PhotoInfoActivity.tv_name_text.text = searperInfo.username?._content
-        } else {
-            this@PhotoInfoActivity.tv_name_text.text = name
-        }
-
-        if (searperInfo.iconserver == "0") {
-            this@PhotoInfoActivity.iv_searper_pic.setImageDrawable(this.applicationContext!!
-                    .getDrawable(R.drawable.ic_default_profile))
-            this@PhotoInfoActivity.iv_searper_pic.setOnClickListener{
-                // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
-                Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, ownerId, name!!, 3, photoPath)
-            }
-        } else {
-            setImageDraw(this@PhotoInfoActivity.iv_searper_pic, photoPath)
-            this@PhotoInfoActivity.iv_searper_pic.setOnClickListener{
-                // slidingDrawer.searperProfileDrawerForFeedViewDrawer?.openDrawer()
-                Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, ownerId, name!!, 3, photoPath)
-            }
-        }
-
-        // Temporarily get blocked.....
-        /*
-        val userName=if (userInfo.username?._content?.isEmpty()!!) {
-            fragment.getString(R.string.no_username)
-        } else {
-            userInfo.username._content
-        }
-        */
-    }
-
-    private fun displayEXIF(listEXIF: List<EXIF>) = launchEXIF(listEXIF)
-
-    private fun addEXIF(listEXIF: List<EXIF>): ArrayList<EXIF> {
-        val usefulEXIF = ArrayList<EXIF>()
-        val model = exifHandler.getEXIFByLabel(listEXIF, "Model")
-                ?: exifHandler.putManualEXIF("Model")
-        usefulEXIF.add(model)
-        val make = exifHandler.getEXIFByLabel(listEXIF, "Make")
-                ?: exifHandler.putManualEXIF("Make")
-        usefulEXIF.add(make)
-        val exifExposure = exifHandler.getEXIFByLabel(listEXIF, "Exposure")
-                ?: exifHandler.putManualEXIF("Exposure")
-        usefulEXIF.add(exifExposure)
-        val exifAperture = exifHandler.getEXIFByLabel(listEXIF, "Aperture")
-                ?: exifHandler.putManualEXIF("Aperture")
-        usefulEXIF.add(exifAperture)
-        val exifISO = exifHandler.getEXIFByLabel(listEXIF, "ISO Speed")
-                ?: exifHandler.putManualEXIF("ISO Speed")
-        usefulEXIF.add(exifISO)
-        val exifFlash = exifHandler.getEXIFByLabel(listEXIF, "Flash")
-                ?: exifHandler.putManualEXIF("Flash")
-        usefulEXIF.add(exifFlash)
-        val exifWhiteBalance = exifHandler.getEXIFByLabel(listEXIF, "White Balance")
-                ?: exifHandler.putManualEXIF("White Balance")
-        usefulEXIF.add(exifWhiteBalance)
-        val exifFocalLength = exifHandler.getEXIFByLabel(listEXIF, "Focal Length")
-                ?: exifHandler.putManualEXIF("Focal Length")
-        usefulEXIF.add(exifFocalLength)
-
-        return usefulEXIF
-    }
-
-    private fun displayLocation(location: Location) {
-        setLocationInvisible()
-        animateLocation(location)
-    }
-
-    private fun setFoldingCellInvisible() {
-        if (!folding_exif_cell.isShown) {
-            folding_exif_cell.visibility = View.GONE
-            folding_exif_cell.visibility = View.GONE
-            cell_portion_information_container.visibility = View.GONE
-        }
-    }
-
-    private fun setLocationInvisible() {
-        if (!location_container.isShown) {
-            location_container.visibility = View.GONE
-        }
-    }
-
-    private fun setTags(tags: Picture.Tags?) {
-        tags?.tag ?: return
-
-        val photoTags = StringBuilder()
-        if (tags.tag!!.isNotEmpty()) {
-            tags_holder.visibility = View.VISIBLE
-            for (loop in 0 until tags.tag!!.size) {
-                photoTags.append(tags.tag!![loop].authorname).append(" - ")
-                        .append(tags.tag!![loop].raw).append(" ")
-            }
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                this@PhotoInfoActivity.tv_tags.text = Html.fromHtml(photoTags.toString(), Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                this@PhotoInfoActivity.tv_tags.text = Html.fromHtml(photoTags.toString())
-            }
-
-            this@PhotoInfoActivity.tv_tags.movementMethod = LinkMovementMethod.getInstance()
-        }
-    }
-
-    @SuppressLint("DefaultLocale")
-    private fun doDownload(ownerId: String, publishedDate: Long?) {
-        val savePhoto = SavePhoto(workHandler, saver)
-
-        savePhoto.bitmapDrawable = BitmapDrawable(resources, photo)
-        val photoURL = if (searper?.iconserver == "0") {
-            "None"
-        } else {
-            workHandler.getProfilePhotoURL(searper?.iconfarm!!, searper?.iconserver!!, searper?.id!!)
-        }
-
-        savePhoto.bitmapDrawable = BitmapDrawable(resources, photo)
-        savePhoto.fileName = String.format("%s.jpg", ownerId + "_" + publishedDate.toString())
-        savePhoto.title = tv_photo_info_title.text.toString()
-        savePhoto.exifItems = exifList as MutableList<EXIF>?
-        savePhoto.location = location
-        savePhoto.searperInfo = searper
-        savePhoto.searperPhotoUrl = photoURL
-        savePhoto.showSaveDialog(this, localEXIFViewModel, localLocationViewModel,
-                localSavedPhotoViewModel, savePhoto)
-    }
-
-    private fun doLike(view: View, photoInfo: Picture) {
-        val wrapper = ContextThemeWrapper(this, R.style.PopupMenu)
-        val popup = PopupMenu(wrapper, view, Gravity.CENTER)
-
-        popup.menuInflater.inflate(R.menu.menu_like_popup, popup.menu)
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_like_good -> {
-                    this@PhotoInfoActivity.fab_like.hide()
-                    this@PhotoInfoActivity.fab_like.setImageResource(R.drawable.ic_fab_good)
-                    this@PhotoInfoActivity.fab_like.backgroundTintList = ColorStateList.valueOf(Color.RED)
-                    photoInfo.like = 1
-                    this@PhotoInfoActivity.fab_like.show()
-                }
-                R.id.menu_like_normal -> {
-                    this@PhotoInfoActivity.fab_like.hide()
-                    this@PhotoInfoActivity.fab_like.setImageResource(R.drawable.ic_fab_normal)
-                    this@PhotoInfoActivity.fab_like.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
-                    photoInfo.like = 0
-                    this@PhotoInfoActivity.fab_like.show()
-                }
-                R.id.menu_like_bad -> {
-                    this@PhotoInfoActivity.fab_like.hide()
-                    this@PhotoInfoActivity.fab_like.setImageResource(R.drawable.ic_fab_bad)
-                    this@PhotoInfoActivity.fab_like.backgroundTintList = ColorStateList.valueOf(Color.BLUE)
-                    photoInfo.like = 2
-                    this@PhotoInfoActivity.fab_like.show()
-                }
-                else -> {
-                }
-            }
-
-            true
-        }
-
-        MenuHandler().applyFontToMenuItem(popup, Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_MEDIUM),
-                resources.getColor(R.color.colorHomeQuestFavoriteKeyword, theme))
-
-        val menuHelper: Any
-        val argTypes: Array<Class<*>>
-        try {
-            val fMenuHelper= PopupMenu::class.java.getDeclaredField("mPopup")
-            fMenuHelper.isAccessible = true
-            menuHelper=fMenuHelper.get(popup)
-            argTypes=arrayOf(Boolean::class.javaPrimitiveType!!)
-            menuHelper.javaClass.getDeclaredMethod("setForceShowIcon", *argTypes).invoke(menuHelper, true)
-        } catch (e: Exception) {
-            // Possible exceptions are NoSuchMethodError and NoSuchFieldError
-            //
-            // In either case, an exception indicates something is wrong with the reflection code, or the
-            // structure of the PopupMenu class or its dependencies has changed.
-            //
-            // These exceptions should never happen since we're shipping the AppCompat library in our own apk,
-            // but in the case that they do, we simply can't force icons to display, so log the error and
-            // show the menu normally.
-        }
-
-        popup.show()
-    }
-
-    private fun callShareToFacebook(drawable: BitmapDrawable, caption: String) {
-        workHandler.shareToFacebook(drawable.bitmap, this)
-    }
-
-    private fun animateEXIF(lisEXIF: List<EXIF>) {
-        this@PhotoInfoActivity.folding_exif_cell.visibility = View.VISIBLE
-        if (!this@PhotoInfoActivity.folding_exif_cell.isUnfolded) {
-            if (!this@PhotoInfoActivity.cell_portion_information_container.isShown) {
-                this@PhotoInfoActivity.cell_portion_information_container.visibility = View.VISIBLE
-                val animation = AnimationUtils.loadAnimation(
-                        this.applicationContext, R.anim.scale_up_enter)
-                animation.duration = 300
-                this@PhotoInfoActivity.cell_portion_information_container.animation = animation
-                this@PhotoInfoActivity.cell_portion_information_container.animate()
-                animation.start()
-            }
-
-            this@PhotoInfoActivity.folding_exif_cell.setOnClickListener {
-                setEXINFO(lisEXIF)
-                this@PhotoInfoActivity.folding_exif_cell.toggle(false)
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setEXINFO(items: List<EXIF>) {
-        val none = "None"
-        val existedAperture: Boolean
-
-        val model = (items[CommonWorkHandler.EXIF_ITEM_INDEX_MAKE].raw._content + " "
-                + items[CommonWorkHandler.EXIF_ITEM_INDEX_MODEL].raw._content)
-
-        this@PhotoInfoActivity.tv_cam_model.text = model
-
-        this@PhotoInfoActivity.tv_exposure.text = none
-        this@PhotoInfoActivity.tv_exposure.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_EXPOSURE].raw._content
-
-        this@PhotoInfoActivity.tv_aperture.text = none
-        if (items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].label == "Aperture") {
-            existedAperture = true
-            this@PhotoInfoActivity.tv_aperture.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].raw._content
-        } else {
-            existedAperture = false
-        }
-
-        this@PhotoInfoActivity.tv_iso.text = none
-        this@PhotoInfoActivity.tv_flash.text = none
-        this@PhotoInfoActivity.tv_white_balance.text = none
-        this@PhotoInfoActivity.tv_focal_length.text = none
-        if (existedAperture) {
-            this@PhotoInfoActivity.tv_iso.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_ISO_SPEED].raw._content
-            this@PhotoInfoActivity.tv_flash.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FLASH].raw._content
-            this@PhotoInfoActivity.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_WHITE_BALANCE].raw._content
-            if (items[CommonWorkHandler.EXIF_ITEM_INDEX_FOCAL_LENGTH].label == "Focal Length") {
-                this@PhotoInfoActivity.tv_focal_length.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FOCAL_LENGTH].raw._content
-            }
-        } else {
-            this@PhotoInfoActivity.tv_iso.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_APERTURE].raw._content
-            this@PhotoInfoActivity.tv_flash.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_ISO_SPEED].raw._content
-            this@PhotoInfoActivity.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FLASH].raw._content
-        }
-    }
-
-    private fun animateLocation(location: Location) {
-        if (!this@PhotoInfoActivity.location_container.isShown) {
-            this@PhotoInfoActivity.location_container.visibility = View.VISIBLE
-            val animation = AnimationUtils.loadAnimation(
-                    this.applicationContext, R.anim.scale_up_enter)
-            animation.duration = 300
-            this@PhotoInfoActivity.location_container.animation = animation
-            this@PhotoInfoActivity.location_container.animate()
-            animation.start()
-        }
-
-        this@PhotoInfoActivity.location_container.setOnClickListener {
-            Caller.callViewMap(this.applicationContext,
-                    this@PhotoInfoActivity.tv_photo_info_title.text.toString(),
-                    java.lang.Double.parseDouble(location.latitude!!),
-                    java.lang.Double.parseDouble(location.longitude!!),
-                    getAddress(location))
-        }
-    }
-
-    private fun getAddress(location: Location): String {
-        val addressArray = arrayOf("", "", "", "", "")
-
-        addressArray[0] = location.neighbourhood?._content ?: ""
-        addressArray[1] = location.locality?._content ?: ""
-        addressArray[2] = location.county?._content ?: ""
-        addressArray[3] = location.region?._content ?: ""
-        addressArray[4] = location.country?._content ?: ""
-
-        return addressArray[0] + ", " + addressArray[1] + ", " + addressArray[2] + ", " + addressArray[3] + ", " + addressArray[4]
-    }
-
-    private fun launchEXIF(listEXIF: List<EXIF>) = launchUIWork {
-        showEXIF(listEXIF)
-    }
-
-    private suspend fun showEXIF(listEXIF: List<EXIF>) = withContext(Dispatchers.Main) {
-        var result: List<EXIF> = ArrayList()
-
-        withContext(uiScope.coroutineContext) {
-            result = addEXIF(listEXIF)
-        }
-
-        setFoldingCellInvisible()
-        if (exifHandler.getEXIFNoneItemCount() < CHECK_EXIF_LIST_SIZE) {
-            animateEXIF(result)
-        }
-
-        exifHandler.resetEXIFNoneItemCount()
-    }
-
-    private fun removePhotoCache(type: Int) = launchIOWork {
-        when(type) {
-            CACHE_SEARPLER_PROFILE_TYPE -> {
-                searperProfileViewModel.removePerson()
-            }
-
-            CACHE_PHOTO_EXIF_TYPE -> {
-                exifViewModel.removeEXIF()
-            }
-
-            CACHE_PHOTO_LOCATION_TYPE -> {
-                locationViewModel.removeLocation()
-            }
-
-            CACHE_PHOTOG_INFO_TYPE -> {
-                photoInfoViewModel.removePhotoInfo()
-            }
-        }
     }
 
     /**
@@ -1162,6 +873,36 @@ class PhotoInfoActivity : BaseActivity() {
     private inline fun launchIOWork(crossinline block: suspend () -> Unit): Job {
         return ioScope.launch {
             block()
+        }
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun setScreenOrientationStable() {
+        val currentOrientation = resources.configuration.orientation
+        if (currentOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    inner class PlayBackStateListener: Player.EventListener {
+        @SuppressLint("BinaryOperationInTimber")
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            super.onPlayerStateChanged(playWhenReady, playbackState)
+            val stateString: String
+
+            when (playbackState) {
+                ExoPlayer.STATE_IDLE -> stateString = "ExoPlayer.STATE_IDLE      -"
+                ExoPlayer.STATE_BUFFERING -> stateString = "ExoPlayer.STATE_BUFFERING      -"
+                ExoPlayer.STATE_READY -> {
+                    this@PhotoInfoActivity.iv_play_btn_photo_info.visibility = View.VISIBLE
+                    this@PhotoInfoActivity.progress_bar_play_button.visibility = View.GONE
+                    stateString = "ExoPlayer.STATE_READY      -"
+                }
+                ExoPlayer.STATE_ENDED -> stateString = "ExoPlayer.STATE_ENDED      -"
+                else -> stateString = "UNKNOWN_STATE      -"
+            }
+
+            Timber.d("changed state to " + stateString
+                + " playWhenReady: " + playWhenReady)
         }
     }
 }

@@ -52,6 +52,7 @@ constructor(private val dao: PersonDao): Repository<Query>() {
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()
     }
+    internal suspend fun getPerson(userId: String) = dao.getPerson(userId)
 
     internal suspend fun removePerson() = dao.clearAll()
 

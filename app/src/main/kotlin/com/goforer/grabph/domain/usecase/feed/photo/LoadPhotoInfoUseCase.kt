@@ -26,8 +26,6 @@ import com.goforer.grabph.data.repository.remote.feed.photo.PhotoInfoRepository
 import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
 import com.goforer.grabph.data.datasource.network.response.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,6 +65,7 @@ constructor(private val repository: PhotoInfoRepository):  BaseUseCase<Parameter
 
         liveData.value = query
     }
+    internal fun loadPhotoInfo(id: String) = repository.loadPhotoInfo(id)
 
     internal suspend fun removePhotoInfo() = repository.removePhotoInfo()
 }
