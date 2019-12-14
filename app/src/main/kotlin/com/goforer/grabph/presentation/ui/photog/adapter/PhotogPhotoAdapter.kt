@@ -266,7 +266,7 @@ class PhotogPhotoAdapter(private val fragment: PhotogPhotoFragment, private val 
             tv_searper_name.text = fragment.photogPhotoActivity.searperName
             tv_searper_posted_date.text = fragment.context.applicationContext.getString(R.string.photo_safe)
 
-            val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
+            val url = CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
 
             fragment.photogPhotoActivity.setFixedImageSize(0, 0)
             fragment.photogPhotoActivity.setImageDraw(iv_photo_item_content, pinnedConstraintLayoutContainer, url, false)

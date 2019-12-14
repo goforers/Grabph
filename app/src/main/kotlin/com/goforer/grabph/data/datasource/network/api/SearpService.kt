@@ -140,7 +140,8 @@ interface SearpService {
         @Query("format") format: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
-        @Query("nojsoncallback") index: Int
+        @Query("nojsoncallback") index: Int,
+        @Query("extras") extras: String
     ): LiveData<ApiResponse<Photog>>
 
     /**
@@ -156,7 +157,8 @@ interface SearpService {
         @Query("format") format: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
-        @Query("nojsoncallback") index: Int
+        @Query("nojsoncallback") index: Int,
+        @Query("extras") extras: String
     ): LiveData<ApiResponse<MyGalleryg>>
 
     @GET("https://api.flickr.com/services/rest/")

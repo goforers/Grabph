@@ -11,11 +11,7 @@
     android:stateListAnimator="@animator/raise"
     android:foreground="@drawable/grey_ripple"
     android:visibility="visible"
-    android:transitionGroup="true"
-    android:paddingStart="@dimen/padding_4"
-    android:paddingEnd="@dimen/padding_4"
-    android:paddingBottom="@dimen/padding_2"
-    android:paddingTop="@dimen/padding_2">
+    android:transitionGroup="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_feed_item_holder"

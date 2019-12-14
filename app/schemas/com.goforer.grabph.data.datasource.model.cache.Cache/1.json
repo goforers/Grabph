@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d283e1be89e8f6d5ed318d6c7f0bd652",
+    "identityHash": "23ffdc54b5e912d9971385b47653a04a",
     "entities": [
       {
         "tableName": "FeedItem",
@@ -616,7 +616,7 @@
       },
       {
         "tableName": "Photo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`like` INTEGER NOT NULL, `_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`like` INTEGER NOT NULL, `_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, `media` TEXT NOT NULL, `urlm` TEXT, `urlz` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "like",
@@ -683,6 +683,24 @@
             "columnName": "isfamily",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "media",
+            "columnName": "media",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url_m",
+            "columnName": "urlm",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "url_z",
+            "columnName": "urlz",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -2431,7 +2449,7 @@
       },
       {
         "tableName": "MyGallery",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`like` INTEGER NOT NULL, `_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`like` INTEGER NOT NULL, `_id` TEXT NOT NULL, `secret` TEXT, `server` TEXT, `farm` INTEGER NOT NULL, `camera` TEXT, `owner` TEXT, `title` TEXT, `ispublic` INTEGER NOT NULL, `isfriend` INTEGER NOT NULL, `isfamily` INTEGER NOT NULL, `media` TEXT NOT NULL, `urlm` TEXT, `urlz` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "like",
@@ -2498,6 +2516,24 @@
             "columnName": "isfamily",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "media",
+            "columnName": "media",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url_m",
+            "columnName": "urlm",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "url_z",
+            "columnName": "urlz",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -2696,7 +2732,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd283e1be89e8f6d5ed318d6c7f0bd652')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23ffdc54b5e912d9971385b47653a04a')"
     ]
   }
 }

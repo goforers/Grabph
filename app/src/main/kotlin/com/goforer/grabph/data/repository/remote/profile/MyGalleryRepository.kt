@@ -9,7 +9,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalle
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalleryg
 import com.goforer.grabph.data.datasource.model.dao.remote.feed.photo.MyGalleryDao
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
-import com.goforer.grabph.data.datasource.network.response.ApiResponse
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.paging.datasource.MyGalleryDataFactory
 import com.goforer.grabph.data.repository.remote.Repository
@@ -31,6 +30,7 @@ constructor(private val dao: MyGalleryDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.people.getphotos"
         const val PREFETCH_DISTANCE = 10
+        const val EXTRA_QUERIES = "media, url_m, url_z"
     }
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
@@ -53,13 +53,16 @@ constructor(private val dao: MyGalleryDao): Repository<Query>() {
                 }
             }
             
-            override suspend fun loadFromNetwork(): LiveData<ApiResponse<MyGalleryg>> {
-                val response = searpService.getMyGallery(
-                    KEY, parameters.query1 as String,
-                    METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX
+            override suspend fun loadFromNetwork() = searpService.getMyGallery(
+                    KEY,
+                    parameters.query1 as String,
+                    METHOD,
+                    FORMAT_JSON,
+                    parameters.query2 as Int,
+                    PER_PAGE,
+                    INDEX,
+                    EXTRA_QUERIES
                 )
-                return response
-            }
 
             override suspend fun clearCache() = dao.clearAll()
         }.getAsLiveData()

@@ -96,7 +96,7 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:ellipsize="end"
-                            android:text="Daniel Hennry flikeff sliefjk slekfj eief isf sifeoijf grigrij"
+                            android:text="Searper Name"
                             android:textColor="@color/white"
                             android:layout_marginEnd="@dimen/margin_10"
                             app:layout_constraintStart_toStartOf="parent"
@@ -138,6 +138,7 @@
                             android:minHeight="@dimen/height_20"
                             android:maxHeight="@dimen/height_254"
                             android:textSize="@dimen/text_size_14"
+                            android:ellipsize="end"
                             android:textColor="@color/colorLightWhite"
                             android:text="@string/description_sample"/>
 
@@ -199,11 +200,11 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_follow_bottom_others_profile"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/height_50"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16"
         android:text="FOLLOW"
-        android:background="@drawable/btn_rectangular_orange_filled"
+        android:background="@drawable/searp_gradation"
         android:layout_gravity="center_horizontal|bottom"
         app:layout_anchorGravity="top"
         app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomButtonBehavior"

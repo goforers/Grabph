@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.transition.Transition
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +35,7 @@ import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_ITEM
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_BEST_PICK_HOT_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_BEST_PICK_SEARPER_PHOTO
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_FEED_INFO_PHOTO_VIEW
@@ -52,6 +55,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_feed_item.*
 import kotlinx.android.synthetic.main.activity_feed_item.backdrop_container
@@ -67,6 +71,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.random.Random
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -93,13 +98,16 @@ class FeedItemActivity : BaseActivity() {
     private var currentWindow = 0
     private var playbackPosition: Long = 0
     private var selectedContentSize = 0
+    private var halfOffsetAppBar: Int = 0
 
     private var feedIdx: Long = 0
 
     private var feedPosition = 0
     private var feedInfoCalledFrom = 0
     private var offsetChange = 0
-    private var isScrollOnTop = true
+
+    private var isAppBarLayoutExpanded = false
+    private var isAppBarLayoutCollapsed = false
 
     private var searper: Person? = null
 
@@ -143,7 +151,7 @@ class FeedItemActivity : BaseActivity() {
 
         private fun removeCallback() {
             window.sharedElementExitTransition.removeListener(this)
-            setExitSharedElementCallback(null as androidx.core.app.SharedElementCallback?)
+            setExitSharedElementCallback(null as SharedElementCallback?)
         }
     }
 
@@ -178,6 +186,7 @@ class FeedItemActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (isNetworkAvailable) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             window.statusBarColor = Color.TRANSPARENT
             offsetChange = 0
             networkStatusVisible(true)
@@ -189,9 +198,6 @@ class FeedItemActivity : BaseActivity() {
     }
 
     override fun setViews(savedInstanceState: Bundle?) {
-        super.setViews(savedInstanceState)
-        window.sharedElementEnterTransition.addListener(sharedEnterListener)
-        supportPostponeEnterTransition()
         playBackStateListener = PlayBackStateListener()
 
         getIntentData()
@@ -200,6 +206,9 @@ class FeedItemActivity : BaseActivity() {
         getData()
         initCoordinatorLayout()
         setLicenseRandomCheck()
+
+        window.sharedElementEnterTransition.addListener(sharedEnterListener)
+        supportPostponeEnterTransition()
     }
 
     override fun setActionBar() {
@@ -226,10 +235,38 @@ class FeedItemActivity : BaseActivity() {
             supportPostponeEnterTransition()
 
             val callback = PhotoViewerCallback()
+
             callback.setViewBinding(this.iv_feed_item_photo)
             setEnterSharedElementCallback(callback)
             supportStartPostponedEnterTransition()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_normal_item, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPreparePanel(featureId: Int, view: View?, menu: Menu): Boolean {
+        if (menu.javaClass.simpleName == "MenuBuilder") {
+            try {
+                @SuppressLint("PrivateApi")
+                val method= menu.javaClass.getDeclaredMethod("setOptionalIconsVisible", java.lang.Boolean.TYPE)
+                method.isAccessible = true
+                method.invoke(menu, true)
+            } catch (e: NoSuchMethodException) {
+                System.err.println(e.message)
+                e.printStackTrace()
+            } catch (e: Exception) {
+                throw RuntimeException(e)
+            }
+        }
+
+        return super.onPreparePanel(featureId, view, menu)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -351,8 +388,15 @@ class FeedItemActivity : BaseActivity() {
 
         this.iv_feed_item_photo.setOnClickListener {
             this.iv_feed_item_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
-            Caller.callViewer(this, this.iv_feed_item_photo, 0, CALLED_FROM_FEED_INFO,
-                photoPath, SELECTED_FEED_INFO_PHOTO_VIEW)
+            Caller.callViewer(
+                this,
+                this.iv_feed_item_photo,
+                0,
+                CALLED_FROM_FEED_ITEM,
+                photoPath,
+                SELECTED_FEED_INFO_PHOTO_VIEW,
+                feedItem.title
+            )
         }
     }
 
@@ -368,7 +412,6 @@ class FeedItemActivity : BaseActivity() {
             getString(R.string.media_type_video) -> {
                 this.iv_feed_item_photo.visibility = View.VISIBLE
                 this.video_view_feed_item.visibility = View.GONE
-                this.iv_fullsize_feed_item.visibility = View.VISIBLE
                 this.videoUrl = feedItem.videoSource!!
                 initializePlayer(feedItem.videoSource)
 
@@ -427,8 +470,10 @@ class FeedItemActivity : BaseActivity() {
     }
 
     private fun displayUserInfo(user: Person) {
-        val name = user.realname?._content ?: user.username?._content
-        this.tv_username_feed_item.text = if (name == "") "unknown user" else name
+        val name = user.realname?._content?.let {
+            if (it.isEmpty()) user.username?._content else it
+        } ?: user.username?._content
+        this.tv_username_feed_item.text = name
 
         searperPhotoUrl = workHandler.getProfilePhotoURL(user.iconfarm, user.iconserver, user.id)
 
@@ -603,7 +648,7 @@ class FeedItemActivity : BaseActivity() {
     }
 
     private fun buildMediaSource(uri: Uri): MediaSource {
-        val dataSourceFactory = DefaultDataSourceFactory(this, "sample_test")
+        val dataSourceFactory = DefaultDataSourceFactory(this, "searp")
 
         return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
     }
@@ -675,6 +720,12 @@ class FeedItemActivity : BaseActivity() {
     }
 
     private fun initCoordinatorLayout() {
+        setCoordinatorBehavior()
+        setScrollBehavior()
+        setCollapsingBehavior()
+    }
+
+    private fun setCoordinatorBehavior() {
         this.coordinator_feed_item_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
             override fun onSwipeLeft(x: Float, y: Float) {
                 finishAfterTransition()
@@ -685,19 +736,58 @@ class FeedItemActivity : BaseActivity() {
             }
 
             override fun onSwipeDown(x: Float, y: Float) {
-                if (isScrollOnTop) finishAfterTransition()
+                if (!isAppBarLayoutCollapsed && isAppBarLayoutExpanded) {
+                    finishAfterTransition()
+                }
+
+                if (isAppBarLayoutCollapsed && !isAppBarLayoutExpanded) {
+                    // this@FeedItemActivity.appbar_layout_feed_item.setExpanded(false, true)
+                }
             }
 
-            override fun onSwipeUp(x: Float, y: Float) {
-            }
+            override fun onSwipeUp(x: Float, y: Float) {  }
 
-            override fun onSwipeDone() {
-            }
+            override fun onSwipeDone() {  }
         })
+    }
 
+    private fun setScrollBehavior() {
         this.nested_scroll_view_feed_item.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener {
                 v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            isScrollOnTop = scrollY == 0
+        })
+    }
+
+    private fun setCollapsingBehavior() {
+        var currentOffset: Int
+        var alpha: Int
+        var offSetPercentage: Float
+
+        this.appbar_layout_feed_item.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+            appBarLayout, verticalOffset ->
+            currentOffset = abs(verticalOffset)
+            offSetPercentage = (currentOffset.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            alpha = (255 * offSetPercentage).toInt()
+
+            this.tv_feed_item_title.setTextColor(this.tv_feed_item_title.textColors.withAlpha(alpha))
+            this.tv_feed_item_title.alpha = alpha.toFloat()
+
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    isAppBarLayoutExpanded = false
+                    isAppBarLayoutCollapsed = true
+                }
+
+                verticalOffset == 0 -> {
+                    isAppBarLayoutExpanded = true
+                    isAppBarLayoutCollapsed = false
+                }
+
+                else -> {
+                    isAppBarLayoutExpanded = false
+                    isAppBarLayoutCollapsed = true
+                    halfOffsetAppBar = appBarLayout.totalScrollRange / 2
+                }
+            }
         })
     }
 
@@ -790,22 +880,43 @@ class FeedItemActivity : BaseActivity() {
         @SuppressLint("BinaryOperationInTimber")
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             super.onPlayerStateChanged(playWhenReady, playbackState)
-            val stateString: String
 
-            when (playbackState) {
-                ExoPlayer.STATE_IDLE -> stateString = "ExoPlayer.STATE_IDLE      -"
-                ExoPlayer.STATE_BUFFERING -> stateString = "ExoPlayer.STATE_BUFFERING      -"
-                ExoPlayer.STATE_READY -> {
-                    this@FeedItemActivity.iv_play_btn_feed_item.visibility = View.VISIBLE
-                    this@FeedItemActivity.progress_bar_feed_item.visibility = View.GONE
-                    stateString = "ExoPlayer.STATE_READY      -"
+            val stateString: String = when (playbackState) {
+                ExoPlayer.STATE_IDLE -> {
+                    setViewWhenTrouble()
+                    "ExoPlayer.STATE_IDLE      -"
                 }
-                ExoPlayer.STATE_ENDED -> stateString = "ExoPlayer.STATE_ENDED      -"
-                else -> stateString = "UNKNOWN_STATE      -"
+                ExoPlayer.STATE_BUFFERING -> {
+                    "ExoPlayer.STATE_BUFFERING -"
+                }
+                ExoPlayer.STATE_READY -> {
+                    setViewWhenReady()
+                    "ExoPlayer.STATE_READY     -"
+                }
+                ExoPlayer.STATE_ENDED -> {
+                    "ExoPlayer.STATE_ENDED     -"
+                }
+                else -> {
+                    "UNKNOWN_STATE             -"
+                }
             }
 
             Timber.d("changed state to " + stateString
                 + " playWhenReady: " + playWhenReady)
+        }
+
+        private fun setViewWhenReady() {
+            this@FeedItemActivity.iv_play_btn_feed_item.visibility = View.VISIBLE
+            this@FeedItemActivity.iv_fullsize_feed_item.visibility = View.VISIBLE
+            this@FeedItemActivity.progress_bar_feed_item.visibility = View.GONE
+        }
+
+        private fun setViewWhenTrouble() {
+            this@FeedItemActivity.progress_bar_feed_item.visibility = View.GONE
+            Snackbar.make(this@FeedItemActivity.coordinator_feed_item_layout,
+                "Sorry, something's wrong with the video source..",
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 }

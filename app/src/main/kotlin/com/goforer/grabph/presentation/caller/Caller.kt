@@ -381,33 +381,34 @@ object Caller {
     }
 
     @SuppressLint("RestrictedApi")
-    fun callViewer(context: Context, imageView: View, position: Int, fromCalled: Int, url: String, requestCode: Int) {
+    fun callViewer(context: Context, imageView: View, position: Int, fromCalled: Int, url: String, requestCode: Int, title: String) {
         val intent = createIntent(context, PhotoViewerActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
         intent.putExtra(EXTRA_PHOTO_VIEWER_CALLED_FROM, fromCalled)
         intent.putExtra(EXTRA_PHOTO_URL, url)
         intent.putExtra(EXTRA_PHOTO_POSITION, position)
+        intent.putExtra(EXTRA_PHOTO_TITLE, title)
 
-        // when(fromCalled) {
-        //     CALLED_FROM_FEED_INFO -> {
-        //         val activityOptions = getFeedInfoPhotoViewerOptions(context, imageView)
-        //         (context as FeedItemActivity).startActivityForResult(intent, requestCode,
-        //             activityOptions.toBundle())
-        //     }
-        //     CALLED_FROM_PHOTO_INFO -> {
-        //         val activityOptions = getPhotoInfoPhotoViewerOptions(context, imageView)
-        //         (context as PhotoInfoActivity).startActivityForResult(intent, requestCode,
-        //             activityOptions.toBundle())
-        //     }
-        //     CALLED_FROM_PHOTOG_PHOTO -> {
-        //         val activityOptions = getPhotogPhotoViewerOptions(context, imageView)
-        //         (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode,
-        //             activityOptions.toBundle())
-        //     }
-        // }
+        when(fromCalled) {
+            CALLED_FROM_FEED_INFO -> {
+                val activityOptions = getFeedInfoPhotoViewerOptions(context, imageView)
+                (context as FeedInfoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
+            CALLED_FROM_PHOTO_INFO -> {
+                val activityOptions = getPhotoInfoPhotoViewerOptions(context, imageView)
+                (context as PhotoInfoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
+            CALLED_FROM_PHOTOG_PHOTO -> {
+                val activityOptions = getPhotogPhotoViewerOptions(context, imageView)
+                (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
 
-        (context as Activity).startActivity(intent)
+            CALLED_FROM_FEED_ITEM -> {
+                val activityOptions = getFeedInfoPhotoViewerOptions(context, imageView)
+                (context as FeedItemActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
+        }
     }
 
     fun callFeedSearch(context: Context) {
@@ -473,12 +474,19 @@ object Caller {
                         textView.getPaddingBottom()))
         intent.putExtra(TEXT_COLOR, textView.currentTextColor)
         */
-        (context as Activity).startActivity(intent)
 
-        // val activityOptions = getPhotogPhotoActivityOptions(context, imageView, calledFrom)
-        // (context as OthersProfileActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+        // (context as Activity).startActivity(intent)
+
+        val activityOptions = getPhotogPhotoActivityOptions(context, imageView, calledFrom)
+        when (calledFrom) {
+            CALLED_FROM_HOME_PROFILE -> {
+                (context as HomeActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
+            CALLED_FROM_OTHERS_PROFILE -> {
+                (context as OthersProfileActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+            }
+        }
         // (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
-
     }
 
     fun callComment(context: Context, photoID: String) {
@@ -767,6 +775,7 @@ object Caller {
     private fun getFeedInfoPhotoViewerOptions(context: Context, imageView: View): ActivityOptions {
         val imagePair = Pair.create(imageView, imageView.transitionName)
         val decorView = (context as FeedItemActivity).window.decorView
+        // val decorView = (context as FeedInfoActivity).window.decorView
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 
         return if (navBackground == null) {
@@ -808,7 +817,6 @@ object Caller {
 
     private fun getPhotogPhotoActivityOptions(context: Context, imageView: View, calledFrom: Int): ActivityOptions {
         val imagePair = Pair.create(imageView, imageView.transitionName)
-        // val decorView: View = (context as PhotogPhotoActivity).window.decorView
         val decorView = (context as Activity).window.decorView
 
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)

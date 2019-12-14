@@ -33,6 +33,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGalle
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_HOME_PROFILE_ITEM_POSITION
+import com.goforer.grabph.presentation.common.effect.transition.TransitionObject.TRANSITION_NAME_FOR_IMAGE
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
@@ -77,10 +78,17 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             tv_profile_mission_price.requestLayout()
             activity.setFixedImageSize(400, 400) // original value: 0, 0
 
-            val url = CommonUtils.getFlickrPhotoURL(item.farm, item.server!!, item.id, item.secret!!)
+            val url = CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
             activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
 
+            iv_play_btn.visibility = when (item.media) {
+                activity.getString(R.string.media_type_video) -> View.VISIBLE
+                activity.getString(R.string.media_type_photo) -> View.GONE
+                else -> View.GONE
+            }
+
+            iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
             iv_profile_my_photo.setOnClickListener {
                 Caller.callPhotoInfo(
                     activity,

@@ -30,8 +30,9 @@
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedItemActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedItem"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".presentation.ui.player.FullSizePlayerActivity"
             android:launchMode="singleTop"
@@ -67,7 +68,7 @@
             android:name=".presentation.ui.othersprofile.OthersProfileActivity"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
+            android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".presentation.ui.people.PeopleActivity"
             android:launchMode="singleTop"
@@ -153,9 +154,10 @@
             android:theme="@style/AppTheme.NoActionBar.Photog" />
         <activity
             android:name=".presentation.ui.feed.photoinfo.PhotoInfoActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.PhotoInfo" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedItem" />
         <activity
             android:name=".presentation.ui.comment.CommentActivity"
             android:launchMode="singleTop"

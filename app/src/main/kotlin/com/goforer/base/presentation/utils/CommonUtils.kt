@@ -593,8 +593,12 @@ object CommonUtils {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
     }
 
-    fun getFlickrPhotoURL(farm: Int, server: String, id: String, secret: String): String {
-        return "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg"
+    fun getFlickrPhotoURL(server: String, id: String, secret: String): String {
+        return "https://live.staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg"
+    }
+
+    fun getFlickrPhotoUrlForViewer(server: String, id: String, secret: String): String {
+        return "https://live.staticflickr.com/" + server + "/" + id + "_" + secret + "_c.jpg"
     }
 }
 

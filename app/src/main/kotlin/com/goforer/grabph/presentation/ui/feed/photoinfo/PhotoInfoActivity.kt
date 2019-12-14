@@ -29,6 +29,7 @@ import android.view.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.SharedElementCallback
 import androidx.lifecycle.Observer
 import com.goforer.base.annotation.MockData
@@ -78,6 +79,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.android.synthetic.main.activity_photo_info.*
@@ -92,6 +94,7 @@ import kotlinx.android.synthetic.main.layout_selection_content_size.*
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.random.Random
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -117,10 +120,17 @@ class PhotoInfoActivity : BaseActivity() {
     private var videoUrl: String? = null
     private var userPhotoUrl: String? = null
 
+    private var isAppBarLayoutExpanded = false
+    private var isAppBarLayoutCollapsed = false
+
     private var player: SimpleExoPlayer? = null
     private var currentWindow = 0
     private var playbackPosition: Long = 0
     private var selectedContentSize = 0
+
+    private lateinit var behavior: AppBarLayout.Behavior
+    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var params: CoordinatorLayout.LayoutParams
 
     private val job = Job()
 
@@ -203,6 +213,8 @@ class PhotoInfoActivity : BaseActivity() {
         window.sharedElementEnterTransition.addListener(sharedEnterListener)
         supportPostponeEnterTransition()
         playBackStateListener = PlayBackStateListener()
+
+        Timber.plant(Timber.DebugTree())
 
         getIntentData()
         selectSizesButtonClickListener()
@@ -411,8 +423,7 @@ class PhotoInfoActivity : BaseActivity() {
                 }
             }
 
-            Status.LOADING -> {
-            }
+            Status.LOADING -> {}
 
             Status.ERROR -> {
                 showNetworkError(resource.errorCode)
@@ -434,7 +445,7 @@ class PhotoInfoActivity : BaseActivity() {
             picture.description._content
         }
 
-        val url = CommonUtils.getFlickrPhotoURL(picture.farm, picture.server, picture.id, picture.secret!!)
+        val url = CommonUtils.getFlickrPhotoUrlForViewer(picture.server, picture.id, picture.secret!!)
 
         this.iv_photo_info_photo.setOnClickListener {
             this.iv_photo_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
@@ -443,8 +454,9 @@ class PhotoInfoActivity : BaseActivity() {
                 this.iv_photo_info_photo,
                 0,
                 CALLED_FROM_PHOTO_INFO,
-                if (picture.media == "video") photoPath else url,
-                SELECTED_PHOTO_INFO_ITEM_POSITION
+                if (picture.media == getString(R.string.media_type_video)) photoPath else url,
+                SELECTED_PHOTO_INFO_ITEM_POSITION,
+                picture.title._content
             )
         }
     }
@@ -465,7 +477,6 @@ class PhotoInfoActivity : BaseActivity() {
 
                 this.video_view_photo_info.visibility = View.GONE
                 this.iv_photo_info_photo.visibility = View.VISIBLE
-                this.iv_fullsize_photo_info.visibility = View.VISIBLE
 
                 this.iv_play_btn_photo_info.setOnClickListener {
                     this.video_view_photo_info.visibility = View.VISIBLE
@@ -542,8 +553,10 @@ class PhotoInfoActivity : BaseActivity() {
     })
 
     private fun displayUserInfo(user: Person) {
-        val name = user.realname?._content ?: user.username?._content
-        this.tv_username_photo_info.text = if (name == "") "unknown user" else name
+        val name = user.realname?._content?.let {
+            if (it.isEmpty()) user.username?._content else it
+        } ?: user.username?._content
+        this.tv_username_photo_info.text = name
 
         userPhotoUrl = workHandler.getProfilePhotoURL(user.iconfarm, user.iconserver, user.id)
 
@@ -717,7 +730,7 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun buildMediaSource(uri: Uri): MediaSource {
-        val dataSourceFactory = DefaultDataSourceFactory(this, "sample_test")
+        val dataSourceFactory = DefaultDataSourceFactory(this, "searp")
 
         return ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
     }
@@ -767,20 +780,72 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun initCoordinatorLayout() {
+        setCoordinatorBehavior()
+        setScrollBehavior()
+        setCollapsingBehavior()
+    }
+
+    private fun setCoordinatorBehavior() {
         this.coordinator_photo_info_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
             override fun onSwipeLeft(x: Float, y: Float) {
+                finishAfterTransition()
             }
 
             override fun onSwipeRight(x: Float, y: Float) {
+                finishAfterTransition()
             }
 
             override fun onSwipeDown(x: Float, y: Float) {
+                if (!isAppBarLayoutCollapsed && isAppBarLayoutExpanded) {
+                    finishAfterTransition()
+                }
+
+                if (isAppBarLayoutCollapsed && !isAppBarLayoutExpanded) {
+                    // this@PhotoInfoActivity.appbar_layout_photo_info.setExpanded(false, true)
+                }
             }
 
             override fun onSwipeUp(x: Float, y: Float) {
             }
 
             override fun onSwipeDone() {
+            }
+        })
+    }
+
+    private fun setScrollBehavior() {
+
+    }
+
+    private fun setCollapsingBehavior() {
+        var currentOffset: Int
+        var alpha: Int
+        var offSetPercentage: Float
+
+        this.appbar_layout_photo_info.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+                appBarLayout, verticalOffset ->
+            currentOffset = abs(verticalOffset)
+            offSetPercentage = (currentOffset.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            alpha = (255 * offSetPercentage).toInt()
+
+            this.tv_photo_info_title.setTextColor(this.tv_photo_info_title.textColors.withAlpha(alpha))
+            this.tv_photo_info_title.alpha = alpha.toFloat()
+
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    isAppBarLayoutExpanded = false
+                    isAppBarLayoutCollapsed = true
+                }
+
+                verticalOffset == 0 -> {
+                    isAppBarLayoutExpanded = true
+                    isAppBarLayoutCollapsed = false
+                }
+
+                else -> {
+                    isAppBarLayoutExpanded = false
+                    isAppBarLayoutCollapsed = true
+                }
             }
         })
     }
@@ -816,6 +881,12 @@ class PhotoInfoActivity : BaseActivity() {
             CONTENT_SIZE_M -> this.cb_feed_size_m.isChecked = true
             CONTENT_SIZE_L -> this.cb_feed_size_l.isChecked = true
         }
+    }
+
+    private fun enableAppBarDraggable(draggable: Boolean) {
+        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
+            override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
+        })
     }
 
     private fun setViewBind() {
@@ -887,22 +958,43 @@ class PhotoInfoActivity : BaseActivity() {
         @SuppressLint("BinaryOperationInTimber")
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             super.onPlayerStateChanged(playWhenReady, playbackState)
-            val stateString: String
 
-            when (playbackState) {
-                ExoPlayer.STATE_IDLE -> stateString = "ExoPlayer.STATE_IDLE      -"
-                ExoPlayer.STATE_BUFFERING -> stateString = "ExoPlayer.STATE_BUFFERING      -"
-                ExoPlayer.STATE_READY -> {
-                    this@PhotoInfoActivity.iv_play_btn_photo_info.visibility = View.VISIBLE
-                    this@PhotoInfoActivity.progress_bar_play_button.visibility = View.GONE
-                    stateString = "ExoPlayer.STATE_READY      -"
+            val stateString: String = when (playbackState) {
+                ExoPlayer.STATE_IDLE -> {
+                    setViewWhenTrouble()
+                    "ExoPlayer.STATE_IDLE      -"
                 }
-                ExoPlayer.STATE_ENDED -> stateString = "ExoPlayer.STATE_ENDED      -"
-                else -> stateString = "UNKNOWN_STATE      -"
+                ExoPlayer.STATE_BUFFERING -> {
+                    "ExoPlayer.STATE_BUFFERING -"
+                }
+                ExoPlayer.STATE_READY -> {
+                    setViewWhenReady()
+                    "ExoPlayer.STATE_READY     -"
+                }
+                ExoPlayer.STATE_ENDED -> {
+                    "ExoPlayer.STATE_ENDED     -"
+                }
+                else -> {
+                    "UNKNOWN_STATE             -"
+                }
             }
 
             Timber.d("changed state to " + stateString
                 + " playWhenReady: " + playWhenReady)
+        }
+
+        private fun setViewWhenReady() {
+            this@PhotoInfoActivity.iv_play_btn_photo_info.visibility = View.VISIBLE
+            this@PhotoInfoActivity.progress_bar_play_button.visibility = View.GONE
+            this@PhotoInfoActivity.iv_fullsize_photo_info.visibility = View.VISIBLE
+        }
+
+        private fun setViewWhenTrouble() {
+            this@PhotoInfoActivity.progress_bar_play_button.visibility = View.GONE
+            Snackbar.make(this@PhotoInfoActivity.coordinator_photo_info_layout,
+                "Sorry, something's wrong with the video source..",
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 }

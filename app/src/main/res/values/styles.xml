@@ -72,6 +72,19 @@
         <item name="android:windowSharedElementEnterTransition">@transition/shared_feed_info</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.PhotoBar.Info.FeedItem">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.PhotoBar.Info.QuestInfo">
         <item name="android:windowSharedElementEnterTransition">@transition/shared_quest_info</item>
     </style>

@@ -11,13 +11,6 @@
         <changeClipBounds />
         <changeImageTransform />
     </transitionSet>
-    <transitionSet>
-        <targets>
-            <target android:targetId="@id/tv_feed_toolbar_title" />
-        </targets>
-        <transition class="com.goforer.grabph.presentation.common.effect.transition.TextResize" />
-        <changeBounds />
-    </transitionSet>
     <recolor>
         <targets>
             <target android:targetId="@android:id/statusBarBackground" />

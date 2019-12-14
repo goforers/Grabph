@@ -243,14 +243,15 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
             resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
                 state: RecyclerView.State) {
-                outRect.left = 0
-                outRect.right = 0
-                outRect.bottom = gap
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
+                outRect.top = 4
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0
                     || parent.getChildAdapterPosition(view) == 1) {
-                    outRect.top = gap
+
                 }
             }
         }

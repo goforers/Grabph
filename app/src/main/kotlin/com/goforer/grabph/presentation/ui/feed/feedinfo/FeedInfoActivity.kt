@@ -873,23 +873,31 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
     }
 
     private suspend fun displayFeedInfo(feedItem: FeedItem, calledFrom: Int) {
-        asyncUIWork {
-            loadPhoto(this@FeedInfoActivity, feedItem.media.m, calledFrom, feedItem)
-        }
+        // asyncUIWork {
+            loadPhoto(calledFrom, feedItem)
+        // }
 
         asyncUIWork {
             fillExtraInfo(feedItem)
         }
     }
 
-    private fun loadPhoto(activity: FeedInfoActivity, url: String?, calledFrom: Int, feedItem: FeedItem) {
+    private fun loadPhoto(calledFrom: Int, feedItem: FeedItem) {
+        val url = feedItem.media.m
         val photoPath = if (feedItem.mediaType == getString(R.string.media_type_photo)) url?.substring(0, url.indexOf("_m")) + ".jpg"
         else url!!
 
         this.iv_feed_info_photo.setOnClickListener {
             this.iv_feed_info_photo.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + 0
-            Caller.callViewer(activity, this.iv_feed_info_photo, 0, CALLED_FROM_FEED_INFO,
-                photoPath, SELECTED_FEED_INFO_PHOTO_VIEW)
+            Caller.callViewer(
+                this,
+                this.iv_feed_info_photo,
+                0,
+                CALLED_FROM_FEED_INFO,
+                photoPath,
+                SELECTED_FEED_INFO_PHOTO_VIEW,
+                feedItem.title
+            )
         }
 
         setFixedImageSize(0, 0)
@@ -1192,8 +1200,7 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         savePhoto.title = feedTitle
         savePhoto.enabledSaveEXIF = this@FeedInfoActivity.cell_portion_information_container.isShown
         savePhoto.enabledSaveLocation = this@FeedInfoActivity.place_cardholder.isShown
-        savePhoto.showSaveDialog(this, localEXIFViewModel, localLocationViewModel,
-            localSavedPhotoViewModel, savePhoto)
+        savePhoto.showSaveDialog(this, localEXIFViewModel, localLocationViewModel, localSavedPhotoViewModel, savePhoto)
     }
 
     private fun callShareToFacebook(drawable: BitmapDrawable, caption: String) {

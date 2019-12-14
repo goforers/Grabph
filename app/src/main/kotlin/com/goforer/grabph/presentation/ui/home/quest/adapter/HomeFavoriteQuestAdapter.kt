@@ -98,7 +98,8 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
         }
     }
 
-    class HomeMissionViewHolder(override val containerView: View, private val fragment: HomeQuestFragment): BaseViewHolder<Quest>(containerView), LayoutContainer {
+    class HomeMissionViewHolder(override val containerView: View, private val fragment: HomeQuestFragment)
+        : BaseViewHolder<Quest>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Quest, position: Int) {
             // In case of applying transition effect to views, have to use findViewById method
             var isPlayerVisible = false

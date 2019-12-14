@@ -157,7 +157,7 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
         private val adapter: HomeFeedAdapter): BaseViewHolder<FeedItem>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: FeedItem, position: Int) {
-            val photoPath = if (item.mediaType == "photo") {
+            val photoPath = if (item.mediaType == fragment.activity?.getString(R.string.media_type_photo)) {
                 item.media.m?.substring(0, item.media.m!!.indexOf("_m")) + ".jpg"
             } else {
                 item.media.m!!
@@ -175,16 +175,10 @@ class HomeFeedAdapter(private val fragment: HomeFeedFragment): PagedListAdapter<
                 item.title = containerView.resources.getString(R.string.no_title)
             }
 
-            when (item.mediaType) {
-                fragment.homeActivity.getString(R.string.media_type_video) -> {
-                    iv_play_btn.visibility = View.VISIBLE
-                }
-                fragment.homeActivity.getString(R.string.media_type_photo) -> {
-                    iv_play_btn.visibility = View.GONE
-                }
-                else -> {
-                    iv_play_btn.visibility = View.VISIBLE
-                }
+            iv_play_btn.visibility = when (item.mediaType) {
+                fragment.homeActivity.getString(R.string.media_type_video) -> View.VISIBLE
+                fragment.homeActivity.getString(R.string.media_type_photo) -> View.GONE
+                else -> View.GONE
             }
 
             tv_feed_item_title.text = item.title

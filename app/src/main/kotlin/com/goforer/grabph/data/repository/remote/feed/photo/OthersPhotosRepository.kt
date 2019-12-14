@@ -25,6 +25,7 @@ constructor(private val photoDao: PhotoDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.people.getphotos"
         const val PREFETCH_DISTANCE = 10
+        const val EXTRA_QUERIES = "media, url_m, url_z"
     }
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
@@ -47,8 +48,15 @@ constructor(private val photoDao: PhotoDao): Repository<Query>() {
                 }
             }
 
-            override suspend fun loadFromNetwork() = searpService.getPhotos(KEY, parameters.query1 as String,
-                METHOD, FORMAT_JSON, parameters.query2 as Int, PER_PAGE, INDEX)
+            override suspend fun loadFromNetwork() = searpService.getPhotos(
+                KEY,
+                parameters.query1 as String,
+                METHOD, FORMAT_JSON,
+                parameters.query2 as Int,
+                PER_PAGE,
+                INDEX,
+                EXTRA_QUERIES
+            )
 
             override suspend fun clearCache() = photoDao.clearAll()
         }.getAsLiveData()

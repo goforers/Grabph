@@ -654,10 +654,10 @@ class OthersProfileActivity : BaseActivity() {
                 outRect.left = 4
                 outRect.right = 4
                 outRect.bottom = 4
+                outRect.top = 4
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                    outRect.top = 0
                 }
             }
         }

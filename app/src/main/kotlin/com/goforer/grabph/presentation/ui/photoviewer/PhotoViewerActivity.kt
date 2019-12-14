@@ -65,7 +65,6 @@ import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
 import com.goforer.grabph.presentation.common.view.SlidingDrawer
-import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedInfoActivity
 import com.goforer.grabph.presentation.ui.feed.photoinfo.PhotoInfoActivity
 import com.goforer.grabph.presentation.vm.feed.exif.LocalEXIFViewModel
 import com.goforer.grabph.presentation.vm.feed.location.LocalLocationViewModel
@@ -83,6 +82,7 @@ import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedItemActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_photo_viewer.*
 import kotlinx.android.synthetic.main.view_searple_gallery_photo.*
@@ -100,6 +100,7 @@ class PhotoViewerActivity: BaseActivity() {
 
     private var imagePosition: Int = 0
     private var initialPosition: Int = 0
+    private var title: String = ""
 
     private val job = Job()
 
@@ -178,10 +179,25 @@ class PhotoViewerActivity: BaseActivity() {
                 }
             }
 
+            setTitle(title)
+
             transactFragment(PhotoViewerFragment::class.java, R.id.disconnect_container_photo_viewer, false)
         } else {
             networkStatusVisible(false)
         }
+    }
+
+    override fun setViews(savedInstanceState: Bundle?) {
+        window.sharedElementEnterTransition.addListener(sharedEnterListener)
+        supportPostponeEnterTransition()
+
+        slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
+            .setActivity(this)
+            .setRootView(R.id.coordinator_layout)
+            .setBundle(savedInstanceState)
+            .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
+            .setWorkHandler(workHandler)
+            .build()
     }
 
     @SuppressLint("SetTextI18n")
@@ -221,19 +237,6 @@ class PhotoViewerActivity: BaseActivity() {
         }
 
         this@PhotoViewerActivity.toolbar.hideOverflowMenu()
-    }
-
-    override fun setViews(savedInstanceState: Bundle?) {
-        window.sharedElementEnterTransition.addListener(sharedEnterListener)
-        supportPostponeEnterTransition()
-
-        slidingDrawer = SlidingDrawer.SlidingDrawerBuilder()
-                .setActivity(this)
-                .setRootView(R.id.coordinator_layout)
-                .setBundle(savedInstanceState)
-                .setType(SlidingDrawer.DRAWER_SEARPER_PROFILE_TYPE)
-                .setWorkHandler(workHandler)
-                .build()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -416,6 +419,7 @@ class PhotoViewerActivity: BaseActivity() {
             photoUrl = intent.getStringExtra(EXTRA_PHOTO_URL)
             initialPosition = intent.getIntExtra(EXTRA_PHOTO_POSITION, -1)
             imagePosition = initialPosition
+            title = intent.getStringExtra(Caller.EXTRA_PHOTO_TITLE)
         }
     }
 
@@ -582,7 +586,7 @@ class PhotoViewerActivity: BaseActivity() {
         }
 
         CALLED_FROM_FEED_INFO -> {
-            val intent = Intent(this, FeedInfoActivity::class.java)
+            val intent = Intent(this, FeedItemActivity::class.java)
             intent.putExtra(EXTRA_PHOTO_POSITION, initialPosition)
             setResult(SELECTED_FEED_INFO_PHOTO_VIEW, intent)
         }
