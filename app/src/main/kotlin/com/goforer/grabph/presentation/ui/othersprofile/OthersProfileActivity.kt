@@ -29,7 +29,6 @@ import android.widget.ImageView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
@@ -318,9 +317,7 @@ class OthersProfileActivity : BaseActivity() {
             else -> userId
         }
 
-        viewModel.setParametersPhotos(
-            Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL)
-        )
+        viewModel.setParametersPhotos(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL))
 
         val liveData = viewModel.photos
         liveData.observe(this, Observer { resource ->
@@ -334,7 +331,9 @@ class OthersProfileActivity : BaseActivity() {
                             if (it.size > 0) {
                                 when (calledFrom) {
                                     CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
-                                        if (userId == photos[0]?.owner) adapter?.submitList(photos)
+                                        if (userId == photos[0]?.owner) {
+                                            adapter?.submitList(photos)
+                                        }
                                     }
                                     else -> {
                                         adapter?.submitList(photos)
@@ -365,22 +364,20 @@ class OthersProfileActivity : BaseActivity() {
         })
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun setBottomPortionView() {
-        viewModel.setParametersPhotos(
-            Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL)
-            )
-        val liveData: LiveData<Resource>? = viewModel.photos
+        viewModel.setParametersPhotos(Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL))
+        val liveData = viewModel.photos
 
-        liveData?.observe(this, Observer { resource ->
+        liveData.observe(this, Observer { resource ->
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { list ->
-                        @Suppress("UNCHECKED_CAST")
                         val photos = list as? PagedList<Photo>?
 
                         photos?.let {
-                            if (it.size > 0) {
-                                if (userId == photos[0]?.owner) adapter?.submitList(photos)
+                            if (it.isNotEmpty()) {
+                                if (userId == photos[0]?.owner) { adapter?.submitList(photos) }
                             } else {
                                 // show something to say that the list is empty
                             }

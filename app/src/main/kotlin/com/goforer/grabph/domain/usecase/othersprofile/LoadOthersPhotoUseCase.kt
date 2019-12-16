@@ -26,8 +26,6 @@ import com.goforer.grabph.data.repository.remote.feed.photo.OthersPhotosReposito
 import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
 import com.goforer.grabph.data.datasource.network.response.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,14 +41,17 @@ constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parame
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData {
-                emitSource(repository.load(this@LoadOthersPhotoUseCase.liveData,
-                    Parameters(
-                        query.query,
-                        liveData.value?.pages!!,
-                        liveData.value?.loadType!!,
-                        liveData.value?.boundType!!
+                emitSource(
+                    repository.load(
+                        liveData,
+                        Parameters(
+                            query.query,
+                            query.pages,
+                            query.loadType,
+                            query.boundType
+                        )
                     )
-                ))
+                )
             }
         }
     }

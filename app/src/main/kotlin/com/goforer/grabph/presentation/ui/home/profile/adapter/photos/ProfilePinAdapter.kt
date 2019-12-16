@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
@@ -53,7 +55,10 @@ class MyPinViewHolder(override val containerView: View, private val activity: Ho
         activity.setFixedImageSize(400, 400) // original value: 0, 0
 
         val url = CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
-        activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
+        // activity.setImageDraw(iv_profile_my_photo, url)
+
+        val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
+        Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
 
         iv_play_btn.visibility = when (item.media) {
             activity.getString(R.string.media_type_video) -> View.VISIBLE

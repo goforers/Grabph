@@ -4,16 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
-import androidx.paging.PagedList
 import com.goforer.grabph.data.datasource.model.cache.data.AbsentLiveData
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
-import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.repository.remote.profile.MyGalleryRepository
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.BaseUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +25,7 @@ constructor(private val repository: MyGalleryRepository): BaseUseCase<Parameters
         return liveData.switchMap { query ->
             query ?: AbsentLiveData.create<Resource>()
             liveData {
-                emitSource(repository.load(this@LoadMyGalleryUseCase.liveData,
+                emitSource(repository.load(liveData,
                     Parameters(
                         query.query,
                         liveData.value?.pages!!,
@@ -39,10 +35,6 @@ constructor(private val repository: MyGalleryRepository): BaseUseCase<Parameters
                 ))
             }
         }
-    }
-
-    internal fun test(parameters: Parameters): LiveData<PagedList<MyGallery>> {
-        return repository.loadGallery(parameters)
     }
 
     private fun setQuery(parameters: Parameters, query: Query) {

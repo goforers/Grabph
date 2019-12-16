@@ -47,8 +47,7 @@ class PageListProfilePhotoBoundaryCallback<T>(private val liveData: MutableLiveD
         query.boundType = BOUND_FROM_BACKEND
         liveData.value = query
 
-        val input = query.pages
-        if (input == liveData.value?.pages) {
+        if (query.pages == liveData.value?.pages) {
             return
         }
 

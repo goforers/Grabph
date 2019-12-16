@@ -80,13 +80,10 @@ class HomeProfileGalleryFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         setScrollAddListener()
         createMyPhotosAdapter()
-        // observeLiveData()
-
-        viewModel.liveGallery.observe(this, Observer {
-            submitMyPhotos(it)
-        })
+        observeLiveData()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun observeLiveData() {
         val liveData = viewModel.gallery
         liveData.observe(this, Observer { resource ->
@@ -98,8 +95,14 @@ class HomeProfileGalleryFragment: BaseFragment() {
                         gallery?.let {
                             if (it.isNotEmpty()) {
                                 submitMyPhotos(it)
+                            } else {
+                                // show something to say that the list is empty
                             }
                         }
+                    }
+                    resource.getMessage()?.let {
+                        homeActivity.showNetworkError(resource)
+                        liveData.removeObservers(this)
                     }
                 }
                 Status.LOADING -> { }
@@ -128,7 +131,7 @@ class HomeProfileGalleryFragment: BaseFragment() {
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return object : GapItemDecoration(VERTICAL_LIST,resources.getDimensionPixelSize(R.dimen.space_4)) {
+        return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 outRect.left = 2
                 outRect.right = 2

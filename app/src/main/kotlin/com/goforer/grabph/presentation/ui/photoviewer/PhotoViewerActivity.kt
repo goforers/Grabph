@@ -379,8 +379,8 @@ class PhotoViewerActivity: BaseActivity() {
         var outState = outState
 
         outState.putInt(EXTRA_SELECTED_ITEM_POSITION, imagePosition)
-        outState.putStringArrayList(EXTRA_PHOTO_FILE_NAME_LIST, photoPathList as ArrayList<String>)
-        outState.putStringArrayList(EXTRA_PHOTO_FILE_ID_LIST, photoIdList as ArrayList<String>)
+        if (::photoPathList.isInitialized) outState.putStringArrayList(EXTRA_PHOTO_FILE_NAME_LIST, photoPathList as ArrayList<String>)
+        if (::photoIdList.isInitialized) outState.putStringArrayList(EXTRA_PHOTO_FILE_ID_LIST, photoIdList as ArrayList<String>)
         //add the values which need to be saved from the drawer to the bundle
         slidingDrawer.searperProfileDrawerForDownloadViewDrawer?.let {
             outState = slidingDrawer.searperProfileDrawerForDownloadViewDrawer!!.saveInstanceState(outState)

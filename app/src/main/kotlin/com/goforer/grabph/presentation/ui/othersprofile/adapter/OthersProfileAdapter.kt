@@ -22,6 +22,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
@@ -44,7 +46,6 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
         }
 
         private const val TRANSITION_NAME_FOR_IMAGE = "Image "
-        private const val TRANSITION_NAME_FOR_TITLE = "Title "
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -68,7 +69,10 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
             iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
 
             val url = item.url_z ?: CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
-            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, false)
+            // activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
+
+            val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
+            Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
             tv_profile_mission_price.text = ""
 
             iv_play_btn.visibility = when (item.media) {

@@ -328,18 +328,18 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
 
         val options = if (skipCache) {
             RequestOptions
-                    .fitCenterTransform()
-                    .placeholder(R.color.colorDefaultDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(true)
-                    .signature(IntegerVersionSignature(getVersionNumber()))
+                .fitCenterTransform()
+                .placeholder(R.drawable.ic_imgbg)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
+                .signature(IntegerVersionSignature(getVersionNumber()))
 
         } else {
             RequestOptions
-                    .fitCenterTransform()
-                    .placeholder(R.color.colorDefaultDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .signature(IntegerVersionSignature(getVersionNumber()))
+                .fitCenterTransform()
+                .placeholder(R.drawable.ic_imgbg)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(IntegerVersionSignature(getVersionNumber()))
         }
 
         glideRequestManager
@@ -390,18 +390,18 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
 
         val options = if (skipCache) {
             RequestOptions
-                    .fitCenterTransform()
-                    .placeholder(R.color.colorDefaultDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(true)
-                    .signature(IntegerVersionSignature(getVersionNumber()))
+                .fitCenterTransform()
+                .placeholder(R.drawable.ic_imgbg)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
+                .signature(IntegerVersionSignature(getVersionNumber()))
 
         } else {
             RequestOptions
-                    .fitCenterTransform()
-                    .placeholder(R.color.colorDefaultDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .signature(IntegerVersionSignature(getVersionNumber()))
+                .fitCenterTransform()
+                .placeholder(R.drawable.ic_imgbg)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(IntegerVersionSignature(getVersionNumber()))
         }
 
         glideRequestManager
@@ -448,7 +448,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
     internal fun setImageDraw(view: AppCompatImageView, url: String) {
         val options = RequestOptions
                 .fitCenterTransform()
-                .placeholder(R.color.colorDefaultDrawable)
+                .placeholder(R.drawable.ic_imgbg)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
                 .signature(IntegerVersionSignature(getVersionNumber()))

@@ -29,6 +29,9 @@ interface PhotoDao: BaseDao<Photo> {
     @Query("SELECT * FROM Photo WHERE owner = :userId")
     fun getPhotos(userId: String): DataSource.Factory<Int, Photo>
 
+    @Query("SELECT * FROM Photo WHERE owner = :userId")
+    fun getPhotoList(userId: String): List<Photo>
+
     @Query("DELETE FROM Photo WHERE _id = :photoId")
     fun deleteByPhotoId(photoId: String)
 

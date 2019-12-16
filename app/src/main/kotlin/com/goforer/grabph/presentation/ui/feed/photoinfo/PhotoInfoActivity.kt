@@ -308,6 +308,10 @@ class PhotoInfoActivity : BaseActivity() {
         setViewBind()
         setActivityResult()
 
+        this.video_view_photo_info.visibility = View.GONE
+        this.iv_photo_info_photo.visibility = View.VISIBLE
+        this.iv_fullsize_photo_info.visibility = View.GONE
+
         super.finishAfterTransition()
     }
 

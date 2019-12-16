@@ -102,7 +102,6 @@ class HomeProfileFragment : BaseFragment() {
 
         const val FRAGMENT_KEY_HOME_GALLERY = "searp:fragment_home_gallery"
         const val FRAGMENT_KEY_HOME_PIN = "searp:fragment_home_pin"
-        const val FRAGMENT_KEY_HOME_SALES = "searp:fragment_home_sales"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -205,7 +204,7 @@ class HomeProfileFragment : BaseFragment() {
                         if (user?.id == userId) setTopPortionView(user)
                     }
                     resource.getMessage()?.let {
-                        // showNetworkError(resource)
+                        homeActivity.showNetworkError(resource)
                         liveData.removeObservers(this)
                     }
                 }

@@ -21,11 +21,11 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.goforer.base.presentation.utils.CommonUtils
-import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
@@ -62,14 +62,6 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
         item?.let { holder.bindItemHolder(holder, it, position) }
     }
 
-    override fun onCurrentListChanged(previousList: PagedList<MyGallery>?, currentList: PagedList<MyGallery>?) {
-        super.onCurrentListChanged(previousList, currentList)
-        withDelay(STOP_LOADING_TIME_OUT) {
-            previousList?.let {
-
-            }
-        }
-    }
     class MyPhotosViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<MyGallery>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: MyGallery, position: Int) {
@@ -79,7 +71,9 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             activity.setFixedImageSize(400, 400) // original value: 0, 0
 
             val url = CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
-            activity.setImageDraw(iv_profile_my_photo, url)
+            val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
+            Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
+            // activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
 
             iv_play_btn.visibility = when (item.media) {

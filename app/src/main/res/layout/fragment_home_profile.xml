@@ -116,13 +116,17 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_profile_name"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:textSize="@dimen/text_size_22"
-                            android:gravity="center"
-                            android:text="Daniel Hennry"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="Unknown User"
+                            android:layout_marginEnd="@dimen/margin_10"
                             android:textColor="@color/white"
-                            app:layout_constraintStart_toStartOf="parent"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_profile_edit"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/btn_profile_edit"
