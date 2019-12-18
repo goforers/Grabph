@@ -31,7 +31,7 @@ constructor(private val rankingDao: RankingDao): Repository<Query>() {
 
             override fun onFetchFailed(failedMessage: String?) { repoRateLimit.reset(parameters.query1 as String) }
 
-            override suspend fun saveToCache(item: Ranking) = rankingDao.insert(item)
+            override suspend fun handleToCache(item: Ranking) = rankingDao.insert(item)
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int) = rankingDao.getRanking()
 

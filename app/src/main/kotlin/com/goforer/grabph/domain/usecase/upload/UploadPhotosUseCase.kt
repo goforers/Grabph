@@ -16,7 +16,7 @@ class UploadPhotosUseCase
 constructor(): BaseUseCase<Parameters, Resource>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
-    override fun execute(parameters: Parameters): LiveData<Resource> {
+    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -33,7 +33,7 @@ constructor(private val useCase: LoadFeedSearchUseCase): BaseViewModel<Parameter
     internal lateinit var feed: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        feed = useCase.execute(parameters)
+        feed = useCase.execute(viewModelScope, parameters)
     }
 
     internal val pinnedup: LiveData<PagedList<FeedItem>> by lazy {

@@ -24,5 +24,5 @@ import kotlinx.coroutines.CoroutineScope
  * [Result<R>].
  */
 abstract class BaseUseCase<in P, T> {
-    abstract fun execute(parameters: P): LiveData<T>
+    abstract fun execute(viewModelScope: CoroutineScope, parameters: P): LiveData<T>
 }

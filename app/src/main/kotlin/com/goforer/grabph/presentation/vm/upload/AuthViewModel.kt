@@ -17,7 +17,7 @@ constructor(private val authUseCase: LoadAuthUseCase): BaseViewModel<Parameters>
     internal lateinit var requestStat: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        requestStat = authUseCase.execute(parameters)
+        requestStat = authUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun getRequestToken() {

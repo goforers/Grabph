@@ -35,14 +35,15 @@ constructor(private val peopleDao: PeopleDao): Repository<Query>() {
 
             override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
-            override suspend fun saveToCache(item: MutableList<Searper>) = insert(item)
+            override suspend fun handleToCache(item: MutableList<Searper>) = insert(item)
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<Searper>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(10)
-                        .setPageSize(20)
-                        .setPrefetchDistance(10)
+                        .setInitialLoadSizeHint(itemCount * 2)
+                        .setPageSize(itemCount)
+                        .setPrefetchDistance(itemCount - 2)
+                        .setEnablePlaceholders(true)
                         .build()
 
                 return withContext(Dispatchers.IO) {

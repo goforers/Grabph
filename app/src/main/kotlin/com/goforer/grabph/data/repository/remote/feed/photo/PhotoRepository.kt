@@ -40,13 +40,13 @@ class PhotoRepository
 constructor(private val dao: PhotoDao): Repository<Query>() {
     companion object {
         const val METHOD = "flickr.people.getphotos"
-        const val PREFETCH_DISTANCE = 10
+        const val PREFETCH_DISTANCE = 20
         const val EXTRA_QUERIES = "media, url_m, url_z"
     }
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<Photo>, PagedList<Photo>, Photog>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<Photo>) = dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<Photo>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*
@@ -58,9 +58,9 @@ constructor(private val dao: PhotoDao): Repository<Query>() {
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<Photo>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(20)
+                        .setInitialLoadSizeHint(itemCount * 2)
                         .setPageSize(itemCount)
-                        .setPrefetchDistance(PREFETCH_DISTANCE)
+                        .setPrefetchDistance(itemCount)
                         .setEnablePlaceholders(true)
                         .build()
 

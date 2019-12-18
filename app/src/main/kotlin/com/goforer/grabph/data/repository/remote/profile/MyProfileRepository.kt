@@ -39,7 +39,7 @@ constructor(private val profileDao: MyProfileDao): Repository<Query>(){
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MyProfile, MyProfile, MyProfileHolder>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MyProfile) = profileDao.insert(item)
+            override suspend fun handleToCache(item: MyProfile) = profileDao.insert(item)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 

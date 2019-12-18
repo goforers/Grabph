@@ -27,7 +27,7 @@ constructor(private val dao: HotTopicContentDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<HotTopicContent, HotTopicContent, HotTopicContentg>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: HotTopicContent) = dao.insert(item)
+            override suspend fun handleToCache(item: HotTopicContent) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*

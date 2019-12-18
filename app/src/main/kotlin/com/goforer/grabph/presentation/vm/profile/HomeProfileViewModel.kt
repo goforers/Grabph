@@ -27,15 +27,15 @@ constructor(private val useCase: LoadMyProfileUseCase,
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        profile = useCase.execute(parameters)
+        profile = useCase.execute(viewModelScope, parameters)
     }
 
     fun setParametersMyGallery(parameters: Parameters) {
-        gallery = galleryUseCase.execute(parameters)
+        gallery = galleryUseCase.execute(viewModelScope, parameters)
     }
 
     fun setParametersMyPin(parameters: Parameters) {
-        pin = pinUseCase.execute(parameters)
+        pin = pinUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun removeGallery() = viewModelScope.launch {

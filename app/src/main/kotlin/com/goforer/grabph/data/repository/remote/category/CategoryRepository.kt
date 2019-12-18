@@ -46,7 +46,7 @@ constructor(private val dao: CategoryDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object : NetworkBoundResource<MutableList<Category>, PagedList<Category>, Categoryg>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item:  MutableList<Category>) = dao.insert(item)
+            override suspend fun handleToCache(item:  MutableList<Category>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*

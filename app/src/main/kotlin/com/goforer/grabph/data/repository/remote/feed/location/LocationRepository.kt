@@ -39,7 +39,7 @@ constructor(private val dao: LocationDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<Location, Location, PhotoGEO>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: Location) = dao.insert(item)
+            override suspend fun handleToCache(item: Location) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*

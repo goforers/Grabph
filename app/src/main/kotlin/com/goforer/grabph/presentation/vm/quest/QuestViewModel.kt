@@ -44,11 +44,11 @@ constructor(private val loadHotQuestUseCase: LoadHotQuestUseCase, private val lo
     override fun setParameters(parameters: Parameters, type: Int) {
         when(type) {
             HOT_QUEST_TYPE -> {
-                quest = loadHotQuestUseCase.execute(parameters)
+                quest = loadHotQuestUseCase.execute(viewModelScope, parameters)
             }
 
             FAVORITE_QUEST_TYPE -> {
-                quest = loadFavoriteQuestUseCase.execute(parameters)
+                quest = loadFavoriteQuestUseCase.execute(viewModelScope, parameters)
             }
         }
     }

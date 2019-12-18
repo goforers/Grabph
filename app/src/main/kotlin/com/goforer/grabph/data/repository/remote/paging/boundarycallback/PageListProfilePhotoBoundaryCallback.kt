@@ -17,8 +17,10 @@
 package com.goforer.grabph.data.repository.remote.paging.boundarycallback
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
 import androidx.paging.PagedList
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 

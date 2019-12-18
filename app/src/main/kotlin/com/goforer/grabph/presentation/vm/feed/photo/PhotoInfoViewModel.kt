@@ -46,15 +46,15 @@ constructor(
     internal lateinit var getSizeError: MutableLiveData<String>
 
     override fun setParameters(parameters: Parameters, type:Int) {
-        photoInfo = photoUseCase.execute(parameters)
+        photoInfo = photoUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun setParametersForPerson(parameters: Parameters) {
-        person = personUseCase.execute(parameters)
+        person = personUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun setParametersForEXIF(parameters: Parameters) {
-        exifInfo = exifUseCase.execute(parameters)
+        exifInfo = exifUseCase.execute(viewModelScope, parameters)
     }
 
     internal suspend fun removePhotoInfo() = photoUseCase.removePhotoInfo()

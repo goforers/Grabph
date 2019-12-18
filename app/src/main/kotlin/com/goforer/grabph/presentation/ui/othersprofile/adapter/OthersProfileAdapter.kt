@@ -20,10 +20,9 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
@@ -34,6 +33,7 @@ import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_OTHERS_PROFILE
 import com.goforer.grabph.presentation.caller.Caller.SELECTED_FEED_ITEM_POSITION
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
+import timber.log.Timber
 
 class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapter<Photo, OthersProfileAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
 
@@ -53,6 +53,12 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
         return PhotoViewHolder(view, activity)
     }
 
+    override fun onCurrentListChanged(previousList: PagedList<Photo>?, currentList: PagedList<Photo>?) {
+        Timber.d("check list")
+
+        super.onCurrentListChanged(previousList, currentList)
+    }
+
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
         item?.let { holder.bindItemHolder(holder, it, position) }
@@ -69,10 +75,8 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
             iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
 
             val url = item.url_z ?: CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
-            // activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
 
-            val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
-            Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
+            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
             tv_profile_mission_price.text = ""
 
             iv_play_btn.visibility = when (item.media) {

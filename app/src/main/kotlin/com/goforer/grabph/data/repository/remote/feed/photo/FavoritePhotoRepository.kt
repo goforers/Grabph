@@ -44,7 +44,7 @@ constructor(private val dao: PhotoDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<Photo>, PagedList<Photo>, Photog>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<Photo>) = dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<Photo>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*
@@ -56,9 +56,9 @@ constructor(private val dao: PhotoDao): Repository<Query>() {
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<Photo>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(20)
+                        .setInitialLoadSizeHint(itemCount * 2)
                         .setPageSize(itemCount)
-                        .setPrefetchDistance(10)
+                        .setPrefetchDistance(itemCount - 2)
                         .setEnablePlaceholders(true)
                         .build()
 

@@ -39,7 +39,7 @@ constructor(private val dao: PersonDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<Person, Person, SearperProfile>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: Person) = dao.insert(item)
+            override suspend fun handleToCache(item: Person) = dao.insert(item)
 
             override fun onNetworkError(errorMessage: String?, errorCode: Int) {}
 

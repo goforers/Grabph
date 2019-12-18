@@ -44,7 +44,7 @@ constructor(private val dao: CPhotoDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<CPhoto>, PagedList<CPhoto>, CPhotog>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<CPhoto>) = dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<CPhoto>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*

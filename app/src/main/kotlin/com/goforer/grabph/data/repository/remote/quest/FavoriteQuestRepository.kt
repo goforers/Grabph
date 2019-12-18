@@ -45,7 +45,7 @@ constructor(private val dao: FavoriteQuestDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<Quest>, PagedList<Quest>, QuestsInfog>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<Quest>) = dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<Quest>) = dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*
@@ -57,9 +57,9 @@ constructor(private val dao: FavoriteQuestDao): Repository<Query>() {
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<Quest>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(10)
+                        .setInitialLoadSizeHint(itemCount * 2)
                         .setPageSize(itemCount)
-                        .setPrefetchDistance(5)
+                        .setPrefetchDistance(itemCount)
                         .setEnablePlaceholders(true)
                         .build()
 

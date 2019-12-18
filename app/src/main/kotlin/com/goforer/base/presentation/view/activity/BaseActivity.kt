@@ -328,33 +328,39 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
 
         val options = if (skipCache) {
             RequestOptions
-                .fitCenterTransform()
-                .placeholder(R.drawable.ic_imgbg)
+                .placeholderOf(R.drawable.ic_imgbg)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
-                .signature(IntegerVersionSignature(getVersionNumber()))
-
         } else {
             RequestOptions
-                .fitCenterTransform()
-                .placeholder(R.drawable.ic_imgbg)
+                .placeholderOf(R.drawable.ic_imgbg)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(IntegerVersionSignature(getVersionNumber()))
         }
 
-        glideRequestManager
+        if (height == width) {
+            glideRequestManager
                 .asBitmap()
                 .load(path)
                 .apply(options)
                 .thumbnail(0.5f)
+                .into(view)
+        } else {
+            glideRequestManager
+                .asBitmap()
+                .load(path)
+                .apply(options)
+                .thumbnail(0.5f)
+
                 .listener(object: RequestListener<Bitmap> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?,
-                                              isFirstResource: Boolean): Boolean {
+                        isFirstResource: Boolean): Boolean {
                         return false
                     }
 
                     override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?,
-                                                 dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         val ratio = if (width != 0) {
                             String.format("%d:%d", width, height)
                         } else {
@@ -374,6 +380,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
                     }
                 })
                 .submit()
+        }
     }
 
     /**

@@ -40,7 +40,10 @@ interface FeedItemDao: BaseDao<FeedItem> {
     fun getFeedItem(idx: Long): LiveData<FeedItem>
 
     @Query("SELECT * FROM FeedItem ORDER BY _idx DESC")
-    fun getFeeds(): List<FeedItem>
+    fun getFeeds(): MutableList<FeedItem>
+
+    @Query("SELECT * FROM FeedItem ORDER BY _idx DESC LIMIT :itemCount")
+    fun getLatestFeeds(itemCount: Int): MutableList<FeedItem>
 
     @Query("DELETE FROM FeedItem where _idx < :size")
     fun removeLastSeenItems(size: Int)

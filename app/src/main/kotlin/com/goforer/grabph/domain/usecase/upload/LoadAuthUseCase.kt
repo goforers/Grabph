@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class LoadAuthUseCase
 @Inject
 constructor(): BaseUseCase<Parameters, Resource>() {
-    override fun execute(parameters: Parameters): LiveData<Resource> {
+    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -31,11 +31,11 @@ constructor(private val useCase: LoadLocalEXIFUseCase) : BaseViewModel<String>()
     internal lateinit var exifInfo: LiveData<LocalEXIF>
 
     override fun setParameters(parameters: String, type: Int) {
-        exifInfo = useCase.execute(parameters)
+        exifInfo = useCase.execute(viewModelScope, parameters)
     }
 
     internal fun setEXIFInfo(filename: String, LocalEXIF: LocalEXIF): MediatorLiveData<LocalEXIF> {
-        val exif = liveData {
+        val exif = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
              emitSource(useCase.saveEXIFInfo(filename, LocalEXIF))
         }
 

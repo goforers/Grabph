@@ -31,7 +31,7 @@ constructor(private val useCase: LoadEXIFUseCase): BaseViewModel<Parameters>() {
     internal lateinit var exif: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        exif = useCase.execute(parameters)
+        exif = useCase.execute(viewModelScope, parameters)
     }
 
     internal suspend fun removeEXIF() = useCase.removeEXIF()

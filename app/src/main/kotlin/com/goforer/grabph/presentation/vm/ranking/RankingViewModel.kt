@@ -37,15 +37,17 @@ constructor(private val useCase: LoadRankingUseCase): BaseViewModel<Parameters>(
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        ranking = useCase.execute(parameters)
+        ranking = useCase.execute(viewModelScope, parameters)
     }
 
     internal fun getRankingLiveData() = useCase.getRankingLiveData()
 
     @MockData
-    internal fun loadRanking(): LiveData<Ranking>? = liveData { useCase.loadRanking()?.let {
-        emitSource(it)
-    } }
+    internal fun loadRanking(): LiveData<Ranking>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+        useCase.loadRanking()?.let {
+            emitSource(it)
+        }
+    }
 
     @MockData
     internal fun setRanking(ranking: Ranking) = viewModelScope.launch { useCase.setRanking(ranking) }

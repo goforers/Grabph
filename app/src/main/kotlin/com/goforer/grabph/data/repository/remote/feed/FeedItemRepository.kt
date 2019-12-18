@@ -19,6 +19,7 @@ package com.goforer.grabph.data.repository.remote.feed
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.goforer.grabph.domain.Parameters
@@ -30,6 +31,7 @@ import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
 import com.goforer.grabph.data.repository.remote.paging.boundarycallback.PageListFeedItemBoundaryCallback
 import com.goforer.grabph.data.datasource.model.cache.data.entity.Query
+import com.goforer.grabph.data.repository.paging.datasource.FeedListDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -41,7 +43,7 @@ class FeedItemRepository
 constructor(private val dao: FeedItemDao): Repository<Query>() {
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<FeedItem>, PagedList<FeedItem>, FlickrFeed>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<FeedItem>) {
+            override suspend fun handleToCache(item: MutableList<FeedItem>) {
                 for (feedItem in item) {
                     feedItem.id = "0"
                     feedItem.isPinned = false
@@ -61,19 +63,31 @@ constructor(private val dao: FeedItemDao): Repository<Query>() {
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<FeedItem>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(20)
+                        .setInitialLoadSizeHint(itemCount * 2)
                         .setPageSize(itemCount)
-                        .setPrefetchDistance(10)
+                        .setPrefetchDistance(itemCount - 2)
                         .setEnablePlaceholders(true)
                         .build()
 
                 return withContext(Dispatchers.IO) {
                     if (isLatest) {
-                        LivePagedListBuilder(dao.getLatestFeedItems(itemCount), /* PageList Config */ config)
+                        LivePagedListBuilder(object : DataSource.Factory<Int, FeedItem>() {
+                            override fun create(): DataSource<Int, FeedItem> {
+                                return FeedListDataSource(
+                                    dao.getLatestFeeds(itemCount)
+                                )
+                            }
+                        }, /* PageList Config */ config)
                             .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
                                 liveData, parameters.query1 as String, pages)).build()
                     } else {
-                        LivePagedListBuilder(dao.getFeedItems(), /* PageList Config */ config)
+                        LivePagedListBuilder(object : DataSource.Factory<Int, FeedItem>() {
+                            override fun create(): DataSource<Int, FeedItem> {
+                                return FeedListDataSource(
+                                    dao.getFeeds()
+                                )
+                            }
+                        }, /* PageList Config */ config)
                             .setBoundaryCallback(PageListFeedItemBoundaryCallback<FeedItem>(
                                 liveData, parameters.query1 as String, pages)).build()
                     }

@@ -17,8 +17,6 @@ import com.goforer.grabph.data.repository.remote.paging.boundarycallback.PagedLi
 import com.goforer.grabph.domain.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,11 +24,8 @@ import javax.inject.Singleton
 class MyGalleryRepository
 @Inject
 constructor(private val dao: MyGalleryDao): Repository<Query>() {
-    private val executor: Executor = Executors.newFixedThreadPool(5)
-
     companion object {
         const val METHOD = "flickr.people.getphotos"
-        const val PREFETCH_DISTANCE = 10
         const val EXTRA_QUERIES = "media, url_m, url_z"
     }
 
@@ -40,13 +35,13 @@ constructor(private val dao: MyGalleryDao): Repository<Query>() {
 
             override fun onFetchFailed(failedMessage: String?) = repoRateLimit.reset(parameters.query1 as String)
 
-            override suspend fun saveToCache(item: MutableList<MyGallery>) = dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<MyGallery>) = dao.insert(item)
 
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int, pages: Int): LiveData<PagedList<MyGallery>> {
                 val config = PagedList.Config.Builder()
-                    .setInitialLoadSizeHint(20)
+                    .setInitialLoadSizeHint(itemCount * 2)
                     .setPageSize(itemCount)
-                    .setPrefetchDistance(PREFETCH_DISTANCE)
+                    .setPrefetchDistance(itemCount - 2)
                     .setEnablePlaceholders(true)
                     .build()
 
@@ -62,13 +57,6 @@ constructor(private val dao: MyGalleryDao): Repository<Query>() {
                         .setBoundaryCallback(PagedListMyGalleryBoundaryCallback(liveData, userId, pages))
                         .build()
                 }
-
-                // return withContext(Dispatchers.IO) {
-                //     LivePagedListBuilder(dao.getPhotos(parameters.query1 as String), config)
-                //         .setBoundaryCallback(PagedListMyGalleryBoundaryCallback<MyGallery>(
-                //                 liveData, parameters.query1, pages))
-                //         .build()
-                // }
             }
             
             override suspend fun loadFromNetwork() = searpService.getMyGallery(

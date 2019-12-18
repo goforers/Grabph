@@ -59,7 +59,7 @@ constructor(private val useCase: LoadSavedPhotoUseCase) : BaseViewModel<String>(
     private var viewModelScope: CoroutineScope? = null
 
     override fun setParameters(parameters: String, type: Int) {
-        photo = useCase.execute(parameters)
+        photo = useCase.execute(viewModelScope!!, parameters)
     }
 
     /**

@@ -37,13 +37,15 @@ constructor(private val useCase: LoadCategoryUseCase): BaseViewModel<Parameters>
     internal var calledFrom: Int = 0
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        category = useCase.execute(parameters)
+        category = useCase.execute(viewModelScope, parameters)
     }
 
     @MockData
-    internal fun loadCategories(): LiveData<List<Category>>? = liveData { useCase.loadCategories()?.let {
-        emitSource(it)
-    } }
+    internal fun loadCategories(): LiveData<List<Category>>? = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+        useCase.loadCategories()?.let {
+            emitSource(it)
+        }
+    }
 
     @MockData
     internal fun setCategories(categories: List<Category>) = viewModelScope.launch { useCase.setCategories(categories) }

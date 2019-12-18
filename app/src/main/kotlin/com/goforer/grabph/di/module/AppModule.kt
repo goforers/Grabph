@@ -27,6 +27,7 @@ import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkH
 import com.goforer.grabph.data.datasource.model.cache.Cache
 import com.goforer.grabph.data.datasource.network.api.SearpService
 import com.goforer.grabph.data.datasource.network.factory.LiveDataCallAdapterFactory
+import com.goforer.grabph.data.datasource.network.factory.NullOnEmptyConverterFactory
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -98,6 +99,7 @@ class AppModule {
                 .baseUrl(BASE_URL)
                 .client(okHttpClient.build())
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .build()

@@ -37,12 +37,12 @@ class LoadSearchKeywordUseCase
 constructor(private val repository: SearchKeywordRepository): BaseUseCase<Parameters, List<RecentKeyword>>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
-    override fun execute(parameters: Parameters): LiveData<List<RecentKeyword>> {
+    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<List<RecentKeyword>> {
         setQuery(parameters, Query())
 
         return Transformations.switchMap(liveData) { keyword ->
             keyword ?: AbsentLiveData.create<List<RecentKeyword>>()
-            liveData {
+            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
                 emitSource( repository.loadSearchKeywords())
             }
         }

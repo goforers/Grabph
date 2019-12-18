@@ -55,15 +55,15 @@ constructor(
     }
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        feed = feedUseCase.execute(parameters)
+        feed = feedUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun setParametersForPerson(parameters: Parameters) {
-        person = personUseCase.execute(parameters)
+        person = personUseCase.execute(viewModelScope, parameters)
     }
 
     internal fun setParametersForEXIF(parameters: Parameters) {
-        exif = exifUseCase.execute(parameters)
+        exif = exifUseCase.execute(viewModelScope, parameters)
     }
 
     private fun closeWork(viewModelScope: CoroutineScope?) = viewModelScope?.coroutineContext?.cancelChildren()

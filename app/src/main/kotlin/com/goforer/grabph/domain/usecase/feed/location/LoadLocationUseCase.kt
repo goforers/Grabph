@@ -38,12 +38,12 @@ class LoadLocationUseCase
 constructor(private val repository: LocationRepository):  BaseUseCase<Parameters, Resource>() {
     private val liveData by lazy { MutableLiveData<Query>() }
 
-    override fun execute(parameters: Parameters): LiveData<Resource> {
+    override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
         setQuery(parameters, Query())
 
         return Transformations.switchMap(liveData) { query ->
             query ?: AbsentLiveData.create<Resource>()
-            liveData {
+            liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
                 emitSource(repository.load(liveData,
                     Parameters(
                         query.query,

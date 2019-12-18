@@ -33,7 +33,7 @@ class LoadSavedPhotoUseCase
 constructor(private val repository: LocalSavedPhotoRepository):  BaseUseCase<String, LocalSavedPhoto>() {
     private val liveData by lazy { MutableLiveData<String>() }
 
-    override fun execute(parameters: String): LiveData<LocalSavedPhoto> {
+    override fun execute(viewModelScope: CoroutineScope, parameters: String): LiveData<LocalSavedPhoto> {
         setFileName(parameters)
 
         return Transformations.switchMap(liveData) { filename ->

@@ -40,7 +40,7 @@ constructor(private val dao: EXIFDao): Repository<Query>() {
 
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<EXIF>, List<EXIF>, PhotoEXIF>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<EXIF>) =  dao.insert(item)
+            override suspend fun handleToCache(item: MutableList<EXIF>) =  dao.insert(item)
 
             // This function had been blocked at this time but it might be used in the future
             /*

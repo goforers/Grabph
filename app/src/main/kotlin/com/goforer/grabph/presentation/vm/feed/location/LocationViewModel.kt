@@ -31,7 +31,7 @@ constructor(private val useCase: LoadLocationUseCase) : BaseViewModel<Parameters
     internal lateinit var location: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-       location = useCase.execute(parameters)
+       location = useCase.execute(viewModelScope, parameters)
     }
 
     internal suspend fun removeLocation() = useCase.removeLocation()

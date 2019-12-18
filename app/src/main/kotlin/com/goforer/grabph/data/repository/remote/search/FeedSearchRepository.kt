@@ -37,7 +37,7 @@ class FeedSearchRepository
 constructor(private val dao: FeedItemDao): Repository<Query>() {
     override suspend fun load(liveData: MutableLiveData<Query>, parameters: Parameters): LiveData<Resource> {
         return object: NetworkBoundResource<MutableList<FeedItem>, PagedList<FeedItem>, FlickrFeed>(parameters.loadType, parameters.boundType) {
-            override suspend fun saveToCache(item: MutableList<FeedItem>) {
+            override suspend fun handleToCache(item: MutableList<FeedItem>) {
                 for (feedItem in item) {
                     feedItem.id = "0"
                     feedItem.isPinned = false
@@ -57,9 +57,9 @@ constructor(private val dao: FeedItemDao): Repository<Query>() {
             override suspend fun loadFromCache(isLatest: Boolean, itemCount: Int,
                                                pages: Int): LiveData<PagedList<FeedItem>> {
                 val config = PagedList.Config.Builder()
-                        .setInitialLoadSizeHint(20)
-                        .setPageSize(10)
-                        .setPrefetchDistance(5)
+                        .setInitialLoadSizeHint(itemCount * 2)
+                        .setPageSize(itemCount)
+                        .setPrefetchDistance(itemCount)
                         .setEnablePlaceholders(true)
                         .build()
 

@@ -31,7 +31,7 @@ constructor(private val useCase: LoadFavoritePhotoUseCase) : BaseViewModel<Param
     internal lateinit var photos: LiveData<Resource>
 
     override fun setParameters(parameters: Parameters, type: Int) {
-        photos = useCase.execute(parameters)
+        photos = useCase.execute(viewModelScope, parameters)
     }
 
     internal suspend fun removePhotos() = useCase.removePhotos()
