@@ -35,6 +35,9 @@ interface PhotoDao: BaseDao<Photo> {
     @Query("DELETE FROM Photo WHERE _id = :photoId")
     fun deleteByPhotoId(photoId: String)
 
+    @Query("DELETE FROM Photo WHERE owner = :userId")
+    suspend fun deleteByUserId(userId: String)
+
     @Query("DELETE FROM Photo")
     suspend fun clearAll()
 }

@@ -27,9 +27,6 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.annotation.GlideModule
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.BaseFragment
@@ -56,8 +53,6 @@ class HomeProfileGalleryFragment: BaseFragment() {
 
     private var adapter: ProfileGalleryAdapter? = null
 
-    private lateinit var glideRequestManager: RequestManager
-
     private lateinit var acvAdapterMyGallery: AutoClearedValue<ProfileGalleryAdapter>
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
@@ -69,8 +64,6 @@ class HomeProfileGalleryFragment: BaseFragment() {
     lateinit var viewModel: HomeProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        @GlideModule
-        glideRequestManager = Glide.with(this)
         val acvView = AutoClearedValue(this, inflater.inflate(R.layout.fragment_home_profile_photos, container, false))
 
         return acvView.get()?.rootView
@@ -86,7 +79,7 @@ class HomeProfileGalleryFragment: BaseFragment() {
     @Suppress("UNCHECKED_CAST")
     private fun observeLiveData() {
         val liveData = viewModel.gallery
-        liveData.observe(this, Observer { resource ->
+        liveData.observe(homeActivity, Observer { resource ->
 
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -96,7 +89,7 @@ class HomeProfileGalleryFragment: BaseFragment() {
                             if (it.isNotEmpty()) {
                                 submitMyPhotos(it)
                             } else {
-                                // show something to say that the list is empty
+                                // show something when data is empty
                             }
                         }
                     }

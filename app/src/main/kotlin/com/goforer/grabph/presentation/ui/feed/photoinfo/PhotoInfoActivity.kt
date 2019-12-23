@@ -67,6 +67,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE_MY_PIN
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_INFO_CALLED_FROM
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PHOTO_PATH
@@ -393,7 +394,7 @@ class PhotoInfoActivity : BaseActivity() {
 
         setBottomOnLoading()
         getPhotoInfo(photoId)
-        setPhotoInfo()
+        setPhotoInfoObserver()
         getUserProfile(userId)
         setUserProfileObserver()
         getPhotoEXIF(photoId)
@@ -410,15 +411,18 @@ class PhotoInfoActivity : BaseActivity() {
             ), NONE_TYPE)
     }
 
-    private fun setPhotoInfo() = viewModel.photoInfo.observe(this, Observer { resource ->
+    private fun setPhotoInfoObserver() = viewModel.photoInfo.observe(this, Observer { resource ->
         when(resource?.getStatus()) {
             Status.SUCCESS -> {
                 val picture = resource.getData() as? Picture?
 
                 picture?.let {
                     uiScope.launch {
-                        displayPhotoInfo(picture)
-                        setBottomLoadingFinished()
+                        if (picture.id == photoId) {
+                            displayPhotoInfo(picture)
+                            setBottomLoadingFinished()
+                        }
+
                     }
                 }
 
@@ -570,8 +574,11 @@ class PhotoInfoActivity : BaseActivity() {
             setImageDraw(this.iv_profile_photo_info, userPhotoUrl!!)
         }
 
-        this.iv_profile_photo_info.setOnClickListener {
-            Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, userId, name!!, 1, userPhotoUrl!!)
+        /* Blocked not to open the same user's profile activity */
+        if (calledFrom == CALLED_FROM_HOME_PROFILE_MY_PIN) {
+            this.iv_profile_photo_info.setOnClickListener {
+                Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, userId, name!!, 1, userPhotoUrl!!)
+            }
         }
     }
 

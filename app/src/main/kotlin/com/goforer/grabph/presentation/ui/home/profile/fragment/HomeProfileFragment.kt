@@ -73,7 +73,6 @@ class HomeProfileFragment : BaseFragment() {
 
     private var myGalleryFragment: HomeProfileGalleryFragment? = null
     private var myPinFragment: HomeProfilePinFragment? = null
-    // private var mySalesFragment: HomeProfileSalesFragment? = null
 
     private var pagerAdapter: ProfilePagerAdapter? = null
 
@@ -193,7 +192,7 @@ class HomeProfileFragment : BaseFragment() {
     @SuppressLint("SetTextI18n")
     private fun observeMyProfile() {
         val liveData = homeProfileViewModel.profile
-        liveData.observe(this, Observer { resource ->
+        liveData.observe(homeActivity, Observer { resource ->
             setViewLoadingFinished()
 
             when (resource?.getStatus()) {

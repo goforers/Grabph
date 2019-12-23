@@ -111,7 +111,7 @@
     <string name="drawer_item_searper_favorites_photo_list">Best Photo</string>
     <string name="login_with_facebook">Continue with Facebook</string>
     <string name="login_with_google">Continue with Google</string>
-    <string name="facebook">Facebook</string>
+    <string name="facebook">facebook</string>
     <string name="other">Other</string>
     <string name="photo_safe">This photo is safe.</string>
     <string name="phrase_photos">photos</string>
@@ -196,4 +196,27 @@
     <string name="pinned_photo">My Pin</string>
     <string name="media_type_video">video</string>
     <string name="media_type_photo">photo</string>
+    <string name="forgot_password"><![CDATA[<font color=#FFFFFF>Forgot your&#160;&#160;</font><font color=#FF9734>password?</font>]]></string>
+    <string name="no_account"><![CDATA[<font color=#FFFFFF>Don\'t have an account?&#160;&#160;</font><font color=#FF9734>Sign up</font>]]></string>
+    <string name="have_an_account"><![CDATA[<font color=#FFFFFF>Already have an account?&#160;&#160;</font><font color=#FF9734>Sign in</font>]]></string>
+    <string name="email_format_invalid">이메일 주소가 형식에 맞지 않습니다.</string>
+    <string name="request_input_id">아이디를 입력해주세요</string>
+    <string name="request_input_password">비밀번호를 입력해주세요</string>
+    <string name="password_too_short">비밀번호는 최소 8자리 이상이어야 합니다</string>
+    <string name="wrong_account_input">아이디나 비밀번호를 확인 후 다시 입력해 주세요</string>
+    <string name="min_username_length">유저 이름은 최소 네 글자 이상이어야 합니</string>
+    <string name="password_not_identified">비밀번호가 일치하지 않습니다</string>
+    <string name="id_exists_already">이미 존재하는 아이디입니다</string>
+    <string name="id_no_exists">존재하지 않는 아이디입니다</string>
+    <string name="choose_your_gender">성별을 성택해 주세요</string>
+    <string name="loading_now">로그인 중..</string>
+    <string name="hint_password">PASSWORD</string>
+    <string name="hint_email">EMAIL</string>
+    <string name="hint_username">USERNAME</string>
+    <string name="hint_confirm_password">CONFIRM PASSWORD</string>
+    <string name="gender_male">MALE</string>
+    <string name="gender_female">FEMALE</string>
+    <string name="gender_custom">CUSTOM</string>
+    <string name="signing_up_now">회원가입 중..</string>
+    <string name="check_email_now">이메일 확인 중..</string>
 </resources>

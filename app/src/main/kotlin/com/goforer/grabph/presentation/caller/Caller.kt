@@ -186,6 +186,7 @@ object Caller {
     const val CALLED_FROM_OTHERS_PROFILE = 4022
     const val CALLED_FROM_AUTH_ACTIVITY = 4023
     const val CALLED_FROM_HOME_PROFILE_MY_GALLERY = 4019
+    const val CALLED_FROM_HOME_PROFILE_MY_PIN = 4020
 
     const val PHOTOG_PHOTO_POPULAR_TYPE = 5000
     const val PHOTOG_PHOTO_GENERAL_TYPE = 5001
@@ -479,7 +480,7 @@ object Caller {
 
         val activityOptions = getPhotogPhotoActivityOptions(context, imageView, calledFrom)
         when (calledFrom) {
-            CALLED_FROM_HOME_PROFILE -> {
+            CALLED_FROM_HOME_PROFILE, CALLED_FROM_HOME_PROFILE_MY_PIN -> {
                 (context as HomeActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
             }
             CALLED_FROM_OTHERS_PROFILE -> {

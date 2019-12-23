@@ -81,13 +81,7 @@ class UploadPhotoActivity : BaseActivity() {
                 }
             }
 
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -200,13 +194,11 @@ class UploadPhotoActivity : BaseActivity() {
     }
 
     private fun showWorkInProgress() {
-        this.nested_scroll_view_upload.alpha = 0.5f
         this.btn_upload.isEnabled = false
         this.container_progress_upload.visibility = View.VISIBLE
     }
 
     private fun showWorkIsFinished() {
-        this.nested_scroll_view_upload.alpha = 1f
         this.btn_upload.isEnabled = true
         this.container_progress_upload.visibility = View.GONE
     }

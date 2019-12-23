@@ -72,6 +72,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Not Using Now. Replaced by @+id/layout_bottom_navigation-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"

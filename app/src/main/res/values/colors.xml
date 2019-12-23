@@ -64,6 +64,7 @@
     <color name="transparent">#00000000</color>
     <color name="blackBrightLight">#303030</color>
     <color name="colorBackSlide">#772978CA</color>
+    <color name="colorFacebook">#3C5B9B</color>
     <color name="colorfacebookstart">#303F9F</color>
     <color name="colorfacebookpressed">#416BC1</color>
     <color name="colorfacebookend">#416BC1</color>
@@ -83,6 +84,7 @@
     <color name="colorMenuContainerText">#FFFF00</color>
     <color name="colorExif">#646262</color>
     <color name="colorPink">#FF4081</color>
+    <color name="colorLoginAlert">#FF4A4A</color>
     <color name="colorCobaltBlue">#00498C</color>
     <color name="colorMarinLight">#0099A4</color>
     <color name="colorBurgundy">#830000</color>
@@ -102,9 +104,10 @@
     <color name="colorDivider">#414345</color>
     <color name="colorItemTopRankingPoint">#ADB5BD</color>
     <color name="colorBottomRankingPoint">#CED5DA</color>
-    <color name="colorUploadAgrees">#61ffffff</color>
+    <color name="colorUploadAgrees">#61FFFFFF</color>
     <color name="colorUploadEditText">#61414345</color>
     <color name="colorBackgroundUploadPhoto">#A0A0A0</color>
     <color name="colorHashTag">#DE4285F4</color>
-    <color name="colorSizeSelection">#b3ffffff</color>
+    <color name="colorSizeSelection">#B3FFFFFF</color>
+    <color name="colorGenderSelected">#5A3054</color>
 </resources>

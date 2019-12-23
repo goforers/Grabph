@@ -52,5 +52,5 @@ constructor(private val repository: OthersPhotosRepository): BaseUseCase<Paramet
         liveData.value = query
     }
 
-    internal suspend fun removeCache() = repository.removeCache()
+    internal suspend fun removeCache(userId: String) = repository.deleteByUserId(userId)
 }

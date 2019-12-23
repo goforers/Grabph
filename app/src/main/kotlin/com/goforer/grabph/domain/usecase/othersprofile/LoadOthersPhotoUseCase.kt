@@ -72,4 +72,7 @@ constructor(private val repository: OthersPhotosRepository):  BaseUseCase<Parame
     }
 
     internal suspend fun removeCache() = repository.removeCache()
+
+    internal suspend fun deleteByUserId(owner: String) = repository.deleteByUserId(owner)
+
 }

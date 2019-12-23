@@ -63,6 +63,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.presentation.caller.Caller
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
@@ -133,7 +134,7 @@ class OthersProfileActivity : BaseActivity() {
         setAppbarScrollingBehavior()
         removeCache()
         createAdapter()
-        getProfile()
+        getProfileAfterClearCache()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -167,12 +168,17 @@ class OthersProfileActivity : BaseActivity() {
         job.cancel()
     }
 
-    private fun getProfile() {
-        when (mock) {
-            @MockData
-            true -> { getMockProfile(); setBottomPortionViewMock() }
-            false -> { getRealProfile(); setBottomPortionView() }
-        }
+    private fun getProfileAfterClearCache() {
+        viewModel.isCleared.observe(this, Observer { isCleared ->
+            if (isCleared) {
+                when (mock) {
+                    @MockData
+                    true -> { getMockProfile(); setBottomPortionViewMock() }
+                    false -> { getRealProfile(); setBottomPortionView() }
+                }
+            }
+            viewModel.isCleared.removeObservers(this)
+        })
     }
 
     @MockData
@@ -213,7 +219,6 @@ class OthersProfileActivity : BaseActivity() {
                             liveData.removeObservers(this)
                         }
                     }
-                    // withDelay(800L) {  }
                 })
             }
 
@@ -313,7 +318,10 @@ class OthersProfileActivity : BaseActivity() {
     @MockData
     private fun setBottomPortionViewMock() {
         val user: String = when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "183109783@N06" // this is for mock data
+            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> { // mock data
+                "183109783@N06"
+            }
+
             else -> userId
         }
 
@@ -438,6 +446,8 @@ class OthersProfileActivity : BaseActivity() {
         this.tv_profile_number_following.setOnClickListener { /* see my following */ }
         this.tv_profile_number_follower.setOnClickListener { /* see my follower */ }
         this.tv_profile_number_pin.setOnClickListener { /* see my pins */ }
+        this.iv_profile_icon.setOnClickListener {}
+        this.profile_container_following.setOnClickListener { Caller.callPeopleList(this, Caller.CALLED_FROM_HOME_PROFILE, 1) }
     }
 
     private fun setAppbarScrollingBehavior() {
@@ -706,6 +716,13 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun removeCache() {
-        viewModel.removeCache()
+        when (calledFrom) {
+            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> { // mock data
+                viewModel.removeCache("183109783@N06")
+            }
+            else -> {
+                viewModel.removeCache(userId)
+            }
+        }
     }
 }

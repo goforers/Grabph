@@ -339,14 +339,14 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
         }
 
-        if (height == width) {
-            glideRequestManager
-                .asBitmap()
-                .load(path)
-                .apply(options)
-                .thumbnail(0.5f)
-                .into(view)
-        } else {
+        // if (height == width) {
+        //     glideRequestManager
+        //         .asBitmap()
+        //         .load(path)
+        //         .apply(options)
+        //         .thumbnail(0.5f)
+        //         .into(view)
+        // } else {
             glideRequestManager
                 .asBitmap()
                 .load(path)
@@ -380,7 +380,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
                     }
                 })
                 .submit()
-        }
+        // }
     }
 
     /**

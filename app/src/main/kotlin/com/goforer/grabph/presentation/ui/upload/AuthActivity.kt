@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import com.goforer.base.presentation.utils.CALLBACK_URL
 import com.goforer.base.presentation.utils.CONSUMER_KEY
 import com.goforer.base.presentation.utils.CommonUtils
@@ -33,6 +32,7 @@ class AuthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.plant(Timber.asTree())
 
         if (hasIntentData()) getAccessToken() else getRequestToken()
     }
@@ -86,7 +86,7 @@ class AuthActivity : BaseActivity() {
                     }
                 } else {
                     val msg = response.errorBody()?.string() ?: "unknown error"
-                    Log.d("woogear@MainActivity", "requestToken error: $msg")
+                    Timber.d("woogear@ requestToken error: $msg")
                     showStat("got error.. please try again")
                     showErrorMsg(msg, true)
                 }
@@ -103,7 +103,7 @@ class AuthActivity : BaseActivity() {
 
     private fun getAccessToken() {
         showStat("getting access token..")
-        Log.d("woogear@OauthActivity", "msg of intent: ${intent.toUri(Intent.URI_INTENT_SCHEME)}")
+        Timber.d("woogear@ msg of intent: ${intent.toUri(Intent.URI_INTENT_SCHEME)}")
         intent.data?.let { uri ->
             val requestToken = uri.getQueryParameter("oauth_token")
             val verifier = uri.getQueryParameter("oauth_verifier")
@@ -111,8 +111,8 @@ class AuthActivity : BaseActivity() {
             val secret = SharedPreference.getTokenSecret(this)
             val params = CommonUtils.getParamsForAccessToken(requestToken!!, verifier!!, secret)
 
-            Log.i("woogear@authActivity", "uri=${uri}")
-            Log.i("woogear@authActivity", "verifier=$verifier")
+            Timber.d("woogear@ uri=${uri}")
+            Timber.d("woogear@ verifier=$verifier")
 
             GlobalScope.launch {
                 try {
@@ -123,7 +123,7 @@ class AuthActivity : BaseActivity() {
 
                     if (response.isSuccessful) {
                         val responseBody = response.body()
-                        Log.d("woogear@OauthActivity", "accessToken result: $responseBody")
+                        Timber.d("woogear@ accessToken result: $responseBody")
                         val uri = Uri.parse("text.com?$responseBody")
                         val accessToken = uri.getQueryParameter("oauth_token")
                         val accessSecret = uri.getQueryParameter("oauth_token_secret")
@@ -135,7 +135,7 @@ class AuthActivity : BaseActivity() {
                     } else {
                         val msg = response.errorBody()?.string() ?: "unknown error"
                         showStat("got error.. please try again")
-                        Log.e("woogear@OauthActivity", "network error: $msg")
+                        Timber.e("woogear@ network error: $msg")
                     }
                 } catch (e: java.lang.Exception) {
                     Timber.d("woogear@OauthActivity..exception: ${e.printStackTrace()}")

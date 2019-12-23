@@ -17,6 +17,7 @@
 package com.goforer.grabph.presentation.vm.othersprofile
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.othersprofile.LoadOthersProfileUseCase
@@ -27,9 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+/*
+* This viewModel is not a singleton because every OthersProfileActivity needs its own viewModel.
+* Otherwise a viewModel is always shared by multiple activities,
+* which means that shared liveData can be changed unexpectedly when there are two activities created.
+* e.g. OthersProfileActivity B can be created from A's following list.
+* */
 class OthersProfileViewModel
 @Inject
 constructor(private val useCaseProfile: LoadOthersProfileUseCase,
@@ -37,6 +42,7 @@ constructor(private val useCaseProfile: LoadOthersProfileUseCase,
 ): BaseViewModel<Parameters>() {
     internal lateinit var profile: LiveData<Resource>
     internal lateinit var photos: LiveData<Resource>
+    internal val isCleared = MutableLiveData<Boolean>()
 
     override fun setParameters(parameters: Parameters, type: Int) {
         profile = useCaseProfile.execute(viewModelScope, parameters)
@@ -46,12 +52,21 @@ constructor(private val useCaseProfile: LoadOthersProfileUseCase,
         photos = useCasePhotos.execute(viewModelScope, parameters)
     }
 
-    internal fun removeCache() {
+    internal fun removeCache(owner: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 useCaseProfile.removeCache()
-                useCasePhotos.removeCache()
+                useCasePhotos.deleteByUserId(owner)
+                notifyCacheCleared()
             }
         }
+    }
+
+    /*
+     * setValue() can can be invoked on MainThread only.
+     * This method is to ensure that cache is cleared before loading data.
+     * */
+    private fun notifyCacheCleared() {
+        viewModelScope.launch(Dispatchers.Main) { isCleared.value = true }
     }
 }

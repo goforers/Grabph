@@ -16,6 +16,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE_MY_GALLERY
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE_MY_PIN
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject.TRANSITION_NAME_FOR_IMAGE
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import kotlinx.android.extensions.LayoutContainer
@@ -75,7 +76,7 @@ class MyPinViewHolder(override val containerView: View, private val activity: Ho
                 item.owner!!,
                 holder.adapterPosition,
                 CALLED_FROM_HOME_PROFILE_MY_GALLERY,
-                CALLED_FROM_HOME_PROFILE,
+                CALLED_FROM_HOME_PROFILE_MY_PIN,
                 url
             )
         }

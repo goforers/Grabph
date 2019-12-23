@@ -76,6 +76,7 @@ import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.security.SignatureException
 import java.sql.Timestamp
+import java.util.regex.Pattern
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -599,6 +600,14 @@ object CommonUtils {
 
     fun getFlickrPhotoUrlForViewer(server: String, id: String, secret: String): String {
         return "https://live.staticflickr.com/" + server + "/" + id + "_" + secret + "_c.jpg"
+    }
+
+    fun isEmailFormatValid(input: String): Boolean {
+        val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+        val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(input)
+
+        return matcher.matches()
     }
 }
 
