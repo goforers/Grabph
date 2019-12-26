@@ -1143,11 +1143,6 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         return usefulEXIF
     }
 
-    private fun displayLocation(location: Location) {
-        setLocationInvisible()
-        animateLocation(location)
-    }
-
     private fun setFoldingCellInvisible() {
         if (!this@FeedInfoActivity.folding_photo_info_cell.isShown) {
             this@FeedInfoActivity.folding_photo_info_cell.visibility = View.GONE
@@ -1156,9 +1151,59 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         }
     }
 
+    private fun displayLocation(location: Location) {
+        setLocationInvisible()
+        animateLocation(location)
+    }
+
     private fun setLocationInvisible() {
         if (!this@FeedInfoActivity.place_cardholder.isShown) {
             this@FeedInfoActivity.place_cardholder.visibility = View.GONE
+        }
+    }
+
+    private fun animateLocation(location: Location) {
+        this@FeedInfoActivity.divider_5.visibility = View.VISIBLE
+        (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync { map ->
+            map.setOnMarkerDragListener(this@FeedInfoActivity)
+            map.uiSettings.isZoomControlsEnabled = false
+            // Add a marker in my location and move the camera
+            val myLocation = LatLng(location.latitude!!.toDouble(), location.longitude!!.toDouble())
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, MAP_ZOOM))
+            val zoom = CameraUpdateFactory.zoomTo(MAP_ZOOM)
+            map.animateCamera(zoom)
+            myLocation.let {
+                marker = map.addMarker(MarkerOptions()
+                    .position(myLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pegman))
+                    .title("Address").infoWindowAnchor(0.5f, 0.5f)
+                    .snippet(getAddress(location))
+                    .draggable(true))
+            }
+
+            marker.showInfoWindow()
+            map.setOnMarkerClickListener {
+                false
+            }
+        }
+
+        if (!this@FeedInfoActivity.place_cardholder.isShown) {
+            this@FeedInfoActivity.place_cardholder.visibility = View.VISIBLE
+            val animation = AnimationUtils.loadAnimation(
+                this.applicationContext, R.anim.scale_up_enter)
+
+            animation.duration = 300
+            this@FeedInfoActivity.place_cardholder.animation = animation
+            this@FeedInfoActivity.place_cardholder.animate()
+            animation.start()
+        }
+
+        this@FeedInfoActivity.place_cardholder.setOnClickListener {
+            Caller.callViewMap(this.applicationContext,
+                this@FeedInfoActivity.collapsing_layout.title.toString(),
+                location.latitude!!.toDouble(),
+                location.longitude!!.toDouble(),
+                getAddress(location))
         }
     }
 
@@ -1260,51 +1305,6 @@ class FeedInfoActivity: BaseActivity(),  GoogleMap.OnMarkerDragListener {
         this@FeedInfoActivity.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_WHITE_BALANCE].raw._content
         this@FeedInfoActivity.tv_focal_length.text = none
         this@FeedInfoActivity.tv_focal_length.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FOCAL_LENGTH].raw._content
-    }
-
-    private fun animateLocation(location: Location) {
-        this@FeedInfoActivity.divider_5.visibility = View.VISIBLE
-        (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync { map ->
-            map.setOnMarkerDragListener(this@FeedInfoActivity)
-            map.uiSettings.isZoomControlsEnabled = false
-            // Add a marker in my location and move the camera
-            val myLocation = LatLng(location.latitude!!.toDouble(), location.longitude!!.toDouble())
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, MAP_ZOOM))
-            val zoom = CameraUpdateFactory.zoomTo(MAP_ZOOM)
-            map.animateCamera(zoom)
-            myLocation.let {
-                marker = map.addMarker(MarkerOptions()
-                    .position(myLocation)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pegman))
-                    .title("Address").infoWindowAnchor(0.5f, 0.5f)
-                    .snippet(getAddress(location))
-                    .draggable(true))
-            }
-
-            marker.showInfoWindow()
-            map.setOnMarkerClickListener {
-                false
-            }
-        }
-
-        if (!this@FeedInfoActivity.place_cardholder.isShown) {
-            this@FeedInfoActivity.place_cardholder.visibility = View.VISIBLE
-            val animation = AnimationUtils.loadAnimation(
-                this.applicationContext, R.anim.scale_up_enter)
-
-            animation.duration = 300
-            this@FeedInfoActivity.place_cardholder.animation = animation
-            this@FeedInfoActivity.place_cardholder.animate()
-            animation.start()
-        }
-
-        this@FeedInfoActivity.place_cardholder.setOnClickListener {
-            Caller.callViewMap(this.applicationContext,
-                this@FeedInfoActivity.collapsing_layout.title.toString(),
-                location.latitude!!.toDouble(),
-                location.longitude!!.toDouble(),
-                getAddress(location))
-        }
     }
 
     private fun getAddress(location: Location): String {

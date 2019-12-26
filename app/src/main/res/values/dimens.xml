@@ -229,4 +229,5 @@
     <dimen name="radius_25">25dp</dimen>
     <dimen name="width_360">360dp</dimen>
     <dimen name="margin_130">130dp</dimen>
+    <dimen name="height_220">220dp</dimen>
 </resources>

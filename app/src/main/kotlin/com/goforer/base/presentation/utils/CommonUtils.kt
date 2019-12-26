@@ -59,6 +59,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.domain.common.GeneralFunctions
+import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
 import com.goforer.grabph.presentation.ui.upload.data.RequestParams
 import com.goforer.grabph.presentation.ui.upload.data.UploadResponse
 import org.xmlpull.v1.XmlPullParser
@@ -608,6 +609,26 @@ object CommonUtils {
         val matcher = pattern.matcher(input)
 
         return matcher.matches()
+    }
+
+    fun getLocation(location: Location): String {
+        val country = location.country?._content ?: "unknown"
+        val region = location.region?._content
+        val county = location.county?._content
+        var loc = country
+
+        if (country != "unknown") {
+
+            region?.let { reg ->
+                if (reg.isNotBlank()) loc = "$reg, $loc"
+
+                county?.let { ct ->
+                    if (ct.isNotBlank()) loc = "$ct, $loc"
+                }
+            }
+        }
+
+        return loc
     }
 }
 

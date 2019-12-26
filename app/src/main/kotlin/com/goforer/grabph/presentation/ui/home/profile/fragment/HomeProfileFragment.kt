@@ -46,7 +46,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.MyProf
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_GALLERYG_PHOTO
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_MY_PROFILE
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.ui.home.profile.fragment.pin.HomeProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
@@ -121,9 +120,8 @@ class HomeProfileFragment : BaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        myGalleryFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_GALLERY, it) }
-        myPinFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_PIN, it) }
-        // mySalesFragment?.let { if (it.isAdded) fragmentManager?.putFragment(outState, FRAGMENT_KEY_HOME_SALES, it) }
+        myGalleryFragment?.let { if (it.isAdded) homeActivity.supportFragmentManager.putFragment(outState, FRAGMENT_KEY_HOME_GALLERY, it) }
+        myPinFragment?.let { if (it.isAdded) homeActivity.supportFragmentManager.putFragment(outState, FRAGMENT_KEY_HOME_PIN, it) }
     }
 
     private fun setPagerAdapter(savedInstanceState: Bundle?) {
@@ -131,23 +129,23 @@ class HomeProfileFragment : BaseFragment() {
 
         myGalleryFragment = myGalleryFragment ?: HomeProfileGalleryFragment()
         myPinFragment = myPinFragment ?: HomeProfilePinFragment()
-        // mySalesFragment = mySalesFragment ?: HomeProfileSalesFragment()
 
         pagerAdapter = pagerAdapter ?: ProfilePagerAdapter(requireFragmentManager())
         acvPagerAdapter = AutoClearedValue(this, pagerAdapter)
 
         myGalleryFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_photos)) }
         myPinFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.pinned_photo)) }
-        // mySalesFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_sales)) }
 
         this@HomeProfileFragment.viewPager_profile.adapter = acvPagerAdapter.get()
         this@HomeProfileFragment.tabLayout_profile.setupWithViewPager(viewPager_profile)
     }
 
     private fun getFragmentInstance(savedInstanceState: Bundle) {
-        myGalleryFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_GALLERY)?.let { it as HomeProfileGalleryFragment }
-        myPinFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_PIN)?.let { it as HomeProfilePinFragment }
-        // mySalesFragment = fragmentManager?.getFragment(savedInstanceState, FRAGMENT_KEY_HOME_SALES)?.let { it as HomeProfileSalesFragment }
+        myGalleryFragment = homeActivity.supportFragmentManager
+            .getFragment(savedInstanceState, FRAGMENT_KEY_HOME_GALLERY)?.let { it as HomeProfileGalleryFragment }
+
+        myPinFragment = homeActivity.supportFragmentManager
+            .getFragment(savedInstanceState, FRAGMENT_KEY_HOME_PIN)?.let { it as HomeProfilePinFragment }
     }
 
     private fun setViewClickListener() {
@@ -184,9 +182,11 @@ class HomeProfileFragment : BaseFragment() {
         homeProfileViewModel.setParametersMyGallery(
             Parameters(userId, -1, LOAD_MY_GALLERYG_PHOTO, BOUND_FROM_BACKEND))
 
-        homeProfileViewModel.setParametersMyPin(
-            Parameters(pinId, -1, LOAD_PHOTOG_PHOTO, BOUND_FROM_BACKEND)
-        )
+        homeProfileViewModel.setParametersMyPin(userId)
+
+        // homeProfileViewModel.setParametersMyPin(
+        //     Parameters(pinId, -1, LOAD_PHOTOG_PHOTO, BOUND_FROM_BACKEND)
+        // )
     }
 
     @SuppressLint("SetTextI18n")

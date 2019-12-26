@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "23ffdc54b5e912d9971385b47653a04a",
+    "identityHash": "2e4a5dace96ad6b75a12ccec2965fba7",
     "entities": [
       {
         "tableName": "FeedItem",
@@ -2727,12 +2727,56 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "LocalPin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`photoId` TEXT NOT NULL, `authorId` TEXT NOT NULL, `userId` TEXT NOT NULL, `url` TEXT NOT NULL, `media` TEXT NOT NULL, PRIMARY KEY(`photoId`))",
+        "fields": [
+          {
+            "fieldPath": "photoId",
+            "columnName": "photoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorId",
+            "columnName": "authorId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "media",
+            "columnName": "media",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "photoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23ffdc54b5e912d9971385b47653a04a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2e4a5dace96ad6b75a12ccec2965fba7')"
     ]
   }
 }

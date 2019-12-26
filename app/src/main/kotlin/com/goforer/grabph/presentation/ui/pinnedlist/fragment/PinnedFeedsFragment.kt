@@ -173,7 +173,7 @@ class PinnedFeedsFragment: RecyclerFragment<FeedItem>() {
     }
 
     override fun requestData(isNew: Boolean) {
-        getPinnedup()
+        getPinnedUp()
 
         Timber.i("requestData")
     }
@@ -194,8 +194,8 @@ class PinnedFeedsFragment: RecyclerFragment<FeedItem>() {
     override fun reachToLastPage() {
     }
 
-    private fun getPinnedup() {
-        feedViewModel.pinnedup.observe(this, Observer {
+    private fun getPinnedUp() {
+        feedViewModel.pinnedUp.observe(this, Observer {
             it ?: stopRefreshing(true)
             it?.let {
                 if (!isUpdateNotified) {

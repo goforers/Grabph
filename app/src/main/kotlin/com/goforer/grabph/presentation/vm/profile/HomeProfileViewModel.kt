@@ -1,6 +1,7 @@
 package com.goforer.grabph.presentation.vm.profile
 
 import androidx.lifecycle.*
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadMyProfileUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
@@ -22,7 +23,8 @@ constructor(private val useCase: LoadMyProfileUseCase,
 ): BaseViewModel<Parameters>() {
     internal lateinit var profile: LiveData<Resource>
     internal lateinit var gallery: LiveData<Resource>
-    internal lateinit var pin: LiveData<Resource>
+    internal lateinit var pin: LiveData<List<LocalPin>>
+    internal lateinit var isPinned: MutableLiveData<Boolean>
 
     internal var calledFrom: Int = 0
 
@@ -34,7 +36,8 @@ constructor(private val useCase: LoadMyProfileUseCase,
         gallery = galleryUseCase.execute(viewModelScope, parameters)
     }
 
-    fun setParametersMyPin(parameters: Parameters) {
+    fun setParametersMyPin(parameters: String) {
+        // pin = pinUseCase.execute(viewModelScope, parameters)
         pin = pinUseCase.execute(viewModelScope, parameters)
     }
 

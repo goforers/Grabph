@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recycler_profile_photos"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    android:layout_marginStart="@dimen/margin_2"
-    android:layout_marginEnd="@dimen/margin_2"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_profile_photos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:layout_marginStart="@dimen/margin_2"
+        android:layout_marginEnd="@dimen/margin_2" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/margin_30"
+        android:visibility="gone"
+        android:text="No Pinned Photos"
+        android:textSize="@dimen/text_size_18"
+        android:gravity="center"
+        android:textColor="@color/grayLight"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

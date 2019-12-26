@@ -8,25 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.annotation.GlideModule
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
-import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
-import com.goforer.grabph.data.datasource.network.response.Status
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.photos.ProfilePinAdapter
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile_photos.*
-// import kotlinx.android.synthetic.main.layout_home_bottom_navigation.*
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -36,7 +30,6 @@ class HomeProfilePinFragment: BaseFragment() {
 
     private var adapter: ProfilePinAdapter? = null
 
-    private lateinit var glideRequestManager: RequestManager
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
     private lateinit var acvAdapter: AutoClearedValue<ProfilePinAdapter>
@@ -49,9 +42,8 @@ class HomeProfilePinFragment: BaseFragment() {
     lateinit var viewModel: HomeProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        @GlideModule
-        glideRequestManager = Glide.with(this)
-        val acvView = AutoClearedValue(this, inflater.inflate(R.layout.fragment_home_profile_photos, container, false))
+        val acvView =
+            AutoClearedValue(this, inflater.inflate(R.layout.fragment_home_profile_photos, container, false))
 
         return acvView.get()?.rootView
     }
@@ -65,33 +57,56 @@ class HomeProfilePinFragment: BaseFragment() {
 
     private fun observeLiveData() {
         val pin = viewModel.pin
-        pin.observe(this, Observer { resource ->
-            when (resource?.getStatus()) {
-                Status.SUCCESS -> {
-                    resource.getData()?.let { list ->
-                        val pin = list as? PagedList<Photo>
-                        pin?.let {
-                            if (it.isNotEmpty()) {
-                                submitPinnedPhotos(it)
-                            }
-                        }
-                    }
-                }
-                Status.LOADING -> {
-                    pin.removeObservers(this)
-                }
-                Status.ERROR -> {
-                    pin.removeObservers(this)
-                }
-                else -> {
-                    pin.removeObservers(this)
-                }
-            }
+
+        pin.observe(homeActivity, Observer { pins ->
+            submitPinnedPhotos(pins)
+            showEmptyMessage(pins.isEmpty())
+
+            // if (pins.isNotEmpty()) {
+            //     submitPinnedPhotos(pins)
+            // } else {
+            //     // showEmptyPin()
+            // }
         })
+
+        // pin.observe(homeActivity, Observer { resource ->
+        //     when (resource?.getStatus()) {
+        //         Status.SUCCESS -> {
+        //             resource.getData()?.let { list ->
+        //                 val pin = list as? PagedList<Photo>
+        //                 pin?.let {
+        //                     if (it.isNotEmpty()) {
+        //                         submitPinnedPhotos(it)
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         Status.LOADING -> {
+        //             pin.removeObservers(this)
+        //         }
+        //         Status.ERROR -> {
+        //             pin.removeObservers(this)
+        //         }
+        //         else -> {
+        //             pin.removeObservers(this)
+        //         }
+        //     }
+        // })
     }
 
-    private fun submitPinnedPhotos(photos: PagedList<Photo>) {
-        if (::acvAdapter.isInitialized) acvAdapter.get()?.submitList(photos)
+    private fun submitPinnedPhotos(photos: List<LocalPin>) {
+        if (::acvAdapter.isInitialized) acvAdapter.get()?.addList(photos)
+        this.tv_empty_list.visibility = View.GONE
+        this.recycler_profile_photos.visibility = View.VISIBLE
+    }
+
+    private fun showEmptyMessage(isEmpty: Boolean) {
+        if (isEmpty) {
+            this.tv_empty_list.visibility = View.VISIBLE
+            this.tv_empty_list.text = "No pinned photos"
+        } else {
+            this.tv_empty_list.visibility = View.GONE
+        }
     }
 
     private fun createPinnedPhotoAdapter() {
@@ -108,7 +123,7 @@ class HomeProfilePinFragment: BaseFragment() {
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return object : GapItemDecoration(VERTICAL_LIST,resources.getDimensionPixelSize(R.dimen.space_4)) {
+        return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 outRect.left = 2
                 outRect.right = 2

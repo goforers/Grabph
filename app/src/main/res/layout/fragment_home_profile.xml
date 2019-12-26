@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/action_button_size"
         android:visibility="gone">
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -55,7 +56,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_profile_title_photo"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/others_profile_appbar_expanded_height"
+                    android:layout_height="480dp"
                     android:background="@color/transparent"
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -162,7 +163,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:minHeight="@dimen/height_20"
-                            android:maxHeight="@dimen/height_254"
+                            android:maxHeight="@dimen/height_220"
                             android:textSize="@dimen/text_size_14"
                             android:textColor="@color/colorLightWhite"
                             android:text="@string/description_sample"/>

@@ -22,9 +22,12 @@ import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.feed.LoadFeedUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.domain.usecase.feed.exif.LoadEXIFUseCase
+import com.goforer.grabph.domain.usecase.feed.location.LoadLocationUseCase
 import com.goforer.grabph.domain.usecase.people.person.LoadPersonUseCase
+import com.goforer.grabph.domain.usecase.profile.LoadMyPinUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
@@ -37,16 +40,20 @@ class FeedViewModel
 constructor(
     private val feedUseCase: LoadFeedUseCase,
     private val personUseCase: LoadPersonUseCase,
-    private val exifUseCase: LoadEXIFUseCase
+    private val exifUseCase: LoadEXIFUseCase,
+    private val locationUseCase: LoadLocationUseCase,
+    private val pinUseCase: LoadMyPinUseCase
 ): BaseViewModel<Parameters>() {
     internal lateinit var feed: LiveData<Resource>
     internal lateinit var person: LiveData<Resource>
     internal lateinit var exif: LiveData<Resource>
     internal lateinit var photo: LiveData<Resource>
+    internal lateinit var location: LiveData<Resource>
+    internal lateinit var isPinned: MutableLiveData<Boolean>
 
     internal var calledFrom: Int = 0
 
-    internal val pinnedup: LiveData<PagedList<FeedItem>> by lazy {
+    internal val pinnedUp: LiveData<PagedList<FeedItem>> by lazy {
         feedUseCase.loadPinnedFeed()
     }
 
@@ -64,6 +71,10 @@ constructor(
 
     internal fun setParametersForEXIF(parameters: Parameters) {
         exif = exifUseCase.execute(viewModelScope, parameters)
+    }
+
+    internal fun setParametersForLocation(parameters: Parameters) {
+        location = locationUseCase.execute(viewModelScope, parameters)
     }
 
     private fun closeWork(viewModelScope: CoroutineScope?) = viewModelScope?.coroutineContext?.cancelChildren()
@@ -89,4 +100,19 @@ constructor(
     internal suspend fun removePerson() = personUseCase.removePerson()
 
     internal suspend fun removeEXIF() = exifUseCase.removeEXIF()
+
+    internal suspend fun removeLocation() = locationUseCase.removeLocation()
+
+    internal fun checkPinStatus(userId: String, photoId: String) = viewModelScope.launch {
+        isPinned = MutableLiveData()
+        isPinned.value = pinUseCase.checkLocalPin(userId, photoId)
+    }
+
+    internal fun savePin(localPin: LocalPin) = viewModelScope.launch {
+        pinUseCase.saveLocalPin(localPin)
+    }
+
+    internal fun deletePin(photoId: String) = viewModelScope.launch {
+        pinUseCase.deleteLocalPin(photoId)
+    }
 }

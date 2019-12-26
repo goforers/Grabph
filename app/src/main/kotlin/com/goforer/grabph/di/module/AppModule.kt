@@ -282,4 +282,8 @@ class AppModule {
     @Singleton
     @Provides
     internal fun provideMyProfileDao(cache: Cache) = cache.myProfileDao()
+
+    @Singleton
+    @Provides
+    internal fun provideLocalPinDao(cache: Cache) = cache.localPinDao()
 }

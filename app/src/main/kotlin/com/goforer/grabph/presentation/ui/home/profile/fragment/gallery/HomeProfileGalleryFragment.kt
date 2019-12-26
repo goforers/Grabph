@@ -86,11 +86,8 @@ class HomeProfileGalleryFragment: BaseFragment() {
                     resource.getData()?.let { list ->
                         val gallery = list as? PagedList<MyGallery>
                         gallery?.let {
-                            if (it.isNotEmpty()) {
-                                submitMyPhotos(it)
-                            } else {
-                                // show something when data is empty
-                            }
+                            submitMyPhotos(it)
+                            showEmptyMessage(it.isEmpty())
                         }
                     }
                     resource.getMessage()?.let {
@@ -140,6 +137,15 @@ class HomeProfileGalleryFragment: BaseFragment() {
 
     private fun submitMyPhotos(myGallery: PagedList<MyGallery>) {
         acvAdapterMyGallery.get()?.submitList(myGallery)
+    }
+
+    private fun showEmptyMessage(isEmpty: Boolean) {
+        if (isEmpty) {
+            this.tv_empty_list.visibility = View.VISIBLE
+            this.tv_empty_list.text = "No photos in gallery"
+        } else {
+            this.tv_empty_list.visibility = View.GONE
+        }
     }
 
     internal fun setRecyclerScrollable(value: Boolean) {

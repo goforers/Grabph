@@ -34,6 +34,7 @@ import androidx.core.app.SharedElementCallback
 import androidx.lifecycle.Observer
 import com.goforer.base.annotation.MockData
 import com.goforer.base.presentation.utils.CommonUtils
+import com.goforer.base.presentation.utils.CommonUtils.getLocation
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
@@ -54,18 +55,19 @@ import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkH
 import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
-import com.goforer.grabph.presentation.vm.feed.location.LocationViewModel
-import com.goforer.grabph.presentation.vm.feed.photo.LocalSavedPhotoViewModel
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoInfoViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photoinfo.Picture
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_GEO
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTO_INFO
 import com.goforer.grabph.data.repository.remote.Repository.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
+import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE_MY_PIN
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
@@ -100,6 +102,8 @@ import kotlin.random.Random
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PhotoInfoActivity : BaseActivity() {
+    @MockData val loggedId = "184804690@N02"
+
     private lateinit var sharedElementCallback: FeedInfoItemCallback
     private lateinit var playBackStateListener: PlayBackStateListener
 
@@ -121,6 +125,9 @@ class PhotoInfoActivity : BaseActivity() {
     private var videoUrl: String? = null
     private var userPhotoUrl: String? = null
 
+    private var isPinned = false
+    private var isPinClicked = false
+
     private var isAppBarLayoutExpanded = false
     private var isAppBarLayoutCollapsed = false
 
@@ -140,10 +147,6 @@ class PhotoInfoActivity : BaseActivity() {
 
     @field:Inject
     lateinit var viewModel: PhotoInfoViewModel
-    @field:Inject
-    lateinit var locationViewModel: LocationViewModel
-    @field:Inject
-    lateinit var localSavedPhotoViewModel: LocalSavedPhotoViewModel
     @field:Inject
     lateinit var workHandler: CommonWorkHandler
     @field:Inject
@@ -350,6 +353,14 @@ class PhotoInfoActivity : BaseActivity() {
         if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
             releasePlayer()
         }
+
+        if (isPinClicked) {
+            if (isPinned) {
+                viewModel.savePin(LocalPin(photoId, userId, loggedId, photoPath, mediaType!!))
+            } else {
+                viewModel.deletePin(photoId)
+            }
+        }
     }
 
     override fun onStop() {
@@ -399,6 +410,9 @@ class PhotoInfoActivity : BaseActivity() {
         setUserProfileObserver()
         getPhotoEXIF(photoId)
         setPhotoEXIFObserver()
+        getPhotoLocation(photoId)
+        setPhotoLocation()
+        setPinView()
     }
 
     private fun getPhotoInfo(photoId: String) {
@@ -422,23 +436,22 @@ class PhotoInfoActivity : BaseActivity() {
                             displayPhotoInfo(picture)
                             setBottomLoadingFinished()
                         }
-
                     }
                 }
 
                 resource.getMessage()?.let {
-                    showNetworkError(resource.errorCode)
+                    showNetworkError(resource)
                 }
             }
 
             Status.LOADING -> {}
 
             Status.ERROR -> {
-                showNetworkError(resource.errorCode)
+                showNetworkError(resource)
             }
 
             else -> {
-                showNetworkError(resource.errorCode)
+                showNetworkError(resource)
             }
         }
     })
@@ -543,7 +556,7 @@ class PhotoInfoActivity : BaseActivity() {
                 }
 
                 resource.getMessage()?.let {
-                    showNetworkError(resource.errorCode)
+                    showNetworkError(resource)
                 }
             }
 
@@ -551,11 +564,11 @@ class PhotoInfoActivity : BaseActivity() {
             }
 
             Status.ERROR -> {
-                showNetworkError(resource.errorCode)
+                showNetworkError(resource)
             }
 
             else -> {
-                showNetworkError(resource.errorCode)
+                showNetworkError(resource)
             }
         }
     })
@@ -612,18 +625,18 @@ class PhotoInfoActivity : BaseActivity() {
                     }
 
                     resource.getMessage()?.let {
-                        showNetworkError(resource.errorCode)
+                        showNetworkError(resource)
                     }
                 }
 
                 Status.LOADING -> { }
 
                 Status.ERROR -> {
-                    showNetworkError(resource.errorCode)
+                    showNetworkError(resource)
                 }
 
                 else -> {
-                    showNetworkError(resource.errorCode)
+                    showNetworkError(resource)
                 }
             }
         })
@@ -717,9 +730,59 @@ class PhotoInfoActivity : BaseActivity() {
             this.tv_flash.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_ISO_SPEED].raw._content
             this.tv_white_balance.text = items[CommonWorkHandler.EXIF_ITEM_INDEX_FLASH].raw._content
             this.tv_focal_length.text = none
-
         }
     }
+
+    private fun setPinView() {
+        viewModel.checkPinStatus(loggedId, photoId)
+        viewModel.isPinned.observe(this, Observer {
+            this.iv_icon_bookmark_photo_info.isChecked = it
+            isPinned = it
+        })
+
+        this.iv_icon_bookmark_photo_info.setOnClickListener {
+            isPinned = this.iv_icon_bookmark_photo_info.isChecked
+            isPinClicked = true
+        }
+    }
+
+    private fun getPhotoLocation(photoId: String) {
+        viewModel.setParametersForLocation(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_GEO,
+                BOUND_FROM_BACKEND
+            )
+        )
+    }
+
+    private fun setPhotoLocation() = viewModel.location.observe(this, Observer { resource ->
+
+        when (resource?.getStatus()) {
+            Status.SUCCESS -> {
+                resource.getData()?.let { location ->
+                    this.location = location as? Location?
+                    this.location?.let { displayLocation(it) }
+                }
+
+                resource.getMessage()?.let { showNetworkError(resource) }
+            }
+
+            Status.LOADING -> {  }
+
+            Status.ERROR -> { showNetworkError(resource) }
+
+            else -> { showNetworkError(resource) }
+        }
+    })
+
+    private fun displayLocation(location: Location) {
+        this.tv_location_content.text = getLocation(location)
+        this.divider0.visibility = View.VISIBLE
+        this.constraint_holder_location.visibility = View.VISIBLE
+    }
+
 
     private fun initializePlayer(source: String) {
         this.progress_bar_play_button.visibility = View.VISIBLE
@@ -779,8 +842,8 @@ class PhotoInfoActivity : BaseActivity() {
     private fun removePhotoCache() = launchIOWork {
         viewModel.removePerson()
         viewModel.removeEXIF()
-        locationViewModel.removeLocation()
         viewModel.removePhotoInfo()
+        viewModel.removeLocation()
     }
 
     private fun setActivityResult() {
@@ -916,16 +979,18 @@ class PhotoInfoActivity : BaseActivity() {
         this.nested_scroll_view_photo_info.visibility = View.GONE
     }
 
-    private fun showNetworkError(errorCode: Int) = when(errorCode) {
+    private fun showNetworkError(resource: Resource) = when(resource.errorCode) {
         in 400..499 -> {
-            Snackbar.make(coordinator_photo_info_layout, getString(R.string.phrase_client_wrong_request), LENGTH_LONG).show()
+            Snackbar.make(this.coordinator_photo_info_layout, getString(R.string.phrase_client_wrong_request), LENGTH_LONG).show()
         }
 
         in 500..599 -> {
-            Snackbar.make(coordinator_photo_info_layout, getString(R.string.phrase_server_wrong_response), LENGTH_LONG).show()
+            Snackbar.make(this.coordinator_photo_info_layout, getString(R.string.phrase_server_wrong_response), LENGTH_LONG).show()
         }
 
-        else -> {}
+        else -> {
+            Snackbar.make(this.coordinator_photo_info_layout, resource.getMessage().toString(), LENGTH_LONG).show()
+        }
     }
 
     /**

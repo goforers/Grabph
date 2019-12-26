@@ -18,13 +18,16 @@ package com.goforer.grabph.presentation.vm.feed.photo
 
 import androidx.lifecycle.*
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photosizes.PhotoSize
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.feed.photo.LoadPhotoInfoUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.domain.usecase.feed.exif.LoadEXIFUseCase
+import com.goforer.grabph.domain.usecase.feed.location.LoadLocationUseCase
 import com.goforer.grabph.domain.usecase.feed.photo.LoadPhotoSizeUseCase
 import com.goforer.grabph.domain.usecase.people.person.LoadPersonUseCase
+import com.goforer.grabph.domain.usecase.profile.LoadMyPinUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,14 +39,18 @@ constructor(
     private val photoUseCase: LoadPhotoInfoUseCase,
     private val personUseCase: LoadPersonUseCase,
     private val exifUseCase: LoadEXIFUseCase,
-    private val photoSizeUseCase: LoadPhotoSizeUseCase
+    private val locationUseCase: LoadLocationUseCase,
+    private val photoSizeUseCase: LoadPhotoSizeUseCase,
+    private val pinUseCase: LoadMyPinUseCase
 ) : BaseViewModel<Parameters>() {
     internal lateinit var photoInfo: LiveData<Resource>
     internal lateinit var person: LiveData<Resource>
     internal lateinit var exifInfo: LiveData<Resource>
+    internal lateinit var location: LiveData<Resource>
     internal lateinit var videoSource: MutableLiveData<String>
     internal lateinit var videoThumbnail: MutableLiveData<String>
     internal lateinit var getSizeError: MutableLiveData<String>
+    internal lateinit var isPinned: MutableLiveData<Boolean>
 
     override fun setParameters(parameters: Parameters, type:Int) {
         photoInfo = photoUseCase.execute(viewModelScope, parameters)
@@ -57,11 +64,17 @@ constructor(
         exifInfo = exifUseCase.execute(viewModelScope, parameters)
     }
 
+    internal fun setParametersForLocation(parameters: Parameters) {
+        location = locationUseCase.execute(viewModelScope, parameters)
+    }
+
     internal suspend fun removePhotoInfo() = photoUseCase.removePhotoInfo()
 
     internal suspend fun removePerson() = personUseCase.removePerson()
 
     internal suspend fun removeEXIF() = exifUseCase.removeEXIF()
+
+    internal suspend fun removeLocation() = locationUseCase.removeLocation()
 
     internal fun getPhotoSizes(photoId: String) {
         videoSource = MutableLiveData()
@@ -94,5 +107,18 @@ constructor(
         }
         videoSource.value = mobileSource ?: siteSource
         thumbnail?.let { videoThumbnail.value = it }
+    }
+
+    internal fun checkPinStatus(userId: String, photoId: String) = viewModelScope.launch {
+        isPinned = MutableLiveData()
+        isPinned.value = pinUseCase.checkLocalPin(userId, photoId)
+    }
+
+    internal fun savePin(localPin: LocalPin) = viewModelScope.launch{
+        pinUseCase.saveLocalPin(localPin)
+    }
+
+    internal fun deletePin(photoId: String) = viewModelScope.launch {
+        pinUseCase.deleteLocalPin(photoId)
     }
 }

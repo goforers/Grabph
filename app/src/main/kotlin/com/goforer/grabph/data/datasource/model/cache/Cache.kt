@@ -50,6 +50,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.info.Que
 import com.goforer.grabph.data.datasource.model.cache.data.entity.savedphoto.LocalSavedPhoto
 import com.goforer.grabph.data.datasource.model.dao.local.LocalEXIFDao
 import com.goforer.grabph.data.datasource.model.dao.local.LocalLocationDao
+import com.goforer.grabph.data.datasource.model.dao.local.LocalPinDao
 import com.goforer.grabph.data.datasource.model.dao.local.LocalSavedPhotoDao
 import com.goforer.grabph.data.datasource.model.dao.remote.category.CategoryDao
 import com.goforer.grabph.data.datasource.model.dao.remote.category.photo.CPhotoDao
@@ -86,7 +87,7 @@ import com.goforer.grabph.data.datasource.model.dao.remote.search.RecentKeywordD
     QuestsInfog::class, QuestInfo::class, Home::class, CPhoto::class, TopPortionQuest::class,
     Category::class, HomeProfile::class, MyPhoto::class, Searper::class, People::class,
     HotTopicContent::class, Ranking::class, FeedsContent::class, MyGallery::class,
-    MyGalleryg::class, Gallery::class, MyProfile::class], version = 1)
+    MyGalleryg::class, Gallery::class, MyProfile::class, LocalPin::class], version = 1)
 abstract class Cache : RoomDatabase() {
     abstract fun feedItemDao(): FeedItemDao
     abstract fun personDao(): PersonDao
@@ -114,4 +115,5 @@ abstract class Cache : RoomDatabase() {
     abstract fun feedsContentDao(): FeedsContentDao
     abstract fun myGalleryDao(): MyGalleryDao
     abstract fun myProfileDao(): MyProfileDao
+    abstract fun localPinDao(): LocalPinDao
 }

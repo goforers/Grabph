@@ -274,10 +274,61 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View
+                        android:id="@+id/divider0"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/height_2"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@+id/constraint_holder_description"
+                        android:background="@color/colorDivider"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_holder_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/height_54"
+                        android:visibility="gone"
+                        android:paddingStart="@dimen/margin_16"
+                        android:paddingEnd="@dimen/margin_16"
+                        app:layout_constraintTop_toBottomOf="@id/divider0">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_location_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:text="LOCATION"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"/>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/margin_25"
+                            app:layout_constraintStart_toEndOf="@+id/tv_location_title"
+                            app:layout_constraintEnd_toEndOf="parent">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tv_location_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="start"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:textColor="@color/colorSizeSelection"
+                                android:textSize="@dimen/text_size_14"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
                         android:id="@+id/divider1"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/height_2"
-                        app:layout_constraintTop_toBottomOf="@+id/constraint_holder_description"
+                        app:layout_constraintTop_toBottomOf="@+id/constraint_holder_location"
                         android:background="@color/colorDivider"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout

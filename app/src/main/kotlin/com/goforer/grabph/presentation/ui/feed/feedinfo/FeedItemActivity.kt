@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.goforer.base.annotation.MockData
+import com.goforer.base.presentation.utils.CommonUtils.getLocation
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
@@ -25,8 +26,10 @@ import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.exif.EXIF
 import com.goforer.grabph.data.datasource.model.cache.data.entity.feed.FeedItem
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
+import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_EXIF
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_GEO
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
@@ -76,6 +79,8 @@ import kotlin.random.Random
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class FeedItemActivity : BaseActivity() {
+    @MockData val loggedId = "184804690@N02"
+
     private lateinit var sharedElementCallback: FeedInfoItemCallback
 
     private var feedItem: FeedItem? = null
@@ -83,6 +88,9 @@ class FeedItemActivity : BaseActivity() {
     internal lateinit var photoId: String
     private lateinit var userId: String
     private lateinit var photoPath: String
+
+    private var isPinned = false
+    private var isPinClicked = false
 
     private lateinit var playBackStateListener: PlayBackStateListener
 
@@ -312,6 +320,14 @@ class FeedItemActivity : BaseActivity() {
         if (mediaType == getString(R.string.media_type_video) && Build.VERSION.SDK_INT < 24) {
             releasePlayer()
         }
+
+        if (isPinClicked) {
+            if (isPinned) {
+                viewModel.savePin(LocalPin(photoId, userId, loggedId, photoPath, mediaType!!))
+            } else {
+                viewModel.deletePin(photoId)
+            }
+        }
     }
 
     override fun onStop() {
@@ -370,6 +386,9 @@ class FeedItemActivity : BaseActivity() {
         setUserProfileObserver()
         getPhotoEXIF(photoId)
         setPhotoEXIFObserver()
+        getPhotoLocation(photoId)
+        setPhotoLocation()
+        setPinView()
     }
 
     private fun setFeedItemData(feedItem: FeedItem) {
@@ -485,6 +504,19 @@ class FeedItemActivity : BaseActivity() {
 
         this.iv_profile_feed_item.setOnClickListener {
             Caller.callOtherUserProfile(this, CALLED_FROM_FEED_INFO, userId, name!!, 3, searperPhotoUrl!!)
+        }
+    }
+
+    private fun setPinView() {
+        viewModel.checkPinStatus(loggedId, photoId)
+        viewModel.isPinned.observe(this, Observer {
+            this.iv_icon_bookmark_feed_item.isChecked = it
+            isPinned = it
+        })
+
+        this.iv_icon_bookmark_feed_item.setOnClickListener {
+            isPinned = this.iv_icon_bookmark_feed_item.isChecked
+            isPinClicked = true
         }
     }
 
@@ -628,6 +660,43 @@ class FeedItemActivity : BaseActivity() {
         return list
     }
 
+    private fun getPhotoLocation(photoId: String) {
+        viewModel.setParametersForLocation(
+            Parameters(
+                photoId,
+                -1,
+                LOAD_GEO,
+                BOUND_FROM_BACKEND
+            )
+        )
+    }
+
+    private fun setPhotoLocation() = viewModel.location.observe(this, Observer { resource ->
+
+        when (resource?.getStatus()) {
+            Status.SUCCESS -> {
+                resource.getData()?.let { location ->
+                    this.location = location as? Location?
+                    this.location?.let { displayLocation(it) }
+                }
+
+                resource.getMessage()?.let { showNetworkError(resource) }
+            }
+
+            Status.LOADING -> {  }
+
+            Status.ERROR -> { showNetworkError(resource) }
+
+            else -> { showNetworkError(resource) }
+        }
+    })
+
+    private fun displayLocation(location: Location) {
+        this.tv_location_content.text = getLocation(location)
+        this.divider0.visibility = View.VISIBLE
+        this.constraint_holder_location.visibility = View.VISIBLE
+    }
+
     private fun initializePlayer(source: String) {
         this.progress_bar_feed_item.visibility = View.VISIBLE
         this.iv_play_btn_feed_item.visibility = View.GONE
@@ -717,6 +786,7 @@ class FeedItemActivity : BaseActivity() {
     private fun removeCache() = launchIOWork {
         viewModel.removePerson()
         viewModel.removeEXIF()
+        viewModel.removeLocation()
     }
 
     private fun initCoordinatorLayout() {
