@@ -30,7 +30,6 @@ class LocalPinRepository
         delete(photoId)
     }
 
-    @WorkerThread
     internal suspend fun checkLocalPin(userId: String, photoId: String): Boolean {
         return (dao.ifExists(userId, photoId) != null)
     }

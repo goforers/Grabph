@@ -5,7 +5,7 @@
     <color name="colorIndicatorUnselected">#B2B2B2</color>
 
     //App's Color
-    <color name="colorPrimary">#16181F</color>
+    <color name="colorPrimary">#1F1F1F</color>
     <color name="colorPrimaryDark">#131313</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
@@ -13,6 +13,7 @@
     <color name="blackBright">#151520</color>
     <color name="blackLightDark">#221122</color>
     <color name="blackBrightItem">#1F1D20</color>
+    <color name="colorBackgroundDark">#1F1F1F</color>
     <color name="colorSearp">#FF8B1D</color>
     <color name="colorSearp1">#FC9B1A</color>
     <color name="colorSearp2">#EA9B1D</color>
@@ -110,4 +111,14 @@
     <color name="colorHashTag">#DE4285F4</color>
     <color name="colorSizeSelection">#B3FFFFFF</color>
     <color name="colorGenderSelected">#5A3054</color>
+    <color name="colorGradientStart">#FC0C63</color>
+    <color name="colorGradientCenter">#FFFE524C</color>
+    <color name="colorGradientEnd">#FF8B1D</color>
+    <color name="colorImageBackgroundA">#292929</color>
+    <color name="colorImageBackgroundB">#272727</color>
+    <color name="colorImageBackgroundC">#252525</color>
+    <color name="colorImageBackgroundD">#1F1F1F</color>
+    <color name="colorImageBackgroundE">#171717</color>
+    <color name="colorImageBackgroundF">#171616</color>
+
 </resources>

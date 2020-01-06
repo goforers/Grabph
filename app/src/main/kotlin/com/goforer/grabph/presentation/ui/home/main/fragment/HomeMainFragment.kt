@@ -178,7 +178,7 @@ class HomeMainFragment: BaseFragment() {
     private suspend fun transactMockData() {
         val home = HomeDataSource()
 
-        homeActivity.homeViewModel.loadHome()?.observe(this, Observer {
+        homeActivity.homeViewModel.loadHome()?.observe(homeActivity, Observer {
             it?.let { home ->
                 if (isPinnedUpdate.not()) {
                     this.home = home
@@ -209,7 +209,7 @@ class HomeMainFragment: BaseFragment() {
         val liveData =  homeActivity.homeViewModel.home
 
         homeActivity.setHomeMainLoadParam(NetworkBoundResource.LOAD_HOME, NetworkBoundResource.BOUND_FROM_LOCAL, Caller.CALLED_FROM_HOME_MAIN, "")
-        liveData.observe(this, Observer { resource ->
+        liveData.observe(homeActivity, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { home ->

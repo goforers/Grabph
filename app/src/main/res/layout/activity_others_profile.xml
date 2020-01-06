@@ -195,6 +195,7 @@
         android:scrollbarStyle="outsideInset"
         android:scrollbarThumbVertical="@color/transparent"
         android:scrollbars="vertical"
+        android:visibility="visible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -207,7 +208,6 @@
         android:background="@drawable/searp_gradation"
         android:layout_gravity="center_horizontal|bottom"
         app:layout_anchorGravity="top"
-        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomButtonBehavior"
-        />
+        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomButtonBehavior"/>
 
 </com.goforer.base.presentation.view.customs.layout.AutoScrollCoordinatorLayout>

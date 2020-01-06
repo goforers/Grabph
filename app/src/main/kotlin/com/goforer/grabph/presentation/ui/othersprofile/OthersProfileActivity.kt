@@ -192,8 +192,6 @@ class OthersProfileActivity : BaseActivity() {
 
                 val liveData = viewModel.profile
                 liveData.observe(this, Observer { resource ->
-                    showLoadingFinished()
-
                     when (resource?.getStatus()) {
                         Status.SUCCESS -> {
                             resource.getData().let { person ->
@@ -242,10 +240,7 @@ class OthersProfileActivity : BaseActivity() {
                 )
                 mockPerson.followers = "24"
                 mockPerson.followings = "45"
-                withDelay(800L) {
-                    setTopPortionViewData(mockPerson)
-                    showLoadingFinished()
-                }
+                setTopPortionViewData(mockPerson)
             }
         }
     }
@@ -257,7 +252,6 @@ class OthersProfileActivity : BaseActivity() {
 
         val liveData = viewModel.profile
         liveData.observe(this, Observer { resource ->
-            showLoadingFinished()
             when (resource?.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData().let { person ->
@@ -318,10 +312,7 @@ class OthersProfileActivity : BaseActivity() {
     @MockData
     private fun setBottomPortionViewMock() {
         val user: String = when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> { // mock data
-                "183109783@N06"
-            }
-
+            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "151226432@N06" // mock data
             else -> userId
         }
 
@@ -329,6 +320,10 @@ class OthersProfileActivity : BaseActivity() {
 
         val liveData = viewModel.photos
         liveData.observe(this, Observer { resource ->
+            withDelay(800L) {
+                showLoadingFinished()
+            }
+
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { list ->
@@ -378,6 +373,7 @@ class OthersProfileActivity : BaseActivity() {
         val liveData = viewModel.photos
 
         liveData.observe(this, Observer { resource ->
+            showLoadingFinished()
             when (resource.getStatus()) {
                 Status.SUCCESS -> {
                     resource.getData()?.let { list ->
@@ -648,10 +644,11 @@ class OthersProfileActivity : BaseActivity() {
     private fun setRankColor(rank: Int) {
         when (rank) {
             PEOPLE_RANK_BEGINNER -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
-            PEOPLE_RANK_FIRST -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_blue)
-            PEOPLE_RANK_SECOND -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_orange)
-            PEOPLE_RANK_THIRD -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_purple)
-            PEOPLE_RANK_FOURTH -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_red)
+            PEOPLE_RANK_1 -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_blue)
+            PEOPLE_RANK_2 -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_orange)
+            PEOPLE_RANK_3 -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_purple)
+            PEOPLE_RANK_4 -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_red)
+            PEOPLE_RANK_EXPERT -> constraint_profile.setBackgroundResource(R.drawable.border_rounded_rank_gradient)
         }
     }
 

@@ -88,11 +88,11 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
             tv_snap_quest_title.requestLayout()
             tv_snap_quest_title.requestLayout()
             tv_snap_quest_reward_price.requestLayout()
-            activity.setImageDraw(iv_snap_quest_owner_logo, item.ownerLogo)
+            tv_snap_quest_photos.requestLayout()
+            // activity.setImageDraw(iv_snap_quest_owner_logo, item.ownerLogo)
             snap_quest_item_holder.visibility = View.VISIBLE
             activity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
-            activity.setImageDraw(iv_snap_quest_content, snap_quest_content_constraintLayoutContainer,
-                item.ownerImage, false)
+            activity.setImageDraw(iv_snap_quest_content, item.ownerImage)
             snap_quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
             iv_snap_quest_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
@@ -100,14 +100,15 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
                 callQuestInfo(iv_snap_quest_content, item, holder)
             }
 
-            quest_info_holder.setOnClickListener {
+            card_quest_holder.setOnClickListener {
                 callQuestInfo(iv_snap_quest_content, item, holder)
             }
 
             tv_snap_quest_duration.text = (activity.getString(R.string.snap_quest_duration_day_phrase) + item.duration)
-            tv_snap_quest_owner_name.text = item.ownerName
+            // tv_snap_quest_owner_name.text = item.ownerName
             tv_snap_quest_title.text = item.title
-            tv_snap_quest_reward_price.text = item.rewards
+            tv_snap_quest_reward_price.text = (activity.getString(R.string.currency_us_dollar) + " " + item.rewards)
+            tv_snap_quest_photos.text = item.photos
         }
 
         override fun onItemSelected() {
@@ -122,12 +123,12 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
             activity.closeFab()
             Caller.callQuestInfo(activity, viewContent,
                 item, holder.adapterPosition, CALLED_FROM_HOME_MAIN_QUEST,
-                SELECTED_QUEST_INFO_ITEM_FROM_HOME_MAIN_POSITION, false)
+                SELECTED_QUEST_INFO_ITEM_FROM_HOME_MAIN_POSITION)
         }
 
         private fun setFontTypeface() {
             activity.setFontTypeface(tv_snap_quest_title, FONT_TYPE_REGULAR)
-            activity.setFontTypeface(tv_snap_quest_owner_name, FONT_TYPE_MEDIUM)
+            // activity.setFontTypeface(tv_snap_quest_owner_name, FONT_TYPE_MEDIUM)
             activity.setFontTypeface(tv_snap_quest_duration, FONT_TYPE_MEDIUM)
             activity.setFontTypeface(tv_snap_quest_reward_price, FONT_TYPE_MEDIUM)
         }

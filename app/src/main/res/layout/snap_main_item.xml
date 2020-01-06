@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/snap_item_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/snap_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:visibility="visible">
+    android:visibility="gone">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_snap_item_holder"
@@ -80,7 +80,7 @@
                     android:clipToPadding="false"
                     android:padding="@dimen/padding_4"
                     android:scrollbars="none"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_snap_item_title" />
@@ -92,6 +92,8 @@
                     android:layout_marginTop="@dimen/margin_16"
                     android:clipToPadding="false"
                     android:padding="@dimen/padding_4"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
                     android:background="@color/transparent"
                     android:scrollbars="none"
                     android:visibility="gone"
@@ -109,6 +111,8 @@
                     android:background="@color/transparent"
                     android:scrollbars="none"
                     android:visibility="gone"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_snap_item_title" />
@@ -120,6 +124,8 @@
                     android:layout_marginTop="@dimen/margin_16"
                     android:clipToPadding="false"
                     android:padding="@dimen/padding_4"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
                     android:background="@color/transparent"
                     android:scrollbars="none"
                     android:visibility="gone"
@@ -134,7 +140,7 @@
                     android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginBottom="@dimen/margin_30"
                     android:gravity="start"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 

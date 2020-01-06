@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
@@ -37,6 +38,7 @@ import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_profile_photos_item.*
+import kotlin.random.Random
 
 class ProfileGalleryAdapter(private val activity: HomeActivity)
     : PagedListAdapter<MyGallery, ProfileGalleryAdapter.MyPhotosViewHolder>(DIFF_CALLBACK) {
@@ -69,9 +71,10 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             iv_profile_my_photo.requestLayout()
             tv_profile_mission_price.requestLayout()
             activity.setFixedImageSize(400, 400) // original value: 0, 0
+            setRandomBackground(iv_profile_my_photo)
 
             val url = CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
-            val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
+            val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)
             Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
             // activity.setImageDraw(iv_profile_my_photo, url)
             // tv_profile_mission_price.visibility = View.VISIBLE
@@ -100,5 +103,16 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
         override fun onItemSelected() { containerView.setBackgroundColor(Color.LTGRAY) }
 
         override fun onItemClear() { containerView.setBackgroundColor(0) }
+
+        private fun setRandomBackground(iv: AppCompatImageView) {
+            when (Random.nextInt(6)) {
+                0 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundA))
+                1 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundB))
+                2 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundC))
+                3 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundD))
+                4 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundE))
+                5 -> iv.setBackgroundColor(activity.getColor(R.color.colorImageBackgroundF))
+            }
+        }
     }
 }

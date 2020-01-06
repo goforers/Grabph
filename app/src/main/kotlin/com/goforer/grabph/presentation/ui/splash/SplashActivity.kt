@@ -226,7 +226,8 @@ class SplashActivity : BaseActivity() {
             }
 
             else -> {
-                moveToLogIn()
+                // moveToLogIn()
+                goToHome()
 
                 return@launchWork
             }

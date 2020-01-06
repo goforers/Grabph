@@ -3,74 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/snap_quest_favorite_keyword_item_holder"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/height_32"
-    android:layout_marginTop="@dimen/margin_14"
-    android:layout_marginStart="@dimen/margin_8"
-    android:layout_gravity="center_horizontal|center_vertical"
-    android:gravity="center"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/margin_5"
     android:stateListAnimator="@animator/raise"
     android:foreground="@drawable/grey_ripple"
     android:visibility="visible"
+    android:background="@color/colorPrimary"
     android:transitionGroup="true">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_quest_favorite_keyword_holder"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:elevation="@dimen/elevation_4"
-        android:layout_gravity="center_horizontal|center_vertical"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_quest_favorite_keyword"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_32"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:ellipsize="middle"
         android:gravity="center"
-        android:visibility="visible"
-        app:cardBackgroundColor="@color/colorSearp"
-        app:cardCornerRadius="@dimen/radius_16"
+        android:maxLength="20"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14"
+        android:text="samplecategory"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:background="@drawable/border_of_upload_category_selected"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/quest_favorite_keyword_Container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                    android:id="@+id/iv_quest_favorite_keyword"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:adjustViewBounds="true"
-                    android:fitsSystemWindows="true"
-                    android:gravity="center"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_quest_favorite_keyword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:ellipsize="middle"
-                android:gravity="center"
-                android:maxLength="20"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_12"
-                app:autoSizeTextType="uniform"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

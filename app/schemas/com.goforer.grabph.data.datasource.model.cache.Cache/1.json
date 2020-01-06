@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2e4a5dace96ad6b75a12ccec2965fba7",
+    "identityHash": "77ef19ab33311204a08c4b8eba0d853e",
     "entities": [
       {
         "tableName": "FeedItem",
@@ -1314,7 +1314,7 @@
       },
       {
         "tableName": "Quest",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_idx` INTEGER NOT NULL, `_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `ownerLogo` TEXT NOT NULL, `ownerImage` TEXT NOT NULL, `favoriteCategory` TEXT NOT NULL, `title` TEXT NOT NULL, `state` TEXT NOT NULL, `description` TEXT NOT NULL, `rewards` TEXT NOT NULL, `duration` INTEGER NOT NULL, PRIMARY KEY(`_idx`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_idx` INTEGER NOT NULL, `_id` TEXT NOT NULL, `owner` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `ownerLogo` TEXT NOT NULL, `ownerImage` TEXT NOT NULL, `favoriteCategory` TEXT NOT NULL, `title` TEXT NOT NULL, `state` TEXT NOT NULL, `description` TEXT NOT NULL, `rewards` TEXT NOT NULL, `duration` INTEGER NOT NULL, `photos` TEXT NOT NULL, PRIMARY KEY(`_idx`))",
         "fields": [
           {
             "fieldPath": "idx",
@@ -1386,6 +1386,12 @@
             "fieldPath": "duration",
             "columnName": "duration",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photos",
+            "columnName": "photos",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -1506,7 +1512,7 @@
       },
       {
         "tableName": "Home",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemcount` INTEGER NOT NULL, `background` TEXT NOT NULL, `hotSearptitle` TEXT NOT NULL, `hotSearphotTopictitle` TEXT NOT NULL, `hotSearphotTopic_id` TEXT NOT NULL, `hotSearphotTopicmediatype` TEXT NOT NULL, `hotSearphotTopicmediaurlsfull` TEXT, `hotSearphotTopicmediaurlsregular` TEXT, `hotSearphotTopicmediaurlssmall` TEXT, `hotSearphotTopicmediaurlsthumb` TEXT, `hotSearpquest_idx` INTEGER NOT NULL, `hotSearpquest_id` TEXT NOT NULL, `hotSearpquestowner` TEXT NOT NULL, `hotSearpquestownerName` TEXT NOT NULL, `hotSearpquestownerLogo` TEXT NOT NULL, `hotSearpquestownerImage` TEXT NOT NULL, `hotSearpquestfavoriteCategory` TEXT NOT NULL, `hotSearpquesttitle` TEXT NOT NULL, `hotSearpqueststate` TEXT NOT NULL, `hotSearpquestdescription` TEXT NOT NULL, `hotSearpquestrewards` TEXT NOT NULL, `hotSearpquestduration` INTEGER NOT NULL, `hotSearpsearperPhoto_idx` INTEGER NOT NULL, `hotSearpsearperPhoto_id` TEXT, `hotSearpsearperPhotopinned` INTEGER NOT NULL, `hotSearpsearperPhotosearper_photo_url` TEXT, `hotSearpsearperPhotosearper_name` TEXT, `hotSearpsearperPhotolike` INTEGER NOT NULL, `hotSearpsearperPhotodate_pinned` INTEGER NOT NULL, `hotSearpsearperPhototitle` TEXT NOT NULL, `hotSearpsearperPhotolink` TEXT, `hotSearpsearperPhotovideoSource` TEXT, `hotSearpsearperPhotomediaType` TEXT, `hotSearpsearperPhototakenDate` TEXT, `hotSearpsearperPhotodescription` TEXT, `hotSearpsearperPhotopublished` TEXT, `hotSearpsearperPhotoauthor` TEXT, `hotSearpsearperPhotoauthorId` TEXT, `hotSearpsearperPhototags` TEXT, `hotSearpsearperPhotomedia_m` TEXT, `hotSearpcategoryid` TEXT NOT NULL, `hotSearpcategorytype` INTEGER NOT NULL, `hotSearpcategorytitle` TEXT NOT NULL, `hotSearpcategoryphotom` TEXT, `popQuestquest` TEXT NOT NULL, `popQuesttitle` TEXT NOT NULL, `popSearpersearper` TEXT NOT NULL, `popSearpertitle` TEXT NOT NULL, `phototypecategory` TEXT NOT NULL, `phototypetitle` TEXT NOT NULL, PRIMARY KEY(`itemcount`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`itemcount` INTEGER NOT NULL, `background` TEXT NOT NULL, `hotSearptitle` TEXT NOT NULL, `hotSearphotTopictitle` TEXT NOT NULL, `hotSearphotTopic_id` TEXT NOT NULL, `hotSearphotTopicmediatype` TEXT NOT NULL, `hotSearphotTopicmediaurlsfull` TEXT, `hotSearphotTopicmediaurlsregular` TEXT, `hotSearphotTopicmediaurlssmall` TEXT, `hotSearphotTopicmediaurlsthumb` TEXT, `hotSearpquest_idx` INTEGER NOT NULL, `hotSearpquest_id` TEXT NOT NULL, `hotSearpquestowner` TEXT NOT NULL, `hotSearpquestownerName` TEXT NOT NULL, `hotSearpquestownerLogo` TEXT NOT NULL, `hotSearpquestownerImage` TEXT NOT NULL, `hotSearpquestfavoriteCategory` TEXT NOT NULL, `hotSearpquesttitle` TEXT NOT NULL, `hotSearpqueststate` TEXT NOT NULL, `hotSearpquestdescription` TEXT NOT NULL, `hotSearpquestrewards` TEXT NOT NULL, `hotSearpquestduration` INTEGER NOT NULL, `hotSearpquestphotos` TEXT NOT NULL, `hotSearpsearperPhoto_idx` INTEGER NOT NULL, `hotSearpsearperPhoto_id` TEXT, `hotSearpsearperPhotopinned` INTEGER NOT NULL, `hotSearpsearperPhotosearper_photo_url` TEXT, `hotSearpsearperPhotosearper_name` TEXT, `hotSearpsearperPhotolike` INTEGER NOT NULL, `hotSearpsearperPhotodate_pinned` INTEGER NOT NULL, `hotSearpsearperPhototitle` TEXT NOT NULL, `hotSearpsearperPhotolink` TEXT, `hotSearpsearperPhotovideoSource` TEXT, `hotSearpsearperPhotomediaType` TEXT, `hotSearpsearperPhototakenDate` TEXT, `hotSearpsearperPhotodescription` TEXT, `hotSearpsearperPhotopublished` TEXT, `hotSearpsearperPhotoauthor` TEXT, `hotSearpsearperPhotoauthorId` TEXT, `hotSearpsearperPhototags` TEXT, `hotSearpsearperPhotomedia_m` TEXT, `hotSearpcategoryid` TEXT NOT NULL, `hotSearpcategorytype` INTEGER NOT NULL, `hotSearpcategorytitle` TEXT NOT NULL, `hotSearpcategoryphotom` TEXT, `popQuestquest` TEXT NOT NULL, `popQuesttitle` TEXT NOT NULL, `popSearpersearper` TEXT NOT NULL, `popSearpertitle` TEXT NOT NULL, `phototypecategory` TEXT NOT NULL, `phototypetitle` TEXT NOT NULL, PRIMARY KEY(`itemcount`))",
         "fields": [
           {
             "fieldPath": "itemcount",
@@ -1638,6 +1644,12 @@
             "fieldPath": "hotSearp.quest.duration",
             "columnName": "hotSearpquestduration",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hotSearp.quest.photos",
+            "columnName": "hotSearpquestphotos",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -2776,7 +2788,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2e4a5dace96ad6b75a12ccec2965fba7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '77ef19ab33311204a08c4b8eba0d853e')"
     ]
   }
 }

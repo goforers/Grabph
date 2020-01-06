@@ -37,7 +37,6 @@ constructor(private val useCase: LoadMyProfileUseCase,
     }
 
     fun setParametersMyPin(parameters: String) {
-        // pin = pinUseCase.execute(viewModelScope, parameters)
         pin = pinUseCase.execute(viewModelScope, parameters)
     }
 

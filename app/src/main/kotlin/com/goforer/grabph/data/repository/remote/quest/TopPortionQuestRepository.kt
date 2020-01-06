@@ -74,10 +74,10 @@ constructor(private val dao: TopPortionQuestDao): Repository<Query>() {
     internal suspend fun setTopPortionQuest(topPortionQuest: TopPortionQuest) = insert(topPortionQuest)
 
     @WorkerThread
-    internal suspend fun deleteTopPortionQuest() = delete()
+    internal suspend fun deleteTopPortionQuest() = removeCache()
 
     @MockData
     private suspend fun insert(topPortionQuest: TopPortionQuest) = dao.insert(topPortionQuest)
 
-    private suspend fun delete() = dao.clearAll()
+    internal suspend fun removeCache() = dao.clearAll()
 }

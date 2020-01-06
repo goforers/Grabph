@@ -35,13 +35,22 @@ data class Quest(@field:ColumnInfo(name = COLUMN_IDX)
                  @field:ColumnInfo(name = "state") val state: String,
                  @field:ColumnInfo(name = "description") val description: String,
                  @field:ColumnInfo(name = "rewards") val rewards: String,
-                 @field:ColumnInfo(name = "duration") val duration: Int): BaseModel() {
+                 @field:ColumnInfo(name = "duration") val duration: Int,
+                 @field:ColumnInfo(name = "photos") val photos: String
+): BaseModel() {
     companion object {
         private const val COLUMN_ID = DataColumns.ID
         private const val COLUMN_IDX = DataColumns.IDX
 
-        internal const val FAVORITE_MISSION_SORT_LATEST = 0
-        internal const val FAVORITE_MISSION_SORT_DURATION = 1
-        internal const val FAVORITE_MISSION_SORT_PRIZE_MONEY = 2
+        internal const val FAVORITE_QUEST_SORT_ALL = 0
+        internal const val FAVORITE_QUEST_SORT_ONGOING = 1
+        internal const val FAVORITE_QUEST_SORT_EXAMINATION = 2
+        internal const val FAVORITE_QUEST_SORT_FINISHED = 3
+
+        internal const val KEYWORD_QUEST_ALL = "All"
+
+        internal const val SORT_QUEST_ONGOING = "ongoing"
+        internal const val SORT_QUEST_UNDER_EXAMINATION = "examination"
+        internal const val SORT_QUEST_FINISHED = "finished"
     }
 }

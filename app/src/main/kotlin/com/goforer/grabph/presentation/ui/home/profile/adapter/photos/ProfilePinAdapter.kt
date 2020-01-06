@@ -61,7 +61,7 @@ class MyPinViewHolder(override val containerView: View, private val activity: Ho
         tv_profile_mission_price.requestLayout()
         activity.setFixedImageSize(400, 400) // original value: 0, 0
 
-        val options = RequestOptions.placeholderOf(R.drawable.ic_imgbg)
+        val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)
         Glide.with(activity).load(item.url).apply(options).into(iv_profile_my_photo)
 
         iv_play_btn.visibility = when (item.media) {

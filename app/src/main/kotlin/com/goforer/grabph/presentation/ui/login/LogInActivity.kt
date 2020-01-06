@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_log_in.*
 import com.facebook.CallbackManager
 import android.content.Intent
 import android.graphics.Color
+import android.view.WindowManager
 import android.widget.Toast
 import com.facebook.AccessToken
 import com.goforer.base.presentation.utils.CommonUtils.showToastMessage

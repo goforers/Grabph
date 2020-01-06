@@ -33,14 +33,8 @@ interface FavoriteQuestDao: BaseDao<Quest> {
     @Query("SELECT * FROM Quest ORDER BY _idx DESC LIMIT :itemCount")
     fun getLatestMissions(itemCount: Int): DataSource.Factory<Int, Quest>
 
-    @Query("SELECT * FROM Quest where _idx = :idx")
-    fun getQuest(idx: Long): LiveData<Quest>
-
-    @Query("SELECT * FROM Quest ORDER BY _idx DESC")
-    suspend fun getQuestItems(): List<Quest>
-
-    @Query("DELETE FROM Quest WHERE _id = :questId")
-    fun deleteByQuestId(questId: String)
+    @Query("SELECT * FROM Quest")
+    fun getLiveQuests(): LiveData<List<Quest>>
 
     @Query("DELETE FROM Quest")
     suspend fun clearAll()

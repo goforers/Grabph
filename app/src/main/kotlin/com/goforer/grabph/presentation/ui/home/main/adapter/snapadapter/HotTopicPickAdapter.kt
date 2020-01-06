@@ -172,7 +172,7 @@ class HotTopicPickAdapter(private val activity: HomeActivity): RecyclerView.Adap
                         activity.closeFab()
                         Caller.callQuestInfo(activity, iv_snap_best_pick_quest_content,
                             mission, holder.adapterPosition, Caller.CALLED_FROM_HOME_BEST_PICK_QUEST,
-                            Caller.SELECTED_BEST_PICK_QUEST_POSITION, false)
+                            Caller.SELECTED_BEST_PICK_QUEST_POSITION)
                     }
                 }
 

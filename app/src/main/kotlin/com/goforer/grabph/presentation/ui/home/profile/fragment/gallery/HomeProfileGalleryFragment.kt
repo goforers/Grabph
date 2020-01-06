@@ -88,6 +88,8 @@ class HomeProfileGalleryFragment: BaseFragment() {
                         gallery?.let {
                             submitMyPhotos(it)
                             showEmptyMessage(it.isEmpty())
+                            this.recycler_profile_photos.visibility = View.VISIBLE
+                            this.layout_before_loading_gallery.visibility = View.GONE
                         }
                     }
                     resource.getMessage()?.let {
@@ -123,13 +125,13 @@ class HomeProfileGalleryFragment: BaseFragment() {
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.left = 2
-                outRect.right = 2
-                outRect.bottom = 2
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
+                outRect.top = 4
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                    outRect.top = 2
                 }
             }
         }

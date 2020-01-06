@@ -50,17 +50,16 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical|clip_vertical"
-                    android:gravity="center"
                     android:transitionGroup="true">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_home_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="start"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_18"
+                        android:textSize="@dimen/text_size_32"
                         android:maxLength="32"
                         android:ellipsize="end" />
 

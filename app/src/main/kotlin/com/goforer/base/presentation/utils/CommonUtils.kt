@@ -40,6 +40,9 @@ import java.util.*
 import android.graphics.drawable.Drawable
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Rect
+import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -629,6 +632,27 @@ object CommonUtils {
         }
 
         return loc
+    }
+
+    fun setTextViewGradient(context: Context, tv: AppCompatTextView) {
+        val realSize = Rect()
+        tv.paint.getTextBounds(tv.text.toString(), 0, tv.length(), realSize)
+
+        val colors = intArrayOf(
+            context.getColor(R.color.colorGradientStart),
+            context.getColor(R.color.colorGradientEnd)
+        )
+
+        val pos = floatArrayOf(0f, 1f)
+        tv.paint.shader = LinearGradient(
+            0f,
+            0f,
+            realSize.width().toFloat(),
+            0f,
+            colors,
+            pos,
+            Shader.TileMode.CLAMP
+        )
     }
 }
 

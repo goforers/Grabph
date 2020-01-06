@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.goforer.base.annotation.MockData
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
@@ -43,20 +42,13 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
 
         private val PAYLOAD_TITLE = Any()
 
-        private val DIFF_CALLBACK
-            = object: DiffUtil.ItemCallback<Quest>() {
-            override fun areItemsTheSame(oldQuest: Quest,
-                newQuest: Quest): Boolean = oldQuest.id == newQuest.id
+        private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Quest>() {
+            override fun areItemsTheSame(oldQuest: Quest, newQuest: Quest): Boolean = oldQuest.id == newQuest.id
 
-            override fun areContentsTheSame(oldQuest: Quest,
-                newKeyword: Quest): Boolean = oldQuest == newKeyword
+            override fun areContentsTheSame(oldQuest: Quest, newKeyword: Quest): Boolean = oldQuest == newKeyword
 
             override fun getChangePayload(oldQuest: Quest, newKeyword: Quest): Any? {
-                return if (sameExceptTitle(oldQuest, newKeyword)) {
-                    PAYLOAD_TITLE
-                } else {
-                    null
-                }
+                return if (sameExceptTitle(oldQuest, newKeyword)) PAYLOAD_TITLE else null
             }
         }
 
@@ -82,47 +74,34 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
 
     class HotQuestViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<Quest>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Quest, position: Int) {
-            var isPlayerVisible = false
-
             setFontTypeface()
-            iv_play_btn_hot_quest.requestLayout()
             iv_snap_quest_content.requestLayout()
             tv_snap_quest_duration.requestLayout()
             tv_snap_quest_title.requestLayout()
             tv_snap_quest_title.requestLayout()
             tv_snap_quest_reward_price.requestLayout()
-            activity.setImageDraw(iv_snap_quest_owner_logo, item.ownerLogo)
+            tv_snap_quest_photos.requestLayout()
+            // activity.setImageDraw(iv_snap_quest_owner_logo, item.ownerLogo)
             snap_quest_item_holder.visibility = View.VISIBLE
             activity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
-            activity.setImageDraw(iv_snap_quest_content, snap_quest_content_constraintLayoutContainer, item.ownerImage, false)
+            activity.setImageDraw(iv_snap_quest_content, item.ownerImage)
             snap_quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
             iv_snap_quest_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
 
-            @MockData
-            when (position) {
-                3, 4, 6 -> {
-                    iv_play_btn_hot_quest.visibility = View.VISIBLE
-                    isPlayerVisible = true
-                }
-                else -> {
-                    iv_play_btn_hot_quest.visibility = View.GONE
-                    isPlayerVisible = false
-                }
-            }
-
             iv_snap_quest_content.setOnClickListener {
-                callQuestInfo(iv_snap_quest_content, item, holder, isPlayerVisible)
+                callQuestInfo(iv_snap_quest_content, item, holder)
             }
 
-            quest_info_holder.setOnClickListener {
-                callQuestInfo(iv_snap_quest_content, item, holder, isPlayerVisible)
+            card_quest_holder.setOnClickListener {
+                callQuestInfo(iv_snap_quest_content, item, holder)
             }
 
             tv_snap_quest_duration.text = (activity.getString(R.string.snap_quest_duration_day_phrase) + item.duration)
-            tv_snap_quest_owner_name.text = item.ownerName
+            // tv_snap_quest_owner_name.text = item.ownerName
             tv_snap_quest_title.text = item.title
-            tv_snap_quest_reward_price.text = item.rewards
+            tv_snap_quest_reward_price.text = (activity.getString(R.string.currency_us_dollar) + " " + item.rewards)
+            tv_snap_quest_photos.text = item.photos
         }
 
         override fun onItemSelected() {
@@ -133,16 +112,16 @@ class HotQuestAdapter(private val activity: HomeActivity): PagedListAdapter<Ques
             containerView.setBackgroundColor(0)
         }
 
-        private fun callQuestInfo(viewContent: ThreeTwoImageView, item: Quest, holder: BaseViewHolder<*>, isPlayerVisible: Boolean) {
+        private fun callQuestInfo(viewContent: ThreeTwoImageView, item: Quest, holder: BaseViewHolder<*>) {
             activity.closeFab()
             Caller.callQuestInfo(activity, viewContent,
                 item, holder.adapterPosition, Caller.CALLED_FORM_HOME_HOT_QUEST,
-                Caller.SELECTED_QUEST_INFO_ITEM_FROM_HOT_QUEST_POSITION, isPlayerVisible)
+                Caller.SELECTED_QUEST_INFO_ITEM_FROM_HOT_QUEST_POSITION)
         }
 
         private fun setFontTypeface() {
             activity.setFontTypeface(tv_snap_quest_title, FONT_TYPE_REGULAR)
-            activity.setFontTypeface(tv_snap_quest_owner_name, FONT_TYPE_MEDIUM)
+            // activity.setFontTypeface(tv_snap_quest_owner_name, FONT_TYPE_MEDIUM)
             activity.setFontTypeface(tv_snap_quest_duration, FONT_TYPE_MEDIUM)
             activity.setFontTypeface(tv_snap_quest_reward_price, FONT_TYPE_MEDIUM)
         }

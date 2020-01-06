@@ -2,12 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/snap_searper_item_holder"
     android:layout_width="@dimen/width_66"
     android:layout_height="@dimen/height_66"
     android:layout_gravity="center_horizontal|center_vertical"
     android:gravity="center"
-    android:background="@drawable/border_rounded_rank_blue"
+    android:background="@drawable/border_rounded_rank_gradient"
     android:stateListAnimator="@animator/raise"
     android:foreground="@drawable/grey_ripple"
     android:layout_marginStart="@dimen/margin_4"
@@ -27,16 +28,10 @@
 
         <com.mikepenz.materialdrawer.view.BezelImageView
             android:id="@+id/iv_snap_searper_picture"
-            android:layout_width="@dimen/width_53_4"
-            android:layout_height="@dimen/height_53_4"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:elevation="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_3"
+            tools:srcCompat="@tools:sample/avatars[4]" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

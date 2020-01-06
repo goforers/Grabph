@@ -77,4 +77,6 @@ constructor(private val repository: TopPortionQuestRepository): BaseUseCase<Para
 
     @MockData
     internal suspend fun setTopPortionQuest(topPortionQuest: TopPortionQuest) = repository.setTopPortionQuest(topPortionQuest)
+
+    internal suspend fun removeCache() = repository.removeCache()
 }

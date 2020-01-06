@@ -23,10 +23,9 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.goforer.base.annotation.MockData
+import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.helper.ItemTouchHelperListener
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
@@ -38,11 +37,16 @@ import com.goforer.grabph.presentation.ui.home.quest.fragment.HomeQuestFragment
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_quest_favorite_item.*
 
-class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedListAdapter<Quest, HomeFavoriteQuestAdapter.HomeMissionViewHolder>(DIFF_CALLBACK),
+class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment):
+    PagedListAdapter<Quest, HomeFavoriteQuestAdapter.HomeMissionViewHolder>(DIFF_CALLBACK),
     ItemTouchHelperListener {
     companion object {
         private const val PHOTO_RATIO_WIDTH = 328
         private const val PHOTO_RATIO_HEIGHT = 216
+
+        private const val STATE_ONGOING = "ongoing"
+        private const val STATE_EXAMINATION = "examination"
+        private const val STATE_FINISHED = "finished"
 
         private val PAYLOAD_TITLE = Any()
 
@@ -102,53 +106,30 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
         : BaseViewHolder<Quest>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Quest, position: Int) {
             // In case of applying transition effect to views, have to use findViewById method
-            var isPlayerVisible = false
-            iv_play_btn_favorite_quest_item.requestLayout()
             iv_quest_item_content.requestLayout()
-            tv_quest_owner_name.requestLayout()
-            iv_quest_reward.requestLayout()
             tv_quest_reward_price.requestLayout()
             tv_quest_title.requestLayout()
             tv_quest_duration.requestLayout()
-            tv_quest_description.requestLayout()
+            constraint_holder_bottom_left.requestLayout()
+            constraint_holder_bottom_right.requestLayout()
+            iv_shutter.requestLayout()
+            iv_calendar.requestLayout()
+            tv_quest_photos.requestLayout()
 
             iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
-            tv_quest_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + position
-            iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
-            tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
-            tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
-
-            fragment.homeActivity.setImageDraw(iv_quest_owner_logo, item.ownerLogo)
+            // fragment.homeActivity.setImageDraw(iv_quest_owner_logo, item.ownerLogo)
             fragment.homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
-            fragment.homeActivity.setImageDraw(iv_quest_item_content, quest_image_Container, item.ownerImage, false)
+            fragment.homeActivity.setImageDraw(iv_quest_item_content, item.ownerImage)
             quest_item_holder.visibility = View.VISIBLE
             card_quest_holder.visibility = View.VISIBLE
 
-            @MockData
-            when (position) {
-                0, 2, 9 -> {
-                    iv_play_btn_favorite_quest_item.visibility = View.VISIBLE
-                    isPlayerVisible = true
-                }
-                else -> {
-                    iv_play_btn_favorite_quest_item.visibility = View.GONE
-                    isPlayerVisible = false
-                }
-            }
-
             iv_quest_item_content.setOnClickListener {
-                // iv_quest_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
-                // tv_quest_title.transitionName = TransitionObject.TRANSITION_NAME_FOR_TITLE + position
-                // iv_quest_owner_logo.transitionName = TransitionObject.TRANSITION_NAME_FOR_LOGO + position
-                // tv_quest_description.transitionName = TransitionObject.TRANSITION_NAME_FOR_EXPLANATION + position
-                // tv_quest_owner_name.transitionName = TransitionObject.TRANSITION_NAME_FOR_OWNER_NAME + position
-                Caller.callQuestInfo(fragment, iv_quest_item_content, iv_quest_owner_logo,
-                    tv_quest_title,  tv_quest_description, tv_quest_owner_name,
+                Caller.callQuestInfo(fragment, iv_quest_item_content, tv_quest_title,
                     item, holder.adapterPosition, Caller.CALLED_FORM_HOME_FAVORITE_QUEST,
-                    Caller.SELECTED_QUEST_INFO_ITEM_POSITION, isPlayerVisible)
+                    Caller.SELECTED_QUEST_INFO_ITEM_POSITION)
             }
 
-            tv_quest_owner_name.text = item.ownerName
+            // tv_quest_owner_name.text = item.ownerName
             setFontTypeface()
 
             if (item.title == "" || item.title == " ") {
@@ -159,10 +140,34 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
                 tv_quest_title.text = item.title
             }
 
-            tv_quest_reward_price.text = item.rewards
-            tv_quest_duration.text = (fragment.getString(R.string.snap_quest_duration_day_phrase) + item.duration)
-            tv_quest_description.text = item.description
+            when (item.state) {
+                STATE_ONGOING -> setQuestViewOngoing(item)
+                STATE_EXAMINATION -> setQuestViewExamination(item)
+                STATE_FINISHED -> setQuestViewFinished(item)
+                else -> STATE_ONGOING
+            }
+
+
+            tv_quest_photos.text = item.photos
         }
+
+        private fun setQuestViewOngoing(item: Quest) {
+            tv_quest_reward_price.text = (fragment.activity?.getString(R.string.currency_us_dollar) + " " + item.rewards)
+            tv_quest_duration.text = (fragment.getString(R.string.snap_quest_duration_day_phrase) + item.duration)
+        }
+
+        private fun setQuestViewExamination(item: Quest) {
+            tv_quest_reward_price.text = "심사중"
+            tv_quest_duration.text = "종료됨"
+        }
+
+        private fun setQuestViewFinished(item: Quest) {
+            iv_quest_winner_crown.visibility = View.VISIBLE
+            tv_quest_reward_price.text = "WINNER"
+            setTextViewGradient(fragment.context, tv_quest_reward_price)
+            tv_quest_duration.text = "종료됨"
+        }
+
 
         override fun onItemSelected() {
             containerView.setBackgroundColor(Color.LTGRAY)
@@ -174,7 +179,6 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment): PagedLi
 
         private fun setFontTypeface() {
             fragment.homeActivity.setFontTypeface(tv_quest_title, FONT_TYPE_BOLD)
-            fragment.homeActivity.setFontTypeface(tv_quest_description, FONT_TYPE_REGULAR)
             fragment.homeActivity.setFontTypeface(tv_quest_reward_price, FONT_TYPE_MEDIUM)
             fragment.homeActivity.setFontTypeface(tv_quest_duration, FONT_TYPE_MEDIUM)
         }

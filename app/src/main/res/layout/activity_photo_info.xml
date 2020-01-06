@@ -48,7 +48,7 @@
                     android:adjustViewBounds="true"
                     android:gravity="center"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_imgbg"
+                    android:src="@drawable/ic_placeholder_image"
                     app:layout_constraintDimensionRatio="2:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -205,7 +205,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:layout_marginStart="@dimen/margin_16"
-                            android:background="@drawable/bg_profile_circle">
+                            android:background="@drawable/border_rounded_rank_gradient">
 
                             <com.mikepenz.materialdrawer.view.BezelImageView
                                 android:id="@+id/iv_profile_photo_info"

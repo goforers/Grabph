@@ -51,11 +51,7 @@ class CategoryAdapter(private val activity: HomeActivity)
                                             newCategory: Category): Boolean = oldCategory == newCategory
 
             override fun getChangePayload(oldCategory: Category, newCategory: Category): Any? {
-                return if (sameExceptTitle(oldCategory, newCategory)) {
-                    PAYLOAD_TITLE
-                } else {
-                    null
-                }
+                return if (sameExceptTitle(oldCategory, newCategory)) PAYLOAD_TITLE else null
             }
         }
 
@@ -79,17 +75,25 @@ class CategoryAdapter(private val activity: HomeActivity)
         }
     }
 
-    class CategoryViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<Category>(containerView), LayoutContainer {
+    class CategoryViewHolder(
+        override val containerView: View,
+        private val activity: HomeActivity):
+        BaseViewHolder<Category>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Category, position: Int) {
             activity.setFontTypeface(tv_snap_category_item_title, FONT_TYPE_BOLD)
             iv_snap_category_item_content.requestLayout()
             tv_snap_category_item_title.requestLayout()
+
             activity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
             activity.setImageDraw(iv_snap_category_item_content, snap_category_constraintLayoutContainer, item.photo?.m!!, false)
+
             tv_snap_category_item_title.text = item.title
+
             snap_category_item_holder.visibility = View.VISIBLE
             card_snap_category_holder.visibility = View.VISIBLE
+
             iv_snap_category_item_content.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
+
             iv_snap_category_item_content.setOnClickListener {
                 activity.closeFab()
                 callCategoryPhoto(activity, iv_snap_category_item_content,

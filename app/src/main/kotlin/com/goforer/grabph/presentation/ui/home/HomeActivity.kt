@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
+import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.helper.BottomNavigationViewHelper
@@ -626,6 +627,7 @@ class HomeActivity: BaseActivity() {
         }
 
         setBottomIconColor(itemId)
+        setTextViewGradient(this, this.tv_home_title)
     }
 
     private fun setBottomIconColor(id: Int) {
@@ -673,6 +675,8 @@ class HomeActivity: BaseActivity() {
                 tv_home_title.visibility = View.GONE
             }
         }
+
+        setTextViewGradient(this, this.tv_home_title)
     }
 
     internal fun selectItem(menuItem: MenuItem?, id: Int) {
@@ -749,6 +753,8 @@ class HomeActivity: BaseActivity() {
                 tv_home_title.visibility = View.GONE
             }
         }
+
+        setTextViewGradient(this, this.tv_home_title)
     }
 
     internal fun closeFab() {

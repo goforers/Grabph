@@ -26,13 +26,13 @@ import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.domain.usecase.othersprofile.LoadOthersPhotoUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /*
 * This viewModel is not a singleton because every OthersProfileActivity needs its own viewModel.
-* Otherwise a viewModel is always shared by multiple activities,
+* Otherwise one viewModel is always to be shared by multiple activities,
 * which means that shared liveData can be changed unexpectedly when there are two activities created.
+*
 * e.g. OthersProfileActivity B can be created from A's following list.
 * */
 class OthersProfileViewModel
@@ -53,12 +53,10 @@ constructor(private val useCaseProfile: LoadOthersProfileUseCase,
     }
 
     internal fun removeCache(owner: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                useCaseProfile.removeCache()
-                useCasePhotos.deleteByUserId(owner)
-                notifyCacheCleared()
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            useCaseProfile.removeCache()
+            useCasePhotos.deleteByUserId(owner)
+            notifyCacheCleared()
         }
     }
 
@@ -66,7 +64,7 @@ constructor(private val useCaseProfile: LoadOthersProfileUseCase,
      * setValue() can can be invoked on MainThread only.
      * This method is to ensure that cache is cleared before loading data.
      * */
-    private fun notifyCacheCleared() {
-        viewModelScope.launch(Dispatchers.Main) { isCleared.value = true }
+    private fun notifyCacheCleared() = viewModelScope.launch(Dispatchers.Main) {
+        isCleared.value = true
     }
 }

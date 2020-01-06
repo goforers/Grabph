@@ -27,10 +27,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_BEGINNER
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_FIRST
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_FOURTH
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_SECOND
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_THIRD
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_1
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_2
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_3
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_4
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.PEOPLE_RANK_EXPERT
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
@@ -96,10 +97,11 @@ class PeopleAdapter(private val activity: PeopleActivity,
 
             when (item.rank) {
                 PEOPLE_RANK_BEGINNER -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
-                PEOPLE_RANK_FIRST -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_blue)
-                PEOPLE_RANK_SECOND -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_orange)
-                PEOPLE_RANK_THIRD -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_purple)
-                PEOPLE_RANK_FOURTH -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_red)
+                PEOPLE_RANK_1 -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_blue)
+                PEOPLE_RANK_2 -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_orange)
+                PEOPLE_RANK_3 -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_purple)
+                PEOPLE_RANK_4 -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_red)
+                PEOPLE_RANK_EXPERT -> people_profile_image_holder.setBackgroundResource(R.drawable.border_rounded_rank_gradient)
             }
 
             val imgUrl = item.profile_image.large

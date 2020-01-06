@@ -499,9 +499,8 @@ object Caller {
     }
 
     @SuppressLint("RestrictedApi")
-    fun callQuestInfo(fragment: BaseFragment, imageView: View, logoView: View, titleView: View,
-        description: View, ownerNameView: View, quest: Quest,
-        position: Int, calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
+    fun callQuestInfo(fragment: BaseFragment, logoView: View, ownerNameView: View, quest: Quest,
+        position: Int, calledFrom: Int, requestCode: Int) {
         val context = fragment.activity as Context
         val intent = createIntent(context, QuestInfoActivity::class.java, true)
 
@@ -516,7 +515,6 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
-        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         // This code is blocked temporarily
         /*
@@ -531,13 +529,12 @@ object Caller {
 
 
         fragment.activity!!.startActivityForResult(intent, requestCode,
-            getQuestInfoViewActivityOptions(context, imageView, logoView, titleView, description,
-                ownerNameView).toBundle())
+            getQuestInfoViewActivityOptions(context, logoView, ownerNameView).toBundle())
     }
 
     @SuppressLint("RestrictedApi")
     fun callQuestInfo(context: Context, imageView: View, quest: Quest, position: Int,
-        calledFrom: Int, requestCode: Int, isPlayerVisible: Boolean) {
+        calledFrom: Int, requestCode: Int) {
         val intent = createIntent(context, QuestInfoActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
@@ -551,7 +548,6 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
-        intent.putExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, isPlayerVisible)
 
         // This code is blocked temporarily
         /*
@@ -675,14 +671,12 @@ object Caller {
         }
     }
 
-    private fun getQuestInfoViewActivityOptions(context: Context, imageView: View, logoView: View,
-        titleView: View, explanationView: View,
-        ownerNameView: View): ActivityOptions {
-        val titlePair = Pair.create(titleView, titleView.transitionName)
-        val explanationPair = Pair.create(explanationView, explanationView.transitionName)
-        val imagePair = Pair.create(imageView, imageView.transitionName)
+    private fun getQuestInfoViewActivityOptions(context: Context, logoView: View, ownerNameView: View): ActivityOptions {
+        // val titlePair = Pair.create(titleView, titleView.transitionName)
+        // val explanationPair = Pair.create(explanationView, explanationView.transitionName)
+        // val imagePair = Pair.create(imageView, imageView.transitionName)
         val logoPair = Pair.create(logoView, logoView.transitionName)
-        val ownerNamePair = Pair.create(ownerNameView, ownerNameView.transitionName)
+        // val ownerNamePair = Pair.create(ownerNameView, ownerNameView.transitionName)
         val activity: BaseActivity
 
         activity = context as HomeActivity
@@ -691,18 +685,17 @@ object Caller {
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 
         return if (navBackground == null) {
-            ActivityOptions.makeSceneTransitionAnimation(activity, titlePair, explanationPair, imagePair,
-                logoPair, ownerNamePair)
+            ActivityOptions.makeSceneTransitionAnimation(activity, logoPair)
         } else {
             val navPair = Pair.create(navBackground, navBackground.transitionName)
 
-            ActivityOptions.makeSceneTransitionAnimation(activity, titlePair, explanationPair, imagePair,
-                logoPair, navPair, ownerNamePair)
+            ActivityOptions.makeSceneTransitionAnimation(activity, logoPair, navPair)
         }
     }
 
     private fun getQuestInfoViewActivityOptions(context: Context, imageView: View): ActivityOptions {
         val imagePair = Pair.create(imageView, imageView.transitionName)
+
         val decorView = (context as HomeActivity).window.decorView
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 

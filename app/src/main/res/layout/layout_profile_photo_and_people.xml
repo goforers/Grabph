@@ -14,11 +14,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_profile"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
+        android:layout_width="@dimen/width_68"
+        android:layout_height="@dimen/height_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/border_rounded_rank_orange">
+        android:background="@drawable/border_rounded_rank_gradient">
 
         <com.mikepenz.materialdrawer.view.BezelImageView
             android:id="@+id/iv_profile_icon"

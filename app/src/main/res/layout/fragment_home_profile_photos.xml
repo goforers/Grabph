@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent"
+    android:background="@color/primary_dark"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_profile_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/primary_dark"
         android:scrollbars="vertical"
+        android:visibility="gone"
         android:layout_marginStart="@dimen/margin_2"
         android:layout_marginEnd="@dimen/margin_2" />
 
@@ -26,5 +28,16 @@
         android:textSize="@dimen/text_size_18"
         android:gravity="center"
         android:textColor="@color/grayLight"/>
+
+    <include
+        android:id="@+id/layout_before_loading_gallery"
+        layout="@layout/layout_view_before_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

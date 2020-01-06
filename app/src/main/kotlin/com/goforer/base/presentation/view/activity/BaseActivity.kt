@@ -101,10 +101,11 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
         internal const val FONT_TYPE_REGULAR = 2
 
         internal const val PEOPLE_RANK_BEGINNER = 0
-        internal const val PEOPLE_RANK_FIRST = 1
-        internal const val PEOPLE_RANK_SECOND = 2
-        internal const val PEOPLE_RANK_THIRD = 3
-        internal const val PEOPLE_RANK_FOURTH = 4
+        internal const val PEOPLE_RANK_1 = 1
+        internal const val PEOPLE_RANK_2 = 2
+        internal const val PEOPLE_RANK_3 = 3
+        internal const val PEOPLE_RANK_4 = 4
+        internal const val PEOPLE_RANK_EXPERT = 5
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -328,13 +329,13 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
 
         val options = if (skipCache) {
             RequestOptions
-                .placeholderOf(R.drawable.ic_imgbg)
+                .placeholderOf(R.drawable.ic_placeholder_image)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
         } else {
             RequestOptions
-                .placeholderOf(R.drawable.ic_imgbg)
+                .placeholderOf(R.drawable.ic_placeholder_image)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
         }
@@ -398,7 +399,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
         val options = if (skipCache) {
             RequestOptions
                 .fitCenterTransform()
-                .placeholder(R.drawable.ic_imgbg)
+                .placeholder(R.drawable.ic_placeholder_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
                 .signature(IntegerVersionSignature(getVersionNumber()))
@@ -406,7 +407,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
         } else {
             RequestOptions
                 .fitCenterTransform()
-                .placeholder(R.drawable.ic_imgbg)
+                .placeholder(R.drawable.ic_placeholder_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .signature(IntegerVersionSignature(getVersionNumber()))
         }
@@ -455,7 +456,7 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
     internal fun setImageDraw(view: AppCompatImageView, url: String) {
         val options = RequestOptions
                 .fitCenterTransform()
-                .placeholder(R.drawable.ic_imgbg)
+                .placeholder(R.drawable.ic_placeholder_image)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .skipMemoryCache(true)
                 .signature(IntegerVersionSignature(getVersionNumber()))

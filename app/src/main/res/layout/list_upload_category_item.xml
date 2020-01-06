@@ -21,7 +21,6 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textColor="@color/white"
-        android:text="test"
         android:textSize="@dimen/text_size_14"
         android:gravity="center"
         android:background="@drawable/border_of_upload_category_white"/>

@@ -16,7 +16,6 @@
 
 package com.goforer.grabph.domain.usecase.quest
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -38,7 +37,6 @@ import javax.inject.Singleton
 class LoadFavoriteQuestUseCase
 @Inject
 constructor(private val repository: FavoriteQuestRepository): BaseUseCase<Parameters, Resource>() {
-    @VisibleForTesting
     private val liveData by lazy { MutableLiveData<Query>() }
 
     override fun execute(viewModelScope: CoroutineScope, parameters: Parameters): LiveData<Resource> {
@@ -73,6 +71,10 @@ constructor(private val repository: FavoriteQuestRepository): BaseUseCase<Parame
     }
 
     @MockData
-    internal fun loadFavoriteQuest(id: Long): LiveData<Quest> = repository.loadQuest(id)
+    internal suspend fun insert(quests: MutableList<Quest>) = repository.insert(quests)
 
+    @MockData
+    internal fun loadLiveQuests(): LiveData<List<Quest>> = repository.loadLiveQuests()
+
+    internal suspend fun removeCache() = repository.removeCache()
 }

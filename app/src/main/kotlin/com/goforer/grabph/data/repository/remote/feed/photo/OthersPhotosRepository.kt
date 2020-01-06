@@ -76,5 +76,4 @@ constructor(private val photoDao: PhotoDao): Repository<Query>() {
     internal suspend fun removeCache() = photoDao.clearAll()
 
     internal suspend fun deleteByUserId(owner: String) = photoDao.deleteByUserId(owner)
-
 }

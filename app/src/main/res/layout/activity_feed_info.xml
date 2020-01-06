@@ -207,7 +207,6 @@
                         android:layout_height="@dimen/height_46"
                         android:layout_marginStart="@dimen/margin_16"
                         android:layout_marginTop="@dimen/margin_16"
-                        android:background="@drawable/border_rounded_grade_3"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 

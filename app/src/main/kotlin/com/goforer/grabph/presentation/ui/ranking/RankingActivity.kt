@@ -246,18 +246,20 @@ class RankingActivity : BaseActivity() {
         if(rankType == VIEW_TYPE_TOP_RANK) {
             when (rank) {
                 PEOPLE_RANK_BEGINNER -> view.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
-                PEOPLE_RANK_FIRST -> view.setBackgroundResource(R.drawable.border_rounded_rank_blue)
-                PEOPLE_RANK_SECOND -> view.setBackgroundResource(R.drawable.border_rounded_rank_orange)
-                PEOPLE_RANK_THIRD -> view.setBackgroundResource(R.drawable.border_rounded_rank_purple)
-                PEOPLE_RANK_FOURTH -> view.setBackgroundResource(R.drawable.border_rounded_rank_red)
+                PEOPLE_RANK_1 -> view.setBackgroundResource(R.drawable.border_rounded_rank_blue)
+                PEOPLE_RANK_2 -> view.setBackgroundResource(R.drawable.border_rounded_rank_orange)
+                PEOPLE_RANK_3 -> view.setBackgroundResource(R.drawable.border_rounded_rank_purple)
+                PEOPLE_RANK_4 -> view.setBackgroundResource(R.drawable.border_rounded_rank_red)
+                PEOPLE_RANK_EXPERT -> view.setBackgroundResource(R.drawable.border_rounded_rank_gradient)
             }
         } else { // rankType == VIEW_TYPE_BOTTOM_RANK
             when (rank) {
                 PEOPLE_RANK_BEGINNER -> view.setBackgroundResource(R.drawable.border_rounded_rank_yellow_thin)
-                PEOPLE_RANK_FIRST -> view.setBackgroundResource(R.drawable.border_rounded_rank_blue_thin)
-                PEOPLE_RANK_SECOND -> view.setBackgroundResource(R.drawable.border_rounded_rank_orange_thin)
-                PEOPLE_RANK_THIRD -> view.setBackgroundResource(R.drawable.border_rounded_rank_purple_thin)
-                PEOPLE_RANK_FOURTH -> view.setBackgroundResource(R.drawable.border_rounded_rank_red_thin)
+                PEOPLE_RANK_1 -> view.setBackgroundResource(R.drawable.border_rounded_rank_blue_thin)
+                PEOPLE_RANK_2 -> view.setBackgroundResource(R.drawable.border_rounded_rank_orange_thin)
+                PEOPLE_RANK_3 -> view.setBackgroundResource(R.drawable.border_rounded_rank_purple_thin)
+                PEOPLE_RANK_4 -> view.setBackgroundResource(R.drawable.border_rounded_rank_red_thin)
+                PEOPLE_RANK_EXPERT -> view.setBackgroundResource(R.drawable.border_rounded_rank_gradient)
             }
         }
     }

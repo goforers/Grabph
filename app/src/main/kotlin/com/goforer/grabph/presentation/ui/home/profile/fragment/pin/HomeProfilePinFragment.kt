@@ -60,13 +60,9 @@ class HomeProfilePinFragment: BaseFragment() {
 
         pin.observe(homeActivity, Observer { pins ->
             submitPinnedPhotos(pins)
-            showEmptyMessage(pins.isEmpty())
-
-            // if (pins.isNotEmpty()) {
-            //     submitPinnedPhotos(pins)
-            // } else {
-            //     // showEmptyPin()
-            // }
+            showEmptyPhotosMessage(pins.isEmpty())
+            this.recycler_profile_photos.visibility = View.VISIBLE
+            this.layout_before_loading_gallery.visibility = View.GONE
         })
 
         // pin.observe(homeActivity, Observer { resource ->
@@ -100,13 +96,8 @@ class HomeProfilePinFragment: BaseFragment() {
         this.recycler_profile_photos.visibility = View.VISIBLE
     }
 
-    private fun showEmptyMessage(isEmpty: Boolean) {
-        if (isEmpty) {
-            this.tv_empty_list.visibility = View.VISIBLE
-            this.tv_empty_list.text = "No pinned photos"
-        } else {
-            this.tv_empty_list.visibility = View.GONE
-        }
+    private fun showEmptyPhotosMessage(isEmpty: Boolean) {
+        this.tv_empty_list.visibility = if (isEmpty) View.VISIBLE else View.GONE
     }
 
     private fun createPinnedPhotoAdapter() {
@@ -125,13 +116,13 @@ class HomeProfilePinFragment: BaseFragment() {
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.left = 2
-                outRect.right = 2
-                outRect.bottom = 2
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
 
                 // Add top margin only for the first item to avoid double space between items
                 if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                    outRect.top = 2
+                    outRect.top = 4
                 }
             }
         }

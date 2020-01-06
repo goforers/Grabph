@@ -137,6 +137,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/sort_constraintLayoutContainer"
                     tools:layout_editor_absoluteX="0dp" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_empty_quest"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:minHeight="@dimen/height_200"
+                    android:text="No Quests"
+                    app:layout_constraintTop_toBottomOf="@+id/sort_constraintLayoutContainer"
+                    android:textSize="@dimen/text_size_32"
+                    android:gravity="center"
+                    android:textColor="@color/grayLight" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

@@ -16,8 +16,10 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginResult
 import com.goforer.base.presentation.utils.CommonUtils.isEmailFormatValid
+import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.utils.SharedPreference
+import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
@@ -51,6 +53,9 @@ class SignInFragment : BaseFragment() {
     private fun setViews() {
         setViewsClickListener()
         checkAccountInput()
+
+        setTextViewGradient(loginActivity, this.tv_guest_mode)
+        loginActivity.setFontTypeface(this.tv_guest_mode, FONT_TYPE_REGULAR)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             this.tv_forgot_password.text = Html.fromHtml(getString(R.string.forgot_password),

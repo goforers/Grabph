@@ -18,6 +18,7 @@ package com.goforer.grabph.data.repository.remote.quest
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.goforer.base.annotation.MockData
@@ -87,7 +88,10 @@ constructor(private val dao: FavoriteQuestDao): Repository<Query>() {
     }
 
     @MockData
-    internal fun loadQuest(idx: Long): LiveData<Quest> = dao.getQuest(idx)
+    internal suspend fun insert(quests: MutableList<Quest>) = dao.insert(quests)
 
-    internal suspend fun loadQuests() = dao.getQuestItems()
+    @MockData
+    internal fun loadLiveQuests() = Transformations.map(dao.getLiveQuests()) { it }
+
+    internal suspend fun removeCache() = dao.clearAll()
 }

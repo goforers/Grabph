@@ -16,8 +16,6 @@
 
 package com.goforer.grabph.presentation.ui.home.main.adapter
 
-import android.os.Build
-import android.text.Html
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import android.view.Gravity
 import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper
@@ -29,6 +27,7 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.*
+import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
 import com.goforer.base.presentation.view.helper.SnapHelperOneByeOne
@@ -149,16 +148,17 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                 ADAPTER_POPULAR_SEARPER_INDEX -> {
                     val padding = recycler_view_snap_searper.resources.getDimensionPixelOffset(R.dimen.padding_8)
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        tv_snap_item_title.text = Html.fromHtml(adapter.activity.getString(R.string.snap_featured_searper),
-                                Html.FROM_HTML_MODE_LEGACY)
-                    } else {
-                        tv_snap_item_title.text = Html.fromHtml(adapter.activity.getString(R.string.snap_featured_searper))
-                    }
+                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    //     tv_snap_item_title.text = Html.fromHtml(adapter.activity.getString(R.string.snap_featured_searper),
+                    //             Html.FROM_HTML_MODE_LEGACY)
+                    // } else {
+                    //     tv_snap_item_title.text = Html.fromHtml(adapter.activity.getString(R.string.snap_featured_searper))
+                    // }
+                    tv_snap_item_title.text = item.title
+                    setTextViewGradient(adapter.activity, tv_snap_item_title)
 
-                    tv_snap_item_title.setOnClickListener { // move to RankingActivity
-                        Caller.callSearperRank(context)
-                    }
+                    btn_snap_view_all.text = context.getString(R.string.snap_item_view_ranking)
+                    btn_snap_view_all.setOnClickListener { Caller.callSearperRank(context) }
 
                     if (item.padding) {
                         if (item.gravity == Gravity.START) {
@@ -190,7 +190,7 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                         snap_item_layout.visibility = View.VISIBLE
                         recycler_view_snap_searper.visibility = View.VISIBLE
                         indicator.visibility = View.GONE
-                        btn_snap_view_all.visibility = View.GONE
+                        btn_snap_view_all.visibility = View.VISIBLE
                         space_layout.visibility = View.GONE
                     })
                 }
@@ -199,6 +199,7 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                     val padding = recycler_view_snap_quest.resources.getDimensionPixelOffset(R.dimen.padding_8)
 
                     tv_snap_item_title.text = item.title
+                    setTextViewGradient(adapter.activity, tv_snap_item_title)
                     tv_snap_item_title.setOnClickListener {
                         adapter.activity.selectItem(adapter.activity.bottom_navigation_view
                                 .menu.getItem(3),
@@ -252,6 +253,8 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                     val padding = recycler_view_snap_category.resources.getDimensionPixelOffset(R.dimen.padding_8)
 
                     tv_snap_item_title.text = item.title
+                    setTextViewGradient(adapter.activity, tv_snap_item_title)
+
                     tv_snap_item_title.setOnClickListener {
                         Caller.callCategory(adapter.activity, iv_snap_category_item_content, Caller.SELECTED_CATEGORY_ITEM_POSITION)
                     }
@@ -278,10 +281,12 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                         }
 
                         Gravity.CENTER_HORIZONTAL, Gravity.CENTER_VERTICAL -> {
-                            recycler_view_snap_category.layoutManager = GridLayoutManager(recycler_view_snap_category.context, GRID_SPAN_COUNT, if (item.gravity === Gravity.CENTER_HORIZONTAL)
-                                RecyclerView.HORIZONTAL
-                            else
-                                RecyclerView.VERTICAL, false)
+                            recycler_view_snap_category.layoutManager =
+                                GridLayoutManager(
+                                    recycler_view_snap_category.context, GRID_SPAN_COUNT,
+                                    if (item.gravity === Gravity.CENTER_HORIZONTAL) RecyclerView.HORIZONTAL
+                                    else RecyclerView.VERTICAL, false
+                                )
                             LinearSnapHelper().attachToRecyclerView(recycler_view_snap_category)
                         }
 

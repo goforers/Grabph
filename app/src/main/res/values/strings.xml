@@ -127,6 +127,7 @@
     <string name="snap_item_view_all">VIEW&#160;ALL&#160;&#160;</string>
     <string name="snap_item_view_more_pix">MORE PIX</string>
     <string name="snap_item_view_more_catagories">MORE CATEGORIES&#160;&#160;</string>
+    <string name="snap_item_view_ranking">VIEW RANKING&#160;&#160;</string>
     <string name="snap_popular_mission">Hot Quest</string>
     <string name="snap_searp_picks">Searp"'"s Picks</string>
     <string name="snap_home_main_hot_topic_photo_phrase">Today"'"s TIP!</string>
@@ -136,6 +137,10 @@
     <string name="home_quest_sort_latest_keyword">Latest</string>
     <string name="home_quest_sort_deadline_keyword">Deadline</string>
     <string name="home_quest_sort_prize_money_keyword">Prize money</string>
+    <string name="home_quest_sort_all">모든 퀘스트 </string>
+    <string name="home_quest_sort_on_going">진행중 </string>
+    <string name="home_quest_sort_examination">심사중 </string>
+    <string name="home_quest_sort_finished">종료 </string>
     <string name="phrase_category">Category</string>
     <string name="login_login_look_overview">Searp"'"s Overview</string>
     <string name="splash_title">Share the world you have seen\n and get special rewards.</string>
@@ -219,4 +224,6 @@
     <string name="gender_custom">CUSTOM</string>
     <string name="signing_up_now">회원가입 중..</string>
     <string name="check_email_now">이메일 확인 중..</string>
+    <string name="currency_korea_won">₩</string>
+    <string name="currency_us_dollar">$</string>
 </resources>

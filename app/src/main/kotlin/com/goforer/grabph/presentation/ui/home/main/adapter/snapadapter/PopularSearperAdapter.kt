@@ -88,12 +88,12 @@ class PopularSearperAdapter(private val activity: HomeActivity, val workHandler:
 
             iv_snap_searper_picture.requestLayout()
             when(item.grade.toInt()) {
-                Home.GRADE_BEGINNER -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_beginner)
-                Home.GRADE_1 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_1)
-                Home.GRADE_2 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_2)
-                Home.GRADE_3 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_3)
-                Home.GRADE_4 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_4)
-                Home.GRADE_EXPERT -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_expert)
+                Home.GRADE_BEGINNER -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_yellow)
+                Home.GRADE_1 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_blue)
+                Home.GRADE_2 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_orange)
+                Home.GRADE_3 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_purple)
+                Home.GRADE_4 -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_red)
+                Home.GRADE_EXPERT -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_rank_gradient)
                 else -> snap_searper_item_holder.setBackgroundResource(R.drawable.border_rounded_grade_etc)
             }
 

@@ -66,7 +66,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.quest
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUEST_INFO
-import com.goforer.grabph.presentation.caller.Caller.EXTRA_IS_PLAYER_BUTTN_VISIBILEW
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -91,7 +90,6 @@ class QuestInfoActivity: BaseActivity() {
     private lateinit var description: String
     private lateinit var state: String
     private lateinit var reward: String
-    private var isPlayerVisible = false
 
     private var duration: Int = 0
     private var calledFrom: Int = 0
@@ -393,7 +391,6 @@ class QuestInfoActivity: BaseActivity() {
         duration = intent.getIntExtra(EXTRA_QUEST_DURATION, -1)
         position = intent.getIntExtra(EXTRA_QUEST_POSITION, -1)
         calledFrom = intent.getIntExtra(EXTRA_QUEST_CALLED_FROM, -1)
-        isPlayerVisible = intent.getBooleanExtra(EXTRA_IS_PLAYER_BUTTN_VISIBILEW, false)
     }
 
     private fun getQuestInfo() {
@@ -486,9 +483,6 @@ class QuestInfoActivity: BaseActivity() {
     }
 
     private fun loadQuestInfo() {
-        @MockData
-        this.iv_play_btn_quest_info.visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
-
         setImageDraw(this@QuestInfoActivity.iv_quest_owner_logo, ownerLogo)
         this@QuestInfoActivity.iv_quest_info_photo.setColorFilter(getColor(R.color.colorQuestInfoMask),
             PorterDuff.Mode.DST_IN)

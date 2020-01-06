@@ -4,11 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/quest_item_holder"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_356"
+    android:layout_height="232dp"
     android:layout_gravity="center_horizontal|center_vertical"
     android:gravity="center"
     android:stateListAnimator="@animator/raise"
-    android:foreground="@drawable/grey_ripple"
+    android:layout_marginStart="@dimen/margin_16"
+    android:layout_marginEnd="@dimen/margin_16"
+    android:layout_marginBottom="@dimen/margin_16"
     android:visibility="visible"
     android:transitionGroup="true">
 
@@ -20,8 +22,8 @@
         android:layout_gravity="center_horizontal|center_vertical"
         android:gravity="center"
         android:visibility="visible"
-        app:cardBackgroundColor="@color/colorHomeFavoriteQuestHolder"
-        app:cardCornerRadius="0dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="22dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,139 +31,110 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.mikepenz.materialdrawer.view.BezelImageView
-                android:id="@+id/iv_quest_owner_logo"
-                android:layout_width="@dimen/width_30"
-                android:layout_height="@dimen/height_30"
-                android:layout_gravity="start"
-                android:layout_marginTop="@dimen/margin_20"
-                android:layout_marginStart="@dimen/margin_16"
-                android:clickable="true"
-                android:elevation="@dimen/elevation_2"
-                android:focusable="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_quest_owner_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_23"
-                android:layout_marginStart="@dimen/margin_12"
-                android:maxLength="32"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_quest_owner_logo" />
+            <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
+                android:id="@+id/iv_quest_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:adjustViewBounds="true"
+                android:fitsSystemWindows="true"
+                android:alpha="0.6"
+                android:gravity="center"
+                android:scaleType="centerCrop"/>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_quest_reward"
-                android:layout_width="@dimen/width_17"
-                android:layout_height="@dimen/height_18"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/margin_26"
-                android:layout_marginEnd="@dimen/margin_60"
-                android:src="@drawable/ic_price"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:id="@+id/iv_quest_winner_crown"
+                android:layout_width="@dimen/width_77"
+                android:layout_height="@dimen/height_45"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/tv_quest_reward_price"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_crown_gradient"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_quest_reward_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginStart="@dimen/margin_4"
-                android:layout_marginTop="@dimen/margin_24"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:maxLength="8"
+                android:maxLength="22"
+                android:text="3000"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16"
-                app:layout_constraintStart_toEndOf="@+id/iv_quest_reward"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_quest_image_holder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height_216"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="84dp"
-                android:elevation="0dp"
-                android:visibility="visible"
-                app:cardBackgroundColor="@color/colorHomeFavoriteQuestHolder"
-                app:cardCornerRadius="@dimen/radius_4"
+                android:textSize="@dimen/text_size_32"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_quest_owner_logo">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/quest_image_Container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                        android:id="@+id/iv_quest_item_content"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:adjustViewBounds="true"
-                        android:fitsSystemWindows="true"
-                        android:gravity="center"
-                        android:scaleType="centerCrop"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_play_btn_favorite_quest_item"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:alpha="0.8"
-                        android:visibility="gone"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:src="@drawable/ic_play_btn"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
+                app:layout_constraintEnd_toEndOf="parent"/>
+            
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_quest_title"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/height_24"
-                android:layout_marginStart="@dimen/margin_12"
-                android:layout_marginBottom="@dimen/margin_44"
                 android:ellipsize="end"
                 android:maxLength="48"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:textColor="@color/white"
+                android:text="sample"
                 android:textSize="@dimen/text_size_16"
                 android:includeFontPadding="false"
-                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/tv_quest_reward_price"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/snap_quest_duration_holder"
-                android:layout_width="@dimen/width_44"
-                android:layout_height="@dimen/height_26"
-                android:layout_gravity="center_vertical|clip_vertical"
-                android:layout_marginEnd="@dimen/margin_15"
-                android:layout_marginBottom="@dimen/margin_42"
-                android:gravity="center"
-                android:background="@drawable/snap_quest_duration"
-                android:orientation="vertical"
-                android:transitionGroup="true"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_holder_bottom_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:layout_marginStart="@dimen/margin_34"
+                android:layout_marginBottom="@dimen/margin_21">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_shutter"
+                    android:layout_width="@dimen/width_12"
+                    android:layout_height="@dimen/height_12"
+                    android:src="@drawable/ic_shutter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_quest_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13"
+                    app:layout_constraintStart_toEndOf="@+id/iv_shutter"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="@dimen/margin_5"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_holder_bottom_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_33"
+                android:layout_marginBottom="@dimen/margin_21"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_calendar"
+                    android:layout_width="@dimen/width_12"
+                    android:layout_height="@dimen/height_12"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="@dimen/margin_5"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_quest_duration"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_quest_duration"
@@ -170,28 +143,14 @@
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:ellipsize="middle"
                     android:gravity="center"
-                    android:maxLength="6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:textAppearance="@android:style/TextAppearance.Material.Headline"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_12" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_quest_description"
-                android:layout_width="@dimen/width_322"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_10"
-                android:layout_marginStart="@dimen/margin_10"
-                android:ellipsize="end"
-                android:maxLength="66"
-                android:maxLines="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                android:textColor="@color/colorHomeQuestDescription"
-                android:textSize="@dimen/text_size_14"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_quest_title" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

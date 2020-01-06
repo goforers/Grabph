@@ -20,23 +20,28 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
-import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
 import kotlinx.android.synthetic.main.snap_quest_favorite_keyword.*
-import android.text.TextPaint
+import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
+import com.goforer.grabph.presentation.vm.quest.QuestViewModel
 import kotlinx.android.extensions.LayoutContainer
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
-class FavoriteKeywordAdapter(private val activity: HomeActivity): PagedListAdapter<Keyword, FavoriteKeywordAdapter.FavoriteKeywordViewHolder>(DIFF_CALLBACK) {
+class FavoriteKeywordAdapter(
+    private val activity: HomeActivity,
+    private val questViewModel: QuestViewModel
+): RecyclerView.Adapter<FavoriteKeywordAdapter.FavoriteKeywordViewHolder>() {
+
+    private val keywords = ArrayList<Keyword>()
+    private var selectedPosition = 0
+
     companion object {
         private const val WIDTH_MORE_SPACE = 160
-
         private val PAYLOAD_TITLE = Any()
 
         private val DIFF_CALLBACK
@@ -64,40 +69,46 @@ class FavoriteKeywordAdapter(private val activity: HomeActivity): PagedListAdapt
         val layoutInflater = LayoutInflater.from(parent.context.applicationContext)
         val view = layoutInflater.inflate(R.layout.snap_quest_favorite_keyword, parent, false)
 
-        return FavoriteKeywordViewHolder(view, activity)
+        return FavoriteKeywordViewHolder(view, activity, this)
     }
 
-    override fun onBindViewHolder(holder: FavoriteKeywordViewHolder, position: Int) {
-        val item = getItem(position)
+    override fun getItemCount(): Int = keywords.size
 
-        item?.let {
-            holder.bindItemHolder(holder, it, position)
+    override fun onBindViewHolder(holder: FavoriteKeywordViewHolder, position: Int) {
+        val item = keywords[position]
+        holder.bindItemHolder(holder, item, position)
+
+        holder.itemView.setOnClickListener {
+            selectedPosition = position
+            questViewModel.setKeyword(item.title) // item.title = selectedKeyword
+            notifyDataSetChanged()
         }
     }
 
-    class FavoriteKeywordViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<Keyword>(containerView), LayoutContainer {
+    internal fun addList(list: List<Keyword>) {
+        keywords.clear()
+        keywords.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    class FavoriteKeywordViewHolder(
+        override val containerView: View,
+        private val activity: HomeActivity,
+        private val adapter: FavoriteKeywordAdapter
+    ): BaseViewHolder<Keyword>(containerView), LayoutContainer {
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Keyword, position: Int) {
             activity.setFontTypeface(tv_quest_favorite_keyword, FONT_TYPE_MEDIUM)
-            iv_quest_favorite_keyword.requestLayout()
             tv_quest_favorite_keyword.requestLayout()
             tv_quest_favorite_keyword.text = item.title
-            tv_quest_favorite_keyword.post {
-                val textPaint = TextPaint()
-                textPaint.textSize = tv_quest_favorite_keyword.textSize
 
-                val width = textPaint.measureText(tv_quest_favorite_keyword.text.toString())
-                val layoutParams = tv_quest_favorite_keyword.layoutParams
-
-                layoutParams.width = width.toInt() + WIDTH_MORE_SPACE
-                tv_quest_favorite_keyword.layoutParams = layoutParams
+            if (adapter.selectedPosition == position) {
+                tv_quest_favorite_keyword.setBackgroundResource(R.drawable.border_of_upload_category_selected)
+            } else {
+                tv_quest_favorite_keyword.setBackgroundResource(R.drawable.border_of_upload_category_white)
             }
 
-            activity.setImageDraw(iv_quest_favorite_keyword, item.image)
             snap_quest_favorite_keyword_item_holder.visibility = View.VISIBLE
-            card_quest_favorite_keyword_holder.visibility = View.VISIBLE
-            iv_quest_favorite_keyword.transitionName = TransitionObject.TRANSITION_NAME_FOR_IMAGE + position
-            iv_quest_favorite_keyword.setOnClickListener {
-            }
+            snap_quest_favorite_keyword_item_holder.visibility = View.VISIBLE
         }
 
         override fun onItemSelected() {

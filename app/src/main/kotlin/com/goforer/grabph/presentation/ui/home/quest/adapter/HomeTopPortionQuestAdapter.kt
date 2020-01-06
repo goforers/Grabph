@@ -23,13 +23,16 @@ import com.goforer.grabph.presentation.ui.home.quest.adapter.snapadapter.HotQues
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.TopPortionQuest.FavoriteKeyword.Keyword
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.data.repository.paging.datasource.*
+import com.goforer.grabph.presentation.vm.quest.QuestViewModel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.snap_quest_item.*
 import kotlinx.android.synthetic.main.snap_quest_item.indicator
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
-class HomeTopPortionQuestAdapter(private val activity: HomeActivity): RecyclerView.Adapter<HomeTopPortionQuestAdapter.ViewHolder>(),
-                                                                      GravitySnapHelper.SnapListener {
+class HomeTopPortionQuestAdapter(
+    private val activity: HomeActivity,
+    private val questViewModel: QuestViewModel
+    ): RecyclerView.Adapter<HomeTopPortionQuestAdapter.ViewHolder>(), GravitySnapHelper.SnapListener {
     private val snapItems: MutableList<SnapItem> by lazy {
         ArrayList<SnapItem>()
     }
@@ -63,7 +66,7 @@ class HomeTopPortionQuestAdapter(private val activity: HomeActivity): RecyclerVi
         val view = LayoutInflater.from(parent.context.applicationContext)
                 .inflate(R.layout.snap_quest_item, parent, false)
 
-        return ViewHolder(view, this)
+        return ViewHolder(view, this, questViewModel)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -81,7 +84,10 @@ class HomeTopPortionQuestAdapter(private val activity: HomeActivity): RecyclerVi
         snapItems.add(snapItem)
     }
 
-    class ViewHolder(override val containerView: View, private val adapter: HomeTopPortionQuestAdapter): BaseViewHolder<SnapItem>(containerView), LayoutContainer {
+    class ViewHolder(
+        override val containerView: View,
+        private val adapter: HomeTopPortionQuestAdapter,
+        private val questViewModel: QuestViewModel): BaseViewHolder<SnapItem>(containerView), LayoutContainer {
         @Suppress("UNCHECKED_CAST")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: SnapItem, position: Int) {
             // In case of applying transition effect to views, have to use findViewById method
@@ -120,15 +126,15 @@ class HomeTopPortionQuestAdapter(private val activity: HomeActivity): RecyclerVi
                         },  /* PageList Config */ config).build().observe(adapter.activity, Observer {
                             hotMissionAdapter.submitList(it!!)
                             indicator.setMaxCount(it.size)
-                            tv_snap_quest_item_title.visibility = View.VISIBLE
                             indicator.setDefaultColor(resources.getColor(R.color.colorHomeMainHottopicIndicatorUnselect, null))
                             indicator.setSelectedColor(resources.getColor(R.color.colorHomeMainHottopicIndicatorSelect, null))
                             indicator.setIndicatorSize((resources.getDimension(R.dimen.size_8) / resources.displayMetrics.density).toInt())
                             indicator.setIndicatorSpacing((resources.getDimension(R.dimen.space_8) / resources.displayMetrics.density).toInt())
                             indicator.attachTo(recycler_view_snap_hot_quest)
+                            tv_snap_quest_item_title.visibility = View.VISIBLE
                             snap_quest_item_layout.visibility = View.VISIBLE
                             recycler_view_snap_hot_quest.visibility = View.VISIBLE
-                            indicator.visibility = View.VISIBLE
+                            indicator.visibility = View.GONE
                         })
                     }
 
@@ -153,21 +159,10 @@ class HomeTopPortionQuestAdapter(private val activity: HomeActivity): RecyclerVi
                         adapter.activity.closeFab(recycler_view_snap_favorite_keyword)
                         attachToRecyclerView(item, recycler_view_snap_favorite_keyword)
 
-                        val favoriteKeywordAdapter = FavoriteKeywordAdapter(adapter.activity)
-                        val config = PagedList.Config.Builder()
-                                .setInitialLoadSizeHint(1)
-                                .setPageSize(1)
-                                .setPrefetchDistance(1)
-                                .build()
+                        val favoriteKeywordAdapter = FavoriteKeywordAdapter(adapter.activity, questViewModel)
 
                         recycler_view_snap_favorite_keyword.adapter = favoriteKeywordAdapter
-                        LivePagedListBuilder(object : DataSource.Factory<Int, Keyword>() {
-                            override fun create(): DataSource<Int, Keyword> {
-                                return FavoriteKeywordListDataSource(item.items as List<Keyword>)
-                            }
-                        },  /* PageList Config */ config).build().observe(adapter.activity, Observer {
-                            favoriteKeywordAdapter.submitList(it!!)
-                        })
+                        favoriteKeywordAdapter.addList(item.items as List<Keyword>)
                     }
                 }
             }

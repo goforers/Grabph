@@ -3,18 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_latest"
-        android:title="@string/home_quest_sort_latest_keyword"
+        android:id="@+id/menu_all"
+        android:title="@string/home_quest_sort_all"
         tools:ignore="AppCompatResource" />
 
     <item
-        android:id="@+id/menu_deadline"
-        android:title="@string/home_quest_sort_deadline_keyword"
+        android:id="@+id/menu_ongoing"
+        android:title="@string/home_quest_sort_on_going"
         tools:ignore="AppCompatResource" />
 
     <item
-        android:id="@+id/menu_prize_money"
-        android:title="@string/home_quest_sort_prize_money_keyword"
+        android:id="@+id/menu_examination"
+        android:title="@string/home_quest_sort_examination"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/menu_finished"
+        android:title="@string/home_quest_sort_finished"
         tools:ignore="AppCompatResource" />
 
 </menu>
