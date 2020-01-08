@@ -96,7 +96,6 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:ellipsize="end"
-                            android:text="Searper Name"
                             android:textColor="@color/white"
                             android:layout_marginEnd="@dimen/margin_10"
                             app:layout_constraintStart_toStartOf="parent"

@@ -108,7 +108,7 @@ class QuestAdapter(private val activity: HomeActivity): PagedListAdapter<Quest, 
             // tv_snap_quest_owner_name.text = item.ownerName
             tv_snap_quest_title.text = item.title
             tv_snap_quest_reward_price.text = (activity.getString(R.string.currency_us_dollar) + " " + item.rewards)
-            tv_snap_quest_photos.text = item.photos
+            tv_snap_quest_photos.text = item.contents
         }
 
         override fun onItemSelected() {

@@ -115,6 +115,8 @@ object Caller {
     const val EXTRA_QUEST_STATE = "goforer:mission_state"
     const val EXTRA_QUEST_REWARD = "goforer:mission_reward"
     const val EXTRA_QUEST_DURATION = "goforer:mission_duration"
+    const val EXTRA_QUEST_MEDIA_TYPE = "goforer:mission_media_type"
+    const val EXTRA_QUEST_NUMBER_OF_CONTENTS = "goforer:mission_number_of_contents"
     const val EXTRA_QUEST_CALLED_FROM = "goforer:mission_calledfrom"
     const val EXTRA_CATEGORY_PHOTO_INFO_SELECTED_ITEM_POSITION = "goforer:category_photo_info_selected_item_position"
     const val EXTRA_CATEGORY_POSITION = "goforer:category_list_position"
@@ -513,6 +515,8 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_STATE, quest.state)
         intent.putExtra(EXTRA_QUEST_REWARD, quest.rewards)
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
+        intent.putExtra(EXTRA_QUEST_MEDIA_TYPE, quest.mediaType)
+        intent.putExtra(EXTRA_QUEST_NUMBER_OF_CONTENTS, quest.contents)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
 
@@ -546,6 +550,8 @@ object Caller {
         intent.putExtra(EXTRA_QUEST_STATE, quest.state)
         intent.putExtra(EXTRA_QUEST_REWARD, quest.rewards)
         intent.putExtra(EXTRA_QUEST_DURATION, quest.duration)
+        intent.putExtra(EXTRA_QUEST_MEDIA_TYPE, quest.mediaType)
+        intent.putExtra(EXTRA_QUEST_NUMBER_OF_CONTENTS, quest.contents)
         intent.putExtra(EXTRA_QUEST_POSITION, position)
         intent.putExtra(EXTRA_QUEST_CALLED_FROM, calledFrom)
 

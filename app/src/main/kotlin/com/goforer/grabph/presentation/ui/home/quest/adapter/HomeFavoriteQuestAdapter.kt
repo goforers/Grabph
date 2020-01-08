@@ -32,6 +32,9 @@ import com.goforer.grabph.R
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.common.effect.transition.TransitionObject
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_CLOSED
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_ONGOING
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_UNDER_EXAMINATION
 import kotlinx.android.synthetic.main.recycler_view_container.*
 import com.goforer.grabph.presentation.ui.home.quest.fragment.HomeQuestFragment
 import kotlinx.android.extensions.LayoutContainer
@@ -43,10 +46,6 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment):
     companion object {
         private const val PHOTO_RATIO_WIDTH = 328
         private const val PHOTO_RATIO_HEIGHT = 216
-
-        private const val STATE_ONGOING = "ongoing"
-        private const val STATE_EXAMINATION = "examination"
-        private const val STATE_FINISHED = "finished"
 
         private val PAYLOAD_TITLE = Any()
 
@@ -141,14 +140,14 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment):
             }
 
             when (item.state) {
-                STATE_ONGOING -> setQuestViewOngoing(item)
-                STATE_EXAMINATION -> setQuestViewExamination(item)
-                STATE_FINISHED -> setQuestViewFinished(item)
-                else -> STATE_ONGOING
+                SORT_QUEST_ONGOING -> setQuestViewOngoing(item)
+                SORT_QUEST_UNDER_EXAMINATION -> setQuestViewExamination(item)
+                SORT_QUEST_CLOSED -> setQuestViewFinished(item)
+                else -> setQuestViewOngoing(item)
             }
 
 
-            tv_quest_photos.text = item.photos
+            tv_quest_photos.text = item.contents
         }
 
         private fun setQuestViewOngoing(item: Quest) {
@@ -157,15 +156,15 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment):
         }
 
         private fun setQuestViewExamination(item: Quest) {
-            tv_quest_reward_price.text = "심사중"
-            tv_quest_duration.text = "종료됨"
+            tv_quest_reward_price.text = context.getString(R.string.quest_state_examination_kr)
+            tv_quest_duration.text = context.getString(R.string.quest_state_closed_kr)
         }
 
         private fun setQuestViewFinished(item: Quest) {
             iv_quest_winner_crown.visibility = View.VISIBLE
-            tv_quest_reward_price.text = "WINNER"
+            tv_quest_reward_price.text = context.getString(R.string.quest_winner_eng)
             setTextViewGradient(fragment.context, tv_quest_reward_price)
-            tv_quest_duration.text = "종료됨"
+            tv_quest_duration.text = context.getString(R.string.quest_state_closed_kr)
         }
 
 

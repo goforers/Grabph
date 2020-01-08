@@ -15,45 +15,42 @@
         android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_disconnect_quest_info"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/iv_disconnect_quest_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_disconnect"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_144"
-            android:visibility="gone"
             tools:ignore="ContentDescription" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notice1_quest_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_disconnect_quest_info"
-            android:id="@+id/tv_notice1_quest_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="44dp"
             android:textColor="@color/grayLight"
             android:text="@string/not_connected_internet"
-            android:visibility="gone"
             android:textSize="32sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notice2_quest_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_notice1_quest_info"
-            android:id="@+id/tv_notice2_quest_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="8dp"
             android:textColor="@color/grayLight"
             android:text="@string/check_connection"
-            android:visibility="gone"
             android:textSize="24sp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -66,6 +63,9 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleGravity="bottom|start"
             app:expandedTitleMarginBottom="16dp"
@@ -73,9 +73,6 @@
             app:expandedTitleTextAppearance="@style/CollapsingToolbar.Title"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="true"
-            android:id="@+id/collapsing_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:fitsSystemWindows="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,15 +82,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/backdrop_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax">
 
                     <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                        app:layout_collapseMode="parallax"
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:id="@+id/iv_quest_info_photo"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -101,115 +93,268 @@
                         android:adjustViewBounds="true"
                         android:fitsSystemWindows="true"
                         android:gravity="center"
-                        android:scaleType="centerCrop" />
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/duration_holder"
-                        android:layout_width="@dimen/width_44"
-                        android:layout_height="@dimen/height_26"
-                        android:layout_gravity="center_vertical|clip_vertical"
-                        android:layout_marginTop="@dimen/margin_50"
-                        android:layout_marginEnd="@dimen/margin_10"
-                        android:gravity="center"
-                        android:background="@drawable/snap_quest_duration"
-                        android:orientation="vertical"
-                        android:transitionGroup="true"
+                        android:scaleType="centerCrop"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_placeholder_image"
+                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_duration"
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.5"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_quest_winner_crown"
+                        android:layout_width="@dimen/width_77"
+                        android:layout_height="@dimen/height_45"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:src="@drawable/ic_crown_gradient"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_quest_state"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_32"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/guideline"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_holder_reward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/height_46"
+                        android:layout_marginBottom="@dimen/margin_10"
+                        android:background="@drawable/searp_gradation_rounded"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/card_view_holder_reward"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|center_horizontal"
-                            android:ellipsize="end"
-                            android:gravity="center"
-                            android:maxLength="6"
-                            android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_12" />
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/margin_2"
+                            app:cardBackgroundColor="@color/colorPrimary"
+                            app:cardCornerRadius="11dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
 
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/constraint_inner_holder_reward"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/constraint_holder_diamond"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/margin_21"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/iv_diamond"
+                                        android:layout_width="@dimen/width_28"
+                                        android:layout_height="@dimen/width_28"
+                                        android:src="@drawable/ic_diamond"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tv_quest_reward_price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/margin_30"
+                                    android:layout_marginEnd="@dimen/margin_30"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/text_size_18"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/constraint_holder_diamond"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/quest_info_holder"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_96"
+                    android:layout_height="130dp"
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:elevation="@dimen/elevation_2"
-                    android:background="@color/transparent"
+                    android:background="@color/colorPrimaryDark"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/backdrop_container">
 
-                    <com.mikepenz.materialdrawer.view.BezelImageView
-                        android:id="@+id/iv_quest_owner_logo"
-                        android:layout_width="@dimen/width_30"
-                        android:layout_height="@dimen/height_30"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:layout_marginStart="@dimen/margin_16"
-                        android:layout_marginTop="@dimen/margin_12"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_owner_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_marginStart="@dimen/margin_10_2"
-                        android:layout_marginTop="@dimen/margin_16"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLength="12"
-                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@+id/iv_quest_owner_logo"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_quest_reward"
-                        android:layout_width="@dimen/width_17"
-                        android:layout_height="@dimen/height_18"
-                        android:layout_marginTop="@dimen/margin_16"
-                        android:layout_marginEnd="@dimen/margin_58"
-                        android:src="@drawable/ic_price"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_reward_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_marginStart="@dimen/margin_4"
-                        android:layout_marginTop="@dimen/margin_14"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLength="8"
-                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@+id/iv_quest_reward"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <View
-                        android:id="@+id/divider"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_holder_quest_info"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_2"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_marginTop="@dimen/margin_8_2"
-                        android:background="@color/colorQuestInfoDivider"
-                        android:gravity="center"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/iv_quest_owner_logo" />
+                        android:layout_height="80dp"
+                        android:background="@color/colorPrimary"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.mikepenz.materialdrawer.view.BezelImageView
+                            android:id="@+id/iv_quest_owner_logo"
+                            android:layout_width="@dimen/width_42"
+                            android:layout_height="@dimen/height_42"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginStart="@dimen/margin_16"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:srcCompat="@tools:sample/avatars[4]" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_owner_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|center_horizontal"
+                            android:layout_marginStart="@dimen/margin_10_2"
+                            android:ellipsize="end"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_16"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="@dimen/margin_10"
+                            app:layout_constraintTop_toTopOf="@+id/iv_quest_owner_logo"
+                            app:layout_constraintBottom_toBottomOf="@+id/iv_quest_owner_logo"
+                            app:layout_constraintStart_toEndOf="@+id/iv_quest_owner_logo"
+                            app:layout_constraintEnd_toStartOf="@+id/constraint_holder_quest_contents"/>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_holder_quest_contents"
+                            android:layout_width="@dimen/width_35"
+                            android:layout_height="@dimen/width_35"
+                            android:background="@drawable/background_icon_round"
+                            app:layout_constraintEnd_toStartOf="@id/constraint_holder_quest_type"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="@dimen/margin_10"
+                            android:layout_marginEnd="@dimen/margin_27">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/width_14"
+                                android:layout_height="@dimen/width_14"
+                                android:src="@drawable/ic_shutter"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_contents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="constraint_holder_calendar"
+                            android:textSize="@dimen/text_size_12"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="@+id/constraint_holder_quest_contents"
+                            app:layout_constraintEnd_toEndOf="@+id/constraint_holder_quest_contents"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_holder_quest_contents"
+                            android:layout_marginTop="@dimen/margin_10"/>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_holder_quest_type"
+                            android:layout_width="@dimen/width_35"
+                            android:layout_height="@dimen/width_35"
+                            android:background="@drawable/background_icon_round"
+                            app:layout_constraintEnd_toStartOf="@+id/constraint_holder_calendar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="@dimen/margin_10"
+                            android:layout_marginEnd="@dimen/margin_27">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_quest_type"
+                                android:layout_width="@dimen/width_17"
+                                android:layout_height="@dimen/width_17"
+                                android:src="@drawable/ic_photo_size"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="constraint_holder_calendar"
+                            android:textSize="@dimen/text_size_12"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="@+id/constraint_holder_quest_type"
+                            app:layout_constraintEnd_toEndOf="@+id/constraint_holder_quest_type"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_holder_quest_type"
+                            android:layout_marginTop="@dimen/margin_10"/>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_holder_calendar"
+                            android:layout_width="@dimen/width_35"
+                            android:layout_height="@dimen/width_35"
+                            android:background="@drawable/background_icon_round"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="@dimen/margin_10"
+                            android:layout_marginEnd="@dimen/margin_17">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_duration"
+                                android:layout_width="@dimen/width_14"
+                                android:layout_height="@dimen/width_14"
+                                android:src="@drawable/ic_calendar"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="constraint_holder_calendar"
+                            android:textSize="@dimen/text_size_12"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="@+id/constraint_holder_calendar"
+                            app:layout_constraintEnd_toEndOf="@+id/constraint_holder_calendar"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_holder_calendar"
+                            android:layout_marginTop="@dimen/margin_10"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -217,27 +362,14 @@
 
             <!-- As our statusBar is transparent below and content is moved behind our toolbar has to include the padding on top so we use this area -->
             <androidx.appcompat.widget.Toolbar
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextAppearance="@style/TransparentToolbar.Title"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/TransparentToolbar.Title"
                 android:fitsSystemWindows="false"
                 android:elevation="0dp">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_quest_info_toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginStart="@dimen/margin_16"
-                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                    android:textColor="@color/whiteLight"
-                    android:textSize="@dimen/text_size_20"
-                    android:maxLength="20"
-                    android:ellipsize="end"
-                    android:textStyle="normal" />
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -249,79 +381,61 @@
         android:id="@+id/scroll_view"
         android:transitionGroup="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginBottom="@dimen/margin_20"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:paddingStart="@dimen/margin_5"
+            android:paddingEnd="@dimen/margin_5"
+            android:background="@color/colorPrimaryDark"
             android:orientation="vertical"
             android:transitionGroup="true">
 
-            <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="@color/colorPrimary"
-                android:id="@+id/quest_info_explanation_cardholder"
-                android:transitionName="mission_explanation_cardholder"
-                android:transitionGroup="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:elevation="@dimen/elevation_0"
-                tools:cardPreventCornerOverlap="false">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_marginTop="@dimen/margin_2"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_explanation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_14"
-                        android:textStyle="normal" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_explanation_space"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_10"
-                        android:textStyle="normal" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </androidx.cardview.widget.CardView>
-
-            <View
-                android:id="@+id/divider_2"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height_5"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@color/colorQuestInfoDivider"
-                android:gravity="center" />
-
-            <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="@color/colorPrimaryDark"
-                android:id="@+id/quest_info_rules_holder"
-                android:transitionName="rules_holder"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/holder_quest_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="@dimen/elevation_0"
-                tools:cardPreventCornerOverlap="false">
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="@dimen/margin_2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_quest_info_explanation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingStart="@dimen/padding_16"
+                    android:paddingTop="@dimen/padding_4"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textColor="@color/colorQuestInfoDescription"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="normal" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_quest_info_explanation_space"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingStart="@dimen/padding_16"
+                    android:paddingTop="@dimen/padding_4"
+                    android:textColor="@color/colorQuestInfoDescription"
+                    android:textSize="@dimen/text_size_10"
+                    android:textStyle="normal" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/holder_rules_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="@dimen/margin_4"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -331,135 +445,107 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_quest_info_rules_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:layout_marginTop="@dimen/margin_4"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:paddingEnd="@dimen/padding_16"
+                        android:paddingStart="@dimen/margin_4"
+                        android:paddingTop="@dimen/padding_4"
+                        android:text="룰은 간단합니다"
+                        android:textColor="@color/colorSearp"
+                        android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_quest_info_rules"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/padding_16"
-                            android:paddingEnd="@dimen/padding_16"
-                            android:paddingTop="@dimen/padding_4"
-                            android:src="@drawable/ic_pin_rule" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/holder_quest_info_rules"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="@dimen/padding_16"
+                        android:paddingStart="@dimen/padding_16"
+                        android:orientation="vertical">
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tv_quest_info_rules_title"
+                            android:id="@+id/tv_quest_info_rules_first_rule"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingEnd="@dimen/padding_16"
-                            android:paddingStart="@dimen/margin_4"
                             android:paddingTop="@dimen/padding_4"
                             android:text="@string/phrase_tags"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_16"
-                            android:textStyle="bold" />
+                            android:textColor="@color/colorQuestInfoDescription"
+                            android:textSize="@dimen/text_size_15"
+                            android:textStyle="normal" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_info_rules_second_rule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/padding_4"
+                            android:text="@string/phrase_tags"
+                            android:textColor="@color/colorQuestInfoDescription"
+                            android:textSize="@dimen/text_size_15"
+                            android:textStyle="normal" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_rules_first_rule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:text="@string/phrase_tags"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_15"
-                        android:textStyle="normal" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_rules_second_rule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:text="@string/phrase_tags"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_15"
-                        android:textStyle="normal" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_quest_info_bonus_rules_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_16"
-                        android:textColor="@color/white"
+                        android:paddingStart="@dimen/margin_4"
+                        android:paddingTop="@dimen/padding_4"
+                        android:text="Bonus rules"
+                        android:textColor="@color/colorSearp"
                         android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_bonus_first_rule"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/holder_quest_bonus_rules"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:text="@string/phrase_tags"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_15"
-                        android:textStyle="normal" />
+                        android:paddingStart="@dimen/padding_16">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_bonus_second_rule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:text="@string/phrase_tags"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_15"
-                        android:textStyle="normal" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_info_bonus_first_rule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/padding_4"
+                            android:text="@string/phrase_tags"
+                            android:textColor="@color/colorQuestInfoDescription"
+                            android:textSize="@dimen/text_size_15"
+                            android:textStyle="normal" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_quest_info_space"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/padding_4"
-                        android:textColor="@color/colorQuestInfoDescription"
-                        android:textSize="@dimen/text_size_10"
-                        android:textStyle="normal"
-                        tools:ignore="SmallSp" />
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tv_quest_info_bonus_second_rule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/padding_4"
+                            android:text="@string/phrase_tags"
+                            android:textColor="@color/colorQuestInfoDescription"
+                            android:textSize="@dimen/text_size_15"
+                            android:textStyle="normal" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </androidx.cardview.widget.CardView>
-
-            <View
-                android:id="@+id/divider_3"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height_5"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@color/colorQuestInfoDivider"
-                android:gravity="center" />
-
-            <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="@color/colorPrimaryDark"
-                android:id="@+id/quest_info_important_holder"
-                android:transitionName="important_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="@dimen/elevation_0"
-                tools:cardPreventCornerOverlap="false">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_marginTop="@dimen/margin_4"
+                    android:layout_marginTop="@dimen/margin_20"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -470,15 +556,6 @@
                         android:layout_marginTop="@dimen/margin_4"
                         android:gravity="center"
                         android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_quest_info_important_notice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/padding_16"
-                            android:paddingEnd="@dimen/padding_16"
-                            android:paddingTop="@dimen/padding_4"
-                            android:src="@drawable/ic_important_notice" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_quest_info_important_title"
@@ -487,8 +564,8 @@
                             android:paddingEnd="@dimen/padding_16"
                             android:paddingStart="@dimen/margin_4"
                             android:paddingTop="@dimen/padding_4"
-                            android:text="@string/phrase_tags"
-                            android:textColor="@color/white"
+                            android:text="중요한 사항"
+                            android:textColor="@color/colorSearp"
                             android:textSize="@dimen/text_size_16"
                             android:textStyle="bold" />
 
@@ -508,120 +585,39 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </androidx.cardview.widget.CardView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="@color/colorPrimaryDark"
-                android:id="@+id/quest_info__photos_holder"
-                android:transitionName="mission_photos_holder"
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16"
-                android:elevation="@dimen/elevation_0"
-                tools:cardPreventCornerOverlap="false">
+                android:text="참고 이미지"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold"
+                android:textColor="@color/colorSearp"
+                android:paddingStart="@dimen/margin_4"
+                android:layout_marginTop="@dimen/margin_20"
+                android:layout_marginBottom="@dimen/margin_10"/>
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_marginTop="@dimen/margin_4"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/backdrop_quest_info_photo_first_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:id="@+id/iv_quest_info_photo_first"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:adjustViewBounds="true"
-                            android:fitsSystemWindows="true"
-                            android:gravity="center"
-                            android:scaleType="centerCrop" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/backdrop_quest_info_photo_second_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:id="@+id/iv_quest_info_photo_second"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:adjustViewBounds="true"
-                            android:fitsSystemWindows="true"
-                            android:gravity="center"
-                            android:scaleType="centerCrop" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/backdrop_quest_info_photo_third_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:id="@+id/iv_quest_info_photo_third"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:adjustViewBounds="true"
-                            android:fitsSystemWindows="true"
-                            android:gravity="center"
-                            android:scaleType="centerCrop" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/backdrop_quest_info_photo_forth_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.goforer.base.presentation.view.customs.imageview.ThreeTwoImageView
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:id="@+id/iv_quest_info_photo_forth"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:adjustViewBounds="true"
-                            android:fitsSystemWindows="true"
-                            android:gravity="center"
-                            android:scaleType="centerCrop" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_quest_inspiration"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_join_quest"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_50"
+        android:text="참가하기"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16"
+        android:background="@drawable/searp_gradation"
+        android:layout_gravity="center_horizontal|bottom"
+        app:layout_anchorGravity="top"
+        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomButtonBehavior" />
 
 </com.goforer.base.presentation.view.customs.layout.SwipeCoordinatorLayout>

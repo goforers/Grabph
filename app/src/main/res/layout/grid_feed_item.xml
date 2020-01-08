@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.goforer.base.presentation.view.customs.imageview.ItemImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_feed_item_content"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

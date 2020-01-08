@@ -19,6 +19,7 @@ package com.goforer.grabph.presentation.ui.questinfo
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -29,12 +30,19 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.annotation.MockData
+import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
+import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_CLOSED
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_ONGOING
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_UNDER_EXAMINATION
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FORM_HOME_FAVORITE_QUEST
@@ -66,6 +74,9 @@ import com.goforer.grabph.data.datasource.model.cache.data.mock.datasource.quest
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_FAVORITE_QUEST_INFO
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_QUEST_MEDIA_TYPE
+import com.goforer.grabph.presentation.caller.Caller.EXTRA_QUEST_NUMBER_OF_CONTENTS
+import com.goforer.grabph.presentation.ui.questinfo.adapter.QuestInspirationAdapter
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -88,8 +99,10 @@ class QuestInfoActivity: BaseActivity() {
     private lateinit var ownerImage: String
     private lateinit var title: String
     private lateinit var description: String
-    private lateinit var state: String
+    private lateinit var questState: String
     private lateinit var reward: String
+    private lateinit var numberOfContents: String
+    private lateinit var mediaType: String
 
     private var duration: Int = 0
     private var calledFrom: Int = 0
@@ -151,67 +164,15 @@ class QuestInfoActivity: BaseActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            getIntentData()
-        }
-
+        savedInstanceState?.let { getIntentData() }
 
         val krBoldTypeface = Typeface.createFromAsset(applicationContext?.assets, NOTO_SANS_KR_BOLD)
         this@QuestInfoActivity.collapsing_layout.setCollapsedTitleTypeface(krBoldTypeface)
         this@QuestInfoActivity.collapsing_layout.setExpandedTitleTypeface(krBoldTypeface)
 
         getQuestInfo()
-
-        this@QuestInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
-                appBarLayout, verticalOffset ->
-            this@QuestInfoActivity.collapsing_layout.title = title
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
-                    isAppBarLayoutCollapsed = true
-                    isAppBarLayoutExpanded = false
-                }
-                verticalOffset == 0 -> {
-                    isAppBarLayoutExpanded = true
-                    launchWork {
-                        delay(DELAY_COLLAPSED_TIMER_INTERVAL.toLong())
-                        isAppBarLayoutCollapsed = false
-                    }
-                }
-                else -> {
-                    isAppBarLayoutExpanded = false
-                    isAppBarLayoutCollapsed = true
-                }
-            }
-        })
-
-        this@QuestInfoActivity.coordinator_quest_info_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
-            override fun onSwipeLeft(x: Float, y: Float) {
-                Timber.d("onSwipeLeft")
-
-                finishAfterTransition()
-            }
-
-            override fun onSwipeRight(x: Float, y: Float) {
-                Timber.d("onSwipeRight")
-
-            }
-
-            override fun onSwipeDown(x: Float, y: Float) {
-                Timber.d( "onSwipeDown")
-
-                if (!isAppBarLayoutCollapsed && isAppBarLayoutExpanded) {
-                    finishAfterTransition()
-                }
-            }
-
-            override fun onSwipeUp(x: Float, y: Float) {
-                Timber.d("onSwipeUp")
-            }
-
-            override fun onSwipeDone() {
-                Timber.d("onSwipeDone")
-            }
-        })
+        initAppBarLayout()
+        initSwipeLayout()
     }
 
     override fun setContentView() {
@@ -240,10 +201,6 @@ class QuestInfoActivity: BaseActivity() {
         savedInstanceState ?: getIntentData()
         if (!isNetworkAvailable) {
             this@QuestInfoActivity.disconnect_container_quest_info.visibility = View.VISIBLE
-            this@QuestInfoActivity.iv_disconnect_quest_info.visibility = View.VISIBLE
-            this@QuestInfoActivity.tv_notice1_quest_info.visibility = View.VISIBLE
-            this@QuestInfoActivity.tv_notice2_quest_info.visibility = View.VISIBLE
-
             return
         }
 
@@ -335,8 +292,10 @@ class QuestInfoActivity: BaseActivity() {
         outState.putString(EXTRA_QUEST_OWNER_IMAGE, ownerImage)
         outState.putString(EXTRA_QUEST_TITLE, title)
         outState.putString(EXTRA_QUEST_DESCRIPTION, description)
-        outState.putString(EXTRA_QUEST_STATE, state)
+        outState.putString(EXTRA_QUEST_STATE, questState)
         outState.putString(EXTRA_QUEST_REWARD, reward)
+        outState.putString(EXTRA_QUEST_NUMBER_OF_CONTENTS, numberOfContents)
+        outState.putString(EXTRA_QUEST_MEDIA_TYPE, mediaType)
         outState.putInt(EXTRA_QUEST_DURATION, duration)
         outState.putInt(EXTRA_QUEST_POSITION, position)
     }
@@ -349,8 +308,10 @@ class QuestInfoActivity: BaseActivity() {
         ownerImage = savedInstanceState.getString(EXTRA_QUEST_OWNER_IMAGE, "")
         title = savedInstanceState.getString(EXTRA_QUEST_TITLE, "")
         description = savedInstanceState.getString(EXTRA_QUEST_DESCRIPTION, "")
-        state = savedInstanceState.getString(EXTRA_QUEST_STATE, "")
+        questState = savedInstanceState.getString(EXTRA_QUEST_STATE, "")
         reward = savedInstanceState.getString(EXTRA_QUEST_REWARD, "")
+        numberOfContents = savedInstanceState.getString(EXTRA_QUEST_NUMBER_OF_CONTENTS, "")
+        mediaType = savedInstanceState.getString(EXTRA_QUEST_MEDIA_TYPE, "")
         duration = savedInstanceState.getInt(EXTRA_QUEST_DURATION, 0)
         position = savedInstanceState.getInt(EXTRA_QUEST_POSITION, 0)
     }
@@ -386,8 +347,10 @@ class QuestInfoActivity: BaseActivity() {
         ownerImage = intent.getStringExtra(EXTRA_QUEST_OWNER_IMAGE)
         title = intent.getStringExtra(EXTRA_QUEST_TITLE)
         description = intent.getStringExtra(EXTRA_QUEST_DESCRIPTION)
-        state = intent.getStringExtra(EXTRA_QUEST_STATE)
+        questState = intent.getStringExtra(EXTRA_QUEST_STATE)
         reward = intent.getStringExtra(EXTRA_QUEST_REWARD)
+        numberOfContents = intent.getStringExtra(EXTRA_QUEST_NUMBER_OF_CONTENTS)
+        mediaType = intent.getStringExtra(EXTRA_QUEST_MEDIA_TYPE)
         duration = intent.getIntExtra(EXTRA_QUEST_DURATION, -1)
         position = intent.getIntExtra(EXTRA_QUEST_POSITION, -1)
         calledFrom = intent.getIntExtra(EXTRA_QUEST_CALLED_FROM, -1)
@@ -428,6 +391,7 @@ class QuestInfoActivity: BaseActivity() {
                 LOAD_FAVORITE_QUEST_INFO,
                 BOUND_FROM_BACKEND
             ), NONE_TYPE)
+
         questInfoViewModel.mission.observe(this, Observer { resource ->
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -483,95 +447,181 @@ class QuestInfoActivity: BaseActivity() {
     }
 
     private fun loadQuestInfo() {
-        setImageDraw(this@QuestInfoActivity.iv_quest_owner_logo, ownerLogo)
-        this@QuestInfoActivity.iv_quest_info_photo.setColorFilter(getColor(R.color.colorQuestInfoMask),
+        setImageDraw(this.iv_quest_owner_logo, ownerLogo)
+        this.iv_quest_info_photo.setColorFilter(getColor(R.color.colorQuestInfoMask),
             PorterDuff.Mode.DST_IN)
         setFixedImageSize(0, 0)
-        setImageDraw(this@QuestInfoActivity.iv_quest_info_photo, this@QuestInfoActivity.backdrop_container,
-            ownerImage, false)
+        setImageDraw(this.iv_quest_info_photo, this.backdrop_container, ownerImage, false)
+
+        if (mediaType == "photo") this.iv_quest_type.setImageResource(R.drawable.ic_photo_size)
+        else this.iv_quest_type.setImageResource(R.drawable.ic_video)
+
+        showQuestState()
+
         withDelay(50L) {
             setViewBind()
             setEnterSharedElementCallback(sharedElementCallback)
             supportStartPostponedEnterTransition()
         }
 
-        this@QuestInfoActivity.tv_quest_owner_name.text = ownerName
+        this.tv_quest_owner_name.text = ownerName
 
-        this@QuestInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+        this.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
                 _, verticalOffset ->
-            if (this@QuestInfoActivity.collapsing_layout.height + verticalOffset < 2
-                * ViewCompat.getMinimumHeight(this@QuestInfoActivity.collapsing_layout)) {
+            if (this.collapsing_layout.height + verticalOffset < 2
+                * ViewCompat.getMinimumHeight(this.collapsing_layout)) {
                 // collapsed
-                this@QuestInfoActivity.iv_quest_info_photo.animate().alpha(1.0f).duration = 600
+                // this.iv_quest_info_photo.animate().alpha(1.0f).duration = 600
             } else {
                 // extended
-                this@QuestInfoActivity.iv_quest_info_photo.animate().alpha(1.0f).duration = 1000    // 1.0f means opaque
+                // this.iv_quest_info_photo.animate().alpha(1.0f).duration = 1000    // 1.0f means opaque
             }
         })
     }
 
+    private fun showQuestState() {
+        when (questState) {
+            SORT_QUEST_ONGOING -> showOngoingUI()
+            SORT_QUEST_UNDER_EXAMINATION -> showExaminationUI()
+            SORT_QUEST_CLOSED -> showClosedUI()
+        }
+    }
+
+    private fun showOngoingUI() {
+        this.tv_quest_state.visibility = View.GONE
+        this.iv_quest_winner_crown.visibility = View.GONE
+        this.iv_quest_info_photo.alpha = 1f
+    }
+
+
+    private fun showExaminationUI() {
+        this.iv_quest_winner_crown.visibility = View.GONE
+        this.tv_quest_state.visibility = View.VISIBLE
+        this.tv_quest_state.text = getString(R.string.quest_state_examination_kr)
+    }
+
+    private fun showClosedUI() {
+        this.tv_quest_state.visibility = View.VISIBLE
+        this.tv_quest_state.text = getString(R.string.quest_winner_eng)
+        this.iv_quest_winner_crown.visibility = View.VISIBLE
+        setTextViewGradient(this, this.tv_quest_state)
+    }
+
     private fun fillExtraQuestInfo(questInfo: QuestInfo) {
         fillExtraWithText(questInfo)
-        for ((index, photo) in questInfo.photos.photo?.withIndex()!!) {
-            fillExtraWithPhoto(photo.image, index)
+        createAdapter(questInfo)
+    }
+
+    private fun createAdapter(questInfo: QuestInfo) {
+        this.rv_quest_inspiration.setHasFixedSize(false)
+        this.rv_quest_inspiration.setItemViewCacheSize(20)
+        this.rv_quest_inspiration.isVerticalScrollBarEnabled = false
+
+        val gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        this.rv_quest_inspiration.layoutManager = gridLayoutManager
+        this.rv_quest_inspiration.addItemDecoration(createItemDecoration())
+
+        gridLayoutManager.isItemPrefetchEnabled = true
+        val adapter = QuestInspirationAdapter(this)
+        this.rv_quest_inspiration.adapter = adapter
+
+        adapter.addList(questInfo.photos.photo!!)
+    }
+
+    private fun createItemDecoration(): RecyclerView.ItemDecoration {
+        return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
+                outRect.top = 4
+            }
         }
     }
 
     private fun fillExtraWithText(questInfo: QuestInfo) {
-        setFontTypeface(tv_quest_info_explanation, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_rules_title, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_rules_first_rule, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_rules_second_rule, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_bonus_rules_title, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_bonus_first_rule, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_bonus_second_rule, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_important_title, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_quest_info_important_notice, FONT_TYPE_REGULAR)
-        setFontTypeface(tv_duration, FONT_TYPE_MEDIUM)
-        setFontTypeface(tv_quest_reward_price, FONT_TYPE_MEDIUM)
-        this@QuestInfoActivity.tv_quest_info_explanation.text = description
-        this@QuestInfoActivity.tv_duration.text = (getString(R.string.snap_quest_duration_day_phrase) + duration)
-        this@QuestInfoActivity.tv_quest_reward_price.text = reward
-        this@QuestInfoActivity.tv_quest_info_rules_title.text = questInfo.rules.title
-        this@QuestInfoActivity.tv_quest_info_rules_first_rule.text = questInfo.rules.firstRule
-        this@QuestInfoActivity.tv_quest_info_rules_second_rule.text = questInfo.rules.secondRule
-        this@QuestInfoActivity.tv_quest_info_bonus_rules_title.text = questInfo.bonus.title
-        this@QuestInfoActivity.tv_quest_info_bonus_first_rule.text = questInfo.bonus.firstBonus
-        this@QuestInfoActivity.tv_quest_info_bonus_second_rule.text = questInfo.bonus.secondBonus
-        this@QuestInfoActivity.tv_quest_info_important_title.text = this.applicationContext.getString(R.string.phrase_important_notice)
-        this@QuestInfoActivity.tv_quest_info_important_notice.text = questInfo.importantNotice
+        setFontTypeface(this.tv_quest_info_explanation, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_rules_title, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_rules_first_rule, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_rules_second_rule, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_bonus_rules_title, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_bonus_first_rule, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_bonus_second_rule, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_important_title, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_info_important_notice, FONT_TYPE_REGULAR)
+        setFontTypeface(this.tv_quest_contents, FONT_TYPE_MEDIUM)
+        setFontTypeface(this.tv_quest_type, FONT_TYPE_MEDIUM)
+        setFontTypeface(this.tv_duration, FONT_TYPE_MEDIUM)
+        setFontTypeface(this.tv_quest_reward_price, FONT_TYPE_MEDIUM)
+        this.tv_quest_info_explanation.text = description
+        this.tv_quest_contents.text = numberOfContents
+        this.tv_quest_type.text = mediaType
+        this.tv_duration.text = if (duration == 0) "종료" else (getString(R.string.snap_quest_duration_day_phrase) + duration)
+
+        this.tv_quest_reward_price.text = "$ $reward"
+        this.tv_quest_info_rules_title.text = questInfo.rules.title
+        this.tv_quest_info_rules_first_rule.text = questInfo.rules.firstRule
+        this.tv_quest_info_rules_second_rule.text = questInfo.rules.secondRule
+        this.tv_quest_info_bonus_rules_title.text = questInfo.bonus.title
+        this.tv_quest_info_bonus_first_rule.text = questInfo.bonus.firstBonus
+        this.tv_quest_info_bonus_second_rule.text = questInfo.bonus.secondBonus
+        this.tv_quest_info_important_title.text = this.applicationContext.getString(R.string.phrase_important_notice)
+        this.tv_quest_info_important_notice.text = questInfo.importantNotice
     }
 
-    private fun fillExtraWithPhoto(photoPath: String, index: Int) {
-        when(index) {
-            0 -> {
-                setFixedImageSize(0, 0)
-                setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_first,
-                    this@QuestInfoActivity.backdrop_quest_info_photo_first_container,
-                    photoPath, true)
+    private fun initAppBarLayout() {
+        this@QuestInfoActivity.appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
+                appBarLayout, verticalOffset ->
+            this@QuestInfoActivity.collapsing_layout.title = title
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    isAppBarLayoutCollapsed = true
+                    isAppBarLayoutExpanded = false
+                }
+                verticalOffset == 0 -> {
+                    isAppBarLayoutExpanded = true
+                    launchWork {
+                        delay(DELAY_COLLAPSED_TIMER_INTERVAL.toLong())
+                        isAppBarLayoutCollapsed = false
+                    }
+                }
+                else -> {
+                    isAppBarLayoutExpanded = false
+                    isAppBarLayoutCollapsed = true
+                }
+            }
+        })
+    }
+
+    private fun initSwipeLayout() {
+        this@QuestInfoActivity.coordinator_quest_info_layout.setOnSwipeOutListener(this, object : OnSwipeOutListener {
+            override fun onSwipeLeft(x: Float, y: Float) {
+                Timber.d("onSwipeLeft")
+
+                finishAfterTransition()
             }
 
-            1 -> {
-                setFixedImageSize(0, 0)
-                setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_second,
-                    this@QuestInfoActivity.backdrop_quest_info_photo_second_container,
-                    photoPath, true)
+            override fun onSwipeRight(x: Float, y: Float) {
+                Timber.d("onSwipeRight")
+
             }
 
-            2 -> {
-                setFixedImageSize(0, 0)
-                setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_third,
-                    this@QuestInfoActivity.backdrop_quest_info_photo_third_container,
-                    photoPath, true)
+            override fun onSwipeDown(x: Float, y: Float) {
+                Timber.d( "onSwipeDown")
+
+                if (!isAppBarLayoutCollapsed && isAppBarLayoutExpanded) {
+                    finishAfterTransition()
+                }
             }
 
-            3 -> {
-                setFixedImageSize(0, 0)
-                setImageDraw(this@QuestInfoActivity.iv_quest_info_photo_forth,
-                    this@QuestInfoActivity.backdrop_quest_info_photo_forth_container,
-                    photoPath, true)
+            override fun onSwipeUp(x: Float, y: Float) {
+                Timber.d("onSwipeUp")
             }
-        }
+
+            override fun onSwipeDone() {
+                Timber.d("onSwipeDone")
+            }
+        })
     }
 
     private fun callShareToFacebook(drawable: BitmapDrawable) {

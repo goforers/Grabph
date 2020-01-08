@@ -785,11 +785,7 @@
                 android:scrollbarThumbVertical="@color/transparent"
                 android:scrollbarSize="@dimen/size_6"
                 android:orientation="vertical"
-                android:elevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_recommend_title" />
+                android:elevation="0dp"/>
 
             <View
                 android:id="@+id/view_last"
@@ -807,7 +803,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_purchase"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/height_40"
         android:text="@string/purchase"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16"

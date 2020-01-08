@@ -77,6 +77,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recycler_top_quest_view">
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_number_of_quest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_12"
+                        android:textColor="@color/colorHomeQuestSortKeyword"
+                        android:layout_marginStart="@dimen/margin_25"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/sort_holder"
                         android:layout_width="wrap_content"

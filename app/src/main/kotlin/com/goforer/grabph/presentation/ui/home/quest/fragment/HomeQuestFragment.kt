@@ -61,11 +61,11 @@ import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.FAVORIT
 import com.goforer.grabph.presentation.vm.quest.QuestViewModel.Companion.HOT_QUEST_TYPE
 import com.goforer.grabph.data.repository.paging.datasource.FavoriteQuestSortDataSource
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_QUEST_SORT_ALL
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_QUEST_SORT_CLOSED
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_QUEST_SORT_EXAMINATION
-import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_QUEST_SORT_FINISHED
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.FAVORITE_QUEST_SORT_ONGOING
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.KEYWORD_QUEST_ALL
-import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_FINISHED
+import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_CLOSED
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_ONGOING
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest.Companion.SORT_QUEST_UNDER_EXAMINATION
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Questg
@@ -238,6 +238,11 @@ class HomeQuestFragment: BaseFragment() {
         createFavoriteQuestAdapter()
         acvAdapterFavorite.get()?.submitList(favoriteQuests)
         showEmptyQuestMessage(favoriteQuests.isEmpty())
+        showNumberOfQuest(favoriteQuests)
+    }
+
+    private fun showNumberOfQuest(list: List<Quest>) {
+        this.tv_number_of_quest.text = "${list.size}개의 퀘스트"
     }
 
     private fun setSnapItemCount(count: Int) {
@@ -461,8 +466,8 @@ class HomeQuestFragment: BaseFragment() {
                 list = questsByKeyword.filter { it.state == SORT_QUEST_UNDER_EXAMINATION }
             }
 
-            FAVORITE_QUEST_SORT_FINISHED -> {
-                list = questsByKeyword.filter { it.state == SORT_QUEST_FINISHED }
+            FAVORITE_QUEST_SORT_CLOSED -> {
+                list = questsByKeyword.filter { it.state == SORT_QUEST_CLOSED }
             }
 
             else -> {
@@ -512,11 +517,11 @@ class HomeQuestFragment: BaseFragment() {
                     }
                 }
 
-                R.id.menu_finished -> {
-                    if (this.tv_sort_text.text != getString(R.string.home_quest_sort_finished)) {
-                        selectedSorType = FAVORITE_QUEST_SORT_FINISHED
-                        setSortKeyword(getString(R.string.home_quest_sort_finished))
-                        submitQuests(FAVORITE_QUEST_SORT_FINISHED)
+                R.id.menu_closed -> {
+                    if (this.tv_sort_text.text != getString(R.string.home_quest_sort_closed)) {
+                        selectedSorType = FAVORITE_QUEST_SORT_CLOSED
+                        setSortKeyword(getString(R.string.home_quest_sort_closed))
+                        submitQuests(FAVORITE_QUEST_SORT_CLOSED)
                     }
                 }
 

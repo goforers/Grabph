@@ -116,7 +116,7 @@
     <string name="photo_safe">This photo is safe.</string>
     <string name="phrase_photos">photos</string>
     <string name="phrase_rewards">In Rewards</string>
-    <string name="phrase_important_notice">Important Notice</string>
+    <string name="phrase_important_notice">중요한 사항</string>
     <string name="phrase_user_name_pinned_feeds">%1$s"'"s Pinned Pix</string>
     <string name="phrase_user_name_gallery">%1$s"'"s Gallery</string>
     <string name="phrase_home">Home</string>
@@ -140,7 +140,7 @@
     <string name="home_quest_sort_all">모든 퀘스트 </string>
     <string name="home_quest_sort_on_going">진행중 </string>
     <string name="home_quest_sort_examination">심사중 </string>
-    <string name="home_quest_sort_finished">종료 </string>
+    <string name="home_quest_sort_closed">종료 </string>
     <string name="phrase_category">Category</string>
     <string name="login_login_look_overview">Searp"'"s Overview</string>
     <string name="splash_title">Share the world you have seen\n and get special rewards.</string>
@@ -226,4 +226,7 @@
     <string name="check_email_now">이메일 확인 중..</string>
     <string name="currency_korea_won">₩</string>
     <string name="currency_us_dollar">$</string>
+    <string name="quest_state_examination_kr">심사중</string>
+    <string name="quest_state_closed_kr">종료</string>
+    <string name="quest_winner_eng">WINNER</string>
 </resources>

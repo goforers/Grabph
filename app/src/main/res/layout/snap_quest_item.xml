@@ -82,7 +82,7 @@
                     android:padding="@dimen/padding_4"
                     android:scrollbars="none"
                     android:visibility="gone"
-                    android:background="#1E2127"
+                    android:background="@color/transparent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_snap_quest_item_title" />

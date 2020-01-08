@@ -18,8 +18,8 @@
         tools:ignore="AppCompatResource" />
 
     <item
-        android:id="@+id/menu_finished"
-        android:title="@string/home_quest_sort_finished"
+        android:id="@+id/menu_closed"
+        android:title="@string/home_quest_sort_closed"
         tools:ignore="AppCompatResource" />
 
 </menu>

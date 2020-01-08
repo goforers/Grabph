@@ -6,14 +6,27 @@
         android:icon="@drawable/ic_menu_search"
         android:title="@string/menu_call_search"
         android:clickable="false"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_call_setting"
         android:icon="@drawable/ic_setting"
         android:title="@string/menu_call_setting"
         android:clickable="false"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_call_create"
+        android:icon="@drawable/ic_baseline_post_add_24"
+        android:title="Upload quest"
+        android:clickable="false"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_call_admin"
+        android:icon="@drawable/ic_baseline_format_list_bulleted_24"
+        android:title="Quest Admin"
+        android:clickable="false"
+        app:showAsAction="always" />
 
 </menu>

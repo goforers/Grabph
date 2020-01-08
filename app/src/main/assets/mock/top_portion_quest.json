@@ -20,7 +20,8 @@
         "description":"Show us great travel photo that is taken by you in this winter. Great snow-fall scenery with Ford SUV! Decided to travel with family and Ford SUV in this winter? Even better. Want to spend more time with your family in this winter?",
         "rewards":"1,500",
         "duration":14,
-        "photos": "3.2K"
+        "mediaType": "photo",
+        "contents": "3.2K"
       },
       {
         "idx":4,
@@ -35,7 +36,8 @@
         "description":"Take your beautiful photo that is taken by you in this spring.  Great forest scenery! Decided to travel with family in this spring? Even better. Want to spend more time with your family in this spring?",
         "rewards":"2,500",
         "duration":7,
-        "photos": "4K"
+        "mediaType": "photo",
+        "contents": "4K"
       },
       {
         "idx":6,
@@ -50,7 +52,8 @@
         "description":"Show us your beautiful photo that is taken by you in beautiful beach. Great cool scenery! Decided to travel with family in this summer? Even better. Want to spend more time with your family in this summer?",
         "rewards":"2,500",
         "duration":24,
-        "photos": "3.2K"
+        "mediaType": "photo",
+        "contents": "3.2K"
       },
       {
         "idx":7,
@@ -65,7 +68,8 @@
         "description":"Show us BMW SUV photo that is taken by you in this winter. Great snow-fall scenery! Decided to travel with family in this winter? Even better. Want to spend more time with your family in this winter?",
         "rewards":"4,000",
         "duration":9,
-        "photos": "10K"
+        "mediaType": "photo",
+        "contents": "10K"
       },
       {
         "idx":8,
@@ -80,7 +84,8 @@
         "description":"Show us your snow-fall photo that is taken by you in this winter. Great snow-fall scenery! Decided to travel with your honey in this winter? Even better. Want to spend more time with your honey in this winter?",
         "rewards":"2,000",
         "duration":15,
-        "photos": "2K"
+        "mediaType": "photo",
+        "contents": "2K"
       },
       {
         "idx":9,
@@ -95,7 +100,8 @@
         "description":"Show us your beautiful photo that is taken by you in Europe. Great beautiful Europe scenery! Decided to travel with family in this winter? Even better. Want to spend more time with your family in Europe?",
         "rewards":"2,500",
         "duration":10,
-        "photos": "494"
+        "mediaType": "photo",
+        "contents": "494"
       },
       {
         "idx":10,
@@ -110,7 +116,8 @@
         "description":"Show us your SUV video that is taken by you in this winter. Great snow-fall scenery! Decided to travel with family in this winter? Even better. Want to spend more time with your family in this winter?",
         "rewards":"4,500",
         "duration":6,
-        "photos": "2.5K"
+        "mediaType": "photo",
+        "contents": "2.5K"
       }
     ]
   },

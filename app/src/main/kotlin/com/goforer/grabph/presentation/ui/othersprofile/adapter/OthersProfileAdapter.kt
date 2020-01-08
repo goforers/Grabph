@@ -81,7 +81,7 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
             val url = item.url_z ?: CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
             setRandomBackground(iv_profile_my_photo)
 
-            // activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
+            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
             val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)
             Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
 

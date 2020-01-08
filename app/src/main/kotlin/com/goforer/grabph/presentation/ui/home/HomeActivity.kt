@@ -103,6 +103,8 @@ class HomeActivity: BaseActivity() {
     private lateinit var bottomMenuItem: MenuItem
     private lateinit var searchItem: MenuItem
     private lateinit var settingItem: MenuItem
+    private lateinit var createQuestItem: MenuItem
+    private lateinit var adminQuestItem: MenuItem
     private var itemId = 0
 
 
@@ -163,14 +165,14 @@ class HomeActivity: BaseActivity() {
             savedInstanceState?.let {
                 itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
                 bottomMenuItem = this@HomeActivity.bottom_navigation_view.menu.findItem(this@HomeActivity.bottom_navigation_view.selectedItemId)
-                selectItem(itemId)
+                // selectItem(itemId)
                 setBottomNavigationBehavior(itemId)
             }
 
             this@HomeActivity.bottom_navigation_view.setOnNavigationItemSelectedListener {
                 bottomMenuItem = it
                 itemId = it.itemId
-                selectItem(it, it.itemId)
+                // selectItem(it, it.itemId)
 
                 false
             }
@@ -277,7 +279,14 @@ class HomeActivity: BaseActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         searchItem = menu.findItem(R.id.action_call_search)
         settingItem = menu.findItem(R.id.action_call_setting)
+        createQuestItem = menu.findItem(R.id.action_call_create)
+        adminQuestItem = menu.findItem(R.id.action_call_admin)
+
+        searchItem.isVisible = false
         settingItem.isVisible = false
+        createQuestItem.isVisible = false
+        adminQuestItem.isVisible = false
+
         searchItem.actionView?.let {
             searchView = searchItem.actionView as SearchView
         }
@@ -313,6 +322,14 @@ class HomeActivity: BaseActivity() {
         R.id.action_call_setting -> {
             Caller.callSetting(this)
 
+            true
+        }
+
+        R.id.action_call_create -> {
+            true
+        }
+
+        R.id.action_call_admin -> {
             true
         }
 
@@ -593,6 +610,11 @@ class HomeActivity: BaseActivity() {
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.GONE
+
+                searchItem.isVisible = false
+                settingItem.isVisible = false
+                createQuestItem.isVisible = false
+                adminQuestItem.isVisible = false
             }
 
             ID_FEED -> {
@@ -603,6 +625,11 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_feed)
+
+                searchItem.isVisible = true
+                settingItem.isVisible = false
+                createQuestItem.isVisible = false
+                adminQuestItem.isVisible = false
             }
 
             ID_UPLOAD -> { uploadPhotos()}
@@ -615,6 +642,11 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_quest)
+
+                searchItem.isVisible = false
+                settingItem.isVisible = false
+                createQuestItem.isVisible = true
+                adminQuestItem.isVisible = true
             }
 
             ID_PROFILE -> {
@@ -646,6 +678,12 @@ class HomeActivity: BaseActivity() {
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.GONE
+
+
+                searchItem.isVisible = true
+                settingItem.isVisible = false
+                createQuestItem.isVisible = false
+                adminQuestItem.isVisible = false
             }
 
             R.id.navigation_feed -> {
@@ -655,6 +693,11 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_feed)
+
+                searchItem.isVisible = true
+                settingItem.isVisible = false
+                createQuestItem.isVisible = false
+                adminQuestItem.isVisible = false
             }
 
             R.id.navigation_upload -> uploadPhotos()
@@ -666,6 +709,11 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_quest)
+
+                searchItem.isVisible = false
+                settingItem.isVisible = false
+                createQuestItem.isVisible = true
+                adminQuestItem.isVisible = true
             }
 
             R.id.navigation_profile -> {
@@ -687,6 +735,8 @@ class HomeActivity: BaseActivity() {
                     closeFab()
                     searchItem.isVisible = true
                     settingItem.isVisible = false
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -702,6 +752,8 @@ class HomeActivity: BaseActivity() {
                     closeFab()
                     searchItem.isVisible = true
                     settingItem.isVisible = false
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -730,6 +782,8 @@ class HomeActivity: BaseActivity() {
                     closeFab()
                     searchItem.isVisible = false
                     settingItem.isVisible = false
+                    createQuestItem.isVisible = true
+                    adminQuestItem.isVisible = true
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -746,6 +800,8 @@ class HomeActivity: BaseActivity() {
                     closeFab()
                     searchItem.isVisible = false
                     settingItem.isVisible = false
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
                 }
                 this@HomeActivity.toolbar.visibility = View.GONE
                 profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment

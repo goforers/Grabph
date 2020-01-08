@@ -175,7 +175,7 @@ class HomeMainFragment: BaseFragment() {
     }
 
     @MockData
-    private suspend fun transactMockData() {
+    private fun transactMockData() {
         val home = HomeDataSource()
 
         homeActivity.homeViewModel.loadHome()?.observe(homeActivity, Observer {
