@@ -23,23 +23,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fam_feed_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:fab_colorNormal="@color/colorFabUptoNormal"
-        app:fab_colorPressed="@color/colorFabPressed"
-        app:fab_colorRipple="@color/colorFabRipple"
+        app:fab_colorPressed="@color/colorSearp"
+        app:fab_colorRipple="@color/colorSearp2"
         app:fab_size="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="@+id/iv_feed_item_content"
         tools:ignore="UnknownIdInLayout"
-        android:id="@+id/fam_feed_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_fab_top"
-        android:visibility="gone">
-
-    </com.github.clans.fab.FloatingActionButton>
+        android:layout_marginBottom="66dp"
+        android:src="@drawable/ic_vertical_align_top"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

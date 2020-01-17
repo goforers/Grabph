@@ -27,14 +27,9 @@ import com.goforer.grabph.domain.usecase.othersprofile.LoadOthersPhotoUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
-/*
-* This viewModel is not a singleton because every OthersProfileActivity needs its own viewModel.
-* Otherwise one viewModel is always to be shared by multiple activities,
-* which means that shared liveData can be changed unexpectedly when there are two activities created.
-*
-* e.g. OthersProfileActivity B can be created from A's following list.
-* */
+@Singleton
 class OthersProfileViewModel
 @Inject
 constructor(private val useCaseProfile: LoadOthersProfileUseCase,

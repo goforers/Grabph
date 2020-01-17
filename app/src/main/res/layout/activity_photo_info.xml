@@ -21,6 +21,9 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleGravity="bottom|center_horizontal"
             app:expandedTitleMarginEnd="64dp"
@@ -29,9 +32,6 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="true"
             android:background="@color/transparent"
-            android:id="@+id/collapsing_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout

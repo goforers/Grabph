@@ -126,11 +126,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <com.mikepenz.materialdrawer.view.BezelImageView
         android:id="@+id/ib_navigation_upload"
         android:layout_width="@dimen/width_56"
         android:layout_height="@dimen/height_56"
-        android:background="@drawable/upload_button_click"
+        android:src="@drawable/ic_navi_upload_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -33,10 +33,11 @@ class ProfilePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVI
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return titles[position]
+        // return titles[position]
+        return null
     }
 
-    fun addFragment(fragment: Fragment, title: String){
+    internal fun addFragment(fragment: Fragment, title: String){
         fragments.add(fragment)
         titles.add(title)
     }

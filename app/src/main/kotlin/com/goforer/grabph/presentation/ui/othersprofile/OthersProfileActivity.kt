@@ -18,7 +18,6 @@ package com.goforer.grabph.presentation.ui.othersprofile
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -30,23 +29,17 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
-import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
-import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
-import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PEOPLE
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_PHOTO_INFO
-import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_RANKING
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PLACE_CALLED_USER_PROFILE
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_ID
 import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_NAME
@@ -55,22 +48,20 @@ import com.goforer.grabph.presentation.caller.Caller.EXTRA_PROFILE_USER_RANKING
 import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAdapter
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.othersprofile.OthersProfileViewModel
-import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_LOCAL
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
-import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PHOTOG_PHOTO
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.ui.home.profile.adapter.ProfilePagerAdapter
+import com.goforer.grabph.presentation.ui.othersprofile.fragments.OthersProfileGalleryFragment
+import com.goforer.grabph.presentation.ui.othersprofile.fragments.OthersProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.activity_others_profile.*
 import kotlinx.android.synthetic.main.layout_disconnection.*
@@ -98,6 +89,9 @@ class OthersProfileActivity : BaseActivity() {
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
+    private var galleryFragment: OthersProfileGalleryFragment? = null
+    private var pinFragment: OthersProfilePinFragment? = null
+
     private var page: Int = -1
     private var userRanking: Int = 0
     private var calledFrom: Int = 0
@@ -108,8 +102,13 @@ class OthersProfileActivity : BaseActivity() {
 
     private var adapter: OthersProfileAdapter? = null
 
+    companion object {
+        const val FRAGMENT_KEY_PROFILE_GALLERY = "searp:fragment_others_gallery"
+        const val FRAGMENT_KEY_PROFILE_PIN = "searp:fragment_others_pin"
+    }
+
     @field:Inject
-    internal lateinit var viewModel: OthersProfileViewModel
+    lateinit var viewModel: OthersProfileViewModel
 
     override fun setContentView() { setContentView(R.layout.activity_others_profile) }
 
@@ -130,11 +129,12 @@ class OthersProfileActivity : BaseActivity() {
     override fun setViews(savedInstanceState: Bundle?) {
         super.setViews(savedInstanceState)
         getIntentData(savedInstanceState)
+        setPageAdapter(savedInstanceState)
         setButtonsClickListener()
         setAppbarScrollingBehavior()
         removeCache()
-        createAdapter()
         getProfileAfterClearCache()
+        setFontType()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -146,6 +146,9 @@ class OthersProfileActivity : BaseActivity() {
             putString(EXTRA_PROFILE_USER_PHOTO_URL, userPhotoUrl)
             putInt(EXTRA_PLACE_CALLED_USER_PROFILE, calledFrom)
         }
+
+        galleryFragment?.let { if (it.isAdded) supportFragmentManager.putFragment(outState, FRAGMENT_KEY_PROFILE_GALLERY, it) }
+        pinFragment?.let { if (it.isAdded) supportFragmentManager.putFragment(outState, FRAGMENT_KEY_PROFILE_PIN, it) }
     }
 
     override fun setActionBar() {
@@ -159,6 +162,8 @@ class OthersProfileActivity : BaseActivity() {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeButtonEnabled(true)
         }
+
+        this.toolbar_others_profile.hideOverflowMenu()
     }
 
     override fun onDestroy() {
@@ -168,16 +173,64 @@ class OthersProfileActivity : BaseActivity() {
         job.cancel()
     }
 
+    private fun setPageAdapter(savedInstanceState: Bundle?) {
+        savedInstanceState?.let { getFragmentInstance(it) }
+
+        galleryFragment = galleryFragment ?: OthersProfileGalleryFragment.newInstance(userId)
+        pinFragment = pinFragment ?: OthersProfilePinFragment()
+
+        val pagerAdapter = ProfilePagerAdapter(supportFragmentManager)
+
+        galleryFragment?.let { pagerAdapter.addFragment(it, "") }
+        pinFragment?.let { pagerAdapter.addFragment(it, "") }
+
+        this.viewpager_others_profile.adapter = pagerAdapter
+        this.tablayout_others_profile.setupWithViewPager(this.viewpager_others_profile)
+
+        this.tablayout_others_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_gradient)
+        this.tablayout_others_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
+
+        setPagerChangeListener()
+    }
+
+    private fun getFragmentInstance(savedInstanceState: Bundle) {
+        galleryFragment = supportFragmentManager.getFragment(savedInstanceState, FRAGMENT_KEY_PROFILE_GALLERY)?.let {
+            it as OthersProfileGalleryFragment
+        }
+
+        pinFragment = supportFragmentManager.getFragment(savedInstanceState, FRAGMENT_KEY_PROFILE_PIN)?.let {
+            it as OthersProfilePinFragment
+        }
+    }
+
     private fun getProfileAfterClearCache() {
         viewModel.isCleared.observe(this, Observer { isCleared ->
             if (isCleared) {
                 when (mock) {
                     @MockData
-                    true -> { getMockProfile(); setBottomPortionViewMock() }
-                    false -> { getRealProfile(); setBottomPortionView() }
+                    true -> getMockProfile()
+                    false -> getRealProfile()
                 }
             }
             viewModel.isCleared.removeObservers(this)
+        })
+    }
+
+    private fun setPagerChangeListener() {
+        this.viewpager_others_profile.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                this@OthersProfileActivity.tablayout_others_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_white)
+                this@OthersProfileActivity.tablayout_others_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
+
+                when (position) {
+                    0 -> this@OthersProfileActivity.tablayout_others_profile.getTabAt(position)?.setIcon(R.drawable.ic_gallery_gradient)
+                    1 -> this@OthersProfileActivity.tablayout_others_profile.getTabAt(position)?.setIcon(R.drawable.ic_bookmark_gradient)
+                }
+            }
         })
     }
 
@@ -288,11 +341,14 @@ class OthersProfileActivity : BaseActivity() {
         } else {
             setImageDraw(this.iv_profile_icon, userPhotoUrl)
         }
+        showLoadingFinished()
 
         // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
         setFixedImageSize(0, 0)
         setImageDraw(this.iv_others_profile_title_photo, userBackgroundPhoto)
 
+        this.tv_others_profile_title.text = userName
+        this.tv_others_profile_title.visibility = View.GONE
         this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
         this.tv_profile_name.text = person.realname?._content?.let {
             if (it.isEmpty()) person.username?._content else it
@@ -307,106 +363,6 @@ class OthersProfileActivity : BaseActivity() {
         this.tv_profile_number_follower.text = person.followers ?: "46"
         this.tv_photo_number_others_profile.text = "${person.photos?.count?._content} Photos"
         this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
-    }
-
-    @MockData
-    private fun setBottomPortionViewMock() {
-        val user: String = when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> "151226432@N06" // mock data
-            else -> userId
-        }
-
-        viewModel.setParametersPhotos(Parameters(user, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL))
-
-        val liveData = viewModel.photos
-        liveData.observe(this, Observer { resource ->
-            withDelay(800L) {
-                showLoadingFinished()
-            }
-
-            when (resource.getStatus()) {
-                Status.SUCCESS -> {
-                    resource.getData()?.let { list ->
-                        @Suppress("UNCHECKED_CAST")
-                        val photos = list as? PagedList<Photo>?
-
-                        photos?.let {
-                            if (it.size > 0) {
-                                when (calledFrom) {
-                                    CALLED_FROM_HOME_MAIN, CALLED_FROM_FEED_INFO, CALLED_FROM_PHOTO_INFO -> {
-                                        if (userId == photos[0]?.owner) {
-                                            adapter?.submitList(photos)
-                                        }
-                                    }
-                                    else -> {
-                                        adapter?.submitList(photos)
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    resource.getMessage()?.let {
-                        showNetworkError(resource)
-                        liveData.removeObservers(this)
-                    }
-                }
-
-                Status.LOADING -> { }
-
-                Status.ERROR -> {
-                    showNetworkError(resource)
-                    liveData.removeObservers(this)
-                }
-
-                else -> {
-                    showNetworkError(resource)
-                    liveData.removeObservers(this)
-                }
-            }
-        })
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun setBottomPortionView() {
-        viewModel.setParametersPhotos(Parameters(userId, page, LOAD_PHOTOG_PHOTO, BOUND_FROM_LOCAL))
-        val liveData = viewModel.photos
-
-        liveData.observe(this, Observer { resource ->
-            showLoadingFinished()
-            when (resource.getStatus()) {
-                Status.SUCCESS -> {
-                    resource.getData()?.let { list ->
-                        val photos = list as? PagedList<Photo>?
-
-                        photos?.let {
-                            if (it.isNotEmpty()) {
-                                if (userId == photos[0]?.owner) { adapter?.submitList(photos) }
-                            } else {
-                                // show something to say that the list is empty
-                            }
-                        }
-                    }
-
-                    resource.getMessage()?.let {
-                        showNetworkError(resource)
-                        liveData.removeObservers(this)
-                    }
-                }
-
-                Status.LOADING -> { }
-
-                Status.ERROR -> {
-                    showNetworkError(resource)
-                    liveData.removeObservers(this)
-                }
-
-                else -> {
-                    showNetworkError(resource)
-                    liveData.removeObservers(this)
-                }
-            }
-        })
     }
 
     private fun setButtonsClickListener() {
@@ -438,12 +394,13 @@ class OthersProfileActivity : BaseActivity() {
 
         this.iv_others_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
 
-        this.backdrop_container.setOnClickListener { appBarLayout.setExpanded(false, true) }
         this.tv_profile_number_following.setOnClickListener { /* see my following */ }
         this.tv_profile_number_follower.setOnClickListener { /* see my follower */ }
         this.tv_profile_number_pin.setOnClickListener { /* see my pins */ }
         this.iv_profile_icon.setOnClickListener {}
-        this.profile_container_following.setOnClickListener { Caller.callPeopleList(this, Caller.CALLED_FROM_HOME_PROFILE, 1) }
+        this.profile_container_following.setOnClickListener {
+            Caller.callPeopleList(this, Caller.CALLED_FROM_HOME_PROFILE, 1)
+        }
     }
 
     private fun setAppbarScrollingBehavior() {
@@ -457,50 +414,63 @@ class OthersProfileActivity : BaseActivity() {
     }
 
     private fun setAppBarOffsetChangedListener() {
-        val btnView = this.btn_follow_bottom_others_profile
-        var alpha: Int
-        var offSetPercentage: Float
+        var alphaForButton: Int
+        var alphaForDesc: Int
+        var expandingPercentage: Float
+        var collapsingPercentage: Float
 
-        this.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { // appBarLayout Offset Change Listener
+        this.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
                 appBarLayout: AppBarLayout, verticalOffset: Int ->
 
             currentOffSet = abs(verticalOffset)
-            offSetPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
-            alpha = (255 * offSetPercentage).toInt()
-            btnView.visibility = if (alpha == 0) View.GONE else View.VISIBLE
+            expandingPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            collapsingPercentage = 1f - expandingPercentage
+            alphaForButton = (255 * expandingPercentage).toInt()
+            alphaForDesc = (255 * collapsingPercentage).toInt()
 
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> { // when appBarLayout Collapsed
-                    this.collapsing_layout_others_profile.title = userName
-                    this.others_profile_container_topPortion.visibility = View.INVISIBLE
-                    this.iv_others_profile_arrow_up.visibility = View.GONE
-                    gridLayoutManager.enabledSrcoll = true
-                    isAppBarExpanded = false
-                    btnView.background.alpha = alpha
-//                    btnView.translationY = 0f
-                }
-                abs(verticalOffset) == 0 -> { // when appBarLayout Expanded
-                    this.collapsing_layout_others_profile.title = ""
-                    this.others_profile_container_topPortion.visibility = View.VISIBLE
-                    enableAppBarDraggable(false)
-                    gridLayoutManager.enabledSrcoll = false
-                    isAppBarExpanded = true
-                    btnView.background.alpha = 0
-                    btnView.setTextColor(btnView.textColors.withAlpha(0))
-//                    btnView.translationY = btnView.height.toFloat()
-                }
-                else -> { // when appBarLayout is on progress of collapsing OR expanding
-                    this.collapsing_layout_others_profile.title = ""
-                    this.others_profile_container_topPortion.visibility = View.VISIBLE
-                    this.iv_others_profile_arrow_up.visibility = View.VISIBLE
-                    halfOffsetAppBar = appBarLayout.totalScrollRange / 2
-                    isAppBarExpanded = false
-                    btnView.translationY = max(0f, min(btnView.height.toFloat(), btnView.translationY + appBarLayout.scrollY))
-                    btnView.background.alpha = alpha
-                    btnView.setTextColor(btnView.textColors.withAlpha(alpha))
-                }
+            setViewAlpha(alphaForButton, alphaForDesc)
+
+            when (abs(verticalOffset)) {
+                appBarLayout.totalScrollRange -> setLayoutCollapsed()
+
+                0 -> setLayoutExpanded()
+
+                else -> setLayoutMoving(alphaForButton)
             }
         })
+    }
+
+    private fun setViewAlpha(alphaForButton: Int, alphaForDesc: Int) {
+        this.btn_follow_bottom_others_profile.visibility = if (alphaForButton == 0) View.GONE else View.VISIBLE
+        this.btn_follow_bottom_others_profile.background.alpha = alphaForButton
+
+        this.constraint_holder_description.background.alpha = alphaForDesc
+        this.tv_others_profile_coverLetter.setTextColor(this.tv_others_profile_coverLetter.textColors.withAlpha(alphaForDesc))
+    }
+
+    private fun setLayoutCollapsed() {
+        this.collapsing_layout_others_profile.title = ""
+        this.others_profile_container_topPortion.visibility = View.INVISIBLE
+        this.iv_others_profile_arrow_up.visibility = View.GONE
+        this.tv_others_profile_title.visibility = View.VISIBLE
+        isAppBarExpanded = false
+    }
+
+    private fun setLayoutExpanded() {
+        this.collapsing_layout_others_profile.title = ""
+        this.others_profile_container_topPortion.visibility = View.VISIBLE
+        isAppBarExpanded = true
+        btn_follow_bottom_others_profile.setTextColor(btn_follow_bottom_others_profile.textColors.withAlpha(0))
+    }
+
+    private fun setLayoutMoving(alpha: Int) {
+        this.collapsing_layout_others_profile.title = ""
+        this.others_profile_container_topPortion.visibility = View.VISIBLE
+        this.iv_others_profile_arrow_up.visibility = View.VISIBLE
+        this.tv_others_profile_title.visibility = View.GONE
+        halfOffsetAppBar = appBarLayout.totalScrollRange / 2
+        isAppBarExpanded = false
+        btn_follow_bottom_others_profile.setTextColor(btn_follow_bottom_others_profile.textColors.withAlpha(alpha))
     }
 
     private fun setCoordinateLayoutSwipeListener() {
@@ -524,17 +494,17 @@ class OthersProfileActivity : BaseActivity() {
                 }
 
                 override fun onSwipeDone() { // when scroll movement stops
-                    if (swipeUp) {
-                        appBarLayout.setExpanded(false, true)
-                    }
-
-                    if (swipeDown && isRecyclerTop) {
-                        appBarLayout.setExpanded(true, true)
-                        enableAppBarDraggable(true)
-                    }
-
-                    swipeUp = false
-                    swipeDown = false
+                    // if (swipeUp) {
+                    //     appBarLayout.setExpanded(false, true)
+                    // }
+                    //
+                    // if (swipeDown && isRecyclerTop) {
+                    //     appBarLayout.setExpanded(true, true)
+                    //     enableAppBarDraggable(true)
+                    // }
+                    //
+                    // swipeUp = false
+                    // swipeDown = false
                 }
             })
     }
@@ -554,49 +524,19 @@ class OthersProfileActivity : BaseActivity() {
         calledFrom = intent.getIntExtra(EXTRA_PLACE_CALLED_USER_PROFILE, 0)
     }
 
-    private fun createAdapter() {
-        adapter = adapter ?: OthersProfileAdapter(this)
-        this.recycler_others_profile.setHasFixedSize(true)
-        this.recycler_others_profile.setItemViewCacheSize(20)
-        this.recycler_others_profile.isVerticalScrollBarEnabled = false
-        gridLayoutManager = CustomStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        gridLayoutManager.enabledSrcoll = false // disable recyclerView's scroll
-        gridLayoutManager.isItemPrefetchEnabled = true
-        this.recycler_others_profile.layoutManager = gridLayoutManager
-        this.recycler_others_profile.addItemDecoration(createItemDecoration())
-        this.recycler_others_profile.adapter = adapter
+    private fun setFontType() {
+        FONT_TYPE_REGULAR.let {
 
-        val btnView: AppCompatButton = this.btn_follow_bottom_others_profile
-        var alpha: Int
-        var percentage: Float
+        }
 
-        this.recycler_others_profile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                percentage = (1f - (btnView.translationY / btnView.height.toFloat()))
-                alpha = (255 * percentage).toInt()
-                btnView.translationY = max(0f, min(btnView.height.toFloat(), btnView.translationY + dy))
-                btnView.background.alpha = alpha
-                btnView.setTextColor(btnView.textColors.withAlpha(alpha))
-            }
+        FONT_TYPE_BOLD.let {
+            setFontTypeface(this.tv_profile_name, it)
+            setFontTypeface(this.tv_others_profile_title, it)
+        }
 
-            /** newState indicates: 0 = idle // 1 = dragging // 2 = settling  */
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(-1)) { // if scroll reaches the top position
-                    isRecyclerTop = true
+        FONT_TYPE_MEDIUM.let {
 
-                    if (newState == 0) { // if scroll movement stops
-                        if (currentOffSet < appBarLayout.totalScrollRange && currentOffSet >= halfOffsetAppBar) {
-                            appBarLayout.setExpanded(false, true)
-                        } else if (currentOffSet in 1 until halfOffsetAppBar) {
-                            appBarLayout.setExpanded(true, true)
-                        }
-                    }
-                } else {
-                    isRecyclerTop = false
-                }
-            }
-        })
+        }
     }
 
     @MockData
@@ -652,22 +592,7 @@ class OthersProfileActivity : BaseActivity() {
         }
     }
 
-    private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return object : GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                outRect.left = 4
-                outRect.right = 4
-                outRect.bottom = 4
-                outRect.top = 4
-
-                // Add top margin only for the first item to avoid double space between items
-                if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                }
-            }
-        }
-    }
-
-    private fun showNetworkError(resource: Resource) {
+    internal fun showNetworkError(resource: Resource) {
         when (resource.errorCode) {
             in 400..499 -> {
                 Snackbar.make(this.btn_follow_bottom_others_profile, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
@@ -688,12 +613,12 @@ class OthersProfileActivity : BaseActivity() {
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
         this.disconnect_container_pinned.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
-        this.recycler_others_profile.visibility = View.VISIBLE
+        this.viewpager_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     } else {
         this.disconnect_container_pinned.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
-        this.recycler_others_profile.visibility = View.GONE
+        this.viewpager_others_profile.visibility = View.GONE
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.btn_follow_bottom_others_profile.visibility = View.GONE
     }
@@ -701,25 +626,18 @@ class OthersProfileActivity : BaseActivity() {
     private fun showProgressBarLoading() {
         this.progress_bar_others_profile_holder.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
-        this.recycler_others_profile.visibility = View.GONE
+        this.viewpager_others_profile.visibility = View.GONE
         this.btn_follow_bottom_others_profile.visibility = View.GONE
     }
 
     private fun showLoadingFinished() {
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
-        this.recycler_others_profile.visibility = View.VISIBLE
+        this.viewpager_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     }
 
     private fun removeCache() {
-        when (calledFrom) {
-            CALLED_FROM_PEOPLE, CALLED_FROM_RANKING -> { // mock data
-                viewModel.removeCache("183109783@N06")
-            }
-            else -> {
-                viewModel.removeCache(userId)
-            }
-        }
+        viewModel.removeCache(userId)
     }
 }

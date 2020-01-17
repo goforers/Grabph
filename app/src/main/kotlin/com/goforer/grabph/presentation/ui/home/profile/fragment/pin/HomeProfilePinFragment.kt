@@ -10,6 +10,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.base.presentation.view.fragment.BaseFragment
@@ -53,6 +54,8 @@ class HomeProfilePinFragment: BaseFragment() {
         setScrollAddListener()
         createPinnedPhotoAdapter()
         observeLiveData()
+        setFloatingButtonClickListener()
+        setListScrollBehavior()
     }
 
     private fun observeLiveData() {
@@ -182,6 +185,22 @@ class HomeProfilePinFragment: BaseFragment() {
 
         offsetAnimator?.addUpdateListener {
             child.translationY = it.animatedValue as Float
+        }
+    }
+
+    private fun setListScrollBehavior() {
+        val fab = this.fam_gallery_top
+        this.recycler_profile_photos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0 && fab.isShown) fab.hide(true)
+                if (dy < 0 && fab.isHidden) fab.show(true)
+            }
+        })
+    }
+
+    private fun setFloatingButtonClickListener() {
+        this.fam_gallery_top.setOnClickListener {
+            CommonUtils.betterSmoothScrollToPosition(this.recycler_profile_photos, 0)
         }
     }
 }

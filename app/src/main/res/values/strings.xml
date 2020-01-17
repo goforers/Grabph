@@ -229,4 +229,5 @@
     <string name="quest_state_examination_kr">심사중</string>
     <string name="quest_state_closed_kr">종료</string>
     <string name="quest_winner_eng">WINNER</string>
+    <string name="unknown_user_eng">Unknown User</string>
 </resources>

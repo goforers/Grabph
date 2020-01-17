@@ -166,7 +166,6 @@ class HomeActivity: BaseActivity() {
                 itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
                 bottomMenuItem = this@HomeActivity.bottom_navigation_view.menu.findItem(this@HomeActivity.bottom_navigation_view.selectedItemId)
                 // selectItem(itemId)
-                setBottomNavigationBehavior(itemId)
             }
 
             this@HomeActivity.bottom_navigation_view.setOnNavigationItemSelectedListener {

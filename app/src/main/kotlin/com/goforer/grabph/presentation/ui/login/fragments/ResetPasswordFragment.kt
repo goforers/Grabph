@@ -7,17 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
 import com.goforer.base.presentation.utils.CommonUtils.isEmailFormatValid
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.login.LogInActivity
+import com.goforer.grabph.presentation.vm.login.LoginViewModel
 import kotlinx.android.synthetic.main.fragment_reset_password.*
 import kotlinx.android.synthetic.main.fragment_sign_up.iv_back
+import javax.inject.Inject
 
 class ResetPasswordFragment : BaseFragment() {
     private val loginActivity by lazy { activity as LogInActivity }
+
+    @field:Inject
+    lateinit var viewModel: LoginViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val acvView =
@@ -43,10 +49,14 @@ class ResetPasswordFragment : BaseFragment() {
     private fun checkEmail() {
         this.container_progress_bar_reset_password.visibility = View.VISIBLE
 
+        // viewModel.resetPassword()
+
         /* Test Code */
         withDelay(1000L) {
             this.container_progress_bar_reset_password.visibility = View.GONE
             showMessageNonExistEmail()
+
+            showDialog()
         }
     }
 
@@ -54,6 +64,25 @@ class ResetPasswordFragment : BaseFragment() {
         this.tv_reset_error_msg.text = getString(R.string.id_no_exists)
         val anim = AnimationUtils.loadAnimation(loginActivity, R.anim.shake_wrong)
         this.tv_reset_error_msg.startAnimation(anim)
+    }
+
+    private fun showDialog() {
+        val alertDialogBuilder= AlertDialog.Builder(loginActivity)
+
+        alertDialogBuilder.setTitle("Check your email")
+        alertDialogBuilder
+            .setMessage("We sent you an email for a link to reset your password.")
+            .setCancelable(false)
+            .setNegativeButton("ok") { dialog, _ ->
+                // if this button is clicked, just close
+                // the dialog box and do nothing
+                dialog.cancel()
+                loginActivity.onBackPressed()
+            }
+
+        val alertDialog=alertDialogBuilder.create()
+
+        alertDialog.show()
     }
 
     private fun checkInformationInput() {

@@ -45,6 +45,7 @@
             android:layout_height="match_parent"
             app:expandedTitleGravity="bottom|start"
             app:expandedTitleMarginBottom="4dp"
+            app:contentScrim="?attr/colorPrimaryDark"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleTextAppearance="@style/CollapsingToolbar.Title"
             app:titleEnabled="true">
@@ -159,41 +160,71 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_others_profile"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextAppearance="@style/TransparentToolbar.Title"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"/>
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:fitsSystemWindows="false"
+                android:elevation="0dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_others_profile_arrow_up"
-                android:layout_width="@dimen/width_22"
-                android:layout_height="@dimen/height_12"
-                android:layout_marginBottom="@dimen/margin_9"
-                android:layout_gravity="bottom|center"
-                app:layout_collapseMode="pin"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_profile_arrow_up"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_others_profile_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/text_size_22"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_130"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="pin">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_others_profile_arrow_up"
+                    android:layout_width="@dimen/width_22"
+                    android:layout_height="@dimen/height_12"
+                    android:layout_marginBottom="@dimen/margin_9"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:src="@drawable/ic_profile_arrow_up"/>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tablayout_others_profile"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tabSelectedTextColor="@color/colorSearp"
+                    app:tabTextColor="@color/colorDarkGray"
+                    app:tabRippleColor="@color/transparent"
+                    app:tabIndicatorColor="@null"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_others_profile"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager_others_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:elevation="0dp"
-        android:orientation="vertical"
-        android:scrollbarSize="@dimen/size_6"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbarThumbVertical="@color/transparent"
-        android:scrollbars="vertical"
         android:visibility="visible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

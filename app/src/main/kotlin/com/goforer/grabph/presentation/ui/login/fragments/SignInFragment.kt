@@ -25,11 +25,16 @@ import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.login.LogInActivity
 import com.goforer.grabph.presentation.ui.login.LogInActivity.Companion.SNS_NAME_FACEBOOK
+import com.goforer.grabph.presentation.vm.login.LoginViewModel
 import kotlinx.android.synthetic.main.fragment_sign_in.*
 import java.util.Arrays
+import javax.inject.Inject
 
 class SignInFragment : BaseFragment() {
     private val loginActivity: LogInActivity by lazy { activity as LogInActivity }
+
+    @field:Inject
+    lateinit var viewModel: LoginViewModel
 
     companion object {
         private const val EMAIL = "email"
@@ -75,12 +80,16 @@ class SignInFragment : BaseFragment() {
                 verifyAccount()
             }
         }
+
         this.btn_guest_mode.setOnClickListener { loginActivity.goToHome() }
         this.tv_forgot_password.setOnClickListener { loginActivity.goToResetPassword() }
         this.tv_sign_up.setOnClickListener { loginActivity.showSignUp() }
     }
 
     private fun verifyAccount() {
+
+        viewModel.signIn()
+
         /* Test Code */
         withDelay(1000L) {
             this.container_progress_bar_sign_in.visibility = View.GONE

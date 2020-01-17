@@ -167,7 +167,6 @@ class HomeFavoriteQuestAdapter(private val fragment: HomeQuestFragment):
             tv_quest_duration.text = context.getString(R.string.quest_state_closed_kr)
         }
 
-
         override fun onItemSelected() {
             containerView.setBackgroundColor(Color.LTGRAY)
         }

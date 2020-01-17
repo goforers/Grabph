@@ -521,17 +521,17 @@ class PhotoInfoActivity : BaseActivity() {
     private fun getVideoSource(photoId: String) {
         viewModel.getPhotoSizes(photoId) // to get video source url
 
-        viewModel.videoThumbnail.observe(this, Observer {
+        viewModel.videoThumbnail().observe(this, Observer {
             photoPath = it
             setImageDraw(this.iv_photo_info_photo, this.backdrop_container, it, true)
         })
 
-        viewModel.videoSource.observe(this, Observer {
+        viewModel.videoSource().observe(this, Observer {
             this.videoUrl = it
             initializePlayer(it)
         })
 
-        viewModel.getSizeError.observe(this, Observer {
+        viewModel.sizeError().observe(this, Observer {
             Snackbar.make(coordinator_photo_info_layout, it, LENGTH_LONG).show()
         })
     }
@@ -905,13 +905,13 @@ class PhotoInfoActivity : BaseActivity() {
             this.tv_photo_info_title.setTextColor(this.tv_photo_info_title.textColors.withAlpha(alpha))
             this.tv_photo_info_title.alpha = alpha.toFloat()
 
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+            when (abs(verticalOffset)) {
+                appBarLayout.totalScrollRange -> {
                     isAppBarLayoutExpanded = false
                     isAppBarLayoutCollapsed = true
                 }
 
-                verticalOffset == 0 -> {
+                0 -> {
                     isAppBarLayoutExpanded = true
                     isAppBarLayoutCollapsed = false
                 }

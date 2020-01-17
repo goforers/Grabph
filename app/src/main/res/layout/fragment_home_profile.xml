@@ -43,6 +43,7 @@
             app:expandedTitleMarginBottom="4dp"
             app:expandedTitleMarginStart="16dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimaryDark"
             android:fitsSystemWindows="true"
             app:expandedTitleTextAppearance="@style/CollapsingToolbar.Title"
             app:titleEnabled="true">
@@ -75,16 +76,6 @@
                     android:layout_marginEnd="@dimen/margin_20">
 
                     <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/ib_profile_setting"
-                        android:layout_width="@dimen/width_20"
-                        android:layout_height="@dimen/height_20"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:src="@drawable/ic_setting"
-                        android:background="@color/transparent"/>
-
-                    <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/ib_profile_notification"
                         android:layout_width="@dimen/width_20"
                         android:layout_height="@dimen/height_20"
@@ -93,7 +84,17 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:background="@color/transparent"
                         android:src="@drawable/ic_notifications_none_white_24dp"
-                        android:layout_marginEnd="@dimen/margin_15"/>
+                        android:layout_marginEnd="@dimen/margin_24"/>
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/ib_profile_setting"
+                        android:layout_width="@dimen/width_20"
+                        android:layout_height="@dimen/height_20"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:src="@drawable/ic_setting"
+                        android:background="@color/transparent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +124,7 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:ellipsize="end"
-                            android:text="Unknown User"
+                            android:text="@string/unknown_user_eng"
                             android:layout_marginEnd="@dimen/margin_10"
                             android:textColor="@color/white"
                             app:layout_constraintStart_toStartOf="parent"
@@ -151,6 +152,7 @@
                         layout="@layout/layout_profile_photo_and_people"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_holder_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/margin_20"
@@ -174,29 +176,66 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_profile_arrow_up"
-                android:layout_width="@dimen/width_22"
-                android:layout_height="@dimen/height_12"
-                android:layout_marginBottom="@dimen/margin_9"
-                android:layout_gravity="bottom|center"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_home_profile"
                 app:layout_collapseMode="pin"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:src="@drawable/ic_profile_arrow_up"/>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/TransparentToolbar.Title"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_home_profile_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/text_size_22"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_130"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="pin">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_profile_arrow_up"
+                    android:layout_width="@dimen/width_22"
+                    android:layout_height="@dimen/height_12"
+                    android:layout_marginBottom="@dimen/margin_9"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/ic_profile_arrow_up"/>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout_profile"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/transparent"
+                    app:tabSelectedTextColor="@color/colorSearp"
+                    app:tabTextColor="@color/colorDarkGray"
+                    app:tabRippleColor="@color/transparent"
+                    app:tabIndicatorColor="@null"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorTabLayout"
-            app:tabSelectedTextColor="@color/colorSearp"
-            app:tabTextColor="@color/colorDarkGray"
-            app:tabRippleColor="@color/transparent"
-            app:tabIndicatorColor="@color/colorSearp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

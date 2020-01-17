@@ -20,7 +20,9 @@ import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.login.LogInActivity
+import com.goforer.grabph.presentation.vm.login.LoginViewModel
 import kotlinx.android.synthetic.main.fragment_sign_up.*
+import javax.inject.Inject
 
 class SignUpFragment : BaseFragment() {
     private val loginActivity: LogInActivity by lazy { activity as LogInActivity }
@@ -30,6 +32,9 @@ class SignUpFragment : BaseFragment() {
     private var isPassword1Valid = false
     private var isPassword2Valid = false
     private var selectedGender = -1
+
+    @field:Inject
+    lateinit var viewModel: LoginViewModel
 
     companion object {
         private const val MIN_USERNAME_LENGTH = 3
@@ -84,6 +89,8 @@ class SignUpFragment : BaseFragment() {
             loginActivity.showMessage(getString(R.string.choose_your_gender))
         } else {
             this.container_progress_bar_sign_up.visibility = View.VISIBLE
+
+            viewModel.signUp()
 
             /* Test Code */
             withDelay(1000L) {

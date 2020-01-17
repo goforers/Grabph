@@ -17,7 +17,6 @@
 package com.goforer.grabph.presentation.vm.feed.photo
 
 import androidx.lifecycle.*
-import com.goforer.grabph.data.datasource.model.cache.data.entity.photosizes.PhotoSize
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.feed.photo.LoadPhotoInfoUseCase
@@ -47,9 +46,6 @@ constructor(
     internal lateinit var person: LiveData<Resource>
     internal lateinit var exifInfo: LiveData<Resource>
     internal lateinit var location: LiveData<Resource>
-    internal lateinit var videoSource: MutableLiveData<String>
-    internal lateinit var videoThumbnail: MutableLiveData<String>
-    internal lateinit var getSizeError: MutableLiveData<String>
     internal lateinit var isPinned: MutableLiveData<Boolean>
 
     override fun setParameters(parameters: Parameters, type:Int) {
@@ -77,37 +73,14 @@ constructor(
     internal suspend fun removeLocation() = locationUseCase.removeLocation()
 
     internal fun getPhotoSizes(photoId: String) {
-        videoSource = MutableLiveData()
-        videoThumbnail = MutableLiveData()
-        getSizeError = MutableLiveData()
-
-        viewModelScope.launch {
-            val response = photoSizeUseCase.getPhotoSizes(photoId)
-            if (response.isSuccessful) {
-                val size = response.body()
-                if (size != null) {
-                    size.sizes?.size?.let { setVideoLiveData(it) }
-                } else {
-                    getSizeError.value = "Sorry, couldn't find video source"
-                }
-            } else {
-                getSizeError.value = "Request failed:" + response.message()
-            }
-        }
+        photoSizeUseCase.getPhotoSizes(photoId, viewModelScope)
     }
 
-    private fun setVideoLiveData(list: List<PhotoSize>) {
-        var mobileSource: String? = null
-        var siteSource: String? = null
-        var thumbnail: String? = null
-        for (item in list) {
-            if (item.label == "Medium 640") thumbnail = item.source
-            if (item.label == "Mobile MP4") mobileSource = item.source
-            if (item.label == "Site MP4") siteSource = item.source
-        }
-        videoSource.value = mobileSource ?: siteSource
-        thumbnail?.let { videoThumbnail.value = it }
-    }
+    internal fun videoSource() = photoSizeUseCase.videoSource()
+
+    internal fun videoThumbnail() = photoSizeUseCase.videoThumbnail()
+
+    internal fun sizeError() = photoSizeUseCase.sizeError()
 
     internal fun checkPinStatus(userId: String, photoId: String) = viewModelScope.launch {
         isPinned = MutableLiveData()

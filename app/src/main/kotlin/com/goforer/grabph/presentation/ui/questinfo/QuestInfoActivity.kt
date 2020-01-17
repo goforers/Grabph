@@ -451,7 +451,7 @@ class QuestInfoActivity: BaseActivity() {
         this.iv_quest_info_photo.setColorFilter(getColor(R.color.colorQuestInfoMask),
             PorterDuff.Mode.DST_IN)
         setFixedImageSize(0, 0)
-        setImageDraw(this.iv_quest_info_photo, this.backdrop_container, ownerImage, false)
+        setImageDraw(this.iv_quest_info_photo, ownerImage)
 
         if (mediaType == "photo") this.iv_quest_type.setImageResource(R.drawable.ic_photo_size)
         else this.iv_quest_type.setImageResource(R.drawable.ic_video)

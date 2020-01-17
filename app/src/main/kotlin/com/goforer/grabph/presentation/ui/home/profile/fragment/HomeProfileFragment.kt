@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
@@ -49,7 +50,6 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.ui.home.profile.fragment.pin.HomeProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.activity_home.*
 import javax.inject.Inject
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.fragment_home_profile.*
@@ -64,6 +64,7 @@ class HomeProfileFragment : BaseFragment() {
 
     private val mock = this::class.findAnnotation<RunWithMockData>()?.mock!!
 
+    private lateinit var userName: String
     private lateinit var userBackgroundPhoto: String
     private lateinit var acvPagerAdapter: AutoClearedValue<ProfilePagerAdapter>
 
@@ -130,14 +131,38 @@ class HomeProfileFragment : BaseFragment() {
         myGalleryFragment = myGalleryFragment ?: HomeProfileGalleryFragment()
         myPinFragment = myPinFragment ?: HomeProfilePinFragment()
 
-        pagerAdapter = pagerAdapter ?: ProfilePagerAdapter(requireFragmentManager())
+        pagerAdapter = pagerAdapter ?: ProfilePagerAdapter(homeActivity.supportFragmentManager)
         acvPagerAdapter = AutoClearedValue(this, pagerAdapter)
 
         myGalleryFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.my_profile_tab_photos)) }
         myPinFragment?.let { acvPagerAdapter.get()?.addFragment(it, getString(R.string.pinned_photo)) }
 
-        this@HomeProfileFragment.viewPager_profile.adapter = acvPagerAdapter.get()
-        this@HomeProfileFragment.tabLayout_profile.setupWithViewPager(viewPager_profile)
+        this.viewPager_profile.adapter = acvPagerAdapter.get()
+        this.tabLayout_profile.setupWithViewPager(viewPager_profile)
+
+        this.tabLayout_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_gradient)
+        this.tabLayout_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
+
+        setPagerChangeListener()
+    }
+
+    private fun setPagerChangeListener() {
+        this.viewPager_profile.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            @SuppressLint("MissingSuperCall")
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                this@HomeProfileFragment.tabLayout_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_white)
+                this@HomeProfileFragment.tabLayout_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
+
+                when (position) {
+                    0 -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_gallery_gradient)
+                    1 -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_bookmark_gradient)
+                }
+            }
+        })
     }
 
     private fun getFragmentInstance(savedInstanceState: Bundle) {
@@ -224,19 +249,21 @@ class HomeProfileFragment : BaseFragment() {
     private fun setTopPortionView(profile: MyProfile) {
         homeActivity.setImageDraw(this.iv_profile_title_photo, userBackgroundPhoto)
         this.iv_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
-        this@HomeProfileFragment.tv_profile_name.text = profile.realname?._content?.let {
+        userName = profile.realname?._content?.let {
             if (it.isEmpty()) profile.username?._content else it
-        }
+        } ?: getString(R.string.unknown_user_eng)
+        this.tv_profile_name.text = userName
+        this.tv_home_profile_title.text = userName
+        this.tv_home_profile_title.visibility = View.GONE
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             this.tv_profile_coverLetter.text = Html.fromHtml(profile.description?._content, Html.FROM_HTML_MODE_LEGACY)
-        else
-            this@HomeProfileFragment.tv_profile_coverLetter.text = profile.description?._content
+        else this.tv_profile_coverLetter.text = profile.description?._content
 
 
-        this@HomeProfileFragment.tv_profile_number_following.text
-        this@HomeProfileFragment.tv_profile_number_follower.text
-        this@HomeProfileFragment.tv_profile_number_pin.text
+        this.tv_profile_number_following.text
+        this.tv_profile_number_follower.text
+        this.tv_profile_number_pin.text
         homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
         val photoUrl = getProfilePhotoUrl(profile.iconfarm, profile.iconserver, profile.id)
         baseActivity.setImageDraw(this.iv_profile_icon, photoUrl)
@@ -253,28 +280,47 @@ class HomeProfileFragment : BaseFragment() {
     }
 
     private fun setAppbarOffsetChangedListener() {
-        var offSetPercentage: Float
-        val vnView = homeActivity.layout_bottom_navigation
-        val vnHeight = vnView.height
+        var alphaForDesc: Int
+        var expandingPercentage: Float
+        var collapsingPercentage: Float
 
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {
                 appBarLayout, verticalOffset ->
 
             currentOffSet = abs(verticalOffset)
-            offSetPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            expandingPercentage = (currentOffSet.toFloat() / appBarLayout.totalScrollRange.toFloat())
+            collapsingPercentage = 1f - expandingPercentage
+            alphaForDesc = (255 * collapsingPercentage).toInt()
 
-            when {
-                abs(verticalOffset) == appBarLayout.totalScrollRange -> { // appBarr Collapsed
-                }
+            setViewAlpha(alphaForDesc)
 
-                abs(verticalOffset) == 0 -> { // appbar Expanded
-                    vnView.translationY = 0f
-                }
+            when (abs(verticalOffset)) {
+                appBarLayout.totalScrollRange -> setLayoutCollapsed()
 
-                else -> { // appbar on progress between expending & collapsing
-                }
+                0 -> setLayoutExpanded()
+
+                else -> setLayoutMoving()
             }
         })
+    }
+
+    private fun setViewAlpha(alphaForDesc: Int) {
+        this.constraint_holder_description.background.alpha = alphaForDesc
+        this.tv_profile_coverLetter.setTextColor(this.tv_profile_coverLetter.textColors.withAlpha(alphaForDesc))
+    }
+
+    private fun setLayoutCollapsed() {
+        this.iv_profile_arrow_up.visibility = View.GONE
+        this.tv_home_profile_title.visibility = View.VISIBLE
+    }
+
+    private fun setLayoutExpanded() {
+
+    }
+
+    private fun setLayoutMoving() {
+        this.iv_profile_arrow_up.visibility = View.VISIBLE
+        this.tv_home_profile_title.visibility = View.GONE
     }
 
     private fun setCoordinateLayoutSwipeListener() {
@@ -355,6 +401,7 @@ class HomeProfileFragment : BaseFragment() {
                 setFontTypeface(tv_profile_number_following, it)
                 setFontTypeface(tv_profile_number_follower, it)
                 setFontTypeface(tv_profile_number_pin, it)
+                setFontTypeface(tv_home_profile_title, it)
             }
 
             FONT_TYPE_MEDIUM.let {
