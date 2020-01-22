@@ -79,6 +79,10 @@ class HomeProfileGalleryFragment: BaseFragment() {
         setListScrollBehavior()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun observeLiveData() {
         val liveData = viewModel.gallery
@@ -110,7 +114,6 @@ class HomeProfileGalleryFragment: BaseFragment() {
             }
         })
     }
-
 
     private fun createMyPhotosAdapter() {
         adapter = adapter ?: ProfileGalleryAdapter(homeActivity)

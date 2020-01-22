@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.LocalPin
@@ -56,9 +55,7 @@ class ProfilePinAdapter(private val activity: HomeActivity) : RecyclerView.Adapt
 
 class MyPinViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<LocalPin>(containerView), LayoutContainer {
     override fun bindItemHolder(holder: BaseViewHolder<*>, item: LocalPin, position: Int) {
-        activity.setFontTypeface(tv_profile_mission_price, BaseActivity.FONT_TYPE_BOLD)
         iv_profile_my_photo.requestLayout()
-        tv_profile_mission_price.requestLayout()
         activity.setFixedImageSize(400, 400) // original value: 0, 0
 
         val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)

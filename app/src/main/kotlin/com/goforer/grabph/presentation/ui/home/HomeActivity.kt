@@ -38,7 +38,6 @@ import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosit
 import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.activity.BaseActivity
-import com.goforer.base.presentation.view.helper.BottomNavigationViewHelper
 import com.goforer.grabph.R
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller
@@ -73,7 +72,6 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton.Layou
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_home.appbar_layout
 import kotlinx.android.synthetic.main.activity_home.toolbar
 import kotlinx.android.synthetic.main.fragment_home_quest.*
 import kotlinx.android.synthetic.main.layout_home_bottom_navigation.*
@@ -102,7 +100,6 @@ class HomeActivity: BaseActivity() {
 
     private lateinit var bottomMenuItem: MenuItem
     private lateinit var searchItem: MenuItem
-    private lateinit var settingItem: MenuItem
     private lateinit var createQuestItem: MenuItem
     private lateinit var adminQuestItem: MenuItem
     private var itemId = 0
@@ -120,11 +117,11 @@ class HomeActivity: BaseActivity() {
 
     companion object {
         internal const val VISIBLE_UPTO_ITEMS = 20
-        private const val ID_HOME = 0
-        private const val ID_FEED = 1
-        private const val ID_UPLOAD = 2
-        private const val ID_QUEST = 3
-        private const val ID_PROFILE = 4
+        internal const val ID_HOME = 0
+        internal const val ID_FEED = 1
+        internal const val ID_UPLOAD = 2
+        internal const val ID_QUEST = 3
+        internal const val ID_PROFILE = 4
     }
 
     private val sharedExitListener = object : TransitionCallback() {
@@ -153,7 +150,6 @@ class HomeActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (isNetworkAvailable) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -164,20 +160,21 @@ class HomeActivity: BaseActivity() {
             savedInstanceState ?: transactMainFragment()
             savedInstanceState?.let {
                 itemId = savedInstanceState.getInt(EXTRA_HOME_BOTTOM_MENU_ID, 0)
-                bottomMenuItem = this@HomeActivity.bottom_navigation_view.menu.findItem(this@HomeActivity.bottom_navigation_view.selectedItemId)
+                // bottomMenuItem = this@HomeActivity.bottom_navigation_view.menu.findItem(this@HomeActivity.bottom_navigation_view.selectedItemId)
                 // selectItem(itemId)
+                setFragmentOf(itemId)
             }
 
-            this@HomeActivity.bottom_navigation_view.setOnNavigationItemSelectedListener {
-                bottomMenuItem = it
-                itemId = it.itemId
-                // selectItem(it, it.itemId)
-
-                false
-            }
+            // this@HomeActivity.bottom_navigation_view.setOnNavigationItemSelectedListener {
+            //     bottomMenuItem = it
+            //     itemId = it.itemId
+            //     // selectItem(it, it.itemId)
+            //
+            //     false
+            // }
 
             setBottomNavigationClickListener()
-            BottomNavigationViewHelper.setupView(this@HomeActivity.bottom_navigation_view)
+            // BottomNavigationViewHelper.setupView(this@HomeActivity.bottom_navigation_view)
         } else {
             networkStatusVisible(false)
         }
@@ -216,7 +213,7 @@ class HomeActivity: BaseActivity() {
             homeViewModel.deleteHome()
         }
 
-        this@HomeActivity.appbar_layout.outlineProvider = null
+        // this@HomeActivity.appbar_layout.outlineProvider = null
     }
 
     override fun setContentView() {
@@ -277,14 +274,10 @@ class HomeActivity: BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         searchItem = menu.findItem(R.id.action_call_search)
-        settingItem = menu.findItem(R.id.action_call_setting)
         createQuestItem = menu.findItem(R.id.action_call_create)
         adminQuestItem = menu.findItem(R.id.action_call_admin)
 
-        searchItem.isVisible = false
-        settingItem.isVisible = false
-        createQuestItem.isVisible = false
-        adminQuestItem.isVisible = false
+        setMenuVisibility(itemId)
 
         searchItem.actionView?.let {
             searchView = searchItem.actionView as SearchView
@@ -314,13 +307,6 @@ class HomeActivity: BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_call_search -> {
             Caller.callFeedSearch(this)
-
-            true
-        }
-
-        R.id.action_call_setting -> {
-            Caller.callSetting(this)
-
             true
         }
 
@@ -581,91 +567,96 @@ class HomeActivity: BaseActivity() {
 
 
     private fun setBottomNavigationClickListener() {
-        this.constraint_holder_navi_home.setOnClickListener { setBottomNavigationBehavior(ID_HOME) }
-        this.ib_navigation_home.setOnClickListener{ setBottomNavigationBehavior(ID_HOME) }
+        this.constraint_holder_navi_home.setOnClickListener { setFragmentOf(ID_HOME) }
+        this.ib_navigation_home.setOnClickListener{ setFragmentOf(ID_HOME) }
 
-        this.constraint_holder_navi_feed.setOnClickListener{ setBottomNavigationBehavior(ID_FEED) }
-        this.ib_navigation_feed.setOnClickListener{ setBottomNavigationBehavior(ID_FEED) }
+        this.constraint_holder_navi_feed.setOnClickListener{ setFragmentOf(ID_FEED) }
+        this.ib_navigation_feed.setOnClickListener{ setFragmentOf(ID_FEED) }
 
         this.iv_nav_background_center.setOnClickListener{  }
-        this.ib_navigation_upload.setOnClickListener{ setBottomNavigationBehavior(ID_UPLOAD) }
+        this.ib_navigation_upload.setOnClickListener{ setFragmentOf(ID_UPLOAD) }
 
-        this.constraint_holder_navi_quest.setOnClickListener{ setBottomNavigationBehavior(ID_QUEST) }
-        this.ib_navigation_quest.setOnClickListener{ setBottomNavigationBehavior(ID_QUEST) }
+        this.constraint_holder_navi_quest.setOnClickListener{ setFragmentOf(ID_QUEST) }
+        this.ib_navigation_quest.setOnClickListener{ setFragmentOf(ID_QUEST) }
 
-        this.constraint_holder_navi_profile.setOnClickListener{ setBottomNavigationBehavior(ID_PROFILE) }
-        this.ib_navigation_profile.setOnClickListener{ setBottomNavigationBehavior(ID_PROFILE) }
+        this.constraint_holder_navi_profile.setOnClickListener{ setFragmentOf(ID_PROFILE) }
+        this.ib_navigation_profile.setOnClickListener{ setFragmentOf(ID_PROFILE) }
 
-        setBottomIconColor(itemId)
+        setBottomNavigationSelected(itemId)
     }
 
-    internal fun setBottomNavigationBehavior(id: Int) {
+    internal fun setFragmentOf(id: Int) {
         when (id) {
             ID_HOME -> {
-                itemId = ID_HOME
-                ib_navigation_home.isSelected = true
-                this@HomeActivity.toolbar.visibility = View.VISIBLE
-                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
-                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.GONE
-
-                searchItem.isVisible = false
-                settingItem.isVisible = false
-                createQuestItem.isVisible = false
-                adminQuestItem.isVisible = false
+                this@HomeActivity.toolbar.visibility = View.GONE
+                this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.transparent))
             }
 
             ID_FEED -> {
-                itemId = ID_FEED
+                feedFragment = transactFragment(HomeFeedFragment::class.java, R.id.home_container) as HomeFeedFragment
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
-                feedFragment = transactFragment(HomeFeedFragment::class.java, R.id.home_container) as HomeFeedFragment
-                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_feed)
-
-                searchItem.isVisible = true
-                settingItem.isVisible = false
-                createQuestItem.isVisible = false
-                adminQuestItem.isVisible = false
             }
 
-            ID_UPLOAD -> { uploadPhotos()}
+            ID_UPLOAD -> uploadPhotos()
 
             ID_QUEST -> {
-                itemId = ID_QUEST
+                questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
                 this@HomeActivity.toolbar.background = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
-                questFragment = transactFragment(HomeQuestFragment::class.java, R.id.home_container) as HomeQuestFragment
-                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_quest)
-
-                searchItem.isVisible = false
-                settingItem.isVisible = false
-                createQuestItem.isVisible = true
-                adminQuestItem.isVisible = true
             }
 
             ID_PROFILE -> {
-                itemId = ID_PROFILE
-                this@HomeActivity.toolbar.visibility = View.GONE
                 profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment
-                setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
-                tv_home_title.visibility = View.GONE
+                this@HomeActivity.toolbar.visibility = View.GONE
             }
         }
 
-        setBottomIconColor(itemId)
+        itemId = id
+        setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
+        setBottomNavigationSelected(itemId)
+        setMenuVisibility(itemId)
         setTextViewGradient(this, this.tv_home_title)
     }
 
-    private fun setBottomIconColor(id: Int) {
+    private fun setBottomNavigationSelected(id: Int) {
         this.ib_navigation_home.isSelected = id == ID_HOME
         this.ib_navigation_feed.isSelected = id == ID_FEED
         this.ib_navigation_quest.isSelected = id == ID_QUEST
         this.ib_navigation_profile.isSelected = id == ID_PROFILE
+    }
+
+    private fun setMenuVisibility(itemId: Int) {
+        if (::searchItem.isInitialized) {
+            when (itemId) {
+                ID_HOME -> {
+                    searchItem.isVisible = false
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
+                }
+
+                ID_FEED -> {
+                    searchItem.isVisible = true
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
+                }
+
+                ID_QUEST -> {
+                    searchItem.isVisible = false
+                    createQuestItem.isVisible = true
+                    adminQuestItem.isVisible = true
+                }
+
+                ID_PROFILE -> {
+                    searchItem.isVisible = false
+                    createQuestItem.isVisible = false
+                    adminQuestItem.isVisible = false
+                }
+            }
+        }
     }
 
 
@@ -677,12 +668,6 @@ class HomeActivity: BaseActivity() {
                 mainFragment = transactFragment(HomeMainFragment::class.java, R.id.home_container) as HomeMainFragment
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.GONE
-
-
-                searchItem.isVisible = true
-                settingItem.isVisible = false
-                createQuestItem.isVisible = false
-                adminQuestItem.isVisible = false
             }
 
             R.id.navigation_feed -> {
@@ -692,11 +677,6 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_feed)
-
-                searchItem.isVisible = true
-                settingItem.isVisible = false
-                createQuestItem.isVisible = false
-                adminQuestItem.isVisible = false
             }
 
             R.id.navigation_upload -> uploadPhotos()
@@ -708,11 +688,6 @@ class HomeActivity: BaseActivity() {
                 setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
                 tv_home_title.visibility = View.VISIBLE
                 tv_home_title.text = getString(R.string.phrase_quest)
-
-                searchItem.isVisible = false
-                settingItem.isVisible = false
-                createQuestItem.isVisible = true
-                adminQuestItem.isVisible = true
             }
 
             R.id.navigation_profile -> {
@@ -723,6 +698,7 @@ class HomeActivity: BaseActivity() {
             }
         }
 
+        setMenuVisibility(itemId)
         setTextViewGradient(this, this.tv_home_title)
     }
 
@@ -732,10 +708,6 @@ class HomeActivity: BaseActivity() {
                 menuItem?.let {
                     it.isChecked = true
                     closeFab()
-                    searchItem.isVisible = true
-                    settingItem.isVisible = false
-                    createQuestItem.isVisible = false
-                    adminQuestItem.isVisible = false
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -749,10 +721,6 @@ class HomeActivity: BaseActivity() {
                 menuItem?.let {
                     it.isChecked = true
                     closeFab()
-                    searchItem.isVisible = true
-                    settingItem.isVisible = false
-                    createQuestItem.isVisible = false
-                    adminQuestItem.isVisible = false
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -763,26 +731,12 @@ class HomeActivity: BaseActivity() {
                 tv_home_title.text = getString(R.string.phrase_feed)
             }
 
-            R.id.navigation_upload -> {
-                uploadPhotos()
-                // menuItem?.let {
-                //     it.isChecked = true
-                //     if (floatingActionMenu.isOpen) {
-                //         floatingActionMenu.close(true)
-                //     } else {
-                //         floatingActionMenu.open(true)
-                //     }
-                // }
-            }
+            R.id.navigation_upload -> uploadPhotos()
 
             R.id.navigation_quest -> {
                 menuItem?.let {
                     it.isChecked = true
                     closeFab()
-                    searchItem.isVisible = false
-                    settingItem.isVisible = false
-                    createQuestItem.isVisible = true
-                    adminQuestItem.isVisible = true
                 }
 
                 this@HomeActivity.toolbar.visibility = View.VISIBLE
@@ -797,10 +751,6 @@ class HomeActivity: BaseActivity() {
                 menuItem?.let {
                     it.isChecked = true
                     closeFab()
-                    searchItem.isVisible = false
-                    settingItem.isVisible = false
-                    createQuestItem.isVisible = false
-                    adminQuestItem.isVisible = false
                 }
                 this@HomeActivity.toolbar.visibility = View.GONE
                 profileFragment = transactFragment(HomeProfileFragment::class.java, R.id.home_container) as HomeProfileFragment
@@ -809,6 +759,7 @@ class HomeActivity: BaseActivity() {
             }
         }
 
+        setMenuVisibility(itemId)
         setTextViewGradient(this, this.tv_home_title)
     }
 

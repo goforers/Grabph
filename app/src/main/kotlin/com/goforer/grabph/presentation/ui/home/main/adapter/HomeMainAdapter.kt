@@ -42,6 +42,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.category.Categ
 import com.goforer.grabph.data.datasource.model.cache.data.entity.home.Home
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.data.repository.paging.datasource.*
+import com.goforer.grabph.presentation.ui.home.HomeActivity.Companion.ID_QUEST
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.snap_main_catergory_item.*
@@ -201,17 +202,15 @@ class HomeMainAdapter(private val activity: HomeActivity, private val workHandle
                     tv_snap_item_title.text = item.title
                     setTextViewGradient(adapter.activity, tv_snap_item_title)
                     tv_snap_item_title.setOnClickListener {
-                        adapter.activity.selectItem(adapter.activity.bottom_navigation_view
-                                .menu.getItem(3),
-                                R.id.navigation_quest)
-                        adapter.activity.setBottomNavigationBehavior(3)
+                        // adapter.activity.selectItem(adapter.activity.bottom_navigation_view.menu.getItem(3),
+                        //         R.id.navigation_quest)
+                        adapter.activity.setFragmentOf(ID_QUEST)
                     }
 
                     btn_snap_view_all.setOnClickListener {
-                        adapter.activity.selectItem(adapter.activity.bottom_navigation_view
-                                .menu.getItem(3),
-                                R.id.navigation_quest)
-                        adapter.activity.setBottomNavigationBehavior(3)
+                        // adapter.activity.selectItem(adapter.activity.bottom_navigation_view.menu.getItem(3),
+                        //         R.id.navigation_quest)
+                        adapter.activity.setFragmentOf(ID_QUEST)
                     }
 
                     if (item.padding) {

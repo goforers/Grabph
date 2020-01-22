@@ -478,18 +478,23 @@ object Caller {
         intent.putExtra(TEXT_COLOR, textView.currentTextColor)
         */
 
-        // (context as Activity).startActivity(intent)
+        val activityOptions = getPhotogPhotoActivityOptions(context, imageView)
+        (context as Activity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
+    }
 
-        val activityOptions = getPhotogPhotoActivityOptions(context, imageView, calledFrom)
-        when (calledFrom) {
-            CALLED_FROM_HOME_PROFILE, CALLED_FROM_HOME_PROFILE_MY_PIN -> {
-                (context as HomeActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
-            }
-            CALLED_FROM_OTHERS_PROFILE -> {
-                (context as OthersProfileActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
-            }
+    private fun getPhotogPhotoActivityOptions(context: Context, imageView: View): ActivityOptions {
+        val imagePair = Pair.create(imageView, imageView.transitionName)
+        val decorView = (context as Activity).window.decorView
+
+        val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
+
+        return if (navBackground == null) {
+            ActivityOptions.makeSceneTransitionAnimation(context, imagePair)
+        } else {
+            val navPair = Pair.create(navBackground, navBackground.transitionName)
+
+            ActivityOptions.makeSceneTransitionAnimation(context, imagePair, navPair)
         }
-        // (context as PhotogPhotoActivity).startActivityForResult(intent, requestCode, activityOptions.toBundle())
     }
 
     fun callComment(context: Context, photoID: String) {
@@ -804,21 +809,6 @@ object Caller {
     private fun getPhotogPhotoViewerOptions(context: Context, imageView: View): ActivityOptions {
         val imagePair = Pair.create(imageView, imageView.transitionName)
         val decorView = (context as PhotogPhotoActivity).window.decorView
-        val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
-
-        return if (navBackground == null) {
-            ActivityOptions.makeSceneTransitionAnimation(context, imagePair)
-        } else {
-            val navPair = Pair.create(navBackground, navBackground.transitionName)
-
-            ActivityOptions.makeSceneTransitionAnimation(context, imagePair, navPair)
-        }
-    }
-
-    private fun getPhotogPhotoActivityOptions(context: Context, imageView: View, calledFrom: Int): ActivityOptions {
-        val imagePair = Pair.create(imageView, imageView.transitionName)
-        val decorView = (context as Activity).window.decorView
-
         val navBackground = decorView.findViewById<View>(android.R.id.navigationBarBackground)
 
         return if (navBackground == null) {

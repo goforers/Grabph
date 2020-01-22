@@ -74,18 +74,13 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
 
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: Photo, position: Int) {
             iv_profile_my_photo.requestLayout()
-            tv_profile_mission_price.requestLayout()
             activity.setFixedImageSize(400, 400)
-            iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
-
-            val url = item.url_z ?: CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
             setRandomBackground(iv_profile_my_photo)
 
-            activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
+            val url = item.url_z ?: CommonUtils.getFlickrPhotoURL(item.server!!, item.id, item.secret!!)
             val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)
+            // activity.setImageDraw(iv_profile_my_photo, constraint_profile_photos, url, true)
             Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
-
-            tv_profile_mission_price.text = ""
 
             iv_play_btn.visibility = when (item.media) {
                 activity.getString(R.string.media_type_video) -> View.VISIBLE
@@ -93,6 +88,7 @@ class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapte
                 else -> View.GONE
             }
 
+            iv_profile_my_photo.transitionName = TRANSITION_NAME_FOR_IMAGE + position
             iv_profile_my_photo.setOnClickListener {
                 Caller.callPhotoInfo(
                     activity,

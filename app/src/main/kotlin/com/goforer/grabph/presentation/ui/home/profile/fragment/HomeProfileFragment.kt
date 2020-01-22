@@ -116,6 +116,7 @@ class HomeProfileFragment : BaseFragment() {
         setViewClickListener()
         removeCache()
         getProfile()
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -179,7 +180,7 @@ class HomeProfileFragment : BaseFragment() {
         this.profile_container_pin.setOnClickListener { startActivity(TAB_SELL_INDEX) }
         this.ib_profile_setting.setOnClickListener { startActivity(TAB_SETTING) }
         this.iv_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
-        this.ib_profile_notification.setOnClickListener {  }
+        this.ib_profile_notification.setOnClickListener {}
         this.constraint_profile.setOnClickListener {}
     }
 
@@ -260,10 +261,10 @@ class HomeProfileFragment : BaseFragment() {
             this.tv_profile_coverLetter.text = Html.fromHtml(profile.description?._content, Html.FROM_HTML_MODE_LEGACY)
         else this.tv_profile_coverLetter.text = profile.description?._content
 
-
         this.tv_profile_number_following.text
         this.tv_profile_number_follower.text
         this.tv_profile_number_pin.text
+
         homeActivity.setFixedImageSize(PHOTO_RATIO_HEIGHT, PHOTO_RATIO_WIDTH)
         val photoUrl = getProfilePhotoUrl(profile.iconfarm, profile.iconserver, profile.id)
         baseActivity.setImageDraw(this.iv_profile_icon, photoUrl)

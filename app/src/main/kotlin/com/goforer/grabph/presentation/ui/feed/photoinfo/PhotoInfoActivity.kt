@@ -52,7 +52,6 @@ import com.goforer.grabph.presentation.common.menu.MenuHandler
 import com.goforer.grabph.presentation.common.utils.handler.CommonWorkHandler
 import com.goforer.grabph.presentation.common.utils.handler.exif.EXIFHandler
 import com.goforer.grabph.presentation.common.utils.handler.watermark.WatermarkHandler
-import com.goforer.grabph.presentation.ui.photog.PhotogPhotoActivity
 import com.goforer.grabph.presentation.ui.photoviewer.sharedelementcallback.PhotoViewerCallback
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.feed.photo.PhotoInfoViewModel
@@ -310,12 +309,10 @@ class PhotoInfoActivity : BaseActivity() {
         this@PhotoInfoActivity.collapsing_layout.title = ""
         supportPostponeEnterTransition()
         setViewBind()
-        setActivityResult()
 
         this.video_view_photo_info.visibility = View.GONE
         this.iv_photo_info_photo.visibility = View.VISIBLE
         this.iv_fullsize_photo_info.visibility = View.GONE
-
         super.finishAfterTransition()
     }
 
@@ -344,7 +341,6 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        setActivityResult()
         super.onBackPressed()
     }
 
@@ -587,7 +583,7 @@ class PhotoInfoActivity : BaseActivity() {
             setImageDraw(this.iv_profile_photo_info, userPhotoUrl!!)
         }
 
-        /* Blocked not to open the same user's profile activity */
+        /* Other calledFrom is Blocked not to open the same user's profile activity */
         if (calledFrom == CALLED_FROM_HOME_PROFILE_MY_PIN) {
             this.iv_profile_photo_info.setOnClickListener {
                 Caller.callOtherUserProfile(this, CALLED_FROM_PHOTO_INFO, userId, name!!, 1, userPhotoUrl!!)
@@ -844,13 +840,6 @@ class PhotoInfoActivity : BaseActivity() {
         viewModel.removeEXIF()
         viewModel.removePhotoInfo()
         viewModel.removeLocation()
-    }
-
-    private fun setActivityResult() {
-        val intent = Intent(this, PhotogPhotoActivity::class.java)
-
-        intent.putExtra(EXTRA_PHOTO_INFO_SELECTED_ITEM_POSITION, photoPosition)
-        setResult(SELECTED_PHOTO_INFO_ITEM_POSITION, intent)
     }
 
     private fun initCoordinatorLayout() {

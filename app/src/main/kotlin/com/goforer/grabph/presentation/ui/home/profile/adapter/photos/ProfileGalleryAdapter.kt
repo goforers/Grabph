@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.goforer.base.presentation.utils.CommonUtils
-import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_BOLD
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.MyGallery
@@ -67,9 +66,7 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
     class MyPhotosViewHolder(override val containerView: View, private val activity: HomeActivity): BaseViewHolder<MyGallery>(containerView), LayoutContainer {
         @SuppressLint("SetTextI18n")
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: MyGallery, position: Int) {
-            activity.setFontTypeface(tv_profile_mission_price, FONT_TYPE_BOLD)
             iv_profile_my_photo.requestLayout()
-            tv_profile_mission_price.requestLayout()
             activity.setFixedImageSize(400, 400) // original value: 0, 0
             setRandomBackground(iv_profile_my_photo)
 
@@ -77,7 +74,6 @@ class ProfileGalleryAdapter(private val activity: HomeActivity)
             val options = RequestOptions.placeholderOf(R.drawable.ic_placeholder_image)
             Glide.with(activity).load(url).apply(options).into(iv_profile_my_photo)
             // activity.setImageDraw(iv_profile_my_photo, url)
-            // tv_profile_mission_price.visibility = View.VISIBLE
 
             iv_play_btn.visibility = when (item.media) {
                 activity.getString(R.string.media_type_video) -> View.VISIBLE

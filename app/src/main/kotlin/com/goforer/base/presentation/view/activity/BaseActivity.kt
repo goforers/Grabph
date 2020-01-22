@@ -214,30 +214,34 @@ abstract class BaseActivity: AppCompatActivity(), HasAndroidInjector {
     protected fun transactFragment(cls: Class<*>, @IdRes containerViewId: Int): Fragment? {
         val fragmentManager = supportFragmentManager
         val ft = fragmentManager.beginTransaction()
-        var allowAddition = true
+        var allowAddition: Boolean
 
         newFragment = fragmentManager.findFragmentByTag(cls.name)
-        newFragment?.let {
+
+        if (newFragment == null) {
+            newFragment = fragmentManager.fragmentFactory.instantiate(cls.classLoader!!, cls.name)
+            allowAddition = true
+        } else {
             allowAddition = false
         }
 
-        newFragment = newFragment ?: fragmentManager.fragmentFactory.instantiate(cls.classLoader!!, cls.name)
         activeFragment = activeFragment ?: newFragment
-        newFragment?.let {
-            if (allowAddition) {
-                ft.add(containerViewId, it, cls.name).hide(activeFragment!!).show(newFragment!!).commit()
-            } else {
-                ft.hide(activeFragment!!).show(newFragment!!).commit()
+        newFragment?.let { new ->
+            activeFragment?.let { active ->
+                if (allowAddition) {
+                    ft.add(containerViewId, new, cls.name).hide(active).show(new).commit()
+                } else {
+                    ft.hide(active).show(new).commit()
+                }
             }
-
-            activeFragment = newFragment
         }
+        activeFragment = newFragment
 
         return newFragment
     }
 
     /**
-     * Replace an existing fragment that was add to a container or add a new fragment that is added
+     * Replace an existing fragment that was added to a container or add a new fragment that is added
      * a fragment to the activity state.
      *
      * @param cls the component class that is to be used for BaseActivity

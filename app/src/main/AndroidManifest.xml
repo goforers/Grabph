@@ -168,7 +168,7 @@
             android:name=".presentation.ui.questinfo.QuestInfoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.QuestInfo" />
+            android:theme="@style/AppTheme.NoActionBar.Home"/>
         <activity
             android:name=".presentation.ui.pinnedlist.PinnedFeedsActivity"
             android:launchMode="singleTop"

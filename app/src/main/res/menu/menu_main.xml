@@ -9,13 +9,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_call_setting"
-        android:icon="@drawable/ic_setting"
-        android:title="@string/menu_call_setting"
-        android:clickable="false"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_call_create"
         android:icon="@drawable/ic_baseline_post_add_24"
         android:title="Upload quest"

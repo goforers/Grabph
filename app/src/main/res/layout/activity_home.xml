@@ -15,59 +15,40 @@
         android:nestedScrollingEnabled="true"
         android:background="@color/colorPrimaryDark">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:nestedScrollingEnabled="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_layout"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextAppearance="@style/TransparentToolbar.Title">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/toolbar_holder"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextAppearance="@style/TransparentToolbar.Title">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical|clip_vertical"
+                android:transitionGroup="true">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/toolbar_holder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_vertical|clip_vertical"
-                    android:transitionGroup="true">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_home_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_32"
+                    android:maxLength="32"
+                    android:ellipsize="end" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_home_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="start"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_32"
-                        android:maxLength="32"
-                        android:ellipsize="end" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -103,22 +84,6 @@
             layout="@layout/layout_home_bottom_navigation"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fam_post_writing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:scaleType="center"
-        android:visibility="invisible"
-        app:fabCustomSize="@dimen/padding_28"
-        app:maxImageSize="@dimen/size_42"
-        app:backgroundTint="@color/colorFabNormalTransparent"
-        app:layout_anchor="@id/bottom_navigation_view"
-        app:layout_anchorGravity="bottom|center"
-        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomNavigationFABBehavior"
-        app:srcCompat="@drawable/ic_fab_plus"
-        app:useCompatPadding="true" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/disconnect_container_home"
