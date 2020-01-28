@@ -36,7 +36,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/backdrop_container"
-                app:layout_collapseMode="parallax"
+                app:layout_collapseMode="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -50,7 +50,7 @@
                     android:gravity="center"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_placeholder_image"
-                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintDimensionRatio="2:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -511,13 +511,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/folding_cell_feed_item"
                 android:background="@color/transparent"/>
 
-<!--            <View-->
-<!--                android:id="@+id/divider5"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="@dimen/height_2"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/folding_cell_photo_item"-->
-<!--                android:background="@color/colorDivider"/>-->
-            
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>

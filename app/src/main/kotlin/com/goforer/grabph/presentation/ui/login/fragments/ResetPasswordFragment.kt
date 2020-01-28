@@ -47,13 +47,13 @@ class ResetPasswordFragment : BaseFragment() {
     }
 
     private fun checkEmail() {
-        this.container_progress_bar_reset_password.visibility = View.VISIBLE
+        loginActivity.showLoadingProgressBar(true, getString(R.string.check_email_now_kr))
 
         // viewModel.resetPassword()
 
         /* Test Code */
         withDelay(1000L) {
-            this.container_progress_bar_reset_password.visibility = View.GONE
+            loginActivity.showLoadingProgressBar(false)
             showMessageNonExistEmail()
 
             showDialog()

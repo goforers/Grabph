@@ -40,7 +40,7 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.OwnerP
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.SearperProfile
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.*
 import com.goforer.grabph.data.datasource.network.response.ApiResponse
-import com.goforer.grabph.presentation.ui.upload.data.FlickrLoginResult
+import com.goforer.grabph.presentation.ui.uploadphoto.data.FlickrLoginResult
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response

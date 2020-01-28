@@ -373,7 +373,7 @@ class FeedItemActivity : BaseActivity() {
                 val liveData = viewModel.getFeed(feedIdx)
                 liveData?.observe(this, Observer {
                     this.feedItem = it
-                    this.mediaType = it.mediaType
+                    this.mediaType = it.mediaType ?: "photo"
 
                     setFeedItemData(it)
                     liveData.removeObservers(this)
@@ -529,14 +529,14 @@ class FeedItemActivity : BaseActivity() {
                 BOUND_FROM_BACKEND
             )
         )
+
+        this.folding_cell_feed_item.visibility = View.GONE
+        this.cell_portion_information_container.visibility = View.GONE
+        this.cell_photo_info_container.visibility = View.GONE
     }
 
     private fun setPhotoEXIFObserver() {
         viewModel.exif.observe(this, Observer { resource ->
-            this.folding_cell_feed_item.visibility = View.GONE
-            this.cell_portion_information_container.visibility = View.GONE
-            this.cell_photo_info_container.visibility = View.GONE
-
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
 
@@ -577,7 +577,6 @@ class FeedItemActivity : BaseActivity() {
     }
 
     private fun animateEXIF(listEXIF: List<EXIF>) {
-        this.folding_cell_feed_item.visibility = View.VISIBLE
         setEXIFInfo(listEXIF)
         this.folding_cell_feed_item.fold(true)
 

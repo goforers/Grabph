@@ -63,8 +63,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.domain.common.GeneralFunctions
 import com.goforer.grabph.data.datasource.model.cache.data.entity.location.Location
-import com.goforer.grabph.presentation.ui.upload.data.RequestParams
-import com.goforer.grabph.presentation.ui.upload.data.UploadResponse
+import com.goforer.grabph.presentation.ui.uploadphoto.data.RequestParams
+import com.goforer.grabph.presentation.ui.uploadphoto.data.UploadResponse
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.File

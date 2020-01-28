@@ -1,6 +1,5 @@
 package com.goforer.grabph.presentation.ui.login.fragments
 
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -11,23 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginResult
 import com.goforer.base.presentation.utils.CommonUtils.isEmailFormatValid
 import com.goforer.base.presentation.utils.CommonUtils.setTextViewGradient
 import com.goforer.base.presentation.utils.CommonUtils.withDelay
-import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_REGULAR
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.login.LogInActivity
-import com.goforer.grabph.presentation.ui.login.LogInActivity.Companion.SNS_NAME_FACEBOOK
 import com.goforer.grabph.presentation.vm.login.LoginViewModel
 import kotlinx.android.synthetic.main.fragment_sign_in.*
-import java.util.Arrays
 import javax.inject.Inject
 
 class SignInFragment : BaseFragment() {
@@ -37,9 +29,6 @@ class SignInFragment : BaseFragment() {
     lateinit var viewModel: LoginViewModel
 
     companion object {
-        private const val EMAIL = "email"
-        private const val PUBLIC_PROFILE = "public_profile"
-        private const val AUTH_TYPE = "rerequest"
         private const val MIN_PASSWORD_LENGTH = 8
         private const val MAX_PASSWORD_LENGTH = 14
     }
@@ -51,7 +40,6 @@ class SignInFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initFacebookLogin()
         setViews()
     }
 
@@ -76,23 +64,24 @@ class SignInFragment : BaseFragment() {
     private fun setViewsClickListener() {
         this.ib_login.setOnClickListener {
             if (isInputFormatValid()) {
-                this.container_progress_bar_sign_in.visibility = View.VISIBLE
+                loginActivity.showLoadingProgressBar(true, getString(R.string.loading_now))
                 verifyAccount()
             }
         }
 
+        this.cardview_holder_facebook.setOnClickListener { loginActivity.signInWithFacebook() }
+        this.cardview_holder_google.setOnClickListener { loginActivity.signInWithGoogle() }
         this.btn_guest_mode.setOnClickListener { loginActivity.goToHome() }
         this.tv_forgot_password.setOnClickListener { loginActivity.goToResetPassword() }
         this.tv_sign_up.setOnClickListener { loginActivity.showSignUp() }
     }
 
     private fun verifyAccount() {
-
         viewModel.signIn()
 
         /* Test Code */
         withDelay(1000L) {
-            this.container_progress_bar_sign_in.visibility = View.GONE
+            loginActivity.showLoadingProgressBar(false)
             showInvalidAccountMessage()
         }
     }
@@ -227,36 +216,5 @@ class SignInFragment : BaseFragment() {
 
     private fun hideErrorMessage() {
         this.tv_login_error_msg.text = ""
-    }
-
-    private fun initFacebookLogin() {
-        /* *************************************
-         *              FACEBOOK               *
-         ***************************************/
-        loginActivity.callbackManager = CallbackManager.Factory.create()
-        this.login_button.setReadPermissions(Arrays.asList(EMAIL, PUBLIC_PROFILE))
-        this.login_button.authType = AUTH_TYPE
-        // Register a callback to respond to the user
-        this.login_button.registerCallback(loginActivity.callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-                loginActivity.setResult(Activity.RESULT_OK)
-                loginActivity.goToHome()
-            }
-
-            override fun onCancel() {
-                loginActivity.setResult(Activity.RESULT_CANCELED)
-                // loginActivity.finish()
-            }
-
-            override fun onError(e: FacebookException) {
-                // Handle exception
-                loginActivity.showMessage(e.toString())
-            }
-        })
-
-        this.cardview_holder_facebook.setOnClickListener {
-            SharedPreference.saveSharePreferenceSocialLogin(loginActivity, SNS_NAME_FACEBOOK)
-            this.login_button.performClick()
-        }
     }
 }

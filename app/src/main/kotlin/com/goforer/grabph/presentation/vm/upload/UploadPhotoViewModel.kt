@@ -22,7 +22,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.profile.LoadMyGalleryUseCase
 import com.goforer.grabph.domain.usecase.upload.UploadPhotosUseCase
-import com.goforer.grabph.presentation.ui.upload.workManager.UploadWorker
+import com.goforer.grabph.presentation.ui.uploadphoto.workManager.UploadWorker
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

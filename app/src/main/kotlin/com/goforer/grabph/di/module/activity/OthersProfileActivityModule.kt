@@ -16,16 +16,12 @@
 
 package com.goforer.grabph.di.module.activity
 
-import com.goforer.grabph.di.module.fragment.OthersProfileGalleryFragmentBuilderModule
-import com.goforer.grabph.di.module.fragment.OthersProfilePinFragmentBuilderModule
 import com.goforer.grabph.presentation.ui.othersprofile.OthersProfileActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class OthersProfileActivityModule {
-    @ContributesAndroidInjector(modules = [
-        OthersProfileGalleryFragmentBuilderModule::class, OthersProfilePinFragmentBuilderModule::class
-    ])
+    @ContributesAndroidInjector()
     internal abstract fun contributeOthersProfileActivity(): OthersProfileActivity
 }

@@ -19,32 +19,33 @@
     <application
         android:name=".Grabph"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_splash_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@drawable/ic_splash_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
+        <activity android:name=".presentation.ui.makequest.MakeQuestActivity"></activity>
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedItemActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedItem"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".presentation.ui.player.FullSizePlayerActivity"
             android:launchMode="singleTop"
             android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".presentation.ui.upload.UploadPhotoActivity"
+            android:name=".presentation.ui.uploadphoto.UploadPhotoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar.SearpleGallery" />
         <activity
-            android:name=".presentation.ui.upload.AuthActivity"
+            android:name=".presentation.ui.uploadphoto.AuthActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="locked">
             <intent-filter>
@@ -102,10 +103,10 @@
             android:name=".presentation.ui.login.LogInActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedInfoActivity"
             android:launchMode="singleTop"
@@ -157,8 +158,8 @@
             android:name=".presentation.ui.feed.photoinfo.PhotoInfoActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"
-            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedItem" />
+            android:theme="@style/AppTheme.NoActionBar.PhotoBar.Info.FeedItem"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".presentation.ui.comment.CommentActivity"
             android:launchMode="singleTop"
@@ -168,7 +169,7 @@
             android:name=".presentation.ui.questinfo.QuestInfoActivity"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar.Home"/>
+            android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".presentation.ui.pinnedlist.PinnedFeedsActivity"
             android:launchMode="singleTop"

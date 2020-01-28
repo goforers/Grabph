@@ -222,12 +222,14 @@
     <string name="gender_male">MALE</string>
     <string name="gender_female">FEMALE</string>
     <string name="gender_custom">CUSTOM</string>
-    <string name="signing_up_now">회원가입 중..</string>
-    <string name="check_email_now">이메일 확인 중..</string>
+    <string name="signing_up_now_kr">회원가입 요청 중..</string>
+    <string name="check_email_now_kr">이메일 확인 중..</string>
     <string name="currency_korea_won">₩</string>
     <string name="currency_us_dollar">$</string>
     <string name="quest_state_examination_kr">심사중</string>
     <string name="quest_state_closed_kr">종료</string>
     <string name="quest_winner_eng">WINNER</string>
     <string name="unknown_user_eng">Unknown User</string>
+    <string name="uploading_text_kr">업로드 중..</string>
+    <string name="guest_mode_en">GUEST MODE</string>
 </resources>

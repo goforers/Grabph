@@ -18,6 +18,7 @@ package com.goforer.grabph.presentation.ui.othersprofile
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -29,13 +30,18 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
-import androidx.viewpager.widget.ViewPager
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
+import com.goforer.base.presentation.utils.CommonUtils
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
 import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
+import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
+import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_FEED_INFO
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_MAIN
@@ -49,14 +55,12 @@ import com.goforer.grabph.presentation.ui.othersprofile.adapter.OthersProfileAda
 import com.goforer.grabph.presentation.vm.BaseViewModel.Companion.NONE_TYPE
 import com.goforer.grabph.presentation.vm.othersprofile.OthersProfileViewModel
 import com.goforer.grabph.data.datasource.model.cache.data.entity.profile.Person
+import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.BOUND_FROM_BACKEND
 import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.Companion.LOAD_PERSON
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.caller.Caller
-import com.goforer.grabph.presentation.ui.home.profile.adapter.ProfilePagerAdapter
-import com.goforer.grabph.presentation.ui.othersprofile.fragments.OthersProfileGalleryFragment
-import com.goforer.grabph.presentation.ui.othersprofile.fragments.OthersProfilePinFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
@@ -64,6 +68,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.reflect.full.findAnnotation
 import kotlinx.android.synthetic.main.activity_others_profile.*
+import kotlinx.android.synthetic.main.activity_others_profile.fam_gallery_top
+import kotlinx.android.synthetic.main.activity_others_profile.layout_before_loading_gallery
 import kotlinx.android.synthetic.main.layout_disconnection.*
 import kotlinx.android.synthetic.main.layout_profile_photo_and_people.*
 import kotlinx.coroutines.CoroutineScope
@@ -89,9 +95,6 @@ class OthersProfileActivity : BaseActivity() {
     private lateinit var appBarLayout: AppBarLayout
     private lateinit var gridLayoutManager: CustomStaggeredGridLayoutManager
 
-    private var galleryFragment: OthersProfileGalleryFragment? = null
-    private var pinFragment: OthersProfilePinFragment? = null
-
     private var page: Int = -1
     private var userRanking: Int = 0
     private var calledFrom: Int = 0
@@ -101,11 +104,6 @@ class OthersProfileActivity : BaseActivity() {
     private var isRecyclerTop = true
 
     private var adapter: OthersProfileAdapter? = null
-
-    companion object {
-        const val FRAGMENT_KEY_PROFILE_GALLERY = "searp:fragment_others_gallery"
-        const val FRAGMENT_KEY_PROFILE_PIN = "searp:fragment_others_pin"
-    }
 
     @field:Inject
     lateinit var viewModel: OthersProfileViewModel
@@ -129,12 +127,13 @@ class OthersProfileActivity : BaseActivity() {
     override fun setViews(savedInstanceState: Bundle?) {
         super.setViews(savedInstanceState)
         getIntentData(savedInstanceState)
-        setPageAdapter(savedInstanceState)
         setButtonsClickListener()
         setAppbarScrollingBehavior()
         removeCache()
+        createAdapter()
         getProfileAfterClearCache()
         setFontType()
+        setListScrollBehavior()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -146,9 +145,6 @@ class OthersProfileActivity : BaseActivity() {
             putString(EXTRA_PROFILE_USER_PHOTO_URL, userPhotoUrl)
             putInt(EXTRA_PLACE_CALLED_USER_PROFILE, calledFrom)
         }
-
-        galleryFragment?.let { if (it.isAdded) supportFragmentManager.putFragment(outState, FRAGMENT_KEY_PROFILE_GALLERY, it) }
-        pinFragment?.let { if (it.isAdded) supportFragmentManager.putFragment(outState, FRAGMENT_KEY_PROFILE_PIN, it) }
     }
 
     override fun setActionBar() {
@@ -168,39 +164,8 @@ class OthersProfileActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         ioScope.cancel()
         job.cancel()
-    }
-
-    private fun setPageAdapter(savedInstanceState: Bundle?) {
-        savedInstanceState?.let { getFragmentInstance(it) }
-
-        galleryFragment = galleryFragment ?: OthersProfileGalleryFragment.newInstance(userId)
-        pinFragment = pinFragment ?: OthersProfilePinFragment()
-
-        val pagerAdapter = ProfilePagerAdapter(supportFragmentManager)
-
-        galleryFragment?.let { pagerAdapter.addFragment(it, "") }
-        pinFragment?.let { pagerAdapter.addFragment(it, "") }
-
-        this.viewpager_others_profile.adapter = pagerAdapter
-        this.tablayout_others_profile.setupWithViewPager(this.viewpager_others_profile)
-
-        this.tablayout_others_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_gradient)
-        this.tablayout_others_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
-
-        setPagerChangeListener()
-    }
-
-    private fun getFragmentInstance(savedInstanceState: Bundle) {
-        galleryFragment = supportFragmentManager.getFragment(savedInstanceState, FRAGMENT_KEY_PROFILE_GALLERY)?.let {
-            it as OthersProfileGalleryFragment
-        }
-
-        pinFragment = supportFragmentManager.getFragment(savedInstanceState, FRAGMENT_KEY_PROFILE_PIN)?.let {
-            it as OthersProfilePinFragment
-        }
     }
 
     private fun getProfileAfterClearCache() {
@@ -212,25 +177,8 @@ class OthersProfileActivity : BaseActivity() {
                     false -> getRealProfile()
                 }
             }
+            getBottomPortionView()
             viewModel.isCleared.removeObservers(this)
-        })
-    }
-
-    private fun setPagerChangeListener() {
-        this.viewpager_others_profile.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                this@OthersProfileActivity.tablayout_others_profile.getTabAt(0)?.setIcon(R.drawable.ic_gallery_white)
-                this@OthersProfileActivity.tablayout_others_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
-
-                when (position) {
-                    0 -> this@OthersProfileActivity.tablayout_others_profile.getTabAt(position)?.setIcon(R.drawable.ic_gallery_gradient)
-                    1 -> this@OthersProfileActivity.tablayout_others_profile.getTabAt(position)?.setIcon(R.drawable.ic_bookmark_gradient)
-                }
-            }
         })
     }
 
@@ -342,7 +290,6 @@ class OthersProfileActivity : BaseActivity() {
             setImageDraw(this.iv_profile_icon, userPhotoUrl)
         }
         showLoadingFinished()
-
         // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
         setFixedImageSize(0, 0)
         setImageDraw(this.iv_others_profile_title_photo, userBackgroundPhoto)
@@ -363,6 +310,96 @@ class OthersProfileActivity : BaseActivity() {
         this.tv_profile_number_follower.text = person.followers ?: "46"
         this.tv_photo_number_others_profile.text = "${person.photos?.count?._content} Photos"
         this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
+    }
+
+    private fun getBottomPortionView() {
+        viewModel.setParametersPhotos(Parameters(userId, -1,
+            NetworkBoundResource.LOAD_PHOTOG_PHOTO,
+            NetworkBoundResource.BOUND_FROM_LOCAL
+        ))
+
+        val liveData = viewModel.photos
+        liveData.observe(this, Observer { resource ->
+
+            when (resource?.getStatus()) {
+                Status.SUCCESS -> {
+                    resource.getData()?.let { list ->
+                        val gallery = list as? PagedList<Photo>
+                        gallery?.let {
+                            if (userId == list[0]?.owner) {
+                                this.fam_gallery_top.visibility = View.VISIBLE
+                                this.layout_before_loading_gallery.visibility = View.GONE
+                                adapter?.submitList(it)
+                            }
+                            showEmptyMessage(it.isEmpty())
+                            this.recycler_others_profile.visibility = View.VISIBLE
+                        }
+                    }
+
+                    resource.getMessage()?.let {
+                        showNetworkError(resource)
+                        liveData.removeObservers(this)
+                    }
+                }
+
+                Status.LOADING -> {  }
+
+                Status.ERROR -> {
+                    liveData.removeObservers(this)
+                }
+
+                else -> {
+                    liveData.removeObservers(this)
+                }
+            }
+        })
+    }
+
+    private fun createAdapter() {
+        adapter = adapter ?: OthersProfileAdapter(this)
+        this.recycler_others_profile.setHasFixedSize(true)
+        this.recycler_others_profile.isVerticalScrollBarEnabled = false
+        gridLayoutManager = CustomStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        gridLayoutManager.enabledSrcoll = true
+        gridLayoutManager.isItemPrefetchEnabled = true
+        this.recycler_others_profile.layoutManager = gridLayoutManager
+        this.recycler_others_profile.addItemDecoration(createItemDecoration())
+        this.recycler_others_profile.adapter = adapter
+    }
+
+    private fun createItemDecoration(): RecyclerView.ItemDecoration {
+        return object :
+            GapItemDecoration(VERTICAL_LIST, resources.getDimensionPixelSize(R.dimen.space_4)) {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                outRect.left = 4
+                outRect.right = 4
+                outRect.bottom = 4
+                outRect.top = 4
+
+                // Add top margin only for the first item to avoid double space between items
+                if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
+                }
+            }
+        }
+    }
+
+    private fun showEmptyMessage(isEmpty: Boolean) {
+        if (isEmpty) {
+            this.tv_empty_list.visibility = View.VISIBLE
+            this.tv_empty_list.text = "No photos in gallery"
+        } else {
+            this.tv_empty_list.visibility = View.GONE
+        }
+    }
+
+    private fun setListScrollBehavior() {
+        val fab = this.fam_gallery_top
+        this.recycler_others_profile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0 && fab.isShown) fab.hide(true)
+                if (dy < 0 && fab.isHidden) fab.show(true)
+            }
+        })
     }
 
     private fun setButtonsClickListener() {
@@ -400,6 +437,10 @@ class OthersProfileActivity : BaseActivity() {
         this.iv_profile_icon.setOnClickListener {}
         this.profile_container_following.setOnClickListener {
             Caller.callPeopleList(this, Caller.CALLED_FROM_HOME_PROFILE, 1)
+        }
+
+        this.fam_gallery_top.setOnClickListener {
+            CommonUtils.betterSmoothScrollToPosition(this.recycler_others_profile, 0)
         }
     }
 
@@ -453,12 +494,14 @@ class OthersProfileActivity : BaseActivity() {
         this.others_profile_container_topPortion.visibility = View.INVISIBLE
         this.iv_others_profile_arrow_up.visibility = View.GONE
         this.tv_others_profile_title.visibility = View.VISIBLE
+        this.fam_gallery_top.visibility = View.VISIBLE
         isAppBarExpanded = false
     }
 
     private fun setLayoutExpanded() {
         this.collapsing_layout_others_profile.title = ""
         this.others_profile_container_topPortion.visibility = View.VISIBLE
+        this.fam_gallery_top.visibility = View.GONE
         isAppBarExpanded = true
         btn_follow_bottom_others_profile.setTextColor(btn_follow_bottom_others_profile.textColors.withAlpha(0))
     }
@@ -613,12 +656,12 @@ class OthersProfileActivity : BaseActivity() {
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
         this.disconnect_container_pinned.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
-        this.viewpager_others_profile.visibility = View.VISIBLE
+        this.recycler_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     } else {
         this.disconnect_container_pinned.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
-        this.viewpager_others_profile.visibility = View.GONE
+        this.recycler_others_profile.visibility = View.GONE
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.btn_follow_bottom_others_profile.visibility = View.GONE
     }
@@ -626,15 +669,17 @@ class OthersProfileActivity : BaseActivity() {
     private fun showProgressBarLoading() {
         this.progress_bar_others_profile_holder.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
-        this.viewpager_others_profile.visibility = View.GONE
+        this.recycler_others_profile.visibility = View.GONE
         this.btn_follow_bottom_others_profile.visibility = View.GONE
+        this.constraint_holder_bottom_portion.visibility = View.GONE
     }
 
     private fun showLoadingFinished() {
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
-        this.viewpager_others_profile.visibility = View.VISIBLE
+        this.recycler_others_profile.visibility = View.VISIBLE
         this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
+        this.constraint_holder_bottom_portion.visibility = View.VISIBLE
     }
 
     private fun removeCache() {

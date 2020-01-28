@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.upload.adapter
+package com.goforer.grabph.presentation.ui.uploadphoto.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater

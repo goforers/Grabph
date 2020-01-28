@@ -88,13 +88,13 @@ class SignUpFragment : BaseFragment() {
         if (selectedGender == GENDER_DEFAULT) {
             loginActivity.showMessage(getString(R.string.choose_your_gender))
         } else {
-            this.container_progress_bar_sign_up.visibility = View.VISIBLE
+            loginActivity.showLoadingProgressBar(true, getString(R.string.signing_up_now_kr))
 
             viewModel.signUp()
 
             /* Test Code */
             withDelay(1000L) {
-                this.container_progress_bar_sign_up.visibility = View.GONE
+                loginActivity.showLoadingProgressBar(false)
                 showSignUpErrorMessage()
             }
         }

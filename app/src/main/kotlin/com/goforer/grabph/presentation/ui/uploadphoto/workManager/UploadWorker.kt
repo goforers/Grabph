@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.upload.workManager
+package com.goforer.grabph.presentation.ui.uploadphoto.workManager
 
 import android.content.Context
 import android.net.Uri
@@ -19,7 +19,7 @@ import com.goforer.base.presentation.utils.KEY_UPLOAD_RESPONSE_STAT
 import com.goforer.base.presentation.utils.SIGN_METHOD
 import com.goforer.grabph.data.datasource.network.api.SearpService
 import com.goforer.grabph.di.module.AppModule
-import com.goforer.grabph.presentation.ui.upload.data.RequestParams
+import com.goforer.grabph.presentation.ui.uploadphoto.data.RequestParams
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

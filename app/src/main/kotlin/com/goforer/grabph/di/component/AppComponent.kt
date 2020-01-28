@@ -27,18 +27,19 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-                AndroidSupportInjectionModule::class, AppModule::class,
-                FeedInfoActivityModule::class, PhotoViewerActivityModule::class,
-                FeedSearchActivityModule::class, PhotogPhotoActivityModule::class,
-                PhotoInfoActivityModule::class, CommentActivityModule::class,
-                QuestInfoActivityModule::class, PinnedFeedsActivityModule::class,
-                HomeActivityModule::class, CategoryPhotoActivityModule::class,
-                SearpleGalleryActivityModule::class, PeopleActivityModule::class,
-                CategoryActivityModule::class, HotTopicContentActivityModule::class,
-                RankingActivityModule::class, OthersProfileActivityModule::class,
-                AuthActivityModule::class, UploadPhotoActivityModule::class,
-                FullSizePlayerActivityModule::class, FeedItemActivityModule::class
-            ])
+    AndroidSupportInjectionModule::class, AppModule::class,
+    FeedInfoActivityModule::class, PhotoViewerActivityModule::class,
+    FeedSearchActivityModule::class, PhotogPhotoActivityModule::class,
+    PhotoInfoActivityModule::class, CommentActivityModule::class,
+    QuestInfoActivityModule::class, PinnedFeedsActivityModule::class,
+    HomeActivityModule::class, CategoryPhotoActivityModule::class,
+    SearpleGalleryActivityModule::class, PeopleActivityModule::class,
+    CategoryActivityModule::class, HotTopicContentActivityModule::class,
+    RankingActivityModule::class, OthersProfileActivityModule::class,
+    AuthActivityModule::class, UploadPhotoActivityModule::class,
+    FullSizePlayerActivityModule::class, FeedItemActivityModule::class,
+    MakeQuestActivityModule::class, LoginActivityModule::class
+])
 
 interface AppComponent {
     @Component.Factory

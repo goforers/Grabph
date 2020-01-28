@@ -9,7 +9,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_call_create"
+        android:id="@+id/action_call_create_quest"
         android:icon="@drawable/ic_baseline_post_add_24"
         android:title="Upload quest"
         android:clickable="false"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_dark"
-    tools:context=".presentation.ui.upload.AuthActivity">
+    tools:context=".presentation.ui.uploadphoto.AuthActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_progress_bar_auth"

@@ -204,29 +204,74 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:src="@drawable/ic_profile_arrow_up"/>
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tablayout_others_profile"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:tabSelectedTextColor="@color/colorSearp"
-                    app:tabTextColor="@color/colorDarkGray"
-                    app:tabRippleColor="@color/transparent"
-                    app:tabIndicatorColor="@null"/>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewpager_others_profile"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_holder_bottom_portion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_others_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:elevation="0dp"
+            android:orientation="vertical"
+            android:scrollbarSize="@dimen/size_6"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/transparent"
+            android:scrollbars="vertical"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/layout_before_loading_gallery"
+            layout="@layout/layout_view_before_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:elevation="0dp"
+            android:visibility="visible"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_empty_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_30"
+            android:text="No Pinned Photos"
+            android:textSize="@dimen/text_size_18"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            android:textColor="@color/grayLight"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fam_gallery_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorFabUptoNormal"
+            app:fab_colorPressed="@color/white"
+            app:fab_colorRipple="@color/colorSearp2"
+            app:fab_size="mini"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="@+id/iv_feed_item_content"
+            tools:ignore="UnknownIdInLayout"
+            android:visibility="gone"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="@dimen/margin_24"
+            android:layout_marginBottom="@dimen/margin_60"
+            android:src="@drawable/ic_vertical_align_top"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_follow_bottom_others_profile"

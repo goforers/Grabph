@@ -41,7 +41,8 @@ import com.goforer.base.presentation.utils.AUTHORIZE_URL
 import com.goforer.base.presentation.utils.KEY_SELECTED_IMAGE_URI
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.fragment.BaseFragment
-import com.goforer.grabph.presentation.ui.upload.AuthActivity
+import com.goforer.grabph.presentation.ui.makequest.MakeQuestActivity
+import com.goforer.grabph.presentation.ui.uploadphoto.AuthActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
 import com.goforer.grabph.presentation.ui.categoryphoto.CategoryPhotoActivity
@@ -65,7 +66,7 @@ import com.goforer.grabph.presentation.ui.setting.SettingListActivity
 import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.presentation.ui.feed.feedinfo.FeedItemActivity
 import com.goforer.grabph.presentation.ui.player.FullSizePlayerActivity
-import com.goforer.grabph.presentation.ui.upload.UploadPhotoActivity
+import com.goforer.grabph.presentation.ui.uploadphoto.UploadPhotoActivity
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -628,6 +629,14 @@ object Caller {
 
         (context as HomeActivity).startActivityForResult(intent, requestCode,
             getHotTopicContentViewActivityOptions(context, imageView).toBundle())
+    }
+
+    fun callMakeQuest(context: Context) {
+        val intent = createIntent(context, MakeQuestActivity::class.java, true)
+
+        intent.action = Intent.ACTION_VIEW
+
+        context.startActivity(intent)
     }
 
     /**

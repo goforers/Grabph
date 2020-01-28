@@ -479,7 +479,7 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun setPhotoInfo(picture: Picture) {
-        this.mediaType = picture.media
+        this.mediaType = picture.media ?: "photo"
 
         when (mediaType) {
             getString(R.string.media_type_photo) -> {
@@ -600,13 +600,14 @@ class PhotoInfoActivity : BaseActivity() {
                 BOUND_FROM_BACKEND
             )
         )
+
+        this.folding_cell_photo_item.visibility = View.GONE
+        this.cell_portion_information_container.visibility = View.GONE
+        this.cell_photo_info_container.visibility = View.GONE
     }
 
     private fun setPhotoEXIFObserver() {
         viewModel.exifInfo.observe(this, Observer { resource ->
-            this.folding_cell_photo_item.visibility = View.GONE
-            this.cell_portion_information_container.visibility = View.GONE
-            this.cell_photo_info_container.visibility = View.GONE
 
             when(resource?.getStatus()) {
                 Status.SUCCESS -> {
@@ -647,13 +648,15 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun animateEXIF(listEXIF: List<EXIF>) {
-        this.folding_cell_photo_item.visibility = View.VISIBLE
         setEXIFInfo(listEXIF)
-        this.folding_cell_photo_item.fold(true)
 
         if (!this.cell_portion_information_container.isShown) {
             this.cell_portion_information_container.visibility = View.VISIBLE
+        } else {
+            this.cell_portion_information_container.visibility = View.GONE
         }
+
+        this.folding_cell_photo_item.fold(true)
 
         this.folding_cell_photo_item.setOnClickListener {
             this.folding_cell_photo_item.toggle(true)

@@ -8,7 +8,6 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:baselineAligned="false"
-    android:visibility="gone"
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView

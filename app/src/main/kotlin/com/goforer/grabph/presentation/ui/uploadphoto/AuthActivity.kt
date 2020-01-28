@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.upload
+package com.goforer.grabph.presentation.ui.uploadphoto
 
 import android.app.Activity
 import android.content.Intent

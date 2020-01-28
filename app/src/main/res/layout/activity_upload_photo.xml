@@ -515,7 +515,7 @@
             app:layout_constraintTop_toBottomOf="@id/progress_bar_upload"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="업로딩 중.."
+            android:text="@string/uploading_text_kr"
             android:textColor="@color/colorSearp"
             android:layout_marginTop="@dimen/margin_5"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

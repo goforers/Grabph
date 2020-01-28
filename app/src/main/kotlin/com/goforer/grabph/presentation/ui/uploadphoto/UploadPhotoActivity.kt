@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.upload
+package com.goforer.grabph.presentation.ui.uploadphoto
 
 import android.graphics.Color
 import android.os.Bundle
@@ -23,7 +23,7 @@ import com.goforer.base.presentation.utils.KEY_UPLOAD_RESPONSE_STAT
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.network.response.Resource
-import com.goforer.grabph.presentation.ui.upload.adapter.UploadCategoryAdapter
+import com.goforer.grabph.presentation.ui.uploadphoto.adapter.UploadCategoryAdapter
 import com.goforer.grabph.presentation.vm.upload.UploadPhotoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_upload_photo.*

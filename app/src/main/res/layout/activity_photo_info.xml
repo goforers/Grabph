@@ -36,7 +36,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/backdrop_container"
-                app:layout_collapseMode="parallax"
+                app:layout_collapseMode="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -167,6 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_20"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/colorPrimary">
 
                 <ProgressBar

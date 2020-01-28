@@ -274,7 +274,7 @@ class HomeActivity: BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         searchItem = menu.findItem(R.id.action_call_search)
-        createQuestItem = menu.findItem(R.id.action_call_create)
+        createQuestItem = menu.findItem(R.id.action_call_create_quest)
         adminQuestItem = menu.findItem(R.id.action_call_admin)
 
         setMenuVisibility(itemId)
@@ -310,7 +310,8 @@ class HomeActivity: BaseActivity() {
             true
         }
 
-        R.id.action_call_create -> {
+        R.id.action_call_create_quest -> {
+            Caller.callMakeQuest(this)
             true
         }
 
@@ -615,7 +616,7 @@ class HomeActivity: BaseActivity() {
             }
         }
 
-        itemId = id
+        if (id != ID_UPLOAD) itemId = id
         setFontTypeface(tv_home_title, FONT_TYPE_BOLD)
         setBottomNavigationSelected(itemId)
         setMenuVisibility(itemId)

@@ -39,7 +39,9 @@ import kotlinx.android.synthetic.main.list_profile_photos_item.*
 import timber.log.Timber
 import kotlin.random.Random
 
-class OthersProfileAdapter(private val activity: BaseActivity) : PagedListAdapter<Photo, OthersProfileAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
+class OthersProfileAdapter(
+    private val activity: BaseActivity
+) : PagedListAdapter<Photo, OthersProfileAdapter.PhotoViewHolder>(DIFF_CALLBACK) {
 
     private val photos by lazy { ArrayList<Photo>() }
 

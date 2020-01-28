@@ -16,6 +16,7 @@
 
 package com.goforer.grabph.presentation.ui.login
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import com.goforer.base.presentation.view.activity.BaseActivity
@@ -25,14 +26,27 @@ import com.facebook.CallbackManager
 import android.content.Intent
 import android.graphics.Color
 import android.widget.Toast
-import com.facebook.AccessToken
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
+import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.fragment.BaseFragment
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.ui.login.fragments.ResetPasswordFragment
 import com.goforer.grabph.presentation.ui.login.fragments.SignInFragment
 import com.goforer.grabph.presentation.ui.login.fragments.SignUpFragment
 import com.goforer.grabph.presentation.vm.login.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.android.synthetic.main.layout_disconnection.*
+import java.util.Arrays
 import javax.inject.Inject
 
 class LogInActivity : BaseActivity() {
@@ -40,7 +54,12 @@ class LogInActivity : BaseActivity() {
     private lateinit var signUpFragment: SignUpFragment
     private lateinit var currentFragment: BaseFragment
 
-    internal lateinit var callbackManager: CallbackManager
+    private lateinit var callbackManager: CallbackManager
+
+    private var auth: FirebaseAuth? = null
+
+    /* Client used to interact with Google APIs. */
+    private var googleApiClient: GoogleSignInClient? = null
 
     private val fragmentManager = supportFragmentManager
 
@@ -48,8 +67,14 @@ class LogInActivity : BaseActivity() {
     lateinit var viewModel: LoginViewModel
 
     companion object {
+        private const val EMAIL = "email"
+        private const val PUBLIC_PROFILE = "public_profile"
+        private const val AUTH_TYPE = "rerequest"
+
         internal const val SNS_NAME_FACEBOOK = "FACEBOOK"
         internal const val SNS_NAME_GOOGLE = "GOOGLE"
+
+        private const val RC_SIGN_IN = 9001
     }
 
     override fun setContentView() { setContentView(R.layout.activity_log_in) }
@@ -60,45 +85,63 @@ class LogInActivity : BaseActivity() {
         if (isNetworkAvailable) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             window.statusBarColor = Color.TRANSPARENT
+            showLogin()
             setFaceBookAuth()
-            savedInstanceState ?: showLogin()
-
+            setGoogleAuth()
             networkStatusVisible(true)
         } else {
             networkStatusVisible(false)
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // FACEBOOK
+        callbackManager.onActivityResult(requestCode, resultCode, data)
 
-        /* *************************************
-         *              FACEBOOK               *
-         ***************************************/
-        val accessToken = AccessToken.getCurrentAccessToken()
+        // GOOGLE : Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
 
-        accessToken?.let {
-            if (!accessToken.isExpired) {
-                goToHome()
-            }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            showLoadingProgressBar(true, getString(R.string.loading_now))
+            account?.let { firebaseAuthWithGoogle(account) }
+        } catch (e: ApiException) {
+            showMessage(e.toString())
         }
     }
 
-    override fun setViews(savedInstanceState: Bundle?) {
-    }
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        /* *************************************
-         *              FACEBOOK               *
-         ***************************************/
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+        auth?.signInWithCredential(credential)
+            ?.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    val user = auth?.currentUser
+
+                    user?.let {
+                        goToHome()
+                    }
+                } else {
+                    // If sign in fails, display a message to the user.
+                    showToastMessage(this@LogInActivity,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT)
+                    showLoadingProgressBar(false)
+                }
+            }
     }
 
     private fun showLogin() {
         val ft = fragmentManager.beginTransaction()
-        ft.add(R.id.login_container, SignInFragment())
-            .commit()
+        ft.add(R.id.login_container, SignInFragment()).commit()
     }
 
     internal fun showSignUp() {
@@ -137,25 +180,61 @@ class LogInActivity : BaseActivity() {
     }
 
     private fun setFaceBookAuth() {
-        /* *************************************
-         *              FACEBOOK               *
-         ***************************************/
         callbackManager = CallbackManager.Factory.create()
-        val accessToken = AccessToken.getCurrentAccessToken()
-
-        accessToken?.let {
-            if (!accessToken.isExpired) {
+        this.login_button.setReadPermissions(
+            Arrays.asList(EMAIL, PUBLIC_PROFILE))
+        this.login_button.authType = AUTH_TYPE
+        // Register a callback to respond to the user
+        this.login_button.registerCallback(callbackManager, object :
+            FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                setResult(Activity.RESULT_OK)
                 goToHome()
             }
-        }
+
+            override fun onCancel() {
+                setResult(Activity.RESULT_CANCELED)
+            }
+
+            override fun onError(e: FacebookException) {
+                // Handle exception
+                showMessage(e.toString())
+            }
+        })
+    }
+
+    private fun setGoogleAuth() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        /* Setup the Google API object to allow Google+ logins */
+        googleApiClient = GoogleSignIn.getClient(this, gso)
+        auth = FirebaseAuth.getInstance()
+    }
+
+    internal fun signInWithGoogle() {
+        SharedPreference.saveSharePreferenceSocialLogin(this, SNS_NAME_GOOGLE)
+        val signInIntent = googleApiClient?.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    internal fun signInWithFacebook() {
+        SharedPreference.saveSharePreferenceSocialLogin(this, SNS_NAME_FACEBOOK)
+        this.login_button.performClick()
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
         this.login_container.visibility = View.VISIBLE
-        this.disconnect_container.visibility = View.GONE
+        this.disconnect_container_pinned.visibility = View.GONE
     } else {
         this.login_container.visibility = View.GONE
-        this.disconnect_container.visibility = View.VISIBLE
+        this.disconnect_container_pinned.visibility = View.VISIBLE
     }
 
+    internal fun showLoadingProgressBar(isLoading: Boolean, comment: String? = null) {
+        this.container_progress_bar_logging_in.visibility = if (isLoading) View.VISIBLE else View.GONE
+        comment?.let { this.tv_comment_login.text = it }
+    }
 }

@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.upload.data
+package com.goforer.grabph.presentation.ui.uploadphoto.data
 
 data class FlickrLoginResult(val user: User, val stat: String) {
     data class User(val id: String, val username: UserInfo) {

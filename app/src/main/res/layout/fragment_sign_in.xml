@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_img_bg"
@@ -30,7 +29,7 @@
                 android:id="@+id/tv_guest_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GUEST MODE"
+                android:text="@string/guest_mode_en"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_12"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -229,6 +228,38 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_16" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardview_holder_google"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_50"
+            android:layout_marginTop="@dimen/margin_8"
+            app:cardCornerRadius="@dimen/radius_25"
+            app:layout_constraintTop_toBottomOf="@+id/cardview_holder_facebook">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:src="@drawable/ic_login_google"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="google"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_16" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -252,95 +283,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Don't have an account? Sign up"
+        android:text="@string/no_account"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_12"
         android:layout_marginBottom="@dimen/margin_25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/disconnect_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/disconnect_holder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:ignore="UselessParent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_disconnect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_144"
-                android:src="@drawable/ic_disconnect"
-                tools:ignore="ContentDescription" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_notice1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:gravity="center"
-                android:text="@string/not_connected_internet"
-                android:textColor="@color/grayLight"
-                android:textSize="@dimen/text_size_32" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_notice2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_8"
-                android:gravity="center"
-                android:text="@string/check_connection"
-                android:textColor="@color/grayLight"
-                android:textSize="@dimen/text_size_24" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_progress_bar_sign_in"
-        android:background="@drawable/background_progress"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ProgressBar
-            android:id="@+id/progress_bar_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/colorSearp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/progress_bar_upload"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/loading_now"
-            android:textColor="@color/colorSearp"
-            android:layout_marginTop="@dimen/margin_5"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

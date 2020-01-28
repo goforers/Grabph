@@ -71,7 +71,7 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity) {
-        if (activity is SplashActivity || activity is SettingListActivity || activity is LogInActivity) {
+        if (activity is SplashActivity || activity is SettingListActivity) {
             return
         }
 
