@@ -41,7 +41,7 @@ import com.goforer.base.presentation.utils.AUTHORIZE_URL
 import com.goforer.base.presentation.utils.KEY_SELECTED_IMAGE_URI
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.fragment.BaseFragment
-import com.goforer.grabph.presentation.ui.makequest.MakeQuestActivity
+import com.goforer.grabph.presentation.ui.uploadquest.UploadQuestActivity
 import com.goforer.grabph.presentation.ui.uploadphoto.AuthActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.presentation.ui.category.CategoryActivity
@@ -632,7 +632,7 @@ object Caller {
     }
 
     fun callMakeQuest(context: Context) {
-        val intent = createIntent(context, MakeQuestActivity::class.java, true)
+        val intent = createIntent(context, UploadQuestActivity::class.java, true)
 
         intent.action = Intent.ACTION_VIEW
 

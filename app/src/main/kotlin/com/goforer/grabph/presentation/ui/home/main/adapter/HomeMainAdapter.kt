@@ -44,7 +44,6 @@ import com.goforer.grabph.data.datasource.model.cache.data.entity.quest.Quest
 import com.goforer.grabph.data.repository.paging.datasource.*
 import com.goforer.grabph.presentation.ui.home.HomeActivity.Companion.ID_QUEST
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.snap_main_catergory_item.*
 import kotlinx.android.synthetic.main.snap_main_item.*
 

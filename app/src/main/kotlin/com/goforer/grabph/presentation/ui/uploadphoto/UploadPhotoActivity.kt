@@ -24,7 +24,7 @@ import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.presentation.ui.uploadphoto.adapter.UploadCategoryAdapter
-import com.goforer.grabph.presentation.vm.upload.UploadPhotoViewModel
+import com.goforer.grabph.presentation.vm.uploadphoto.UploadPhotoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_upload_photo.*
 import timber.log.Timber
@@ -36,7 +36,7 @@ class UploadPhotoActivity : BaseActivity() {
     @field:Inject internal lateinit var viewModel: UploadPhotoViewModel
     private lateinit var adapterCategory: UploadCategoryAdapter
     private lateinit var checkBoxes: BooleanArray
-    val list = ArrayList<String>()
+    private val list = ArrayList<String>()
 
     companion object {
         const val CHECKBOX_AGREE_FIRST = 0
@@ -91,6 +91,7 @@ class UploadPhotoActivity : BaseActivity() {
         super.setViews(savedInstanceState)
         setSelectedPhotoView()
         createAdapter()
+        getSelectedKeyword()
         setViewClickListener()
         setCheckboxClickBehavior(savedInstanceState)
         viewModel.initWork()
@@ -128,7 +129,7 @@ class UploadPhotoActivity : BaseActivity() {
     }
 
     private fun createAdapter() {
-        adapterCategory = UploadCategoryAdapter()
+        adapterCategory = UploadCategoryAdapter(viewModel, this)
         this.recycler_upload_category.adapter = adapterCategory
         this.recycler_upload_category.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val list = makeCategoryList()
@@ -148,6 +149,12 @@ class UploadPhotoActivity : BaseActivity() {
         list.add("건축물")
 
         return list
+    }
+
+    private fun getSelectedKeyword() {
+        viewModel.selectedKeyword.observe(this, Observer { keyword ->
+
+        })
     }
 
     private fun setSelectedPhotoView() {

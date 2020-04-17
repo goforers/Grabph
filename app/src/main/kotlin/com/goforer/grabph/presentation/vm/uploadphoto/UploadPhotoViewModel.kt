@@ -1,9 +1,10 @@
-package com.goforer.grabph.presentation.vm.upload
+package com.goforer.grabph.presentation.vm.uploadphoto
 
 import android.annotation.SuppressLint
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -38,6 +39,7 @@ constructor(application: Application,
     private val galleryUseCase: LoadMyGalleryUseCase
 ): BaseViewModel<Parameters>() {
 
+    internal val selectedKeyword = MutableLiveData<String>()
     internal lateinit var uploadWorkInfo: LiveData<List<WorkInfo>>
     internal var imageUri: Uri? = null
 
@@ -82,6 +84,10 @@ constructor(application: Application,
 
     internal fun setImageUri(uri: String) {
         imageUri = uriOrNull(uri)
+    }
+
+    internal fun setKeyword(keyword: String) {
+        selectedKeyword.value = keyword
     }
 
     private fun createInputDataForUri(title: String, desc: String): Data {

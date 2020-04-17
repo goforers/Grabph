@@ -22,7 +22,7 @@
             android:id="@+id/tv_facebook"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/facebook" />
+            android:text="@string/sign_in_facebook" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_other"

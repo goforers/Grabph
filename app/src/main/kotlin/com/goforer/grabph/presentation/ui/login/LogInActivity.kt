@@ -32,6 +32,7 @@ import com.facebook.login.LoginResult
 import com.goforer.base.presentation.utils.CommonUtils.showToastMessage
 import com.goforer.base.presentation.utils.SharedPreference
 import com.goforer.base.presentation.view.fragment.BaseFragment
+import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.ui.login.fragments.ResetPasswordFragment
 import com.goforer.grabph.presentation.ui.login.fragments.SignInFragment
@@ -43,6 +44,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.layout_disconnection.*
@@ -151,8 +154,7 @@ class LogInActivity : BaseActivity() {
                 R.anim.enter_from_right,
                 R.anim.exit_to_left,
                 R.anim.enter_from_left,
-                R.anim.exit_to_right
-            )
+                R.anim.exit_to_right)
             .replace(R.id.login_container, SignUpFragment())
             .commit()
     }
@@ -231,6 +233,16 @@ class LogInActivity : BaseActivity() {
     } else {
         this.login_container.visibility = View.GONE
         this.disconnect_container_pinned.visibility = View.VISIBLE
+    }
+
+    private fun showNetworkError(resource: Resource) = when(resource.errorCode) {
+        in 400..499 -> showSnackBar(getString(R.string.phrase_client_wrong_request))
+        in 500..599 -> showSnackBar(getString(R.string.phrase_server_wrong_response))
+        else -> showSnackBar(resource.getMessage().toString())
+    }
+
+    private fun showSnackBar(msg: String) {
+        Snackbar.make(this.login_container, msg, LENGTH_LONG).show()
     }
 
     internal fun showLoadingProgressBar(isLoading: Boolean, comment: String? = null) {

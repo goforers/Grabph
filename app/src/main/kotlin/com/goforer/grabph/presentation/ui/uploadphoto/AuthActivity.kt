@@ -15,7 +15,7 @@ import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.network.api.SearpService
 import com.goforer.grabph.presentation.caller.Caller
 import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_AUTH_ACTIVITY
-import com.goforer.grabph.presentation.vm.upload.AuthViewModel
+import com.goforer.grabph.presentation.vm.uploadphoto.AuthViewModel
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

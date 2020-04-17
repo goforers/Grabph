@@ -246,4 +246,23 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fam_gallery_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_colorNormal="@color/colorFabUptoNormal"
+        app:fab_colorPressed="@color/white"
+        app:fab_colorRipple="@color/colorSearp2"
+        app:fab_size="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UnknownIdInLayout"
+        android:visibility="gone"
+        android:layout_gravity="start|bottom"
+        android:layout_marginStart="@dimen/margin_20"
+        android:layout_marginBottom="@dimen/margin_60"
+        android:src="@drawable/ic_vertical_align_top"
+        app:layout_behavior="com.goforer.base.presentation.view.behavior.BottomFloatingButtonBehavior"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

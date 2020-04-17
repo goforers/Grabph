@@ -38,6 +38,7 @@ import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.photos.ProfileGalleryAdapter
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
+import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel.Companion.PAGER_POSITION_GALLERY
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile_photos.*
 import javax.inject.Inject
@@ -75,12 +76,7 @@ class HomeProfileGalleryFragment: BaseFragment() {
         setScrollAddListener()
         createMyPhotosAdapter()
         observeLiveData()
-        setFloatingButtonClickListener()
-        setListScrollBehavior()
-    }
-
-    override fun onResume() {
-        super.onResume()
+        observeFloatingButtonToTop()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -217,19 +213,11 @@ class HomeProfileGalleryFragment: BaseFragment() {
         }
     }
 
-    private fun setListScrollBehavior() {
-        val fab = this.fam_gallery_top
-        this.recycler_profile_photos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.isShown) fab.hide(true)
-                if (dy < 0 && fab.isHidden) fab.show(true)
+    private fun observeFloatingButtonToTop() {
+        viewModel.selectedPagerFab.observe(homeActivity, Observer { position ->
+            if (position == PAGER_POSITION_GALLERY) {
+                CommonUtils.betterSmoothScrollToPosition(this.recycler_profile_photos, 0)
             }
         })
-    }
-
-    private fun setFloatingButtonClickListener() {
-        this.fam_gallery_top.setOnClickListener {
-            CommonUtils.betterSmoothScrollToPosition(this.recycler_profile_photos, 0)
-        }
     }
 }

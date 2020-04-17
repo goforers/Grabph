@@ -111,7 +111,7 @@
     <string name="drawer_item_searper_favorites_photo_list">Best Photo</string>
     <string name="login_with_facebook">Continue with Facebook</string>
     <string name="login_with_google">Continue with Google</string>
-    <string name="facebook">facebook</string>
+    <string name="sign_in_facebook">Sign in with Facebook</string>
     <string name="other">Other</string>
     <string name="photo_safe">This photo is safe.</string>
     <string name="phrase_photos">photos</string>
@@ -232,4 +232,7 @@
     <string name="unknown_user_eng">Unknown User</string>
     <string name="uploading_text_kr">업로드 중..</string>
     <string name="guest_mode_en">GUEST MODE</string>
+    <string name="no_gallery_en">No photos in gallery</string>
+    <string name="sign_in_google">Sign in with Google</string>
+    <string name="sign_in_email">Sign in with Email</string>
 </resources>

@@ -878,25 +878,13 @@ class FeedItemActivity : BaseActivity() {
     }
 
     private fun showNetworkError(resource: Resource) = when(resource.errorCode) {
-        in 400..499 -> {
-            Snackbar.make(this.coordinator_feed_item_layout,
-                getString(R.string.phrase_client_wrong_request),
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
+        in 400..499 -> showSnackBar(getString(R.string.phrase_client_wrong_request))
+        in 500..599 -> showSnackBar(getString(R.string.phrase_server_wrong_response))
+        else -> showSnackBar(resource.getMessage().toString())
+    }
 
-        in 500..599 -> {
-            Snackbar.make(this.coordinator_feed_item_layout,
-                getString(R.string.phrase_server_wrong_response),
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
-
-        else -> {
-            Snackbar.make(this.coordinator_feed_item_layout, resource.getMessage().toString(),
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
+    private fun showSnackBar(msg: String) {
+        Snackbar.make(this.coordinator_feed_item_layout, msg, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setActivityResult(calledFrom: Int) = when (calledFrom) {

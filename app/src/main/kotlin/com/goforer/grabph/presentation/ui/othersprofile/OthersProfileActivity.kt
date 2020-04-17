@@ -25,7 +25,6 @@ import android.os.PersistableBundle
 import android.text.Html
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -35,10 +34,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.goforer.base.annotation.MockData
 import com.goforer.base.annotation.RunWithMockData
-import com.goforer.base.presentation.utils.CommonUtils
+import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
-import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
@@ -61,6 +59,7 @@ import com.goforer.grabph.data.datasource.network.resource.NetworkBoundResource.
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.data.datasource.network.response.Status
 import com.goforer.grabph.presentation.caller.Caller
+import com.goforer.grabph.presentation.caller.Caller.CALLED_FROM_HOME_PROFILE
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
@@ -133,7 +132,6 @@ class OthersProfileActivity : BaseActivity() {
         createAdapter()
         getProfileAfterClearCache()
         setFontType()
-        setListScrollBehavior()
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -284,32 +282,32 @@ class OthersProfileActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun setTopPortionViewData(person: Person) {
         setRankColor(userRanking)
+        showLoadingFinished()
+        // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
+
         if (person.iconserver == "0") {
             this.iv_profile_icon.setImageDrawable(getDrawable(R.drawable.ic_default_profile))
         } else {
             setImageDraw(this.iv_profile_icon, userPhotoUrl)
         }
-        showLoadingFinished()
-        // profile.backgroundPhoto?.let { userBackgroundPhoto = it }
+
+        val displayName = person.realname?._content?.let {
+            if (it.isEmpty()) person.username?._content else it
+        } ?: person.username?._content
+
+        val desc = getDescription(person.description?._content!!, userId)
+        val description = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY) else desc
+
         setFixedImageSize(0, 0)
         setImageDraw(this.iv_others_profile_title_photo, userBackgroundPhoto)
 
+        this.tv_profile_name.text = displayName
         this.tv_others_profile_title.text = userName
-        this.tv_others_profile_title.visibility = View.GONE
-        this.iv_others_profile_title_photo.scaleType = ImageView.ScaleType.CENTER_CROP
-        this.tv_profile_name.text = person.realname?._content?.let {
-            if (it.isEmpty()) person.username?._content else it
-        } ?: person.username?._content
-        val desc = getDescription(person.description?._content!!, userId)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.tv_others_profile_coverLetter.text = Html.fromHtml(desc, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            this.tv_others_profile_coverLetter.text = desc
-        }
+        this.tv_others_profile_coverLetter.text = description
         this.tv_profile_number_following.text = person.followings ?: "35"
         this.tv_profile_number_follower.text = person.followers ?: "46"
         this.tv_photo_number_others_profile.text = "${person.photos?.count?._content} Photos"
-        this.btn_follow_bottom_others_profile.translationY = this.btn_follow_bottom_others_profile.height.toFloat()
     }
 
     private fun getBottomPortionView() {
@@ -327,7 +325,6 @@ class OthersProfileActivity : BaseActivity() {
                         val gallery = list as? PagedList<Photo>
                         gallery?.let {
                             if (userId == list[0]?.owner) {
-                                this.fam_gallery_top.visibility = View.VISIBLE
                                 this.layout_before_loading_gallery.visibility = View.GONE
                                 adapter?.submitList(it)
                             }
@@ -386,62 +383,33 @@ class OthersProfileActivity : BaseActivity() {
     private fun showEmptyMessage(isEmpty: Boolean) {
         if (isEmpty) {
             this.tv_empty_list.visibility = View.VISIBLE
-            this.tv_empty_list.text = "No photos in gallery"
+            this.tv_empty_list.text = getString(R.string.no_gallery_en)
         } else {
             this.tv_empty_list.visibility = View.GONE
         }
     }
 
-    private fun setListScrollBehavior() {
-        val fab = this.fam_gallery_top
-        this.recycler_others_profile.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.isShown) fab.hide(true)
-                if (dy < 0 && fab.isHidden) fab.show(true)
-            }
-        })
-    }
-
     private fun setButtonsClickListener() {
-        this.btn_follow_others_profile.isSelected = false
-
-        this.btn_follow_others_profile.setOnClickListener {
-            if (it.isSelected) {
-                (it as AppCompatButton).text = getString(R.string.follow_button)
-                it.setBackgroundResource(R.drawable.border_of_upload_category_white)
-            } else {
-                (it as AppCompatButton).text = getString(R.string.following_button)
-                it.setBackgroundResource(R.drawable.ic_border_of_following)
-            }
-
-            if (it.isSelected) this.btn_follow_bottom_others_profile.text = getString(R.string.follow_button)
-            else this.btn_follow_bottom_others_profile.text = getString(R.string.follow_button_bottom)
-
-            it.isSelected = !it.isSelected
-        }
-
-        this.btn_follow_bottom_others_profile.setOnClickListener { button ->
-            (button as AppCompatButton).text = if (this.btn_follow_others_profile.isSelected) getString(R.string.follow_button) else getString(R.string.follow_button_bottom)
-            this.btn_follow_others_profile.let {
-                it.text = if (it.isSelected) getString(R.string.follow_button) else getString(R.string.following_button)
-                it.setBackgroundResource(if (it.isSelected) R.drawable.border_of_upload_category_white else R.drawable.ic_border_of_following)
-            }
-            this.btn_follow_others_profile.isSelected = ! this.btn_follow_others_profile.isSelected
-        }
-
+        this.btn_follow_others_profile.setOnClickListener { setFollowButtonUI(it) }
         this.iv_others_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
-
         this.tv_profile_number_following.setOnClickListener { /* see my following */ }
         this.tv_profile_number_follower.setOnClickListener { /* see my follower */ }
         this.tv_profile_number_pin.setOnClickListener { /* see my pins */ }
         this.iv_profile_icon.setOnClickListener {}
-        this.profile_container_following.setOnClickListener {
-            Caller.callPeopleList(this, Caller.CALLED_FROM_HOME_PROFILE, 1)
+        this.profile_container_following.setOnClickListener { Caller.callPeopleList(this, CALLED_FROM_HOME_PROFILE, 1) }
+        this.fam_gallery_top.setOnClickListener { betterSmoothScrollToPosition(this.recycler_others_profile, 0) }
+    }
+
+    private fun setFollowButtonUI(view: View) {
+        if (view.isSelected) {
+            (view as AppCompatButton).text = getString(R.string.follow_button)
+            view.setBackgroundResource(R.drawable.border_of_upload_category_white)
+        } else {
+            (view as AppCompatButton).text = getString(R.string.following_button)
+            view.setBackgroundResource(R.drawable.ic_border_of_following)
         }
 
-        this.fam_gallery_top.setOnClickListener {
-            CommonUtils.betterSmoothScrollToPosition(this.recycler_others_profile, 0)
-        }
+        view.isSelected = !view.isSelected
     }
 
     private fun setAppbarScrollingBehavior() {
@@ -451,7 +419,6 @@ class OthersProfileActivity : BaseActivity() {
         this.behavior = params.behavior as AppBarLayout.Behavior
 
         setAppBarOffsetChangedListener()
-        setCoordinateLayoutSwipeListener()
     }
 
     private fun setAppBarOffsetChangedListener() {
@@ -469,7 +436,7 @@ class OthersProfileActivity : BaseActivity() {
             alphaForButton = (255 * expandingPercentage).toInt()
             alphaForDesc = (255 * collapsingPercentage).toInt()
 
-            setViewAlpha(alphaForButton, alphaForDesc)
+            setViewAlpha(alphaForDesc)
 
             when (abs(verticalOffset)) {
                 appBarLayout.totalScrollRange -> setLayoutCollapsed()
@@ -481,10 +448,7 @@ class OthersProfileActivity : BaseActivity() {
         })
     }
 
-    private fun setViewAlpha(alphaForButton: Int, alphaForDesc: Int) {
-        this.btn_follow_bottom_others_profile.visibility = if (alphaForButton == 0) View.GONE else View.VISIBLE
-        this.btn_follow_bottom_others_profile.background.alpha = alphaForButton
-
+    private fun setViewAlpha(alphaForDesc: Int) {
         this.constraint_holder_description.background.alpha = alphaForDesc
         this.tv_others_profile_coverLetter.setTextColor(this.tv_others_profile_coverLetter.textColors.withAlpha(alphaForDesc))
     }
@@ -503,7 +467,6 @@ class OthersProfileActivity : BaseActivity() {
         this.others_profile_container_topPortion.visibility = View.VISIBLE
         this.fam_gallery_top.visibility = View.GONE
         isAppBarExpanded = true
-        btn_follow_bottom_others_profile.setTextColor(btn_follow_bottom_others_profile.textColors.withAlpha(0))
     }
 
     private fun setLayoutMoving(alpha: Int) {
@@ -511,51 +474,9 @@ class OthersProfileActivity : BaseActivity() {
         this.others_profile_container_topPortion.visibility = View.VISIBLE
         this.iv_others_profile_arrow_up.visibility = View.VISIBLE
         this.tv_others_profile_title.visibility = View.GONE
+        this.fam_gallery_top.visibility = View.GONE
         halfOffsetAppBar = appBarLayout.totalScrollRange / 2
         isAppBarExpanded = false
-        btn_follow_bottom_others_profile.setTextColor(btn_follow_bottom_others_profile.textColors.withAlpha(alpha))
-    }
-
-    private fun setCoordinateLayoutSwipeListener() {
-        var swipeUp = false
-        var swipeDown = false
-
-        this.others_profile_coordinator_layout.setOnSwipeOutListener(
-            this,
-            object : OnSwipeOutListener { // Coordinate Layout Swipe Listener
-                override fun onSwipeLeft(x: Float, y: Float) {}
-                override fun onSwipeRight(x: Float, y: Float) {}
-
-                override fun onSwipeDown(x: Float, y: Float) {
-                    swipeUp = false
-                    swipeDown = true
-                }
-
-                override fun onSwipeUp(x: Float, y: Float) {
-                    swipeUp = true
-                    swipeDown = false
-                }
-
-                override fun onSwipeDone() { // when scroll movement stops
-                    // if (swipeUp) {
-                    //     appBarLayout.setExpanded(false, true)
-                    // }
-                    //
-                    // if (swipeDown && isRecyclerTop) {
-                    //     appBarLayout.setExpanded(true, true)
-                    //     enableAppBarDraggable(true)
-                    // }
-                    //
-                    // swipeUp = false
-                    // swipeDown = false
-                }
-            })
-    }
-
-    private fun enableAppBarDraggable(draggable: Boolean) {
-        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
-            override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
-        })
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -637,40 +558,33 @@ class OthersProfileActivity : BaseActivity() {
 
     internal fun showNetworkError(resource: Resource) {
         when (resource.errorCode) {
-            in 400..499 -> {
-                Snackbar.make(this.btn_follow_bottom_others_profile, getString(R.string.phrase_client_wrong_request), Snackbar.LENGTH_LONG).show()
-            }
-
-            in 500..599 -> {
-                Snackbar.make(this.btn_follow_bottom_others_profile, getString(R.string.phrase_server_wrong_response), Snackbar.LENGTH_LONG).show()
-            }
-
-            else -> {
-                Snackbar.make(this.btn_follow_bottom_others_profile, resource.getMessage().toString(), Snackbar.LENGTH_LONG).show()
-            }
+            in 400..499 -> showSnackBar(getString(R.string.phrase_client_wrong_request))
+            in 500..599 -> showSnackBar(getString(R.string.phrase_server_wrong_response))
+            else -> showSnackBar(resource.getMessage().toString())
         }
 
         this.progress_bar_others_profile_holder.visibility = View.GONE
+    }
+
+    private fun showSnackBar(msg: String) {
+        Snackbar.make(this.others_profile_coordinator_layout, msg, Snackbar.LENGTH_LONG).show()
     }
 
     private fun networkStatusVisible(isVisible: Boolean) = if (isVisible) {
         this.disconnect_container_pinned.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
         this.recycler_others_profile.visibility = View.VISIBLE
-        this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
     } else {
         this.disconnect_container_pinned.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
         this.recycler_others_profile.visibility = View.GONE
         this.progress_bar_others_profile_holder.visibility = View.GONE
-        this.btn_follow_bottom_others_profile.visibility = View.GONE
     }
 
     private fun showProgressBarLoading() {
         this.progress_bar_others_profile_holder.visibility = View.VISIBLE
         this.appbar_others_profile.visibility = View.GONE
         this.recycler_others_profile.visibility = View.GONE
-        this.btn_follow_bottom_others_profile.visibility = View.GONE
         this.constraint_holder_bottom_portion.visibility = View.GONE
     }
 
@@ -678,7 +592,6 @@ class OthersProfileActivity : BaseActivity() {
         this.progress_bar_others_profile_holder.visibility = View.GONE
         this.appbar_others_profile.visibility = View.VISIBLE
         this.recycler_others_profile.visibility = View.VISIBLE
-        this.btn_follow_bottom_others_profile.visibility = View.VISIBLE
         this.constraint_holder_bottom_portion.visibility = View.VISIBLE
     }
 

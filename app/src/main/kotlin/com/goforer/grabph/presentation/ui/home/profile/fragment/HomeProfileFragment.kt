@@ -76,11 +76,8 @@ class HomeProfileFragment : BaseFragment() {
 
     private var pagerAdapter: ProfilePagerAdapter? = null
 
-    private var appBarVerticalOffset = 0
-
     private var currentOffSet: Int = 0
-
-    internal var isAppbarExpanded = true
+    private var currentPage: Int = 0
 
     @SuppressLint("StaticFieldLeak")
     private lateinit var appBarLayout: AppBarLayout
@@ -95,6 +92,9 @@ class HomeProfileFragment : BaseFragment() {
         internal const val TAB_SEARPLE_INDEX = 2
         internal const val TAB_SELL_INDEX = 3
         internal const val TAB_SETTING = 4
+
+        private const val VIEWPAGER_GALLERY = 0
+        private const val VIEWPAGER_PIN = 1
 
         private const val PHOTO_RATIO_WIDTH = 67
         private const val PHOTO_RATIO_HEIGHT = 67
@@ -116,7 +116,6 @@ class HomeProfileFragment : BaseFragment() {
         setViewClickListener()
         removeCache()
         getProfile()
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -159,9 +158,11 @@ class HomeProfileFragment : BaseFragment() {
                 this@HomeProfileFragment.tabLayout_profile.getTabAt(1)?.setIcon(R.drawable.ic_bookmark_white)
 
                 when (position) {
-                    0 -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_gallery_gradient)
-                    1 -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_bookmark_gradient)
+                    VIEWPAGER_GALLERY -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_gallery_gradient)
+                    VIEWPAGER_PIN -> this@HomeProfileFragment.tabLayout_profile.getTabAt(position)?.setIcon(R.drawable.ic_bookmark_gradient)
                 }
+
+                currentPage = position // 0 or 1
             }
         })
     }
@@ -182,6 +183,11 @@ class HomeProfileFragment : BaseFragment() {
         this.iv_profile_arrow_up.setOnClickListener { appBarLayout.setExpanded(false, true) }
         this.ib_profile_notification.setOnClickListener {}
         this.constraint_profile.setOnClickListener {}
+        this.fam_gallery_top.setOnClickListener { setPhotoListPositionToTop() }
+    }
+
+    private fun setPhotoListPositionToTop() {
+        homeProfileViewModel.setPagerFab(currentPage)
     }
 
     private fun startActivity(tabType: Int) {
@@ -242,7 +248,6 @@ class HomeProfileFragment : BaseFragment() {
                     liveData.removeObservers(this)
                 }
             }
-            // setAppbarLayoutScrollingBehavior()
             setFontType()
         })
     }
@@ -277,7 +282,6 @@ class HomeProfileFragment : BaseFragment() {
         this.behavior = params.behavior as AppBarLayout.Behavior
 
         setAppbarOffsetChangedListener()
-        setCoordinateLayoutSwipeListener()
     }
 
     private fun setAppbarOffsetChangedListener() {
@@ -313,77 +317,17 @@ class HomeProfileFragment : BaseFragment() {
     private fun setLayoutCollapsed() {
         this.iv_profile_arrow_up.visibility = View.GONE
         this.tv_home_profile_title.visibility = View.VISIBLE
+        this.fam_gallery_top.visibility = View.VISIBLE
     }
 
     private fun setLayoutExpanded() {
-
+        this.fam_gallery_top.visibility = View.GONE
     }
 
     private fun setLayoutMoving() {
         this.iv_profile_arrow_up.visibility = View.VISIBLE
         this.tv_home_profile_title.visibility = View.GONE
-    }
-
-    private fun setCoordinateLayoutSwipeListener() {
-        var swipeUp = false
-        var swipeDown = false
-
-//        this.coordinator_home_profile_layout.setOnSwipeOutListener(homeActivity, object : OnSwipeOutListener {
-//            override fun onSwipeLeft(x: Float, y: Float) { }
-//            override fun onSwipeRight(x: Float, y: Float) { }
-//
-//            override fun onSwipeDown(x: Float, y: Float) {
-//                swipeUp = false
-//                swipeDown = true
-//            }
-//
-//            override fun onSwipeUp(x: Float, y: Float) {
-//                swipeUp = true
-//                swipeDown = false
-//            }
-//
-//            override fun onSwipeDone() {
-//                if (swipeUp) {
-//                    appBarLayout.setExpanded(false, true)
-//                }
-//
-//                if (swipeDown && !isAppbarExpanded) {
-//                    appBarLayout.setExpanded(true, true)
-//                    enableAppBarDraggable(true)
-//                }
-//
-//                swipeUp = false
-//                swipeDown = false
-//            }
-//        })
-    }
-
-    private fun setViewPagerSwipeListener() {
-//        this.viewPager_profile.setOnSwipeOutListener(object : SwipeViewPager.OnSwipeOutListener {
-//            override fun onSwipeOutAtStart() {
-//            }
-//
-//            override fun onSwipeOutAtEnd() {
-//            }
-//
-//            override fun onSwipeLeft(x: Float, y: Float) {
-//            }
-//
-//            override fun onSwipeRight(x: Float, y: Float) {
-//            }
-//
-//            override fun onSwipeDown(x: Float, y: Float) {
-//            }
-//
-//            override fun onSwipeUp(x: Float, y: Float) {
-//            }
-//        })
-    }
-
-    private fun enableAppBarDraggable(draggable: Boolean) {
-        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
-            override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
-        })
+        this.fam_gallery_top.visibility = View.GONE
     }
 
     private fun getProfilePhotoUrl(iconFarm: Int, iconServer: String, id: String): String {

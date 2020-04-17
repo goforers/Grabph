@@ -972,18 +972,15 @@ class PhotoInfoActivity : BaseActivity() {
     }
 
     private fun showNetworkError(resource: Resource) = when(resource.errorCode) {
-        in 400..499 -> {
-            Snackbar.make(this.coordinator_photo_info_layout, getString(R.string.phrase_client_wrong_request), LENGTH_LONG).show()
-        }
-
-        in 500..599 -> {
-            Snackbar.make(this.coordinator_photo_info_layout, getString(R.string.phrase_server_wrong_response), LENGTH_LONG).show()
-        }
-
-        else -> {
-            Snackbar.make(this.coordinator_photo_info_layout, resource.getMessage().toString(), LENGTH_LONG).show()
-        }
+        in 400..499 -> showSnackBar(getString(R.string.phrase_client_wrong_request))
+        in 500..599 -> showSnackBar(getString(R.string.phrase_server_wrong_response))
+        else -> showSnackBar(resource.getMessage().toString())
     }
+
+    private fun showSnackBar(msg: String) {
+        Snackbar.make(this.coordinator_photo_info_layout, msg, LENGTH_LONG).show()
+    }
+
 
     /**
      * Helper function to call something doing function
@@ -1050,6 +1047,8 @@ class PhotoInfoActivity : BaseActivity() {
             Timber.d("changed state to " + stateString
                 + " playWhenReady: " + playWhenReady)
         }
+
+
 
         private fun setViewWhenReady() {
             this@PhotoInfoActivity.iv_play_btn_photo_info.visibility = View.VISIBLE

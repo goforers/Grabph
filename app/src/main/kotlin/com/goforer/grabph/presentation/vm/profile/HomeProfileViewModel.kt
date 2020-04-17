@@ -25,8 +25,14 @@ constructor(private val useCase: LoadMyProfileUseCase,
     internal lateinit var gallery: LiveData<Resource>
     internal lateinit var pin: LiveData<List<LocalPin>>
     internal lateinit var isPinned: MutableLiveData<Boolean>
+    internal val selectedPagerFab = MutableLiveData<Int>()
 
     internal var calledFrom: Int = 0
+
+    companion object {
+        internal const val PAGER_POSITION_GALLERY = 0
+        internal const val PAGER_POSITION_PIN = 1
+    }
 
     override fun setParameters(parameters: Parameters, type: Int) {
         profile = useCase.execute(viewModelScope, parameters)
@@ -44,5 +50,9 @@ constructor(private val useCase: LoadMyProfileUseCase,
         withContext(Dispatchers.IO) {
             galleryUseCase.removeCache()
         }
+    }
+
+    internal fun setPagerFab(position: Int) {
+        selectedPagerFab.value = position
     }
 }

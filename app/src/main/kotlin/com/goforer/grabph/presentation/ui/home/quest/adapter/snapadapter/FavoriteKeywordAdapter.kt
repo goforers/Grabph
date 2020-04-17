@@ -106,9 +106,6 @@ class FavoriteKeywordAdapter(
             } else {
                 tv_quest_favorite_keyword.setBackgroundResource(R.drawable.border_of_upload_category_white)
             }
-
-            snap_quest_favorite_keyword_item_holder.visibility = View.VISIBLE
-            snap_quest_favorite_keyword_item_holder.visibility = View.VISIBLE
         }
 
         override fun onItemSelected() {

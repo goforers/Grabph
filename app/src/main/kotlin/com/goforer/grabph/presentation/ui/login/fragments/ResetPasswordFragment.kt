@@ -22,6 +22,8 @@ import javax.inject.Inject
 class ResetPasswordFragment : BaseFragment() {
     private val loginActivity by lazy { activity as LogInActivity }
 
+    private var isEmailValid = false
+
     @field:Inject
     lateinit var viewModel: LoginViewModel
 
@@ -39,11 +41,13 @@ class ResetPasswordFragment : BaseFragment() {
     private fun setViews() {
         setViewsClickListener()
         checkInformationInput()
+        this.ib_btn_reset_password.isEnabled = false
     }
 
     private fun setViewsClickListener() {
         this.iv_back.setOnClickListener { loginActivity.onBackPressed() }
         this.ib_btn_reset_password.setOnClickListener { checkEmail() }
+        this.iv_icon_email_reset.setOnClickListener { if (!isEmailValid) this.et_user_email_reset.setText("") }
     }
 
     private fun checkEmail() {
@@ -116,18 +120,21 @@ class ResetPasswordFragment : BaseFragment() {
         this.iv_icon_email_reset.setImageResource(R.drawable.ic_baseline_email_24)
         this.constraint_holder_email_reset.setBackgroundResource(0)
         hideErrorMessage()
+        isEmailValid = false
     }
 
     private fun setEmailViewValid() {
         this.iv_icon_email_reset.setImageResource(R.drawable.ic_login_valid)
         this.constraint_holder_email_reset.setBackgroundResource(0)
         hideErrorMessage()
+        isEmailValid = true
     }
 
     private fun setEmailViewInvalid() {
         this.iv_icon_email_reset.setImageResource(R.drawable.ic_login_invalid)
         this.constraint_holder_email_reset.setBackgroundResource(R.drawable.ic_border_red_alert)
         showErrorMessage(getString(R.string.email_format_invalid))
+        isEmailValid = false
     }
 
     private fun showErrorMessage(msg: String) {

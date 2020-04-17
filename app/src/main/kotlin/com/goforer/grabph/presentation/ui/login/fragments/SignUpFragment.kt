@@ -46,6 +46,11 @@ class SignUpFragment : BaseFragment() {
         private const val GENDER_MALE = 0
         private const val GENDER_FEMALE = 1
         private const val GENDER_CUSTOM = 2
+
+        private const val INPUT_POSITION_USERNAME = 0
+        private const val INPUT_POSITION_EMAIL = 1
+        private const val INPUT_POSITION_PASSWORD1 = 2
+        private const val INPUT_POSITION_PASSWORD2 = 3
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,6 +67,8 @@ class SignUpFragment : BaseFragment() {
 
     private fun setViews() {
         setViewsClickListener()
+
+        if (this.et_username.text.toString().isEmpty()) ib_btn_sign_up.isEnabled = false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             this.tv_forgot_password.text = Html.fromHtml(getString(R.string.forgot_password),
@@ -82,6 +89,19 @@ class SignUpFragment : BaseFragment() {
         this.tv_forgot_password.setOnClickListener { loginActivity.goToResetPassword() }
         this.tv_login.setOnClickListener { loginActivity.onBackPressed() }
         this.iv_back.setOnClickListener { loginActivity.onBackPressed() }
+        this.iv_icon_username.setOnClickListener { removeText(INPUT_POSITION_USERNAME) }
+        this.iv_icon_email.setOnClickListener { removeText(INPUT_POSITION_EMAIL) }
+        this.iv_icon_password1.setOnClickListener { removeText(INPUT_POSITION_PASSWORD1) }
+        this.iv_icon_password2.setOnClickListener { removeText(INPUT_POSITION_PASSWORD2) }
+    }
+
+    private fun removeText(inputPosition: Int) {
+        when (inputPosition) {
+            INPUT_POSITION_USERNAME -> if (!isUsernameValid) this.et_username.setText("")
+            INPUT_POSITION_EMAIL -> if (!isEmailValid) this.et_user_email.setText("")
+            INPUT_POSITION_PASSWORD1 -> if (!isPassword1Valid) this.et_password1_signup.setText("")
+            INPUT_POSITION_PASSWORD2 -> if (!isPassword2Valid) this.et_password2_signup.setText("")
+        }
     }
 
     private fun checkSignUpInformationReady() {
@@ -141,7 +161,6 @@ class SignUpFragment : BaseFragment() {
     private fun watchUserNameText() {
         this.et_username.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -187,7 +206,6 @@ class SignUpFragment : BaseFragment() {
 
         this.et_user_email.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -232,20 +250,31 @@ class SignUpFragment : BaseFragment() {
 
     private fun watchPassword1Text() {
         var isPasswordValid = false
+        val etPasswordSecond = this.et_password2_signup
 
         this.et_password1_signup.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                s?.let {
-                    isPasswordValid = it.length >= MIN_PASSWORD_LENGTH
-                    if (it.isNotBlank()) {
+                val passwordFirst = s?.toString()
+                val passwordSecond = etPasswordSecond.text.toString()
+
+                passwordFirst?.let {
+                    isPasswordValid = passwordFirst.length >= MIN_PASSWORD_LENGTH
+                    if (passwordFirst.isNotBlank()) {
                         if (isPasswordValid) {
-                            setPassword1ValidView()
+                            if (passwordSecond.isNotEmpty()) {
+                                if (passwordFirst == passwordSecond) {
+                                    setPassword1ValidView()
+                                } else {
+                                    setPassword1InvalidMessage(getString(R.string.password_not_identified))
+                                }
+                            } else {
+                                setPassword1ValidView()
+                            }
                         } else {
-                            setPassword1InvalidView(getString(R.string.password_too_short))
+                            setPassword1InvalidMessage(getString(R.string.password_too_short))
                         }
                     } else {
                         setPassword1DefaultView()
@@ -270,7 +299,7 @@ class SignUpFragment : BaseFragment() {
         isPassword1Valid = true
     }
 
-    private fun setPassword1InvalidView(msg: String) {
+    private fun setPassword1InvalidMessage(msg: String) {
         setIconInvalid(this.iv_icon_password1)
         showErrorMessage(msg)
         setHolderInvalid(this.constraint_holder_password_1)
@@ -281,7 +310,6 @@ class SignUpFragment : BaseFragment() {
         val etPasswordFirst = this.et_password1_signup
         this.et_password2_signup.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -290,7 +318,7 @@ class SignUpFragment : BaseFragment() {
                         if (s.toString() == etPasswordFirst.text.toString()) {
                             setPassword2ValidView()
                         } else {
-                            setPassword2InvalidView(getString(R.string.password_not_identified))
+                            setPassword2InvalidMessage(getString(R.string.password_not_identified))
                         }
                     } else {
                         setPassword2DefaultView()
@@ -315,7 +343,7 @@ class SignUpFragment : BaseFragment() {
         isPassword2Valid = true
     }
 
-    private fun setPassword2InvalidView(msg: String) {
+    private fun setPassword2InvalidMessage(msg: String) {
         setIconInvalid(this.iv_icon_password2)
         showErrorMessage(msg)
         setHolderInvalid(this.constraint_holder_password_2)

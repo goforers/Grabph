@@ -103,7 +103,7 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
 
         this@HomeFeedFragment.fam_feed_top.setOnClickListener {
             CommonUtils.betterSmoothScrollToPosition(recycler_view, 0)
-            this@HomeFeedFragment.fam_feed_top.visibility = View.GONE
+            // this@HomeFeedFragment.fam_feed_top.visibility = View.GONE
             isOverFirst = false
         }
 
@@ -171,9 +171,9 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
             override fun onScrolling(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 Timber.i("onScrolling")
 
-                if (this@HomeFeedFragment.fam_feed_top.visibility == View.VISIBLE) {
-                    this@HomeFeedFragment.fam_feed_top.hide(true)
-                }
+                // if (this@HomeFeedFragment.fam_feed_top.visibility == View.VISIBLE) {
+                //     this@HomeFeedFragment.fam_feed_top.hide(true)
+                // }
 
                 homeActivity.searchView?.let {
                     val view = homeActivity.searchView!!
@@ -186,8 +186,8 @@ class HomeFeedFragment: RecyclerFragment<FeedItem>() {
             override fun onScrollIdle(position: Int) {
                 if (position >= HomeActivity.VISIBLE_UPTO_ITEMS) {
                     isOverFirst = true
-                    this@HomeFeedFragment.fam_feed_top.visibility = View.VISIBLE
-                    this@HomeFeedFragment.fam_feed_top.show(true)
+                    // this@HomeFeedFragment.fam_feed_top.visibility = View.VISIBLE
+                    // this@HomeFeedFragment.fam_feed_top.show(true)
                 }
             }
 

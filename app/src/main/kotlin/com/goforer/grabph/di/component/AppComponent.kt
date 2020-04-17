@@ -38,7 +38,7 @@ import javax.inject.Singleton
     RankingActivityModule::class, OthersProfileActivityModule::class,
     AuthActivityModule::class, UploadPhotoActivityModule::class,
     FullSizePlayerActivityModule::class, FeedItemActivityModule::class,
-    MakeQuestActivityModule::class, LoginActivityModule::class
+    UploadQuestActivityModule::class, LoginActivityModule::class
 ])
 
 interface AppComponent {

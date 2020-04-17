@@ -27,7 +27,12 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".presentation.ui.makequest.MakeQuestActivity"></activity>
+        <activity
+            android:name=".presentation.ui.uploadquest.UploadQuestActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".presentation.ui.feed.feedinfo.FeedItemActivity"
             android:launchMode="singleTop"

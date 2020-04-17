@@ -181,7 +181,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="log in"
+                android:text="@string/sign_in_email"
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_16" />
 
@@ -224,7 +225,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="@string/facebook"
+                    android:textStyle="bold"
+                    android:text="@string/sign_in_facebook"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_16" />
 
@@ -257,8 +259,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="google"
-                    android:textColor="@color/black"
+                    android:text="@string/sign_in_google"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorDefaultDrawable"
                     android:textSize="@dimen/text_size_16" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

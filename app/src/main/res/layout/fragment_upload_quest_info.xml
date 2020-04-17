@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view_upload_quest"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:transitionGroup="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_upload_quest"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            app:cardBackgroundColor="@color/transparent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin_20"
+                android:layout_marginStart="@dimen/margin_20"
+                android:layout_marginEnd="@dimen/margin_20">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_upload_quest_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_72"
+                    android:background="@color/transparent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_holder_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_45"
+                    android:background="@drawable/background_upload_input"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_upload_quest_category">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_upload_quest_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="제목"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        android:gravity="center"
+                        android:layout_marginStart="@dimen/margin_15"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_upload_quest_title"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:hint="제목을 입력하세요"
+                        android:textColorHint="@color/colorUploadAgrees"
+                        android:background="@null"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        app:layout_constraintStart_toEndOf="@+id/tv_upload_quest_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="@dimen/margin_15"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_holder_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_upload_input"
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_holder_title"
+                    android:layout_marginTop="@dimen/margin_15">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_upload_quest_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="상세내용"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        android:gravity="center"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginTop="@dimen/margin_15"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_quest_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="330dp"
+                        android:background="@null"
+                        android:gravity="top"
+                        android:hint="여기를 탭하면 입력창이 나타납니다."
+                        android:textColorHint="@color/colorUploadAgrees"
+                        android:textSize="@dimen/text_size_13"
+                        android:textColor="@color/white"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_upload_quest_desc"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/margin_15"
+                        android:layout_marginStart="@dimen/margin_15"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        android:layout_marginBottom="@dimen/margin_15"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_holder_text_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_6"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_holder_description">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_limit_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0/300"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_holder_reward_quest"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_45"
+                    android:background="@drawable/background_upload_input"
+                    app:layout_constraintTop_toBottomOf="@+id/constraint_holder_text_limit"
+                    android:layout_marginTop="@dimen/margin_15">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_upload_quest_reward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="상금"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        android:gravity="center"
+                        android:layout_marginStart="@dimen/margin_15"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_quest_reward"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:textSize="@dimen/text_size_13"
+                        android:hint="0"
+                        android:textColorHint="@color/white"
+                        android:textColor="@color/white"
+                        android:gravity="end|center"
+                        app:layout_constraintStart_toEndOf="@+id/tv_upload_quest_reward"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_reward_currency"
+                        android:layout_marginEnd="@dimen/margin_5"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_reward_currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="원"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_13"
+                        android:layout_marginEnd="@dimen/margin_15"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_holder_reward_duration"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_45"
+                android:background="@drawable/background_upload_input"
+                app:layout_constraintTop_toBottomOf="@+id/constraint_holder_reward_quest"
+                android:layout_marginTop="@dimen/margin_15">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_upload_quest_duration_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="마감 기한"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/margin_15"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_upload_quest_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="마감 기한을 선택해 주세요"
+                    android:textColorHint="@color/colorUploadAgrees"
+                    android:background="@null"
+                    android:gravity="end|center_vertical"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_13"
+                    app:layout_constraintStart_toEndOf="@+id/tv_upload_quest_duration_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="@dimen/margin_15"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+        
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_upload_quest"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_50"
+        android:text="샘플 이미지 선택"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:background="@drawable/ic_btn_searp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import com.goforer.grabph.presentation.common.utils.AutoClearedValue
 import com.goforer.grabph.presentation.ui.home.HomeActivity
 import com.goforer.grabph.presentation.ui.home.profile.adapter.photos.ProfilePinAdapter
 import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel
+import com.goforer.grabph.presentation.vm.profile.HomeProfileViewModel.Companion.PAGER_POSITION_PIN
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_profile_photos.*
 import javax.inject.Inject
@@ -54,8 +55,7 @@ class HomeProfilePinFragment: BaseFragment() {
         setScrollAddListener()
         createPinnedPhotoAdapter()
         observeLiveData()
-        setFloatingButtonClickListener()
-        setListScrollBehavior()
+        observeFloatingButtonToTop()
     }
 
     private fun observeLiveData() {
@@ -101,6 +101,7 @@ class HomeProfilePinFragment: BaseFragment() {
 
     private fun showEmptyPhotosMessage(isEmpty: Boolean) {
         this.tv_empty_list.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        // if (isEmpty) this.fam_gallery_top.visibility = View.GONE
     }
 
     private fun createPinnedPhotoAdapter() {
@@ -188,19 +189,11 @@ class HomeProfilePinFragment: BaseFragment() {
         }
     }
 
-    private fun setListScrollBehavior() {
-        val fab = this.fam_gallery_top
-        this.recycler_profile_photos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0 && fab.isShown) fab.hide(true)
-                if (dy < 0 && fab.isHidden) fab.show(true)
+    private fun observeFloatingButtonToTop() {
+        viewModel.selectedPagerFab.observe(homeActivity, Observer { position ->
+            if (position == PAGER_POSITION_PIN) {
+                CommonUtils.betterSmoothScrollToPosition(this.recycler_profile_photos, 0)
             }
         })
-    }
-
-    private fun setFloatingButtonClickListener() {
-        this.fam_gallery_top.setOnClickListener {
-            CommonUtils.betterSmoothScrollToPosition(this.recycler_profile_photos, 0)
-        }
     }
 }

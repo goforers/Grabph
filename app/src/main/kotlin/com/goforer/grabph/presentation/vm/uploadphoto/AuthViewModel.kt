@@ -1,11 +1,10 @@
-package com.goforer.grabph.presentation.vm.upload
+package com.goforer.grabph.presentation.vm.uploadphoto
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.goforer.grabph.data.datasource.network.response.Resource
 import com.goforer.grabph.domain.Parameters
 import com.goforer.grabph.domain.usecase.upload.LoadAuthUseCase
-import com.goforer.grabph.domain.usecase.upload.UploadPhotosUseCase
 import com.goforer.grabph.presentation.vm.BaseViewModel
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -83,7 +83,7 @@
                     android:id="@+id/iv_photo_upload"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorBackgroundUploadPhoto"
+                    android:background="@color/colorPrimary"
                     android:scaleType="fitCenter"
                     android:layout_gravity="center"/>
 
@@ -295,13 +295,13 @@
                                 app:layout_constraintEnd_toStartOf="@id/tv_price_currecy"
                                 app:layout_constraintHorizontal_weight="10"
                                 android:textSize="@dimen/text_size_16"
-                                android:layout_marginRight="@dimen/margin_2"
+                                android:layout_marginEnd="@dimen/margin_2"
                                 android:background="@color/transparent"
                                 android:hint="0"
                                 android:inputType="number"
                                 android:textColorHint="@color/white"
                                 android:textColor="@color/white"
-                                android:gravity="right|center"/>
+                                android:gravity="end|center"/>
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/tv_price_currecy"
@@ -313,9 +313,13 @@
                                 android:textColor="@color/white"
                                 app:layout_constraintHorizontal_weight="1"
                                 android:gravity="center"/>
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
+
                     </androidx.cardview.widget.CardView>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
             <View
@@ -466,7 +470,9 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -476,16 +482,14 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_upload"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="업로드"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:background="@drawable/ic_btn_searp"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             </androidx.cardview.widget.CardView>
 
         </androidx.appcompat.widget.LinearLayoutCompat>

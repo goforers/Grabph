@@ -1,4 +1,4 @@
-package com.goforer.grabph.presentation.ui.uploadphoto.adapter
+package com.goforer.grabph.presentation.ui.uploadquest.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,15 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goforer.base.presentation.view.activity.BaseActivity.Companion.FONT_TYPE_MEDIUM
 import com.goforer.base.presentation.view.holder.BaseViewHolder
 import com.goforer.grabph.R
-import com.goforer.grabph.presentation.ui.uploadphoto.UploadPhotoActivity
-import com.goforer.grabph.presentation.vm.uploadphoto.UploadPhotoViewModel
+import com.goforer.grabph.presentation.ui.uploadquest.UploadQuestActivity
+import com.goforer.grabph.presentation.vm.uploadquest.UploadQuestViewModel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_upload_category_item.*
 
-class UploadCategoryAdapter(
-    private val viewModel: UploadPhotoViewModel,
-    private val activity: UploadPhotoActivity
-): RecyclerView.Adapter<UploadCategoryAdapter.ViewHolder>() {
+class QuestCategoryAdapter(
+    private val activity: UploadQuestActivity,
+    private val viewModel: UploadQuestViewModel): RecyclerView.Adapter<QuestCategoryAdapter.ViewHolder>() {
 
     private val categories = ArrayList<String>()
     internal var selectedPosition = 0
@@ -33,8 +32,6 @@ class UploadCategoryAdapter(
         val item = categories[position]
         holder.bindItemHolder(holder, item, position)
 
-        // this Click Listener is for selecting a category.
-        // When user clicks an item,  notifyDataSetChanged() will rearrange colors of all buttons.
         holder.itemView.setOnClickListener {
             selectedPosition = position
             viewModel.setKeyword(item)
@@ -48,10 +45,10 @@ class UploadCategoryAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(
+    inner class ViewHolder(
         override val containerView: View,
-        private val activity: UploadPhotoActivity,
-        private val adapter: UploadCategoryAdapter
+        private val activity: UploadQuestActivity,
+        private  val adapter: QuestCategoryAdapter
     ): BaseViewHolder<String>(containerView), LayoutContainer {
 
         override fun bindItemHolder(holder: BaseViewHolder<*>, item: String, position: Int) {

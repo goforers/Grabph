@@ -27,7 +27,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.icu.util.Calendar
+import java.util.Calendar
 import android.os.IBinder
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
@@ -653,6 +653,49 @@ object CommonUtils {
             pos,
             Shader.TileMode.CLAMP
         )
+    }
+
+    fun hideKeyboard(activity: Activity) {
+        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = activity.currentFocus
+
+        view?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    fun getStringDateFromDatePicker(year: Int, monthOfYear: Int, dayOfMonth: Int): String {
+        val strYear = year.toString()
+        val strMonth = if (monthOfYear < 10) "0$monthOfYear" else monthOfYear.toString()
+        val strDay = if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth.toString()
+
+        return "$strYear/$strMonth/$strDay"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getStringFromLongDate(milliSeconds: Long): String {
+        val format = SimpleDateFormat("yyyy/MM/dd")
+        return format.format(milliSeconds)
+    }
+
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @SuppressLint("SimpleDateFormat")
+    fun getLongFromStringDate(date: String): Long {
+        val format = SimpleDateFormat("yyyy/MM/dd")
+        return format.parse(date).time
+    }
+
+    private fun checkDate(calendar: Calendar, dateLong: Long) {
+        val oneDayLong = 86400000 // 1day = 24hours = 86,400,000milliseconds
+        val thirtyDayLong = 2592000000 // 30days
+        val yearLong = 31536000000 // 1year = 365days
+
+        val currentMilliSeconds = System.currentTimeMillis()
+
+
+        val thisYear = calendar.get(Calendar.YEAR)
+        val thisMonth = calendar.get(Calendar.MONTH)
+        val today = calendar.get(Calendar.DAY_OF_MONTH)
     }
 }
 

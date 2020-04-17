@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:layout_marginEnd="@dimen/margin_5"
     android:stateListAnimator="@animator/raise"
-    android:foreground="@drawable/grey_ripple"
     android:visibility="visible"
     android:background="@color/colorPrimary"
     android:transitionGroup="true">
