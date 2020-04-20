@@ -37,6 +37,7 @@ import com.goforer.base.annotation.RunWithMockData
 import com.goforer.base.presentation.utils.CommonUtils.betterSmoothScrollToPosition
 import com.goforer.base.presentation.view.activity.BaseActivity
 import com.goforer.base.presentation.view.customs.layout.CustomStaggeredGridLayoutManager
+import com.goforer.base.presentation.view.customs.listener.OnSwipeOutListener
 import com.goforer.base.presentation.view.decoration.GapItemDecoration
 import com.goforer.grabph.R
 import com.goforer.grabph.data.datasource.model.cache.data.entity.photog.Photo
@@ -419,6 +420,7 @@ class OthersProfileActivity : BaseActivity() {
         this.behavior = params.behavior as AppBarLayout.Behavior
 
         setAppBarOffsetChangedListener()
+        setCoordinateLayoutSwipeListener()
     }
 
     private fun setAppBarOffsetChangedListener() {
@@ -477,6 +479,47 @@ class OthersProfileActivity : BaseActivity() {
         this.fam_gallery_top.visibility = View.GONE
         halfOffsetAppBar = appBarLayout.totalScrollRange / 2
         isAppBarExpanded = false
+    }
+
+    private fun setCoordinateLayoutSwipeListener() {
+        var swipeUp = false
+        var swipeDown = false
+
+        this.others_profile_coordinator_layout.setOnSwipeOutListener(
+            this, object : OnSwipeOutListener { // Coordinate Layout Swipe Listener
+                override fun onSwipeLeft(x: Float, y: Float) {}
+                override fun onSwipeRight(x: Float, y: Float) {}
+
+                override fun onSwipeDown(x: Float, y: Float) {
+                    swipeUp = false
+                    swipeDown = true
+                }
+
+                override fun onSwipeUp(x: Float, y: Float) {
+                    swipeUp = true
+                    swipeDown = false
+                }
+
+                override fun onSwipeDone() { // when scroll movement stops
+                    // if (swipeUp) {
+                    //     appBarLayout.setExpanded(false, true)
+                    // }
+                    //
+                    // if (swipeDown && isRecyclerTop) {
+                    //     appBarLayout.setExpanded(true, true)
+                    //     enableAppBarDraggable(true)
+                    // }
+                    //
+                    // swipeUp = false
+                    // swipeDown = false
+                }
+            })
+    }
+
+    private fun enableAppBarDraggable(draggable: Boolean) {
+        behavior.setDragCallback(object : AppBarLayout.Behavior.DragCallback() { // block dragging behavior on appBarLayout
+            override fun canDrag(p0: AppBarLayout): Boolean { return draggable }
+        })
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
